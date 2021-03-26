@@ -1,0 +1,1 @@
+const String APPLICATION_NAME = "Birthday Calendar";
