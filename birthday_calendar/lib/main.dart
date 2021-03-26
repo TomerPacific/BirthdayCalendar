@@ -1,3 +1,4 @@
+import 'package:birthday_calendar/DateService.dart';
 import 'package:flutter/material.dart';
 import 'constants.dart';
 
@@ -28,6 +29,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
+  @override void initState() {
+    int currentMonth = DateService().getCurrentMonth();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
