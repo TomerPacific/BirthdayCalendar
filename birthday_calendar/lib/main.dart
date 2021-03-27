@@ -1,3 +1,4 @@
+import 'package:birthday_calendar/CalendarWidget.dart';
 import 'package:birthday_calendar/DateService.dart';
 import 'package:flutter/material.dart';
 import 'constants.dart';
@@ -31,7 +32,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
 
   @override void initState() {
-    int currentMonth = DateService().getCurrentMonth();
     super.initState();
   }
 
@@ -45,6 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            CalendarWidget(currentMonth: DateService().getCurrentMonth())
           ],
         ),
       ),
