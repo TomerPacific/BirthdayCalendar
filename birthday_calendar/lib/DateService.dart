@@ -1,3 +1,4 @@
+import 'constants.dart';
 
 class DateService {
   static final DateService _dateService = DateService._internal();
@@ -12,6 +13,10 @@ class DateService {
   int getCurrentMonth() {
     DateTime now = new DateTime.now();
     return now.month;
+  }
+
+  String convertMonthToWord(int month) {
+    return MONTHS[month];
   }
 
 }
