@@ -28,7 +28,12 @@ class _CalendarState extends State<CalendarWidget> {
           itemCount: _amountOfDaysToPresent,
           itemBuilder: (BuildContext context, int index) {
             return TextButton(onPressed: () {},
-                child: Text("$index"));
+                child: Text(DateService().getDayFromDate(
+                    DateService().constructDateForDay(++index,
+                        widget.currentMonth)
+                  )
+                ),
+            );
           }
       ),
     );
