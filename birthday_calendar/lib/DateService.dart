@@ -1,4 +1,5 @@
 import 'constants.dart';
+import 'package:intl/intl.dart';
 
 class DateService {
   static final DateService _dateService = DateService._internal();
@@ -59,6 +60,10 @@ class DateService {
       return true;
     }
     return false;
+  }
+
+  String getDayFromDate(DateTime date) {
+    return DateFormat('EEEE').format(date);
   }
 
 }
