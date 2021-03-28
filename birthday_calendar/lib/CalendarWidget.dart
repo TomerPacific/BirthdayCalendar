@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:birthday_calendar/DateService.dart';
 
 class CalendarWidget extends StatefulWidget {
   final int currentMonth;
@@ -11,23 +12,25 @@ class CalendarWidget extends StatefulWidget {
 
 class _CalendarState extends State<CalendarWidget> {
 
+  int _amountOfDaysToPresent = 0;
+
   @override void initState() {
+    _amountOfDaysToPresent = DateService().amountOfDaysInMonth(DateService().convertMonthToWord(widget.currentMonth));
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Row(
-        children: [
-          Column(
-            children: [
-
-            ],
-          )
-        ],
+    return SizedBox(
+      height: 400,
+      child: GridView.builder(gridDelegate:
+      const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount : 3),
+          itemCount: _amountOfDaysToPresent,
+          itemBuilder: (BuildContext context, int index) {
+            return TextButton(onPressed: () {},
+                child: Text("$index"));
+          }
       ),
     );
   }
-
 }
