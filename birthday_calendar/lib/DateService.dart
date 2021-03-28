@@ -66,4 +66,12 @@ class DateService {
     return DateFormat('EEEE').format(date);
   }
 
+  DateTime constructDateForDay(int day, int month) {
+    int year = new DateTime.now().year;
+    String paddedMonth = month < 10 ? "0" + month.toString() : month.toString();
+    String paddedDay = day < 10 ? "0" + day.toString() : day.toString();
+    String wholeDate = year.toString() + "-$paddedMonth-$paddedDay";
+    return DateTime.parse(wholeDate);
+  }
+
 }
