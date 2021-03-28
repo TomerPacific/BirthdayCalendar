@@ -22,17 +22,20 @@ class _CalendarState extends State<CalendarWidget> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 400,
+      height: (MediaQuery.of(context).size.height),
       child: GridView.builder(gridDelegate:
-      const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount : 3),
+      const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount : 5),
           itemCount: _amountOfDaysToPresent,
           itemBuilder: (BuildContext context, int index) {
             return TextButton(onPressed: () {},
-                child: Text(DateService().getDayFromDate(
-                    DateService().constructDateForDay(++index,
-                        widget.currentMonth)
+                child: FittedBox(
+                  fit: BoxFit.fitWidth,
+                  child: Text(DateService().getDayFromDate(
+                      DateService().constructDateForDay(++index,
+                          widget.currentMonth)
+                    )
                   )
-                ),
+                )
             );
           }
       ),
