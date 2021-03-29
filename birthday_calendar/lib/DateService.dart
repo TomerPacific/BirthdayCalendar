@@ -11,13 +11,17 @@ class DateService {
   DateService._internal();
 
 
-  int getCurrentMonth() {
+  int getCurrentMonthNumber() {
     DateTime now = new DateTime.now();
     return now.month;
   }
 
   String convertMonthToWord(int month) {
     return MONTHS[month];
+  }
+
+  String getCurrentMonthName() {
+    return convertMonthToWord(getCurrentMonthNumber());
   }
 
   int amountOfDaysInMonth(String month) {
