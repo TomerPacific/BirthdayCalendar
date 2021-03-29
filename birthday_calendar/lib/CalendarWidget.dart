@@ -1,4 +1,5 @@
 
+import 'package:birthday_calendar/DayWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/DateService.dart';
 
@@ -38,7 +39,7 @@ class _CalendarState extends State<CalendarWidget> {
             return TextButton(onPressed: () {},
                 child: FittedBox(
                   fit: BoxFit.fitWidth,
-                  child: Text(_monthDays[index])
+                  child: DayWidget(dayNumber: (index+1))
                   )
                 );
           }
