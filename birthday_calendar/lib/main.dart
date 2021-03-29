@@ -42,7 +42,14 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: CalendarWidget(currentMonth: DateService().getCurrentMonth()),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Text(DateService().convertMonthToWord(DateService().getCurrentMonth())),
+              CalendarWidget(currentMonth: DateService().getCurrentMonth())
+            ],
+          ),
+        )
         ),
       );
   }
