@@ -45,7 +45,13 @@ class _MyHomePageState extends State<MyHomePage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Text(DateService().getCurrentMonthName()),
+              Text(DateService().getCurrentMonthName(),
+                  style: new TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold
+                  )
+              ),
+              SizedBox(height: 10),
               CalendarWidget(currentMonth: DateService().getCurrentMonthNumber())
             ],
           ),
