@@ -13,10 +13,18 @@ class CalendarWidget extends StatefulWidget {
 class _CalendarState extends State<CalendarWidget> {
 
   int _amountOfDaysToPresent = 0;
+  List<String> _monthDays = [];
 
   @override void initState() {
     _amountOfDaysToPresent = DateService().amountOfDaysInMonth(DateService().convertMonthToWord(widget.currentMonth));
+    _generateMonthDays(_amountOfDaysToPresent);
     super.initState();
+  }
+
+  void _generateMonthDays(int amountOfDaysInMonth) {
+    for(int i = 0; i < amountOfDaysInMonth; i++) {
+      _monthDays.add((i+1).toString());
+    }
   }
 
   @override
@@ -30,13 +38,9 @@ class _CalendarState extends State<CalendarWidget> {
             return TextButton(onPressed: () {},
                 child: FittedBox(
                   fit: BoxFit.fitWidth,
-                  child: Text(DateService().getDayFromDate(
-                      DateService().constructDateForDay(++index,
-                          widget.currentMonth)
-                    )
+                  child: Text(_monthDays[index])
                   )
-                )
-            );
+                );
           }
       ),
     );
