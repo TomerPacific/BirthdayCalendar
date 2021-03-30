@@ -28,16 +28,12 @@ class _CalendarState extends State<CalendarWidget> {
       const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount : 5),
           itemCount: _amountOfDaysToPresent,
           itemBuilder: (BuildContext context, int index) {
-            return TextButton(onPressed: () {},
-                child: FittedBox(
-                  fit: BoxFit.fitWidth,
-                  child: DayWidget(
-                      month: widget.currentMonth,
-                      dayNumber: (index+1))
-                  )
-                );
+            return DayWidget(
+                  month: widget.currentMonth,
+                  dayNumber: (index+1)
+                  );
+                }
+              )
+            );
           }
-      ),
-    );
   }
-}

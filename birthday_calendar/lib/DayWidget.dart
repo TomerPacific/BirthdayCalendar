@@ -26,11 +26,17 @@ class _DayState extends State<DayWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(_formatDayDate()),
-        Text(_getDayOfDate())
-      ],
+    return TextButton(
+        onPressed: () {},
+        child: FittedBox(
+            fit: BoxFit.fitWidth,
+            child: Column(
+              children: [
+                Text(_formatDayDate()),
+                Text(_getDayOfDate())
+              ]
+            )
+        )
     );
   }
 }
