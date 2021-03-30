@@ -12,8 +12,9 @@ class DayWidget extends StatefulWidget {
   @override _DayState createState() => _DayState();
 }
 
-
 class _DayState extends State<DayWidget> {
+
+  bool _hasBirthdays = false;
 
   String _formatDayDate() {
     return DateService().convertMonthToWord(widget.month) + " " + widget.dayNumber.toString();
@@ -33,7 +34,13 @@ class _DayState extends State<DayWidget> {
             child: Column(
               children: [
                 Text(_formatDayDate()),
-                Text(_getDayOfDate())
+                Text(_getDayOfDate()),
+                if (_hasBirthdays) Icon(
+                  Icons.cake_outlined,
+                  color: Colors.pink,
+                  size: 24.0,
+                  semanticLabel: 'Text to announce in accessibility modes',
+                )
               ]
             )
         )
