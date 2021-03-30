@@ -31,7 +31,9 @@ class _CalendarState extends State<CalendarWidget> {
             return TextButton(onPressed: () {},
                 child: FittedBox(
                   fit: BoxFit.fitWidth,
-                  child: DayWidget(dayNumber: (index+1))
+                  child: DayWidget(
+                      month: DateService().convertMonthToWord(widget.currentMonth),
+                      dayNumber: (index+1))
                   )
                 );
           }
