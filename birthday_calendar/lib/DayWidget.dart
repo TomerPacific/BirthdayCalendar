@@ -1,10 +1,11 @@
 
+import 'package:birthday_calendar/DateService.dart';
 import 'package:flutter/material.dart';
 
 class DayWidget extends StatefulWidget {
 
   final int dayNumber;
-  final String month;
+  final int month;
 
   const DayWidget({Key key, this.month, this.dayNumber}) : super(key: key);
 
@@ -15,11 +16,21 @@ class DayWidget extends StatefulWidget {
 class _DayState extends State<DayWidget> {
 
   String _formatDayDate() {
-    return widget.month + " " + widget.dayNumber.toString();
+    return DateService().convertMonthToWord(widget.month) + " " + widget.dayNumber.toString();
+  }
+
+  String _getDayOfDate() {
+    DateTime dayAsDate = DateService().constructDateForDay(widget.dayNumber, widget.month);
+    return DateService().getDayFromDate(dayAsDate);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Text(_formatDayDate());
+    return Column(
+      children: [
+        Text(_formatDayDate()),
+        Text(_getDayOfDate())
+      ],
+    );
   }
 }

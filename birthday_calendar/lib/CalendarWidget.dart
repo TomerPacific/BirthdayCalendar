@@ -32,7 +32,7 @@ class _CalendarState extends State<CalendarWidget> {
                 child: FittedBox(
                   fit: BoxFit.fitWidth,
                   child: DayWidget(
-                      month: DateService().convertMonthToWord(widget.currentMonth),
+                      month: widget.currentMonth,
                       dayNumber: (index+1))
                   )
                 );
