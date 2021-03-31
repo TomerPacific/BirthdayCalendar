@@ -14,16 +14,27 @@ class BirthdayPage extends StatelessWidget {
       appBar: AppBar(title: Text("Birthdays for $dateOfDay")),
       body: Center(
         child:
-          ListView.builder(
-            itemCount: birthdays.length,
-            itemBuilder: (BuildContext context, int index) {
-              return Container(
-                height: 50,
-                color: Colors.blueAccent,
-                child: Text("${birthdays[index]}")
-              );
-            },
-          )
+            Column(
+              children: [
+                Expanded(child:
+                  ListView.builder(
+                    itemCount: birthdays.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Container(
+                          height: 50,
+                          color: Colors.blueAccent,
+                          child: Text("${birthdays[index]}")
+                      );
+                    },
+                  ),
+                ),
+                TextButton(
+                    onPressed: () {},
+                    child: Text("Add Birthday")
+                )
+              ],
+            )
+
       ),
     );
   }
