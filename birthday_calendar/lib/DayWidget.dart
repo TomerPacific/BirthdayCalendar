@@ -16,7 +16,6 @@ class DayWidget extends StatefulWidget {
 
 class _DayState extends State<DayWidget> {
 
-  bool _hasBirthdays = false;
   List<String> _birthdays = [];
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
@@ -37,7 +36,6 @@ class _DayState extends State<DayWidget> {
   void _fetchBirthdaysFromStorage() async{
     final SharedPreferences prefs = await _prefs;
     _birthdays = prefs.getStringList(widget.dayNumber.toString() + "/" + widget.month.toString());
-    _hasBirthdays = _birthdays.length > 0;
   }
 
   @override
@@ -52,7 +50,7 @@ class _DayState extends State<DayWidget> {
               children: [
                 Text(_formatDayDate()),
                 Text(_getDayOfDate()),
-                if (_hasBirthdays) Icon(
+                if (_birthdays.length > 0) Icon(
                   Icons.cake_outlined,
                   color: Colors.pink,
                   size: 24.0,
