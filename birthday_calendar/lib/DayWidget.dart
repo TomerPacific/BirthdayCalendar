@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'BirthdayPage.dart';
+
 class DayWidget extends StatefulWidget {
 
   final int dayNumber;
@@ -42,7 +44,13 @@ class _DayState extends State<DayWidget> {
   Widget build(BuildContext context) {
     return TextButton(
         onPressed: () {
-          
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => BirthdayPage(
+                    dateOfDay: _formatDayDate(),
+                    birthdays: _birthdays != null ? _birthdays : []),
+              ));
         },
         child: FittedBox(
             fit: BoxFit.fitWidth,
