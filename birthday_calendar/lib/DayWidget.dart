@@ -36,7 +36,7 @@ class _DayState extends State<DayWidget> {
 
   void _fetchBirthdaysFromStorage() async{
     final SharedPreferences prefs = await _prefs;
-    _birthdays = prefs.getStringList("birthdays");
+    _birthdays = prefs.getStringList(widget.dayNumber.toString() + "/" + widget.month.toString());
     _hasBirthdays = _birthdays.length > 0;
   }
 
