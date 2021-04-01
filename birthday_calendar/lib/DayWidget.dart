@@ -37,7 +37,15 @@ class _DayState extends State<DayWidget> {
 
   void _fetchBirthdaysFromStorage() async{
     final SharedPreferences prefs = await _prefs;
-    _birthdays = prefs.getStringList(widget.dayNumber.toString() + "/" + widget.month.toString());
+    _birthdays = prefs.getStringList(_formatDayDate());
+  }
+
+  Widget _showBirthdayIcon() {
+      return  Icon(
+        Icons.cake_outlined,
+        color: Colors.pink,
+        size: 24.0,
+      );
   }
 
   @override
@@ -50,7 +58,7 @@ class _DayState extends State<DayWidget> {
                 builder: (context) => BirthdayPage(
                     dateOfDay: _formatDayDate(),
                     birthdays: _birthdays != null ? _birthdays : []),
-              ));
+              )).then((value) => setState(() => {}));
         },
         child: FittedBox(
             fit: BoxFit.fitWidth,
@@ -58,11 +66,7 @@ class _DayState extends State<DayWidget> {
               children: [
                 Text(_formatDayDate()),
                 Text(_getDayOfDate()),
-                if (_birthdays.length > 0) Icon(
-                  Icons.cake_outlined,
-                  color: Colors.pink,
-                  size: 24.0,
-                )
+                if (_birthdays != null && _birthdays.length > 0) _showBirthdayIcon()
               ]
             )
         )
