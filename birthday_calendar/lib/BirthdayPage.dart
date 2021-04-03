@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:birthday_calendar/SharedPrefs.dart';
 
 class BirthdayPage extends StatelessWidget {
 
   final String dateOfDay;
   final List<String> birthdays;
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   BirthdayPage({Key key, @required this.dateOfDay, @required this.birthdays}) : super(key: key);
 
-  void _addBirthdayToList(String birthday) async {
+  void _addBirthdayToList(String birthday) {
     List<String> updatedBirthdays = birthdays;
     updatedBirthdays.add(birthday);
-    final SharedPreferences prefs = await _prefs;
-    prefs.setStringList(dateOfDay, updatedBirthdays);
+    SharedPrefs().setBirthdaysForDate(dateOfDay, updatedBirthdays);
   }
 
   @override
@@ -39,7 +36,7 @@ class BirthdayPage extends StatelessWidget {
                 ),
                 TextButton(
                     onPressed: () {
-
+                      
                     },
                     child: Text("Add Birthday")
                 )
