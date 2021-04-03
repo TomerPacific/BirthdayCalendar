@@ -39,7 +39,7 @@ class BirthdayPage extends StatelessWidget {
                 ),
                 TextButton(
                     onPressed: () {
-                      
+
                     },
                     child: Text("Add Birthday")
                 )
