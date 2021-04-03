@@ -6,7 +6,7 @@ import 'package:birthday_calendar/SharedPrefs.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await sharedPrefs.init();
+  await SharedPrefs().init();
   runApp(MyApp());
 }
 
