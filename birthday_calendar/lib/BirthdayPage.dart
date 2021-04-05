@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/service/SharedPrefs.dart';
+import 'package:birthday_calendar/birthday.dart';
 
 class BirthdayPage extends StatefulWidget {
 
@@ -47,14 +48,14 @@ class _BirthdayPageState extends State<BirthdayPage> {
                       return Container(
                           height: 50,
                           color: Colors.blueAccent,
-                          child: Text("${currentBirthdays[index]}")
+                          child: Birthday(birthdayOfPerson: currentBirthdays[index])
                       );
                     },
                   ),
                 ),
                 TextButton(
                     onPressed: () {
-
+                      
                     },
                     child: Text("Add Birthday")
                 )
