@@ -31,7 +31,11 @@ class _BirthdayPageState extends State<BirthdayPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Birthdays for $widget.dateOfDay")),
+      appBar: AppBar(title:
+      FittedBox(
+        fit: BoxFit.fitWidth,
+        child: Text("Birthdays for ${widget.dateOfDay}"))
+      ),
       body: Center(
         child:
             Column(
