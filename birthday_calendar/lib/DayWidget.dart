@@ -44,6 +44,11 @@ class _DayState extends State<DayWidget> {
       );
   }
 
+  void _updateData() {
+    _fetchBirthdaysFromStorage();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return TextButton(
@@ -54,7 +59,9 @@ class _DayState extends State<DayWidget> {
                 builder: (context) => BirthdayPage(
                     dateOfDay: _formatDayDate(),
                     birthdays: _birthdays != null ? _birthdays : []),
-              )).then((value) => setState(() => {}));
+              )).then((value) =>
+                  _updateData()
+              );
         },
         child: FittedBox(
             fit: BoxFit.fitWidth,
