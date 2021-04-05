@@ -1,8 +1,8 @@
 
-import 'package:birthday_calendar/DateService.dart';
+import 'package:birthday_calendar/service/DateService.dart';
 import 'package:flutter/material.dart';
-import 'package:birthday_calendar/SharedPrefs.dart';
-import 'BirthdayPage.dart';
+import 'package:birthday_calendar/service/SharedPrefs.dart';
+import '../BirthdayPage.dart';
 
 class DayWidget extends StatefulWidget {
 
@@ -44,7 +44,7 @@ class _DayState extends State<DayWidget> {
       );
   }
 
-  void _updateData() {
+  void _updateBirthdayData() {
     _fetchBirthdaysFromStorage();
     setState(() {});
   }
@@ -60,7 +60,7 @@ class _DayState extends State<DayWidget> {
                     dateOfDay: _formatDayDate(),
                     birthdays: _birthdays != null ? _birthdays : []),
               )).then((value) =>
-                  _updateData()
+                  _updateBirthdayData()
               );
         },
         child: FittedBox(

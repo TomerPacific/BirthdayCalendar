@@ -1,7 +1,7 @@
 
-import 'package:birthday_calendar/DayWidget.dart';
+import 'package:birthday_calendar/widget/DayWidget.dart';
 import 'package:flutter/material.dart';
-import 'package:birthday_calendar/DateService.dart';
+import 'package:birthday_calendar/service/DateService.dart';
 
 class CalendarWidget extends StatefulWidget {
   final int currentMonth;

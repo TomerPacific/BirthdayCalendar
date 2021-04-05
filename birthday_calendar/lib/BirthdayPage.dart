@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:birthday_calendar/SharedPrefs.dart';
+import 'package:birthday_calendar/service/SharedPrefs.dart';
 
 class BirthdayPage extends StatefulWidget {
 
@@ -50,7 +50,7 @@ class _BirthdayPageState extends State<BirthdayPage> {
                 ),
                 TextButton(
                     onPressed: () {
-                      
+
                     },
                     child: Text("Add Birthday")
                 )
