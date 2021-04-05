@@ -1,35 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/SharedPrefs.dart';
 
-class BirthdayPage extends StatelessWidget {
+class BirthdayPage extends StatefulWidget {
 
   final String dateOfDay;
   final List<String> birthdays;
 
-  BirthdayPage({Key key, @required this.dateOfDay, @required this.birthdays}) : super(key: key);
+  BirthdayPage({Key key, @required this.dateOfDay, @required this.birthdays})
+      : super(key: key);
+
+  @override _BirthdayPageState createState() => _BirthdayPageState();
+
+}
+
+class _BirthdayPageState extends State<BirthdayPage> {
+
+  List<String> currentBirthdays;
 
   void _addBirthdayToList(String birthday) {
-    List<String> updatedBirthdays = birthdays;
-    updatedBirthdays.add(birthday);
-    SharedPrefs().setBirthdaysForDate(dateOfDay, updatedBirthdays);
+    currentBirthdays.add(birthday);
+    SharedPrefs().setBirthdaysForDate(widget.dateOfDay, currentBirthdays);
+    setState(() {});
+  }
+
+  @override void initState() {
+    currentBirthdays = widget.birthdays;
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Birthdays for $dateOfDay")),
+      appBar: AppBar(title: Text("Birthdays for $widget.dateOfDay")),
       body: Center(
         child:
             Column(
               children: [
                 Expanded(child:
                   ListView.builder(
-                    itemCount: birthdays.length,
+                    itemCount: currentBirthdays.length,
                     itemBuilder: (BuildContext context, int index) {
                       return Container(
                           height: 50,
                           color: Colors.blueAccent,
-                          child: Text("${birthdays[index]}")
+                          child: Text("${currentBirthdays[index]}")
                       );
                     },
                   ),
