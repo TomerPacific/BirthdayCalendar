@@ -17,9 +17,24 @@ class _BirthdayState extends State<Birthday> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: 40,
+      color: Colors.indigoAccent,
       child: Row(
         children: [
-          Text(widget.birthdayOfPerson)
+          new Text(widget.birthdayOfPerson),
+          new Spacer(),
+          new IconButton(
+              icon: Icon(
+                  Icons.edit,
+                  color: Colors.white
+              ),
+              onPressed: () {}),
+          new IconButton(
+              icon: Icon(
+                  Icons.clear,
+                  color: Colors.white
+              ),
+              onPressed: () {})
         ],
       ),
     );
