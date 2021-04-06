@@ -17,6 +17,40 @@ class BirthdayPage extends StatefulWidget {
 class _BirthdayPageState extends State<BirthdayPage> {
 
   List<String> currentBirthdays;
+  TextEditingController _birthdayPersonController = new TextEditingController();
+
+  void _showAddBirthdayDialog(BuildContext context) {
+    showDialog(context: context,
+      builder: (_) => new AlertDialog(title: new Text("Add Birthday"),
+        content: new TextField(
+            autofocus: true,
+            controller: _birthdayPersonController,
+            decoration: InputDecoration(hintText: "Enter the person's name"),
+            ),
+        actions: [
+          TextButton(
+            style: TextButton.styleFrom(
+                primary: Colors.green
+            ),
+            onPressed: () {
+              _addBirthdayToList(_birthdayPersonController.text);
+              Navigator.pop(context);
+            },
+            child: new Text("OK"),
+          ),
+          TextButton(
+            style: TextButton.styleFrom(
+                primary: Colors.red
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: new Text("BACK"),
+          )
+        ],
+      ),
+    );
+  }
 
   void _addBirthdayToList(String birthday) {
     currentBirthdays.add(birthday);
@@ -55,7 +89,7 @@ class _BirthdayPageState extends State<BirthdayPage> {
                 ),
                 TextButton(
                     onPressed: () {
-                      
+                      _showAddBirthdayDialog(context);
                     },
                     child: Text("Add Birthday")
                 )
