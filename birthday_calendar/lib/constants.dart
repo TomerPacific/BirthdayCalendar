@@ -13,3 +13,4 @@ const Map<int, String> MONTHS = const {
   11: "November",
   12: "December"
 };
+const ADD_BIRTHDAY = "Add Birthday";

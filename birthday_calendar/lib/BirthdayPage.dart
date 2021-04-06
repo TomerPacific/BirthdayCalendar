@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/service/SharedPrefs.dart';
 import 'package:birthday_calendar/birthday.dart';
+import 'package:birthday_calendar/constants.dart';
 
 class BirthdayPage extends StatefulWidget {
 
@@ -21,7 +22,7 @@ class _BirthdayPageState extends State<BirthdayPage> {
 
   void _showAddBirthdayDialog(BuildContext context) {
     showDialog(context: context,
-      builder: (_) => new AlertDialog(title: new Text("Add Birthday"),
+      builder: (_) => new AlertDialog(title: new Text(ADD_BIRTHDAY),
         content: new TextField(
             autofocus: true,
             controller: _birthdayPersonController,
@@ -87,7 +88,7 @@ class _BirthdayPageState extends State<BirthdayPage> {
                     onPressed: () {
                       _showAddBirthdayDialog(context);
                     },
-                    child: Text("Add Birthday")
+                    child: Text(ADD_BIRTHDAY)
                 )
               ],
             )
