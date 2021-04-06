@@ -79,11 +79,7 @@ class _BirthdayPageState extends State<BirthdayPage> {
                   ListView.builder(
                     itemCount: currentBirthdays.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return Container(
-                          height: 50,
-                          color: Colors.blueAccent,
-                          child: Birthday(birthdayOfPerson: currentBirthdays[index])
-                      );
+                      return Birthday(birthdayOfPerson: currentBirthdays[index]);
                     },
                   ),
                 ),
