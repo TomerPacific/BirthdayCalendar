@@ -21,7 +21,12 @@ class _BirthdayState extends State<Birthday> {
       color: Colors.indigoAccent,
       child: Row(
         children: [
-          new Text(widget.birthdayOfPerson),
+          new Text(widget.birthdayOfPerson,
+          style: new TextStyle(
+            fontSize: 20.0,
+            color: Colors.white
+          ),
+          ),
           new Spacer(),
           new IconButton(
               icon: Icon(
