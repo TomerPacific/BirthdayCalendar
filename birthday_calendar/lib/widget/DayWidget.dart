@@ -1,4 +1,5 @@
 
+import 'package:birthday_calendar/model/userBirthday.dart';
 import 'package:birthday_calendar/service/DateService.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/service/SharedPrefs.dart';
@@ -16,7 +17,7 @@ class DayWidget extends StatefulWidget {
 
 class _DayState extends State<DayWidget> {
 
-  List<String> _birthdays = [];
+  List<UserBirthday> _birthdays = [];
 
   @override void initState() {
     _fetchBirthdaysFromStorage();
