@@ -1,3 +1,4 @@
+import 'package:birthday_calendar/model/userBirthday.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/service/SharedPrefs.dart';
 import 'package:birthday_calendar/birthday.dart';
@@ -6,7 +7,7 @@ import 'package:birthday_calendar/constants.dart';
 class BirthdayPage extends StatefulWidget {
 
   final String dateOfDay;
-  final List<String> birthdays;
+  final List<UserBirthday> birthdays;
 
   BirthdayPage({Key key, @required this.dateOfDay, @required this.birthdays})
       : super(key: key);
@@ -17,7 +18,7 @@ class BirthdayPage extends StatefulWidget {
 
 class _BirthdayPageState extends State<BirthdayPage> {
 
-  List<String> currentBirthdays;
+  List<UserBirthday> currentBirthdays;
   TextEditingController _birthdayPersonController = new TextEditingController();
 
   void _showAddBirthdayDialog(BuildContext context) {
@@ -34,7 +35,8 @@ class _BirthdayPageState extends State<BirthdayPage> {
                 primary: Colors.green
             ),
             onPressed: () {
-              _addBirthdayToList(_birthdayPersonController.text);
+              UserBirthday userBirthday = new UserBirthday(_birthdayPersonController.text, widget.dateOfDay, false);
+              _addBirthdayToList(userBirthday);
               Navigator.pop(context);
             },
             child: new Text("OK"),
@@ -53,8 +55,8 @@ class _BirthdayPageState extends State<BirthdayPage> {
     );
   }
 
-  void _addBirthdayToList(String birthday) {
-    currentBirthdays.add(birthday);
+  void _addBirthdayToList(UserBirthday userBirthday) {
+    currentBirthdays.add(userBirthday);
     SharedPrefs().setBirthdaysForDate(widget.dateOfDay, currentBirthdays);
     setState(() {});
   }
