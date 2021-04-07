@@ -1,9 +1,10 @@
 
 import 'package:flutter/material.dart';
+import 'package:birthday_calendar/model/userBirthday.dart';
 
 class Birthday extends StatefulWidget {
 
-  final String birthdayOfPerson;
+  final UserBirthday birthdayOfPerson;
 
   Birthday({Key key, @required this.birthdayOfPerson}) : super(key: key);
 
@@ -21,7 +22,7 @@ class _BirthdayState extends State<Birthday> {
       color: Colors.indigoAccent,
       child: Row(
         children: [
-          new Text(widget.birthdayOfPerson,
+          new Text(widget.birthdayOfPerson.name,
           style: new TextStyle(
             fontSize: 20.0,
             color: Colors.white
