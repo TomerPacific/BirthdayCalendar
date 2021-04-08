@@ -14,6 +14,12 @@ class Birthday extends StatefulWidget {
 
 class _BirthdayState extends State<Birthday> {
 
+  bool isNotificationEnabledForPerson = false;
+
+  @override void initState() {
+    isNotificationEnabledForPerson = widget.birthdayOfPerson.hasNotification;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,12 +37,14 @@ class _BirthdayState extends State<Birthday> {
           new Spacer(),
           new IconButton(
               icon: Icon(
-                  widget.birthdayOfPerson.hasNotification ?
+                  isNotificationEnabledForPerson ?
                   Icons.notifications_off_outlined :
                   Icons.notifications_active_outlined,
                   color: Colors.white
               ),
-              onPressed: () {}),
+              onPressed: () {
+
+              }),
           new IconButton(
               icon: Icon(
                   Icons.clear,
