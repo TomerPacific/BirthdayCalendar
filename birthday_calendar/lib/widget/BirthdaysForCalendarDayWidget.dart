@@ -21,6 +21,14 @@ class _BirthdaysForCalendarDayWidgetState extends State<BirthdaysForCalendarDayW
   List<UserBirthday> currentBirthdays;
   TextEditingController _birthdayPersonController = new TextEditingController();
 
+  bool _isValidName(String userInput) {
+    return (
+            userInput != null &&
+            userInput.isNotEmpty &&
+            userInput.length > 0
+          );
+  }
+
   void _showAddBirthdayDialog(BuildContext context) {
     showDialog(context: context,
       builder: (_) => new AlertDialog(title: new Text(ADD_BIRTHDAY),
@@ -35,9 +43,18 @@ class _BirthdaysForCalendarDayWidgetState extends State<BirthdaysForCalendarDayW
                 primary: Colors.green
             ),
             onPressed: () {
-              UserBirthday userBirthday = new UserBirthday(_birthdayPersonController.text, widget.dateOfDay, false);
-              _addBirthdayToList(userBirthday);
-              Navigator.pop(context);
+              if (_isValidName(_birthdayPersonController.text)) {
+                UserBirthday userBirthday = new UserBirthday(_birthdayPersonController.text, widget.dateOfDay, false);
+                _addBirthdayToList(userBirthday);
+                _birthdayPersonController.text = "";
+                Navigator.pop(context);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    new SnackBar(
+                    content: new Text("The name you entered is invalid")
+                    )
+                );
+              }
             },
             child: new Text("OK"),
           ),
@@ -46,6 +63,7 @@ class _BirthdaysForCalendarDayWidgetState extends State<BirthdaysForCalendarDayW
                 primary: Colors.red
             ),
             onPressed: () {
+              _birthdayPersonController.text = "";
               Navigator.pop(context);
             },
             child: new Text("BACK"),
