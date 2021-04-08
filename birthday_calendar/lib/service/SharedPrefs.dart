@@ -40,6 +40,7 @@ class SharedPrefs {
       }
     }
 
+    setBirthdaysForDate(birthday.birthdayDate, birthdays);
 
   }
 
