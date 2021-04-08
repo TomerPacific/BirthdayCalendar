@@ -17,12 +17,12 @@ class SharedPrefs {
   }
 
   List<UserBirthday> getBirthdaysForDate(String date) {
-    String json = _sharedPreferences.getString(date);
-    if (json == null) {
+    String birthdaysForDate = _sharedPreferences.getString(date);
+    if (birthdaysForDate == null) {
       return [];
     }
-    List decoded = jsonDecode(json);
-    List<UserBirthday> birthdays = decoded.map((e) => UserBirthday.fromJson(e)).toList();
+    List decodedBirthdaysForDate = jsonDecode(birthdaysForDate);
+    List<UserBirthday> birthdays = decodedBirthdaysForDate.map((decodedBirthday) => UserBirthday.fromJson(decodedBirthday)).toList();
     return birthdays;
   }
 
