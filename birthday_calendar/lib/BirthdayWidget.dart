@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:birthday_calendar/model/userBirthday.dart';
 import 'package:birthday_calendar/service/SharedPrefs.dart';
 
-class Birthday extends StatefulWidget {
+class BirthdayWidget extends StatefulWidget {
 
   final UserBirthday birthdayOfPerson;
 
-  Birthday({Key key, @required this.birthdayOfPerson}) : super(key: key);
+  BirthdayWidget({Key key, @required this.birthdayOfPerson}) : super(key: key);
 
-  @override _BirthdayState createState() => _BirthdayState();
+  @override _BirthdayWidgetState createState() => _BirthdayWidgetState();
 
 }
 
-class _BirthdayState extends State<Birthday> {
+class _BirthdayWidgetState extends State<BirthdayWidget> {
 
   bool isNotificationEnabledForPerson = false;
 

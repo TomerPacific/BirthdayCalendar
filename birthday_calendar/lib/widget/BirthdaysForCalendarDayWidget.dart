@@ -1,7 +1,7 @@
 import 'package:birthday_calendar/model/userBirthday.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/service/SharedPrefs.dart';
-import 'package:birthday_calendar/birthday.dart';
+import 'package:birthday_calendar/BirthdayWidget.dart';
 import 'package:birthday_calendar/constants.dart';
 
 class BirthdaysForCalendarDayWidget extends StatefulWidget {
@@ -82,7 +82,7 @@ class _BirthdaysForCalendarDayWidgetState extends State<BirthdaysForCalendarDayW
                   ListView.builder(
                     itemCount: currentBirthdays.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return Birthday(birthdayOfPerson: currentBirthdays[index]);
+                      return BirthdayWidget(birthdayOfPerson: currentBirthdays[index]);
                     },
                   ),
                 ),
