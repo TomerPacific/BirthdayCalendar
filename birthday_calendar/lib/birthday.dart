@@ -31,7 +31,9 @@ class _BirthdayState extends State<Birthday> {
           new Spacer(),
           new IconButton(
               icon: Icon(
-                  Icons.edit,
+                  widget.birthdayOfPerson.hasNotification ?
+                  Icons.notifications_off_outlined :
+                  Icons.notifications_active_outlined,
                   color: Colors.white
               ),
               onPressed: () {}),
