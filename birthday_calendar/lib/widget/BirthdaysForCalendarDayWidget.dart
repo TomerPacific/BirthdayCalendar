@@ -1,7 +1,7 @@
 import 'package:birthday_calendar/model/userBirthday.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/service/SharedPrefs.dart';
-import 'package:birthday_calendar/BirthdayWidget.dart';
+import 'file:///C:/Users/Tomer/Documents/BirthdayCalendar/birthday_calendar/lib/widget/BirthdayWidget.dart';
 import 'package:birthday_calendar/constants.dart';
 
 class BirthdaysForCalendarDayWidget extends StatefulWidget {
