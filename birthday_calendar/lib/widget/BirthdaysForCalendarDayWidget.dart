@@ -61,6 +61,12 @@ class _BirthdaysForCalendarDayWidgetState extends State<BirthdaysForCalendarDayW
     setState(() {});
   }
 
+  void _removeBirthdayFromList(UserBirthday birthdayToRemove) {
+    currentBirthdays.remove(birthdayToRemove);
+    SharedPrefs().setBirthdaysForDate(widget.dateOfDay, currentBirthdays);
+    setState(() {});
+  }
+
   @override void initState() {
     currentBirthdays = widget.birthdays;
     super.initState();
@@ -82,7 +88,11 @@ class _BirthdaysForCalendarDayWidgetState extends State<BirthdaysForCalendarDayW
                   ListView.builder(
                     itemCount: currentBirthdays.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return BirthdayWidget(birthdayOfPerson: currentBirthdays[index]);
+                      return BirthdayWidget(
+                          birthdayOfPerson: currentBirthdays[index],
+                          onDeletePressedCallback: () {
+                            _removeBirthdayFromList(currentBirthdays[index]);
+                          });
                     },
                   ),
                 ),
