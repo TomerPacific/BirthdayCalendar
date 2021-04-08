@@ -4,19 +4,19 @@ import 'package:birthday_calendar/service/SharedPrefs.dart';
 import 'package:birthday_calendar/birthday.dart';
 import 'package:birthday_calendar/constants.dart';
 
-class BirthdayPage extends StatefulWidget {
+class BirthdaysForCalendarDayWidget extends StatefulWidget {
 
   final String dateOfDay;
   final List<UserBirthday> birthdays;
 
-  BirthdayPage({Key key, @required this.dateOfDay, @required this.birthdays})
+  BirthdaysForCalendarDayWidget({Key key, @required this.dateOfDay, @required this.birthdays})
       : super(key: key);
 
-  @override _BirthdayPageState createState() => _BirthdayPageState();
+  @override _BirthdaysForCalendarDayWidgetState createState() => _BirthdaysForCalendarDayWidgetState();
 
 }
 
-class _BirthdayPageState extends State<BirthdayPage> {
+class _BirthdaysForCalendarDayWidgetState extends State<BirthdaysForCalendarDayWidget> {
 
   List<UserBirthday> currentBirthdays;
   TextEditingController _birthdayPersonController = new TextEditingController();

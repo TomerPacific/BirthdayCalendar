@@ -3,7 +3,7 @@ import 'package:birthday_calendar/model/userBirthday.dart';
 import 'package:birthday_calendar/service/DateService.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/service/SharedPrefs.dart';
-import '../BirthdayPage.dart';
+import '../BirthdaysForCalendarDayWidget.dart';
 
 class CalendarDayWidget extends StatefulWidget {
 
@@ -57,7 +57,7 @@ class _CalendarDayState extends State<CalendarDayWidget> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => BirthdayPage(
+                builder: (context) => BirthdaysForCalendarDayWidget(
                     dateOfDay: _formatDayDate(),
                     birthdays: _birthdays != null ? _birthdays : []),
               )).then((value) =>
