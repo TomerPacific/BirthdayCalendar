@@ -17,6 +17,13 @@ class _BirthdayState extends State<Birthday> {
 
   bool isNotificationEnabledForPerson = false;
 
+  void updateNotificationStatusForBirthday() {
+    SharedPrefs().updateNotificationStatusForBirthday(widget.birthdayOfPerson, !isNotificationEnabledForPerson);
+    setState(() {
+      isNotificationEnabledForPerson = !isNotificationEnabledForPerson;
+    });
+  }
+
   @override void initState() {
     isNotificationEnabledForPerson = widget.birthdayOfPerson.hasNotification;
     super.initState();
@@ -29,11 +36,14 @@ class _BirthdayState extends State<Birthday> {
       color: Colors.indigoAccent,
       child: Row(
         children: [
-          new Text(widget.birthdayOfPerson.name,
-          style: new TextStyle(
-            fontSize: 20.0,
-            color: Colors.white
-          ),
+          new Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(widget.birthdayOfPerson.name,
+              style: new TextStyle(
+                  fontSize: 20.0,
+                  color: Colors.white
+              ),
+            ),
           ),
           new Spacer(),
           new IconButton(
@@ -44,10 +54,7 @@ class _BirthdayState extends State<Birthday> {
                   color: Colors.white
               ),
               onPressed: () {
-                SharedPrefs().updateNotificationStatusForBirthday(widget.birthdayOfPerson, !isNotificationEnabledForPerson);
-                setState(() {
-                  isNotificationEnabledForPerson = !isNotificationEnabledForPerson;
-                });
+                updateNotificationStatusForBirthday();
               }),
           new IconButton(
               icon: Icon(
