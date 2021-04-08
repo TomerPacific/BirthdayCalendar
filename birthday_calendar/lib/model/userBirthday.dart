@@ -1,4 +1,6 @@
 
+import 'package:birthday_calendar/constants.dart';
+
 class UserBirthday {
   final String name;
   final String birthdayDate;
@@ -16,13 +18,13 @@ class UserBirthday {
   }
 
   UserBirthday.fromJson(Map<String, dynamic> json) :
-        name = json['name'],
-        birthdayDate = json['birthdayDate'],
-        hasNotification = json['hasNotification'];
+        name = json[USER_BIRTHDAY_NAME_KEY],
+        birthdayDate = json[USER_BIRTHDAY_DATE_KEY],
+        hasNotification = json[USER_BIRTHDAY_NOTIFICATION_KEY];
 
   Map<String, dynamic> toJson() => {
-    'name': name,
-    'birthdayDate': birthdayDate,
-    'hasNotification': hasNotification
+    USER_BIRTHDAY_NAME_KEY : name,
+    USER_BIRTHDAY_DATE_KEY : birthdayDate,
+    USER_BIRTHDAY_NOTIFICATION_KEY : hasNotification
  };
 }

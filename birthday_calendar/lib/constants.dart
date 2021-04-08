@@ -14,3 +14,6 @@ const Map<int, String> MONTHS = const {
   12: "December"
 };
 const ADD_BIRTHDAY = "Add Birthday";
+const USER_BIRTHDAY_NAME_KEY = "name";
+const USER_BIRTHDAY_DATE_KEY = "birthdayDate";
+const USER_BIRTHDAY_NOTIFICATION_KEY = "hasNotification";
