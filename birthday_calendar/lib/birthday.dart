@@ -43,7 +43,9 @@ class _BirthdayState extends State<Birthday> {
                   color: Colors.white
               ),
               onPressed: () {
-
+                setState(() {
+                  isNotificationEnabledForPerson = !isNotificationEnabledForPerson;
+                });
               }),
           new IconButton(
               icon: Icon(
