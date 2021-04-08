@@ -6,8 +6,9 @@ import 'package:birthday_calendar/service/SharedPrefs.dart';
 class BirthdayWidget extends StatefulWidget {
 
   final UserBirthday birthdayOfPerson;
+  final VoidCallback onDeletePressedCallback;
 
-  BirthdayWidget({Key key, @required this.birthdayOfPerson}) : super(key: key);
+  BirthdayWidget({Key key, @required this.birthdayOfPerson, @required this.onDeletePressedCallback}) : super(key: key);
 
   @override _BirthdayWidgetState createState() => _BirthdayWidgetState();
 
@@ -61,7 +62,8 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                   Icons.clear,
                   color: Colors.white
               ),
-              onPressed: () {})
+              onPressed: widget.onDeletePressedCallback
+          ),
         ],
       ),
     );
