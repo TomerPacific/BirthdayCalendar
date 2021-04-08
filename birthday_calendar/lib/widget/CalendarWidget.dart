@@ -1,5 +1,5 @@
 
-import 'package:birthday_calendar/widget/DayWidget.dart';
+import 'package:birthday_calendar/widget/CalendarDayWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/service/DateService.dart';
 
@@ -28,7 +28,7 @@ class _CalendarState extends State<CalendarWidget> {
       const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount : 5),
           itemCount: _amountOfDaysToPresent,
           itemBuilder: (BuildContext context, int index) {
-            return DayWidget(
+            return CalendarDayWidget(
                   month: widget.currentMonth,
                   dayNumber: (index+1)
                   );

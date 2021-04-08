@@ -5,17 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:birthday_calendar/service/SharedPrefs.dart';
 import '../BirthdayPage.dart';
 
-class DayWidget extends StatefulWidget {
+class CalendarDayWidget extends StatefulWidget {
 
   final int dayNumber;
   final int month;
 
-  const DayWidget({Key key, this.month, this.dayNumber}) : super(key: key);
+  const CalendarDayWidget({Key key, this.month, this.dayNumber}) : super(key: key);
 
-  @override _DayState createState() => _DayState();
+  @override _CalendarDayState createState() => _CalendarDayState();
 }
 
-class _DayState extends State<DayWidget> {
+class _CalendarDayState extends State<CalendarDayWidget> {
 
   List<UserBirthday> _birthdays = [];
 
