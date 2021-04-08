@@ -31,4 +31,16 @@ class SharedPrefs {
     _sharedPreferences.setString(date, encoded);
   }
 
+  void updateNotificationStatusForBirthday(UserBirthday birthday, bool updatedStatus) {
+    List<UserBirthday> birthdays = getBirthdaysForDate(birthday.birthdayDate);
+    for(int i = 0; i < birthdays.length; i++) {
+      UserBirthday savedBirthday = birthdays[i];
+      if (savedBirthday.equals(birthday)) {
+        savedBirthday.updateNotificationStatus(updatedStatus);
+      }
+    }
+
+
+  }
+
 }
