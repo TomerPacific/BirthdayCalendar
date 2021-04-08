@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/model/userBirthday.dart';
+import 'package:birthday_calendar/service/SharedPrefs.dart';
 
 class Birthday extends StatefulWidget {
 
@@ -43,6 +44,7 @@ class _BirthdayState extends State<Birthday> {
                   color: Colors.white
               ),
               onPressed: () {
+                SharedPrefs().updateNotificationStatusForBirthday(widget.birthdayOfPerson, !isNotificationEnabledForPerson);
                 setState(() {
                   isNotificationEnabledForPerson = !isNotificationEnabledForPerson;
                 });
