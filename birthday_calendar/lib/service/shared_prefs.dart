@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:birthday_calendar/model/userBirthday.dart';
+import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 

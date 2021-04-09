@@ -1,7 +1,7 @@
-import 'package:birthday_calendar/model/userBirthday.dart';
+import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:flutter/material.dart';
-import 'package:birthday_calendar/service/SharedPrefs.dart';
-import 'package:birthday_calendar/widget/BirthdayWidget.dart';
+import 'package:birthday_calendar/service/shared_prefs.dart';
+import 'package:birthday_calendar/widget/birthday.dart';
 import 'package:birthday_calendar/constants.dart';
 import 'package:collection/collection.dart';
 

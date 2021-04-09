@@ -1,9 +1,9 @@
 
 import 'package:flutter/material.dart';
-import 'package:birthday_calendar/widget/CalendarWidget.dart';
-import 'package:birthday_calendar/service/DateService.dart';
-import 'package:birthday_calendar/service/SharedPrefs.dart';
-import 'package:birthday_calendar/service/NotificationService.dart';
+import 'package:birthday_calendar/widget/calendar.dart';
+import 'package:birthday_calendar/service/date_service.dart';
+import 'package:birthday_calendar/service/shared_prefs.dart';
+import 'package:birthday_calendar/service/notification_service.dart';
 import 'constants.dart';
 
 Future<void> main() async {
