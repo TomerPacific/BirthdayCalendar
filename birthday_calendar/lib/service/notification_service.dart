@@ -1,5 +1,8 @@
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
+import 'package:birthday_calendar/constants.dart';
 
 class NotificationService {
   static final NotificationService _notificationService = NotificationService
@@ -11,12 +14,13 @@ class NotificationService {
   final AndroidInitializationSettings initializationSettingsAndroid =
   AndroidInitializationSettings('app_icon');
 
-
   factory NotificationService() {
     return _notificationService;
   }
 
   NotificationService._internal();
+
+  static const channel_id = "123";
 
   Future<void> init() async {
     final InitializationSettings initializationSettings = InitializationSettings(
@@ -25,6 +29,7 @@ class NotificationService {
         macOS: null);
     await flutterLocalNotificationsPlugin.initialize(initializationSettings,
     onSelectNotification: selectNotification);
+    tz.initializeTimeZones();
   }
 
   Future selectNotification(String payload) async {
@@ -34,7 +39,7 @@ class NotificationService {
   void sendAndroidNotification(String notificationMessage) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
     AndroidNotificationDetails(
-        '123', 'BirthdayCalendar', 'To remind you about upcoming birthdays',
+        channel_id, APPLICATION_NAME, 'To remind you about upcoming birthdays',
         importance: Importance.max,
         priority: Priority.high,
         showWhen: false);
@@ -44,6 +49,20 @@ class NotificationService {
         0, 'BirthdayCalendar', notificationMessage, platformChannelSpecifics,
         payload: 'birthdayData');
   }
+
+ void setNotificationForBirthday(String date, String notificationMessage) async {
+   await flutterLocalNotificationsPlugin.zonedSchedule(
+       0,
+       APPLICATION_NAME,
+       notificationMessage,
+       tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
+       const NotificationDetails(
+           android: AndroidNotificationDetails(channel_id,
+               APPLICATION_NAME, 'To remind you about upcoming birthdays')),
+       androidAllowWhileIdle: true,
+       uiLocalNotificationDateInterpretation:
+       UILocalNotificationDateInterpretation.absoluteTime);
+ }
 
 
 }
