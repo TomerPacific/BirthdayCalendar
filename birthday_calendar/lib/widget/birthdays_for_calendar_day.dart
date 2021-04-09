@@ -4,7 +4,7 @@ import 'package:birthday_calendar/service/shared_prefs.dart';
 import 'package:birthday_calendar/widget/birthday.dart';
 import 'package:birthday_calendar/constants.dart';
 import 'package:collection/collection.dart';
-
+import 'package:birthday_calendar/service/notification_service.dart';
 
 class BirthdaysForCalendarDayWidget extends StatefulWidget {
 
@@ -54,6 +54,10 @@ class _BirthdaysForCalendarDayWidgetState extends State<BirthdaysForCalendarDayW
                 UserBirthday userBirthday = new UserBirthday(_birthdayPersonController.text, widget.dateOfDay, false);
                 _addBirthdayToList(userBirthday);
                 _birthdayPersonController.text = "";
+                
+                NotificationService().setNotificationForBirthday(
+                    userBirthday.birthdayDate,
+                    "${userBirthday.name} has an upcoming birthday!");
                 Navigator.pop(context);
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
