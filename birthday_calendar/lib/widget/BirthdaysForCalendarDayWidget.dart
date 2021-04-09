@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:birthday_calendar/service/SharedPrefs.dart';
 import 'file:///C:/Users/Tomer/Documents/BirthdayCalendar/birthday_calendar/lib/widget/BirthdayWidget.dart';
 import 'package:birthday_calendar/constants.dart';
+import 'package:collection/collection.dart';
+
 
 class BirthdaysForCalendarDayWidget extends StatefulWidget {
 
@@ -29,6 +31,11 @@ class _BirthdaysForCalendarDayWidgetState extends State<BirthdaysForCalendarDayW
           );
   }
 
+  bool _isUniqueName(String name) {
+    UserBirthday birthday = currentBirthdays.firstWhereOrNull((element) => element.name == name);
+    return birthday == null;
+  }
+
   void _showAddBirthdayDialog(BuildContext context) {
     showDialog(context: context,
       builder: (_) => new AlertDialog(title: new Text(ADD_BIRTHDAY),
@@ -43,7 +50,7 @@ class _BirthdaysForCalendarDayWidgetState extends State<BirthdaysForCalendarDayW
                 primary: Colors.green
             ),
             onPressed: () {
-              if (_isValidName(_birthdayPersonController.text)) {
+              if (_isValidName(_birthdayPersonController.text) && _isUniqueName(_birthdayPersonController.text)) {
                 UserBirthday userBirthday = new UserBirthday(_birthdayPersonController.text, widget.dateOfDay, false);
                 _addBirthdayToList(userBirthday);
                 _birthdayPersonController.text = "";
