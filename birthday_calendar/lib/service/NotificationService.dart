@@ -9,7 +9,7 @@ class NotificationService {
   FlutterLocalNotificationsPlugin();
 
   final AndroidInitializationSettings initializationSettingsAndroid =
-  AndroidInitializationSettings('APP_ICON');
+  AndroidInitializationSettings('app_icon');
 
 
   factory NotificationService() {
@@ -29,6 +29,20 @@ class NotificationService {
 
   Future selectNotification(String payload) async {
 
+  }
+
+  void sendAndroidNotification(String notificationMessage) async {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+    AndroidNotificationDetails(
+        '123', 'BirthdayCalendar', 'To remind you about upcoming birthdays',
+        importance: Importance.max,
+        priority: Priority.high,
+        showWhen: false);
+    const NotificationDetails platformChannelSpecifics =
+    NotificationDetails(android: androidPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(
+        0, 'BirthdayCalendar', notificationMessage, platformChannelSpecifics,
+        payload: 'birthdayData');
   }
 
 
