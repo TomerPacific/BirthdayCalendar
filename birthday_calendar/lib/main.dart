@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:birthday_calendar/widget/CalendarWidget.dart';
 import 'package:birthday_calendar/service/DateService.dart';
 import 'package:birthday_calendar/service/SharedPrefs.dart';
+import 'package:birthday_calendar/service/NotificationService.dart';
 import 'constants.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SharedPrefs().init();
+  await NotificationService().init();
   runApp(MyApp());
 }
 
