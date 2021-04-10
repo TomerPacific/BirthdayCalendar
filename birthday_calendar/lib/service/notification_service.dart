@@ -39,7 +39,7 @@ class NotificationService {
   void sendAndroidNotification(String notificationMessage) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
     AndroidNotificationDetails(
-        channel_id, APPLICATION_NAME, 'To remind you about upcoming birthdays',
+        channel_id, applicationName, 'To remind you about upcoming birthdays',
         importance: Importance.max,
         priority: Priority.high,
         showWhen: false);
@@ -53,12 +53,12 @@ class NotificationService {
  void setNotificationForBirthday(String date, String notificationMessage) async {
    await flutterLocalNotificationsPlugin.zonedSchedule(
        0,
-       APPLICATION_NAME,
+       applicationName,
        notificationMessage,
        tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
        const NotificationDetails(
            android: AndroidNotificationDetails(channel_id,
-               APPLICATION_NAME, 'To remind you about upcoming birthdays')),
+               applicationName, 'To remind you about upcoming birthdays')),
        androidAllowWhileIdle: true,
        uiLocalNotificationDateInterpretation:
        UILocalNotificationDateInterpretation.absoluteTime);

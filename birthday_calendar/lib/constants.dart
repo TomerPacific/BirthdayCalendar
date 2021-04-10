@@ -1,5 +1,5 @@
-const String APPLICATION_NAME = "Birthday Calendar";
-const Map<int, String> MONTHS = const {
+const String applicationName = "Birthday Calendar";
+const Map<int, String> months = const {
   1: "January",
   2: "February",
   3: "March",
@@ -13,7 +13,7 @@ const Map<int, String> MONTHS = const {
   11: "November",
   12: "December"
 };
-const ADD_BIRTHDAY = "Add Birthday";
-const USER_BIRTHDAY_NAME_KEY = "name";
-const USER_BIRTHDAY_DATE_KEY = "birthdayDate";
-const USER_BIRTHDAY_NOTIFICATION_KEY = "hasNotification";
+const addBirthday = "Add Birthday";
+const userBirthdayNameKey = "name";
+const userBirthdayDateKey = "birthdayDate";
+const userBirthdayHasNotificationKey = "hasNotification";

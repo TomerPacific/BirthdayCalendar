@@ -18,13 +18,13 @@ class UserBirthday {
   }
 
   UserBirthday.fromJson(Map<String, dynamic> json) :
-        name = json[USER_BIRTHDAY_NAME_KEY],
-        birthdayDate = json[USER_BIRTHDAY_DATE_KEY],
-        hasNotification = json[USER_BIRTHDAY_NOTIFICATION_KEY];
+        name = json[userBirthdayNameKey],
+        birthdayDate = json[userBirthdayDateKey],
+        hasNotification = json[userBirthdayHasNotificationKey];
 
   Map<String, dynamic> toJson() => {
-    USER_BIRTHDAY_NAME_KEY : name,
-    USER_BIRTHDAY_DATE_KEY : birthdayDate,
-    USER_BIRTHDAY_NOTIFICATION_KEY : hasNotification
+    userBirthdayNameKey : name,
+    userBirthdayDateKey : birthdayDate,
+    userBirthdayHasNotificationKey : hasNotification
  };
 }

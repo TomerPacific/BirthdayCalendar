@@ -17,7 +17,7 @@ class DateService {
   }
 
   String convertMonthToWord(int month) {
-    return MONTHS[month];
+    return months[month];
   }
 
   String getCurrentMonthName() {
