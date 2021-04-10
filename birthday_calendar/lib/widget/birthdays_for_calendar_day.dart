@@ -54,7 +54,6 @@ class _BirthdaysForCalendarDayWidgetState extends State<BirthdaysForCalendarDayW
                 UserBirthday userBirthday = new UserBirthday(_birthdayPersonController.text, widget.dateOfDay, false);
                 _addBirthdayToList(userBirthday);
                 _birthdayPersonController.text = "";
-
                 NotificationService().scheduleNotificationForBirthday(
                     userBirthday,
                     "${userBirthday.name} has an upcoming birthday!");
