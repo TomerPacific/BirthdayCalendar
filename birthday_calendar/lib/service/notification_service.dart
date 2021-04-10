@@ -64,5 +64,8 @@ class NotificationService {
        UILocalNotificationDateInterpretation.absoluteTime);
  }
 
+ void cancelNotificationForBirthday(int notificationId) async {
+    await flutterLocalNotificationsPlugin.cancel(notificationId);
+ }
 
 }
