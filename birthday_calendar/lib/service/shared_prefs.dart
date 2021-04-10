@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
+import 'package:birthday_calendar/service/date_service.dart';
+
 
 class SharedPrefs {
   static SharedPreferences _sharedPreferences;
@@ -16,8 +18,8 @@ class SharedPrefs {
     }
   }
 
-  List<UserBirthday> getBirthdaysForDate(String date) {
-    String birthdaysForDate = _sharedPreferences.getString(date);
+  List<UserBirthday> getBirthdaysForDate(DateTime date) {
+    String birthdaysForDate = _sharedPreferences.getString(DateService().formatDateForSharedPrefs(date));
     if (birthdaysForDate == null) {
       return [];
     }
@@ -26,9 +28,9 @@ class SharedPrefs {
     return birthdays;
   }
 
-  void setBirthdaysForDate(String date, List<UserBirthday> birthdays) {
+  void setBirthdaysForDate(DateTime date, List<UserBirthday> birthdays) {
     String encoded = jsonEncode(birthdays);
-    _sharedPreferences.setString(date, encoded);
+    _sharedPreferences.setString(DateService().formatDateForSharedPrefs(date), encoded);
   }
 
   void updateNotificationStatusForBirthday(UserBirthday birthday, bool updatedStatus) {
