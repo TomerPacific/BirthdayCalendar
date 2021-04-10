@@ -38,7 +38,7 @@ class _BirthdaysForCalendarDayWidgetState extends State<BirthdaysForCalendarDayW
 
   void _showAddBirthdayDialog(BuildContext context) {
     showDialog(context: context,
-      builder: (_) => new AlertDialog(title: new Text(ADD_BIRTHDAY),
+      builder: (_) => new AlertDialog(title: new Text(addBirthday),
         content: new TextField(
             autofocus: true,
             controller: _birthdayPersonController,
@@ -54,9 +54,9 @@ class _BirthdaysForCalendarDayWidgetState extends State<BirthdaysForCalendarDayW
                 UserBirthday userBirthday = new UserBirthday(_birthdayPersonController.text, widget.dateOfDay, false);
                 _addBirthdayToList(userBirthday);
                 _birthdayPersonController.text = "";
-                
-                NotificationService().setNotificationForBirthday(
-                    userBirthday.birthdayDate,
+
+                NotificationService().scheduleNotificationForBirthday(
+                    userBirthday,
                     "${userBirthday.name} has an upcoming birthday!");
                 Navigator.pop(context);
               } else {
@@ -129,7 +129,7 @@ class _BirthdaysForCalendarDayWidgetState extends State<BirthdaysForCalendarDayW
                     onPressed: () {
                       _showAddBirthdayDialog(context);
                     },
-                    child: Text(ADD_BIRTHDAY)
+                    child: Text(addBirthday)
                 )
               ],
             )
