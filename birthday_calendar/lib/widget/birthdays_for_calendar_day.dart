@@ -1,14 +1,16 @@
-import 'package:birthday_calendar/model/user_birthday.dart';
+
 import 'package:flutter/material.dart';
-import 'package:birthday_calendar/service/shared_prefs.dart';
+import 'package:collection/collection.dart';
 import 'package:birthday_calendar/widget/birthday.dart';
 import 'package:birthday_calendar/constants.dart';
-import 'package:collection/collection.dart';
+import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/service/notification_service.dart';
+import 'package:birthday_calendar/service/shared_prefs.dart';
+import 'package:birthday_calendar/service/date_service.dart';
 
 class BirthdaysForCalendarDayWidget extends StatefulWidget {
 
-  final String dateOfDay;
+  final DateTime dateOfDay;
   final List<UserBirthday> birthdays;
 
   BirthdaysForCalendarDayWidget({Key key, @required this.dateOfDay, @required this.birthdays})
@@ -106,7 +108,7 @@ class _BirthdaysForCalendarDayWidgetState extends State<BirthdaysForCalendarDayW
       appBar: AppBar(title:
       FittedBox(
         fit: BoxFit.fitWidth,
-        child: Text("Birthdays for ${widget.dateOfDay}"))
+        child: Text("Birthdays for ${DateService().formatDateForSharedPrefs(widget.dateOfDay)}"))
       ),
       body: Center(
         child:

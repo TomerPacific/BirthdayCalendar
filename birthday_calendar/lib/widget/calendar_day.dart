@@ -7,10 +7,9 @@ import 'birthdays_for_calendar_day.dart';
 
 class CalendarDayWidget extends StatefulWidget {
 
-  final int dayNumber;
-  final int month;
+  final DateTime date;
 
-  const CalendarDayWidget({Key key, this.month, this.dayNumber}) : super(key: key);
+  const CalendarDayWidget({Key key, this.date}) : super(key: key);
 
   @override _CalendarDayState createState() => _CalendarDayState();
 }
@@ -24,17 +23,8 @@ class _CalendarDayState extends State<CalendarDayWidget> {
     super.initState();
   }
 
-  String _formatDayDate() {
-    return DateService().convertMonthToWord(widget.month) + " " + widget.dayNumber.toString();
-  }
-
-  String _getDayOfDate() {
-    DateTime dayAsDate = DateService().constructDateForDay(widget.dayNumber, widget.month);
-    return DateService().getDayFromDate(dayAsDate);
-  }
-
   void _fetchBirthdaysFromStorage() {
-    _birthdays = SharedPrefs().getBirthdaysForDate(_formatDayDate());
+    _birthdays = SharedPrefs().getBirthdaysForDate(widget.date);
   }
 
   Widget _showBirthdayIcon() {
@@ -58,7 +48,7 @@ class _CalendarDayState extends State<CalendarDayWidget> {
               context,
               MaterialPageRoute(
                 builder: (context) => BirthdaysForCalendarDayWidget(
-                    dateOfDay: _formatDayDate(),
+                    dateOfDay: widget.date,
                     birthdays: _birthdays != null ? _birthdays : []),
               )).then((value) =>
                   _updateBirthdayData()
@@ -68,8 +58,8 @@ class _CalendarDayState extends State<CalendarDayWidget> {
             fit: BoxFit.fitWidth,
             child: Column(
               children: [
-                Text(_formatDayDate()),
-                Text(_getDayOfDate()),
+                Text(DateService().convertMonthToWord(widget.date.month)),
+                Text(widget.date.day.toString()),
                 if (_birthdays != null && _birthdays.length > 0) _showBirthdayIcon()
               ]
             )

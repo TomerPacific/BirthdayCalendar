@@ -29,8 +29,7 @@ class _CalendarState extends State<CalendarWidget> {
           itemCount: _amountOfDaysToPresent,
           itemBuilder: (BuildContext context, int index) {
             return CalendarDayWidget(
-                  month: widget.currentMonth,
-                  dayNumber: (index+1)
+                      date: DateService().constructDateForDay((index+1), widget.currentMonth)
                   );
                 }
               )
