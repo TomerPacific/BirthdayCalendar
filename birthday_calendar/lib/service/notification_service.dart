@@ -4,7 +4,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:birthday_calendar/constants.dart';
-import 'package:birthday_calendar/service/date_service.dart';
 
 class NotificationService {
   static final NotificationService _notificationService = NotificationService
@@ -52,16 +51,14 @@ class NotificationService {
         payload: 'birthdayData');
   }
 
- void scheduleNotificationForBirthday(UserBirthday birthday, String notificationMessage) async {
+ void scheduleNotificationForBirthday(UserBirthday userBirthday, String notificationMessage) async {
 
     DateTime now = DateTime.now();
-    DateTime userBirthday = DateService().constructDateForDay(
-        DateService().getDayNumberFromDate(birthday.birthdayDate),
-        DateService().getMonthFromDate(birthday.birthdayDate));
-    Duration difference = now.isAfter(userBirthday) ? now.difference(userBirthday) : userBirthday.difference(now);
+    DateTime birthdayDate = userBirthday.birthdayDate;
+    Duration difference = now.isAfter(birthdayDate) ? now.difference(birthdayDate) : birthdayDate.difference(now);
 
    await flutterLocalNotificationsPlugin.zonedSchedule(
-       birthday.hashCode,
+       userBirthday.hashCode,
        applicationName,
        notificationMessage,
        tz.TZDateTime.now(tz.local).add(difference),
