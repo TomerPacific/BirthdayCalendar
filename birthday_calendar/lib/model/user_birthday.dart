@@ -3,7 +3,7 @@ import 'package:birthday_calendar/constants.dart';
 
 class UserBirthday {
   final String name;
-  final String birthdayDate;
+  final DateTime birthdayDate;
   bool hasNotification;
 
   UserBirthday(this.name, this.birthdayDate, this.hasNotification);
@@ -19,12 +19,12 @@ class UserBirthday {
 
   UserBirthday.fromJson(Map<String, dynamic> json) :
         name = json[userBirthdayNameKey],
-        birthdayDate = json[userBirthdayDateKey],
+        birthdayDate = DateTime.tryParse(json[userBirthdayDateKey]),
         hasNotification = json[userBirthdayHasNotificationKey];
 
   Map<String, dynamic> toJson() => {
     userBirthdayNameKey : name,
-    userBirthdayDateKey : birthdayDate,
+    userBirthdayDateKey : birthdayDate.toIso8601String(),
     userBirthdayHasNotificationKey : hasNotification
  };
 }
