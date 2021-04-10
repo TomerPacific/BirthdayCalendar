@@ -78,4 +78,19 @@ class DateService {
     return DateTime.parse(wholeDate);
   }
 
+  int getDayNumberFromDate(String date) {
+    List<String> broken = date.split(" ");
+    return int.parse(broken[1]);
+  }
+
+  int getMonthFromDate(String date) {
+    List<String> broken = date.split(" ");
+    for (MapEntry<int, String> month in months.entries) {
+      if (month.value == broken[0]) {
+        return month.key;
+      }
+    }
+    return -1;
+  }
+
 }
