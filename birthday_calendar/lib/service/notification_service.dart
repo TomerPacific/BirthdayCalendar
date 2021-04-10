@@ -1,4 +1,5 @@
 
+import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -50,9 +51,9 @@ class NotificationService {
         payload: 'birthdayData');
   }
 
- void setNotificationForBirthday(String date, String notificationMessage) async {
+ void scheduleNotificationForBirthday(UserBirthday birthday, String notificationMessage) async {
    await flutterLocalNotificationsPlugin.zonedSchedule(
-       0,
+       birthday.hashCode,
        applicationName,
        notificationMessage,
        tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
@@ -64,8 +65,8 @@ class NotificationService {
        UILocalNotificationDateInterpretation.absoluteTime);
  }
 
- void cancelNotificationForBirthday(int notificationId) async {
-    await flutterLocalNotificationsPlugin.cancel(notificationId);
+ void cancelNotificationForBirthday(UserBirthday birthday) async {
+    await flutterLocalNotificationsPlugin.cancel(birthday.hashCode);
  }
 
 }
