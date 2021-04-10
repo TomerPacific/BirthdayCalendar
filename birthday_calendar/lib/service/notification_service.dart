@@ -4,6 +4,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:birthday_calendar/constants.dart';
+import 'package:birthday_calendar/service/date_service.dart';
 
 class NotificationService {
   static final NotificationService _notificationService = NotificationService
@@ -52,11 +53,22 @@ class NotificationService {
   }
 
  void scheduleNotificationForBirthday(UserBirthday birthday, String notificationMessage) async {
+
+    DateTime now = DateTime.now();
+    DateTime userBirthday = DateService().constructDateForDay(
+        DateService().getDayNumberFromDate(birthday.birthdayDate),
+        DateService().getMonthFromDate(birthday.birthdayDate));
+    int differenceInDays = now.difference(userBirthday).inDays;
+    bool isAfter = now.isAfter(userBirthday);
+    if (isAfter) {
+      differenceInDays += 365;
+    }
+
    await flutterLocalNotificationsPlugin.zonedSchedule(
        birthday.hashCode,
        applicationName,
        notificationMessage,
-       tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
+       tz.TZDateTime.now(tz.local).add(Duration(days: differenceInDays)),
        const NotificationDetails(
            android: AndroidNotificationDetails(channel_id,
                applicationName, 'To remind you about upcoming birthdays')),
