@@ -39,6 +39,24 @@ class _BirthdaysForCalendarDayWidgetState extends State<BirthdaysForCalendarDayW
     return birthday == null;
   }
 
+  void _handleUserInput(String userInput) {
+    if (_isValidName(userInput) && _isUniqueName(userInput)) {
+      UserBirthday userBirthday = new UserBirthday(userInput, widget.dateOfDay, false);
+      _addBirthdayToList(userBirthday);
+      _birthdayPersonController.text = "";
+      NotificationService().scheduleNotificationForBirthday(
+          userBirthday,
+          "${userBirthday.name} has an upcoming birthday!");
+      Navigator.pop(context);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+          new SnackBar(
+              content: new Text(invalidNameErrorMessage)
+          )
+      );
+    }
+  }
+
   void _showAddBirthdayDialog(BuildContext context) {
     showDialog(context: context,
       builder: (_) => new AlertDialog(title: new Text(addBirthday),
@@ -53,21 +71,7 @@ class _BirthdaysForCalendarDayWidgetState extends State<BirthdaysForCalendarDayW
                 primary: Colors.green
             ),
             onPressed: () {
-              if (_isValidName(_birthdayPersonController.text) && _isUniqueName(_birthdayPersonController.text)) {
-                UserBirthday userBirthday = new UserBirthday(_birthdayPersonController.text, widget.dateOfDay, false);
-                _addBirthdayToList(userBirthday);
-                _birthdayPersonController.text = "";
-                NotificationService().scheduleNotificationForBirthday(
-                    userBirthday,
-                    "${userBirthday.name} has an upcoming birthday!");
-                Navigator.pop(context);
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                    new SnackBar(
-                    content: new Text(invalidNameErrorMessage)
-                    )
-                );
-              }
+              _handleUserInput(_birthdayPersonController.text);
             },
             child: new Text("OK"),
           ),
