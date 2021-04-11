@@ -1,10 +1,12 @@
 
 import 'package:flutter/material.dart';
+
 import 'package:birthday_calendar/widget/calendar.dart';
-import 'package:birthday_calendar/service/date_service.dart';
-import 'package:birthday_calendar/service/shared_prefs.dart';
-import 'package:birthday_calendar/service/notification_service.dart';
 import 'constants.dart';
+import 'package:birthday_calendar/service/date_service.dart';
+import 'package:birthday_calendar/service/notification_service.dart';
+import 'package:birthday_calendar/service/shared_prefs.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

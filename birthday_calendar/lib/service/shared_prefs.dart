@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:birthday_calendar/model/user_birthday.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:birthday_calendar/service/date_service.dart';
 
+import 'package:birthday_calendar/service/date_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:birthday_calendar/model/user_birthday.dart';
 
 class SharedPrefs {
   static SharedPreferences _sharedPreferences;

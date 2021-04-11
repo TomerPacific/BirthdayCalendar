@@ -1,9 +1,11 @@
 
-import 'package:birthday_calendar/model/user_birthday.dart';
-import 'package:birthday_calendar/service/date_service.dart';
 import 'package:flutter/material.dart';
-import 'package:birthday_calendar/service/shared_prefs.dart';
+
+
 import 'birthdays_for_calendar_day.dart';
+import 'package:birthday_calendar/service/date_service.dart';
+import 'package:birthday_calendar/service/shared_prefs.dart';
+import 'package:birthday_calendar/model/user_birthday.dart';
 
 class CalendarDayWidget extends StatefulWidget {
 

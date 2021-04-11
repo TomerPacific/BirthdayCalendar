@@ -1,6 +1,7 @@
 
-import 'package:birthday_calendar/widget/calendar_day.dart';
 import 'package:flutter/material.dart';
+
+import 'package:birthday_calendar/widget/calendar_day.dart';
 import 'package:birthday_calendar/service/date_service.dart';
 
 class CalendarWidget extends StatefulWidget {
