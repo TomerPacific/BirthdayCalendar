@@ -47,18 +47,28 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-          child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Text(DateService().getCurrentMonthName(),
-                style:
-                    new TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
-            SizedBox(height: 10),
-            CalendarWidget(currentMonth: DateService().getCurrentMonthNumber())
-          ],
+      body: Listener(
+          onPointerMove: (moveEvent){
+            if(moveEvent.delta.dx > 0) {
+              
+            } else {
+
+            }
+        },
+        child: Center(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Text(DateService().getCurrentMonthName(),
+                      style:
+                      new TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 10),
+                  CalendarWidget(currentMonth: DateService().getCurrentMonthNumber())
+                ],
+              ),
+            )
         ),
-      )),
+      )
     );
   }
 }
