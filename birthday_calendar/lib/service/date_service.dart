@@ -67,11 +67,11 @@ class DateService {
     return false;
   }
 
-  String getDayFromDate(DateTime date) {
+  String getWeekdayNameFromDate(DateTime date) {
     return DateFormat('EEEE').format(date);
   }
 
-  DateTime constructDateForDay(int day, int month) {
+  DateTime constructDateTimeFromDayAndMonth(int day, int month) {
     int year = new DateTime.now().year;
     String paddedMonth = month < 10 ? "0" + month.toString() : month.toString();
     String paddedDay = day < 10 ? "0" + day.toString() : day.toString();
