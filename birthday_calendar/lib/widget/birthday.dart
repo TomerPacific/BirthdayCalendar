@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import 'package:birthday_calendar/service/notification_service.dart';
@@ -6,35 +5,40 @@ import 'package:birthday_calendar/service/shared_prefs.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 
 class BirthdayWidget extends StatefulWidget {
-
   final UserBirthday birthdayOfPerson;
   final VoidCallback onDeletePressedCallback;
 
-  BirthdayWidget({Key key, @required this.birthdayOfPerson, @required this.onDeletePressedCallback}) : super(key: key);
+  BirthdayWidget(
+      {Key key,
+      @required this.birthdayOfPerson,
+      @required this.onDeletePressedCallback})
+      : super(key: key);
 
-  @override _BirthdayWidgetState createState() => _BirthdayWidgetState();
-
+  @override
+  _BirthdayWidgetState createState() => _BirthdayWidgetState();
 }
 
 class _BirthdayWidgetState extends State<BirthdayWidget> {
-
   bool isNotificationEnabledForPerson = false;
 
   void updateNotificationStatusForBirthday() {
     setState(() {
       isNotificationEnabledForPerson = !isNotificationEnabledForPerson;
     });
-    SharedPrefs().updateNotificationStatusForBirthday(widget.birthdayOfPerson, isNotificationEnabledForPerson);
+    SharedPrefs().updateNotificationStatusForBirthday(
+        widget.birthdayOfPerson, isNotificationEnabledForPerson);
     if (!isNotificationEnabledForPerson) {
-      NotificationService().cancelNotificationForBirthday(widget.birthdayOfPerson);
+      NotificationService()
+          .cancelNotificationForBirthday(widget.birthdayOfPerson);
     } else {
-      NotificationService().scheduleNotificationForBirthday(widget.birthdayOfPerson,
+      NotificationService().scheduleNotificationForBirthday(
+          widget.birthdayOfPerson,
           "${widget.birthdayOfPerson.name} has an upcoming birthday!");
     }
-
   }
 
-  @override void initState() {
+  @override
+  void initState() {
     isNotificationEnabledForPerson = widget.birthdayOfPerson.hasNotification;
     super.initState();
   }
@@ -48,34 +52,26 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
         children: [
           new Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(widget.birthdayOfPerson.name,
-              style: new TextStyle(
-                  fontSize: 20.0,
-                  color: Colors.white
-              ),
+            child: Text(
+              widget.birthdayOfPerson.name,
+              style: new TextStyle(fontSize: 20.0, color: Colors.white),
             ),
           ),
           new Spacer(),
           new IconButton(
               icon: Icon(
-                  isNotificationEnabledForPerson ?
-                  Icons.notifications_off_outlined :
-                  Icons.notifications_active_outlined,
-                  color: Colors.white
-              ),
+                  isNotificationEnabledForPerson
+                      ? Icons.notifications_off_outlined
+                      : Icons.notifications_active_outlined,
+                  color: Colors.white),
               onPressed: () {
                 updateNotificationStatusForBirthday();
               }),
           new IconButton(
-              icon: Icon(
-                  Icons.clear,
-                  color: Colors.white
-              ),
-              onPressed: widget.onDeletePressedCallback
-          ),
+              icon: Icon(Icons.clear, color: Colors.white),
+              onPressed: widget.onDeletePressedCallback),
         ],
       ),
     );
   }
-
 }

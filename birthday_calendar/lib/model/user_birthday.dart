@@ -1,4 +1,3 @@
-
 import 'package:birthday_calendar/constants.dart';
 
 class UserBirthday {
@@ -14,17 +13,17 @@ class UserBirthday {
 
   bool equals(UserBirthday otherBirthday) {
     return (this.name == otherBirthday.name &&
-            this.birthdayDate == otherBirthday.birthdayDate);
+        this.birthdayDate == otherBirthday.birthdayDate);
   }
 
-  UserBirthday.fromJson(Map<String, dynamic> json) :
-        name = json[userBirthdayNameKey],
+  UserBirthday.fromJson(Map<String, dynamic> json)
+      : name = json[userBirthdayNameKey],
         birthdayDate = DateTime.tryParse(json[userBirthdayDateKey]),
         hasNotification = json[userBirthdayHasNotificationKey];
 
   Map<String, dynamic> toJson() => {
-    userBirthdayNameKey : name,
-    userBirthdayDateKey : birthdayDate.toIso8601String(),
-    userBirthdayHasNotificationKey : hasNotification
- };
+        userBirthdayNameKey: name,
+        userBirthdayDateKey: birthdayDate.toIso8601String(),
+        userBirthdayHasNotificationKey: hasNotification
+      };
 }

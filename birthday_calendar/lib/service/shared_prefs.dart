@@ -19,23 +19,28 @@ class SharedPrefs {
   }
 
   List<UserBirthday> getBirthdaysForDate(DateTime date) {
-    String birthdaysForDate = _sharedPreferences.getString(DateService().formatDateForSharedPrefs(date));
+    String birthdaysForDate = _sharedPreferences
+        .getString(DateService().formatDateForSharedPrefs(date));
     if (birthdaysForDate == null) {
       return [];
     }
     List decodedBirthdaysForDate = jsonDecode(birthdaysForDate);
-    List<UserBirthday> birthdays = decodedBirthdaysForDate.map((decodedBirthday) => UserBirthday.fromJson(decodedBirthday)).toList();
+    List<UserBirthday> birthdays = decodedBirthdaysForDate
+        .map((decodedBirthday) => UserBirthday.fromJson(decodedBirthday))
+        .toList();
     return birthdays;
   }
 
   void setBirthdaysForDate(DateTime date, List<UserBirthday> birthdays) {
     String encoded = jsonEncode(birthdays);
-    _sharedPreferences.setString(DateService().formatDateForSharedPrefs(date), encoded);
+    _sharedPreferences.setString(
+        DateService().formatDateForSharedPrefs(date), encoded);
   }
 
-  void updateNotificationStatusForBirthday(UserBirthday birthday, bool updatedStatus) {
+  void updateNotificationStatusForBirthday(
+      UserBirthday birthday, bool updatedStatus) {
     List<UserBirthday> birthdays = getBirthdaysForDate(birthday.birthdayDate);
-    for(int i = 0; i < birthdays.length; i++) {
+    for (int i = 0; i < birthdays.length; i++) {
       UserBirthday savedBirthday = birthdays[i];
       if (savedBirthday.equals(birthday)) {
         savedBirthday.updateNotificationStatus(updatedStatus);
@@ -43,7 +48,5 @@ class SharedPrefs {
     }
 
     setBirthdaysForDate(birthday.birthdayDate, birthdays);
-
   }
-
 }

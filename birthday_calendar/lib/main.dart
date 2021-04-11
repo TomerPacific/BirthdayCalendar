@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import 'package:birthday_calendar/widget/calendar.dart';
@@ -6,7 +5,6 @@ import 'constants.dart';
 import 'package:birthday_calendar/service/date_service.dart';
 import 'package:birthday_calendar/service/notification_service.dart';
 import 'package:birthday_calendar/service/shared_prefs.dart';
-
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,8 +36,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
-  @override void initState() {
+  @override
+  void initState() {
     super.initState();
   }
 
@@ -50,21 +48,17 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Text(DateService().getCurrentMonthName(),
-                  style: new TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold
-                  )
-              ),
-              SizedBox(height: 10),
-              CalendarWidget(currentMonth: DateService().getCurrentMonthNumber())
-            ],
-          ),
-        )
+          child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Text(DateService().getCurrentMonthName(),
+                style:
+                    new TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+            SizedBox(height: 10),
+            CalendarWidget(currentMonth: DateService().getCurrentMonthNumber())
+          ],
         ),
-      );
+      )),
+    );
   }
 }

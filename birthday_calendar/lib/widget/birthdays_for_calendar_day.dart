@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 
@@ -10,75 +9,68 @@ import 'package:birthday_calendar/service/shared_prefs.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 
 class BirthdaysForCalendarDayWidget extends StatefulWidget {
-
   final DateTime dateOfDay;
   final List<UserBirthday> birthdays;
 
-  BirthdaysForCalendarDayWidget({Key key, @required this.dateOfDay, @required this.birthdays})
+  BirthdaysForCalendarDayWidget(
+      {Key key, @required this.dateOfDay, @required this.birthdays})
       : super(key: key);
 
-  @override _BirthdaysForCalendarDayWidgetState createState() => _BirthdaysForCalendarDayWidgetState();
-
+  @override
+  _BirthdaysForCalendarDayWidgetState createState() =>
+      _BirthdaysForCalendarDayWidgetState();
 }
 
-class _BirthdaysForCalendarDayWidgetState extends State<BirthdaysForCalendarDayWidget> {
-
+class _BirthdaysForCalendarDayWidgetState
+    extends State<BirthdaysForCalendarDayWidget> {
   List<UserBirthday> currentBirthdays;
   TextEditingController _birthdayPersonController = new TextEditingController();
 
   bool _isValidName(String userInput) {
-    return (
-            userInput != null &&
-            userInput.isNotEmpty &&
-            userInput.length > 0
-          );
+    return (userInput != null && userInput.isNotEmpty && userInput.length > 0);
   }
 
   bool _isUniqueName(String name) {
-    UserBirthday birthday = currentBirthdays.firstWhereOrNull((element) => element.name == name);
+    UserBirthday birthday =
+        currentBirthdays.firstWhereOrNull((element) => element.name == name);
     return birthday == null;
   }
 
   void _handleUserInput(String userInput) {
     if (_isValidName(userInput) && _isUniqueName(userInput)) {
-      UserBirthday userBirthday = new UserBirthday(userInput, widget.dateOfDay, false);
+      UserBirthday userBirthday =
+          new UserBirthday(userInput, widget.dateOfDay, false);
       _addBirthdayToList(userBirthday);
       _birthdayPersonController.text = "";
       NotificationService().scheduleNotificationForBirthday(
-          userBirthday,
-          "${userBirthday.name} has an upcoming birthday!");
+          userBirthday, "${userBirthday.name} has an upcoming birthday!");
       Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-          new SnackBar(
-              content: new Text(invalidNameErrorMessage)
-          )
-      );
+          new SnackBar(content: new Text(invalidNameErrorMessage)));
     }
   }
 
   void _showAddBirthdayDialog(BuildContext context) {
-    showDialog(context: context,
-      builder: (_) => new AlertDialog(title: new Text(addBirthday),
+    showDialog(
+      context: context,
+      builder: (_) => new AlertDialog(
+        title: new Text(addBirthday),
         content: new TextField(
-            autofocus: true,
-            controller: _birthdayPersonController,
-            decoration: InputDecoration(hintText: "Enter the person's name"),
-            ),
+          autofocus: true,
+          controller: _birthdayPersonController,
+          decoration: InputDecoration(hintText: "Enter the person's name"),
+        ),
         actions: [
           TextButton(
-            style: TextButton.styleFrom(
-                primary: Colors.green
-            ),
+            style: TextButton.styleFrom(primary: Colors.green),
             onPressed: () {
               _handleUserInput(_birthdayPersonController.text);
             },
             child: new Text("OK"),
           ),
           TextButton(
-            style: TextButton.styleFrom(
-                primary: Colors.red
-            ),
+            style: TextButton.styleFrom(primary: Colors.red),
             onPressed: () {
               _birthdayPersonController.text = "";
               Navigator.pop(context);
@@ -102,7 +94,8 @@ class _BirthdaysForCalendarDayWidgetState extends State<BirthdaysForCalendarDayW
     setState(() {});
   }
 
-  @override void initState() {
+  @override
+  void initState() {
     currentBirthdays = widget.birthdays;
     super.initState();
   }
@@ -110,38 +103,33 @@ class _BirthdaysForCalendarDayWidgetState extends State<BirthdaysForCalendarDayW
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title:
-      FittedBox(
-        fit: BoxFit.fitWidth,
-        child: Text("Birthdays for ${DateService().formatDateForSharedPrefs(widget.dateOfDay)}"))
-      ),
+      appBar: AppBar(
+          title: FittedBox(
+              fit: BoxFit.fitWidth,
+              child: Text(
+                  "Birthdays for ${DateService().formatDateForSharedPrefs(widget.dateOfDay)}"))),
       body: Center(
-        child:
-            Column(
-              children: [
-                Expanded(child:
-                  ListView.builder(
-                    itemCount: currentBirthdays.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return BirthdayWidget(
-                          birthdayOfPerson: currentBirthdays[index],
-                          onDeletePressedCallback: () {
-                            _removeBirthdayFromList(currentBirthdays[index]);
-                          });
-                    },
-                  ),
-                ),
-                TextButton(
-                    onPressed: () {
-                      _showAddBirthdayDialog(context);
-                    },
-                    child: Text(addBirthday)
-                )
-              ],
-            )
-
-      ),
+          child: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: currentBirthdays.length,
+              itemBuilder: (BuildContext context, int index) {
+                return BirthdayWidget(
+                    birthdayOfPerson: currentBirthdays[index],
+                    onDeletePressedCallback: () {
+                      _removeBirthdayFromList(currentBirthdays[index]);
+                    });
+              },
+            ),
+          ),
+          TextButton(
+              onPressed: () {
+                _showAddBirthdayDialog(context);
+              },
+              child: Text(addBirthday))
+        ],
+      )),
     );
   }
-
 }
