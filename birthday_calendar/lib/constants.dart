@@ -17,3 +17,4 @@ const addBirthday = "Add Birthday";
 const userBirthdayNameKey = "name";
 const userBirthdayDateKey = "birthdayDate";
 const userBirthdayHasNotificationKey = "hasNotification";
+const invalidNameErrorMessage = "The name you entered is invalid";

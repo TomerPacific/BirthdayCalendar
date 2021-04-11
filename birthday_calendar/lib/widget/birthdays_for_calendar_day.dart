@@ -64,7 +64,7 @@ class _BirthdaysForCalendarDayWidgetState extends State<BirthdaysForCalendarDayW
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
                     new SnackBar(
-                    content: new Text("The name you entered is invalid")
+                    content: new Text(invalidNameErrorMessage)
                     )
                 );
               }
