@@ -60,13 +60,13 @@ class _MyHomePageState extends State<MyHomePage> {
       body: new Dismissible(
           key: new ValueKey(monthToPresent),
           onDismissed: (DismissDirection direction) {
-            if (direction == DismissDirection.endToStart) {
-              monthToPresent = (monthToPresent + 1) % 12;
-              month = DateService().convertMonthToWord(monthToPresent);
-            } else {
-              monthToPresent = (monthToPresent - 1) % 12;
-              month = DateService().convertMonthToWord(monthToPresent);
+            monthToPresent = direction == DismissDirection.endToStart ? monthToPresent + 1 : monthToPresent - 1;
+            if (monthToPresent == 0) {
+              monthToPresent = 12;
+            } else if (monthToPresent == 13) {
+              monthToPresent = 1;
             }
+            month = DateService().convertMonthToWord(monthToPresent);
             setState(() {});
           },
           child: Center(
