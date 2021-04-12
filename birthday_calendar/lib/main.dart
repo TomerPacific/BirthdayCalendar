@@ -21,23 +21,33 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: applicationName),
+      home: MyHomePage(
+          title: applicationName,
+          currentMonth: DateService().getCurrentMonthNumber()
+      ),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({Key key, this.title, this.currentMonth}) : super(key: key);
 
   final String title;
+  final int currentMonth;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
+  int monthToPresent;
+  String month;
+
   @override
   void initState() {
+    monthToPresent = widget.currentMonth;
+    month = DateService().convertMonthToWord(monthToPresent);
     super.initState();
   }
 
@@ -45,30 +55,36 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(month),
       ),
-      body: Listener(
-          onPointerMove: (moveEvent){
-            if(moveEvent.delta.dx > 0) {
-              
+      body: new Dismissible(
+          key: new ValueKey(monthToPresent),
+          onDismissed: (DismissDirection direction) {
+            if (direction == DismissDirection.endToStart) {
+              monthToPresent = (monthToPresent + 1) % 12;
+              month = DateService().convertMonthToWord(monthToPresent);
             } else {
-
+              monthToPresent = (monthToPresent - 1) % 12;
+              month = DateService().convertMonthToWord(monthToPresent);
             }
-        },
-        child: Center(
-            child: SingleChildScrollView(
+            setState(() {});
+          },
+          child: Center(
+              child: SingleChildScrollView(
               child: Column(
-                children: [
-                  Text(DateService().getCurrentMonthName(),
-                      style:
-                      new TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
-                  SizedBox(height: 10),
-                  CalendarWidget(currentMonth: DateService().getCurrentMonthNumber())
-                ],
-              ),
-            )
-        ),
+              children: [
+                  Text(month,
+                  style:
+                  new TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+              SizedBox(height: 10),
+              CalendarWidget(currentMonth:monthToPresent)
+              ],
+            ),
+          )
+        )
       )
+
+
     );
   }
 }
