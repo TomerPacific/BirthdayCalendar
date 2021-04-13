@@ -44,26 +44,25 @@ class _MyHomePageState extends State<MyHomePage> {
   int monthToPresent;
   String month;
 
+  int _correctMonthOverflow(int month) {
+    if (month == 0) {
+      month = 12;
+    } else if (month == 13) {
+      month = 1;
+    }
+    return month;
+  }
+
   void _calculateNextMonthToShow(DismissDirection direction) {
     monthToPresent = direction == DismissDirection.endToStart ? monthToPresent + 1 : monthToPresent - 1;
-    if (monthToPresent == 0) {
-      monthToPresent = 12;
-    } else if (monthToPresent == 13) {
-      monthToPresent = 1;
-    }
+    monthToPresent = _correctMonthOverflow(monthToPresent);
     month = DateService().convertMonthToWord(monthToPresent);
     setState(() {});
   }
 
   Widget _showNextMonthOnDismissal(DismissDirection direction) {
     int monthNumber = direction == DismissDirection.endToStart ? monthToPresent + 1 : monthToPresent - 1;
-
-    if (monthNumber == 0) {
-      monthNumber = 12;
-    } else if (monthNumber == 13) {
-      monthNumber = 1;
-    }
-
+    monthNumber = _correctMonthOverflow(monthNumber);
     String backgroundMonth = DateService().convertMonthToWord(monthNumber);
 
     return Center(
