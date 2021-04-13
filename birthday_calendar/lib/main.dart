@@ -57,6 +57,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _showNextMonthOnDismissal(int swipeDirection) {
     int monthNumber = swipeDirection == 0 ? monthToPresent - 1 : monthToPresent + 1;
+
+    if (monthNumber == 0) {
+      monthNumber = 12;
+    } else if (monthNumber == 13) {
+      monthNumber = 1;
+    }
+
     String backgroundMonth = DateService().convertMonthToWord(monthNumber);
 
     return Center(
