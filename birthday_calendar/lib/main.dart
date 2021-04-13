@@ -59,6 +59,28 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: new Dismissible(
           key: new ValueKey(monthToPresent),
+          background: Center(
+                  child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Text(month, style: new TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                      SizedBox(height: 10),
+                      CalendarWidget(currentMonth:monthToPresent-1)
+                    ],
+                  )
+                )
+          ),
+          secondaryBackground: Center(
+              child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Text(month, style: new TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                      SizedBox(height: 10),
+                      CalendarWidget(currentMonth:monthToPresent+1)
+                    ],
+                  )
+              )
+          ),
           onDismissed: (DismissDirection direction) {
             monthToPresent = direction == DismissDirection.endToStart ? monthToPresent + 1 : monthToPresent - 1;
             if (monthToPresent == 0) {
@@ -83,8 +105,6 @@ class _MyHomePageState extends State<MyHomePage> {
           )
         )
       )
-
-
     );
   }
 }
