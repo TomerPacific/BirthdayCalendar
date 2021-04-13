@@ -83,15 +83,18 @@ class _BirthdaysForCalendarDayWidgetState
   }
 
   void _addBirthdayToList(UserBirthday userBirthday) {
-    currentBirthdays.add(userBirthday);
+    setState(() {
+      currentBirthdays.add(userBirthday);
+    });
     SharedPrefs().setBirthdaysForDate(widget.dateOfDay, currentBirthdays);
-    setState(() {});
   }
 
   void _removeBirthdayFromList(UserBirthday birthdayToRemove) {
-    currentBirthdays.remove(birthdayToRemove);
+    setState(() {
+      currentBirthdays.remove(birthdayToRemove);
+    });
     SharedPrefs().setBirthdaysForDate(widget.dateOfDay, currentBirthdays);
-    setState(() {});
+
   }
 
   @override

@@ -54,10 +54,11 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _calculateNextMonthToShow(DismissDirection direction) {
-    monthToPresent = direction == DismissDirection.endToStart ? monthToPresent + 1 : monthToPresent - 1;
-    monthToPresent = _correctMonthOverflow(monthToPresent);
-    month = DateService().convertMonthToWord(monthToPresent);
-    setState(() {});
+    setState(() {
+      monthToPresent = direction == DismissDirection.endToStart ? monthToPresent + 1 : monthToPresent - 1;
+      monthToPresent = _correctMonthOverflow(monthToPresent);
+      month = DateService().convertMonthToWord(monthToPresent);
+    });
   }
 
   Widget _showNextMonthOnDismissal(DismissDirection direction) {

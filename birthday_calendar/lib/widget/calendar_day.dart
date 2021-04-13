@@ -24,7 +24,9 @@ class _CalendarDayState extends State<CalendarDayWidget> {
   }
 
   void _fetchBirthdaysFromStorage() {
-    _birthdays = SharedPrefs().getBirthdaysForDate(widget.date);
+    setState(() {
+      _birthdays = SharedPrefs().getBirthdaysForDate(widget.date);
+    });
   }
 
   Widget _showBirthdayIcon() {
@@ -33,11 +35,6 @@ class _CalendarDayState extends State<CalendarDayWidget> {
       color: Colors.pink,
       size: 24.0,
     );
-  }
-
-  void _updateBirthdayData() {
-    _fetchBirthdaysFromStorage();
-    setState(() {});
   }
 
   @override
@@ -50,7 +47,7 @@ class _CalendarDayState extends State<CalendarDayWidget> {
                 builder: (context) => BirthdaysForCalendarDayWidget(
                     dateOfDay: widget.date,
                     birthdays: _birthdays != null ? _birthdays : []),
-              )).then((value) => _updateBirthdayData());
+              )).then((value) => _fetchBirthdaysFromStorage());
         },
         child: FittedBox(
             fit: BoxFit.fitWidth,
