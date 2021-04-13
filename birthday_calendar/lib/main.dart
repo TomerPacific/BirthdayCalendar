@@ -55,6 +55,23 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {});
   }
 
+  Widget _showNextMonthOnDismissal(int swipeDirection) {
+    int monthNumber = swipeDirection == 0 ? monthToPresent - 1 : monthToPresent + 1;
+    String backgroundMonth = DateService().convertMonthToWord(monthNumber);
+
+    return Center(
+        child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Text(backgroundMonth, style: new TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                SizedBox(height: 10),
+                CalendarWidget(currentMonth:monthNumber)
+              ],
+            )
+        )
+    );
+  }
+
   @override
   void initState() {
     monthToPresent = widget.currentMonth;
@@ -70,28 +87,8 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: new Dismissible(
           key: new ValueKey(monthToPresent),
-          background: Center(
-                  child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Text(month, style: new TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
-                      SizedBox(height: 10),
-                      CalendarWidget(currentMonth:monthToPresent-1)
-                    ],
-                  )
-                )
-          ),
-          secondaryBackground: Center(
-              child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Text(month, style: new TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
-                      SizedBox(height: 10),
-                      CalendarWidget(currentMonth:monthToPresent+1)
-                    ],
-                  )
-              )
-          ),
+          background: _showNextMonthOnDismissal(0),
+          secondaryBackground: _showNextMonthOnDismissal(1),
           onDismissed: (DismissDirection direction) {
             _calculateNextMonthToShow(direction);
           },
