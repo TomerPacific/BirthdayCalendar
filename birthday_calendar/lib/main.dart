@@ -44,6 +44,17 @@ class _MyHomePageState extends State<MyHomePage> {
   int monthToPresent;
   String month;
 
+  void _calculateNextMonthToShow(DismissDirection direction) {
+    monthToPresent = direction == DismissDirection.endToStart ? monthToPresent + 1 : monthToPresent - 1;
+    if (monthToPresent == 0) {
+      monthToPresent = 12;
+    } else if (monthToPresent == 13) {
+      monthToPresent = 1;
+    }
+    month = DateService().convertMonthToWord(monthToPresent);
+    setState(() {});
+  }
+
   @override
   void initState() {
     monthToPresent = widget.currentMonth;
@@ -82,14 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
               )
           ),
           onDismissed: (DismissDirection direction) {
-            monthToPresent = direction == DismissDirection.endToStart ? monthToPresent + 1 : monthToPresent - 1;
-            if (monthToPresent == 0) {
-              monthToPresent = 12;
-            } else if (monthToPresent == 13) {
-              monthToPresent = 1;
-            }
-            month = DateService().convertMonthToWord(monthToPresent);
-            setState(() {});
+            _calculateNextMonthToShow(direction);
           },
           child: Center(
               child: SingleChildScrollView(
