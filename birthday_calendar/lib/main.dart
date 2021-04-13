@@ -94,8 +94,8 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: new Dismissible(
           key: new ValueKey(monthToPresent),
-          background: _showNextMonthOnDismissal(0),
-          secondaryBackground: _showNextMonthOnDismissal(1),
+          background: _showNextMonthOnDismissal(swipeDirectionLeft),
+          secondaryBackground: _showNextMonthOnDismissal(swipeDirectionRight),
           onDismissed: (DismissDirection direction) {
             _calculateNextMonthToShow(direction);
           },
