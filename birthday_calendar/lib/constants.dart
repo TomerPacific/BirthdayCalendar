@@ -18,5 +18,3 @@ const userBirthdayNameKey = "name";
 const userBirthdayDateKey = "birthdayDate";
 const userBirthdayHasNotificationKey = "hasNotification";
 const invalidNameErrorMessage = "The name you entered is invalid";
-const swipeDirectionLeft = 0;
-const swipeDirectionRight = 1;

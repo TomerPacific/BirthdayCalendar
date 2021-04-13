@@ -55,8 +55,8 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {});
   }
 
-  Widget _showNextMonthOnDismissal(int swipeDirection) {
-    int monthNumber = swipeDirection == 0 ? monthToPresent - 1 : monthToPresent + 1;
+  Widget _showNextMonthOnDismissal(DismissDirection direction) {
+    int monthNumber = direction == DismissDirection.endToStart ? monthToPresent + 1 : monthToPresent - 1;
 
     if (monthNumber == 0) {
       monthNumber = 12;
@@ -94,8 +94,8 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: new Dismissible(
           key: new ValueKey(monthToPresent),
-          background: _showNextMonthOnDismissal(swipeDirectionLeft),
-          secondaryBackground: _showNextMonthOnDismissal(swipeDirectionRight),
+          background: _showNextMonthOnDismissal( DismissDirection.startToEnd),
+          secondaryBackground: _showNextMonthOnDismissal( DismissDirection.endToStart),
           onDismissed: (DismissDirection direction) {
             _calculateNextMonthToShow(direction);
           },
