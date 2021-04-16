@@ -53,9 +53,17 @@ class _MyHomePageState extends State<MyHomePage> {
     return month;
   }
 
-  void _calculateNextMonthToShow(DismissDirection direction) {
+  // void _calculateNextMonthToShow(DismissDirection direction) {
+  //   setState(() {
+  //     monthToPresent = direction == DismissDirection.endToStart ? monthToPresent + 1 : monthToPresent - 1;
+  //     monthToPresent = _correctMonthOverflow(monthToPresent);
+  //     month = DateService().convertMonthToWord(monthToPresent);
+  //   });
+  // }
+
+  void _calculateNextMonthToShow(String direction) {
     setState(() {
-      monthToPresent = direction == DismissDirection.endToStart ? monthToPresent + 1 : monthToPresent - 1;
+      monthToPresent = direction == "left" ? monthToPresent + 1 : monthToPresent - 1;
       monthToPresent = _correctMonthOverflow(monthToPresent);
       month = DateService().convertMonthToWord(monthToPresent);
     });
@@ -92,27 +100,33 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(month),
       ),
-      body: new Dismissible(
-          key: new ValueKey(monthToPresent),
-          background: _showNextMonthOnDismissal( DismissDirection.startToEnd),
-          secondaryBackground: _showNextMonthOnDismissal( DismissDirection.endToStart),
-          onDismissed: (DismissDirection direction) {
-            _calculateNextMonthToShow(direction);
+      body:
+        GestureDetector(
+          onHorizontalDragUpdate: (details) {
+            if (details.delta.dx > 0) {
+              setState(() {
+                _calculateNextMonthToShow("right");
+              });
+            } else {
+              setState(() {
+                _calculateNextMonthToShow("left");
+              });
+            }
           },
           child: Center(
               child: SingleChildScrollView(
-              child: Column(
-              children: [
-                  Text(month,
-                  style:
-                  new TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
-              SizedBox(height: 10),
-              CalendarWidget(currentMonth:monthToPresent)
-              ],
-            ),
+                child: Column(
+                  children: [
+                    Text(month,
+                        style:
+                        new TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                    SizedBox(height: 10),
+                    CalendarWidget(currentMonth:monthToPresent)
+                  ],
+                ),
+              )
           )
         )
-      )
-    );
+      );
   }
 }
