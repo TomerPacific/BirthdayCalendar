@@ -53,14 +53,6 @@ class _MyHomePageState extends State<MyHomePage> {
     return month;
   }
 
-  // void _calculateNextMonthToShow(DismissDirection direction) {
-  //   setState(() {
-  //     monthToPresent = direction == DismissDirection.endToStart ? monthToPresent + 1 : monthToPresent - 1;
-  //     monthToPresent = _correctMonthOverflow(monthToPresent);
-  //     month = DateService().convertMonthToWord(monthToPresent);
-  //   });
-  // }
-
   void _calculateNextMonthToShow(String direction) {
     setState(() {
       monthToPresent = direction == "left" ? monthToPresent + 1 : monthToPresent - 1;
