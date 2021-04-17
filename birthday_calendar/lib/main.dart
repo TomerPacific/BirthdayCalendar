@@ -89,15 +89,31 @@ class _MyHomePageState extends State<MyHomePage> {
           },
           child: Center(
               child: SingleChildScrollView(
-                child: Column(
+                child: Row(
                   children: [
-                    Text(month,
-                        style:
-                        new TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
-                    SizedBox(height: 10),
-                    CalendarWidget(currentMonth:monthToPresent)
+                    IconButton(icon:
+                        Icon(Icons.chevron_left, color: Colors.black),
+                        onPressed: () {
+
+                    }),
+                    Expanded(child:
+                        Column(
+                        children: [
+                          Text(month,
+                              style:
+                              new TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                          SizedBox(height: 10),
+                          CalendarWidget(currentMonth:monthToPresent)
+                        ],
+                      ),
+                    ),
+                    IconButton(icon:
+                    Icon(Icons.chevron_right, color: Colors.black),
+                        onPressed: () {
+
+                        }),
                   ],
-                ),
+                )
               )
           )
         )
