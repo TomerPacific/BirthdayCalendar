@@ -61,24 +61,6 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  Widget _showNextMonthOnDismissal(DismissDirection direction) {
-    int monthNumber = direction == DismissDirection.endToStart ? monthToPresent + 1 : monthToPresent - 1;
-    monthNumber = _correctMonthOverflow(monthNumber);
-    String backgroundMonth = DateService().convertMonthToWord(monthNumber);
-
-    return Center(
-        child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Text(backgroundMonth, style: new TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
-                SizedBox(height: 10),
-                CalendarWidget(currentMonth:monthNumber)
-              ],
-            )
-        )
-    );
-  }
-
   @override
   void initState() {
     monthToPresent = widget.currentMonth;
