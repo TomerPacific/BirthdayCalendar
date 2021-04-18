@@ -94,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     IconButton(icon:
                         Icon(Icons.chevron_left, color: Colors.black),
                         onPressed: () {
-
+                          _calculateNextMonthToShow("right");
                     }),
                     Expanded(child:
                         Column(
@@ -110,7 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     IconButton(icon:
                     Icon(Icons.chevron_right, color: Colors.black),
                         onPressed: () {
-
+                          _calculateNextMonthToShow("left");
                         }),
                   ],
                 )
