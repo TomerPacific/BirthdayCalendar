@@ -61,6 +61,13 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void _decideOnNextMonthToShow(DragUpdateDetails details) {
+    details.delta.dx > 0 ?
+    _calculateNextMonthToShow(AxisDirection.right) :
+    _calculateNextMonthToShow(AxisDirection.left);
+  }
+
+
   @override
   void initState() {
     monthToPresent = widget.currentMonth;
@@ -76,17 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body:
         GestureDetector(
-          onHorizontalDragUpdate: (details) {
-            if (details.delta.dx > 0) {
-              setState(() {
-                _calculateNextMonthToShow(AxisDirection.right);
-              });
-            } else {
-              setState(() {
-                _calculateNextMonthToShow(AxisDirection.left);
-              });
-            }
-          },
+          onHorizontalDragUpdate: _decideOnNextMonthToShow,
           child: Center(
               child: SingleChildScrollView(
                 child: Row(
