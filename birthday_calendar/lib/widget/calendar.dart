@@ -23,6 +23,13 @@ class _CalendarState extends State<CalendarWidget> {
   }
 
   @override
+  void didUpdateWidget(CalendarWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _amountOfDaysToPresent = DateService().amountOfDaysInMonth(
+        DateService().convertMonthToWord(widget.currentMonth));
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SizedBox(
         height: (MediaQuery.of(context).size.height),
