@@ -52,7 +52,6 @@ class _CalendarDayState extends State<CalendarDayWidget> {
         child: FittedBox(
             fit: BoxFit.fitWidth,
             child: Column(children: [
-              Text(DateService().convertMonthToWord(widget.date.month)),
               Text(widget.date.day.toString()),
               if (_birthdays != null && _birthdays.length > 0)
                 _showBirthdayIcon()
