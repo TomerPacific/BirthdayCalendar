@@ -53,9 +53,9 @@ class _MyHomePageState extends State<MyHomePage> {
     return month;
   }
 
-  void _calculateNextMonthToShow(String direction) {
+  void _calculateNextMonthToShow(AxisDirection direction) {
     setState(() {
-      monthToPresent = direction == "left" ? monthToPresent + 1 : monthToPresent - 1;
+      monthToPresent = direction == AxisDirection.left ? monthToPresent + 1 : monthToPresent - 1;
       monthToPresent = _correctMonthOverflow(monthToPresent);
       month = DateService().convertMonthToWord(monthToPresent);
     });
@@ -79,11 +79,11 @@ class _MyHomePageState extends State<MyHomePage> {
           onHorizontalDragUpdate: (details) {
             if (details.delta.dx > 0) {
               setState(() {
-                _calculateNextMonthToShow("right");
+                _calculateNextMonthToShow(AxisDirection.right);
               });
             } else {
               setState(() {
-                _calculateNextMonthToShow("left");
+                _calculateNextMonthToShow(AxisDirection.left);
               });
             }
           },
@@ -94,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     IconButton(icon:
                         Icon(Icons.chevron_left, color: Colors.black),
                         onPressed: () {
-                          _calculateNextMonthToShow("right");
+                          _calculateNextMonthToShow(AxisDirection.right);
                     }),
                     Expanded(child:
                         Column(
@@ -110,7 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     IconButton(icon:
                     Icon(Icons.chevron_right, color: Colors.black),
                         onPressed: () {
-                          _calculateNextMonthToShow("left");
+                          _calculateNextMonthToShow(AxisDirection.left);
                         }),
                   ],
                 )
