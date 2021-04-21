@@ -34,20 +34,6 @@ class NotificationService {
 
   Future selectNotification(String payload) async {}
 
-  void sendAndroidNotification(String notificationMessage) async {
-    const AndroidNotificationDetails androidPlatformChannelSpecifics =
-        AndroidNotificationDetails(channel_id, applicationName,
-            'To remind you about upcoming birthdays',
-            importance: Importance.max,
-            priority: Priority.high,
-            showWhen: false);
-    const NotificationDetails platformChannelSpecifics =
-        NotificationDetails(android: androidPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.show(
-        0, 'BirthdayCalendar', notificationMessage, platformChannelSpecifics,
-        payload: 'birthdayData');
-  }
-
   void scheduleNotificationForBirthday(
       UserBirthday userBirthday, String notificationMessage) async {
     DateTime now = DateTime.now();
