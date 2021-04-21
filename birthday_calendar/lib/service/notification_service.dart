@@ -12,9 +12,6 @@ class NotificationService {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  final AndroidInitializationSettings initializationSettingsAndroid =
-      AndroidInitializationSettings('app_icon');
-
   factory NotificationService() {
     return _notificationService;
   }
@@ -24,6 +21,10 @@ class NotificationService {
   static const channel_id = "123";
 
   Future<void> init() async {
+
+    final AndroidInitializationSettings initializationSettingsAndroid =
+    AndroidInitializationSettings('app_icon');
+
     final InitializationSettings initializationSettings =
         InitializationSettings(
             android: initializationSettingsAndroid, iOS: null, macOS: null);
@@ -57,5 +58,9 @@ class NotificationService {
 
   void cancelNotificationForBirthday(UserBirthday birthday) async {
     await flutterLocalNotificationsPlugin.cancel(birthday.hashCode);
+  }
+
+  void cancelAllNotifications() async {
+    await flutterLocalNotificationsPlugin.cancelAll();
   }
 }
