@@ -67,11 +67,16 @@ class _MyHomePageState extends State<MyHomePage> {
     _calculateNextMonthToShow(AxisDirection.left);
   }
 
+  void _checkIfApplicationWasLaunchedFromNotification() async {
+    bool didApplicationLaunchFromNotification = await NotificationService().wasApplicationLaunchedFromNotification();
+  }
+
 
   @override
   void initState() {
     monthToPresent = widget.currentMonth;
     month = DateService().convertMonthToWord(monthToPresent);
+    _checkIfApplicationWasLaunchedFromNotification();
     super.initState();
   }
 
