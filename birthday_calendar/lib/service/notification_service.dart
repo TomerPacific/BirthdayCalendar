@@ -35,13 +35,29 @@ class NotificationService {
 
   Future selectNotification(String payload) async {}
 
-  void scheduleNotificationForBirthday(
-      UserBirthday userBirthday, String notificationMessage) async {
+  void showNotification(UserBirthday userBirthday, String notificationMessage) async {
+    await flutterLocalNotificationsPlugin.show(
+        userBirthday.hashCode,
+        applicationName,
+        notificationMessage,
+        const NotificationDetails(
+            android: AndroidNotificationDetails(channel_id, applicationName,
+                'To remind you about upcoming birthdays')
+        )
+    );
+  }
+
+  void scheduleNotificationForBirthday(UserBirthday userBirthday, String notificationMessage) async {
     DateTime now = DateTime.now();
     DateTime birthdayDate = userBirthday.birthdayDate;
     Duration difference = now.isAfter(birthdayDate)
         ? now.difference(birthdayDate)
         : birthdayDate.difference(now);
+
+    if (difference.inDays == 0) {
+      showNotification(userBirthday, notificationMessage);
+      return;
+    }
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
         userBirthday.hashCode,
