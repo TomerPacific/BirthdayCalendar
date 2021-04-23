@@ -110,7 +110,9 @@ class _BirthdaysForCalendarDayWidgetState
           title: FittedBox(
               fit: BoxFit.fitWidth,
               child: Text(
-                  "Birthdays for ${DateService().formatDateForSharedPrefs(widget.dateOfDay)}"))),
+                  "Birthdays for ${DateService().convertMonthToWord(widget.dateOfDay.month)} ${widget.dateOfDay.day}")
+          )
+      ),
       body: Center(
           child: Column(
         children: [
