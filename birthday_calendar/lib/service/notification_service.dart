@@ -63,4 +63,11 @@ class NotificationService {
   void cancelAllNotifications() async {
     await flutterLocalNotificationsPlugin.cancelAll();
   }
+
+  Future<bool> wasApplicationLaunchedFromNotification() async {
+    final NotificationAppLaunchDetails notificationAppLaunchDetails =
+        await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+
+    return notificationAppLaunchDetails.didNotificationLaunchApp;
+  }
 }
