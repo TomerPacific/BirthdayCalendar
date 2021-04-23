@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'birthdays_for_calendar_day.dart';
-import 'package:birthday_calendar/service/date_service.dart';
 import 'package:birthday_calendar/service/shared_prefs.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 
@@ -52,7 +51,9 @@ class _CalendarDayState extends State<CalendarDayWidget> {
         child: FittedBox(
             fit: BoxFit.fitWidth,
             child: Column(children: [
-              Text(widget.date.day.toString()),
+              Text(widget.date.day.toString(),
+                style:  new TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold)
+              ),
               if (_birthdays != null && _birthdays.length > 0)
                 _showBirthdayIcon()
             ])));

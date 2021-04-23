@@ -37,6 +37,7 @@ class _CalendarState extends State<CalendarWidget> {
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 5),
             itemCount: _amountOfDaysToPresent,
+            shrinkWrap: true,
             itemBuilder: (BuildContext context, int index) {
               return CalendarDayWidget(
                   date: DateService().constructDateTimeFromDayAndMonth(
