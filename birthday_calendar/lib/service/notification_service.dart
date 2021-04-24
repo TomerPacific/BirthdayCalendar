@@ -36,8 +36,7 @@ class NotificationService {
   }
 
   Future selectNotification(String payload) async {
-    Map<String, dynamic> json = jsonDecode(payload);
-    UserBirthday userBirthday = UserBirthday.fromJson(json);
+    UserBirthday userBirthday = getUserBirthdayFromPayload(payload);
   }
 
   void showNotification(UserBirthday userBirthday, String notificationMessage) async {
@@ -92,5 +91,11 @@ class NotificationService {
         await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
 
     return notificationAppLaunchDetails.didNotificationLaunchApp;
+  }
+
+  UserBirthday getUserBirthdayFromPayload(String payload) {
+    Map<String, dynamic> json = jsonDecode(payload);
+    UserBirthday userBirthday = UserBirthday.fromJson(json);
+    return userBirthday;
   }
 }
