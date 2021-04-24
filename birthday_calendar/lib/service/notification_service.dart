@@ -37,6 +37,7 @@ class NotificationService {
 
   Future selectNotification(String payload) async {
     UserBirthday userBirthday = getUserBirthdayFromPayload(payload);
+    cancelNotificationForBirthday(userBirthday);
   }
 
   void showNotification(UserBirthday userBirthday, String notificationMessage) async {
@@ -86,11 +87,14 @@ class NotificationService {
     await flutterLocalNotificationsPlugin.cancelAll();
   }
 
-  Future<bool> wasApplicationLaunchedFromNotification() async {
+  void handleApplicationWasLaunchedFromNotification() async {
     final NotificationAppLaunchDetails notificationAppLaunchDetails =
         await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
 
-    return notificationAppLaunchDetails.didNotificationLaunchApp;
+    if (notificationAppLaunchDetails.didNotificationLaunchApp) {
+      UserBirthday userBirthday = getUserBirthdayFromPayload(notificationAppLaunchDetails.payload);
+      cancelNotificationForBirthday(userBirthday);
+    }
   }
 
   UserBirthday getUserBirthdayFromPayload(String payload) {

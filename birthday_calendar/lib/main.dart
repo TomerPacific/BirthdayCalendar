@@ -1,3 +1,4 @@
+import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:flutter/material.dart';
 
 import 'package:birthday_calendar/widget/calendar.dart';
@@ -67,16 +68,11 @@ class _MyHomePageState extends State<MyHomePage> {
     _calculateNextMonthToShow(AxisDirection.left);
   }
 
-  void _checkIfApplicationWasLaunchedFromNotification() async {
-    bool didApplicationLaunchFromNotification = await NotificationService().wasApplicationLaunchedFromNotification();
-  }
-
-
   @override
   void initState() {
     monthToPresent = widget.currentMonth;
     month = DateService().convertMonthToWord(monthToPresent);
-    _checkIfApplicationWasLaunchedFromNotification();
+    NotificationService().handleApplicationWasLaunchedFromNotification();
     super.initState();
   }
 
