@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -33,7 +35,10 @@ class NotificationService {
     tz.initializeTimeZones();
   }
 
-  Future selectNotification(String payload) async {}
+  Future selectNotification(String payload) async {
+    Map<String, dynamic> json = jsonDecode(payload);
+    UserBirthday userBirthday = UserBirthday.fromJson(json);
+  }
 
   void showNotification(UserBirthday userBirthday, String notificationMessage) async {
     await flutterLocalNotificationsPlugin.show(
@@ -43,7 +48,8 @@ class NotificationService {
         const NotificationDetails(
             android: AndroidNotificationDetails(channel_id, applicationName,
                 'To remind you about upcoming birthdays')
-        )
+        ),
+        payload: jsonEncode(userBirthday)
     );
   }
 
@@ -67,6 +73,7 @@ class NotificationService {
         const NotificationDetails(
             android: AndroidNotificationDetails(channel_id, applicationName,
                 'To remind you about upcoming birthdays')),
+        payload: jsonEncode(userBirthday),
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime);
