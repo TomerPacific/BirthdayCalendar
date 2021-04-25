@@ -38,6 +38,7 @@ class NotificationService {
   Future selectNotification(String payload) async {
     UserBirthday userBirthday = getUserBirthdayFromPayload(payload);
     cancelNotificationForBirthday(userBirthday);
+    scheduleNotificationForBirthday(userBirthday, "${userBirthday.name} has an upcoming birthday!");
   }
 
   void showNotification(UserBirthday userBirthday, String notificationMessage) async {
@@ -60,10 +61,13 @@ class NotificationService {
         ? now.difference(birthdayDate)
         : birthdayDate.difference(now);
 
-    if (difference.inDays == 0) {
-      showNotification(userBirthday, notificationMessage);
-      return;
-    }
+    _wasApplicationLaunchedFromNotification()
+        .then((bool didApplicationLaunchFromNotification) => {
+      if (didApplicationLaunchFromNotification && difference.inDays == 0) {
+          scheduleNotificationForNextYear(userBirthday, notificationMessage)}
+      else if (!didApplicationLaunchFromNotification && difference.inDays == 0) {
+          showNotification(userBirthday, notificationMessage)}
+        });
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
         userBirthday.hashCode,
@@ -76,7 +80,22 @@ class NotificationService {
         payload: jsonEncode(userBirthday),
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime);
+        UILocalNotificationDateInterpretation.absoluteTime);
+  }
+
+  void scheduleNotificationForNextYear(UserBirthday userBirthday, String notificationMessage) async {
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+        userBirthday.hashCode,
+        applicationName,
+        notificationMessage,
+        tz.TZDateTime.now(tz.local).add(new Duration(days: 365)),
+        const NotificationDetails(
+            android: AndroidNotificationDetails(channel_id, applicationName,
+                'To remind you about upcoming birthdays')),
+        payload: jsonEncode(userBirthday),
+        androidAllowWhileIdle: true,
+        uiLocalNotificationDateInterpretation:
+        UILocalNotificationDateInterpretation.absoluteTime);
   }
 
   void cancelNotificationForBirthday(UserBirthday birthday) async {
@@ -94,6 +113,7 @@ class NotificationService {
     if (notificationAppLaunchDetails.didNotificationLaunchApp) {
       UserBirthday userBirthday = getUserBirthdayFromPayload(notificationAppLaunchDetails.payload);
       cancelNotificationForBirthday(userBirthday);
+      scheduleNotificationForBirthday(userBirthday, "${userBirthday.name} has an upcoming birthday!");
     }
   }
 
@@ -101,5 +121,12 @@ class NotificationService {
     Map<String, dynamic> json = jsonDecode(payload);
     UserBirthday userBirthday = UserBirthday.fromJson(json);
     return userBirthday;
+  }
+
+  Future<bool> _wasApplicationLaunchedFromNotification() async {
+    final NotificationAppLaunchDetails notificationAppLaunchDetails =
+    await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+
+    return notificationAppLaunchDetails.didNotificationLaunchApp;
   }
 }
