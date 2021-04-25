@@ -1,4 +1,3 @@
-import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:flutter/material.dart';
 
 import 'package:birthday_calendar/widget/calendar.dart';
