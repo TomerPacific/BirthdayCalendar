@@ -128,13 +128,14 @@ class _BirthdaysForCalendarDayWidgetState
               },
             ),
           ),
-          TextButton(
-              onPressed: () {
-                _showAddBirthdayDialog(context);
-              },
-              child: Text(addBirthday))
         ],
-      )),
+      )
+      ),
+      floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            _showAddBirthdayDialog(context);
+          },
+          child: Icon(Icons.add)),
     );
   }
 }
