@@ -31,17 +31,20 @@ class _CalendarState extends State<CalendarWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-        height: (MediaQuery.of(context).size.height),
-        child: GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 5),
-            itemCount: _amountOfDaysToPresent,
-            shrinkWrap: true,
-            itemBuilder: (BuildContext context, int index) {
-              return CalendarDayWidget(
-                  date: DateService().constructDateTimeFromDayAndMonth(
-                      (index + 1), widget.currentMonth));
-            }));
+    return new Center(
+      child: new SizedBox(
+          height: (MediaQuery.of(context).size.height),
+          child: new GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 5),
+              itemCount: _amountOfDaysToPresent,
+              shrinkWrap: true,
+              itemBuilder: (BuildContext context, int index) {
+                return new CalendarDayWidget(
+                    date: DateService().constructDateTimeFromDayAndMonth(
+                        (index + 1), widget.currentMonth));
+              })
+      ),
+    );
   }
 }
