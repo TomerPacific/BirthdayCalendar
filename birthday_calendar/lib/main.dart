@@ -82,38 +82,42 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(applicationName),
       ),
       body:
-        GestureDetector(
-          onHorizontalDragUpdate: _decideOnNextMonthToShow,
-          child: Center(
-              child: SingleChildScrollView(
-                child: Row(
-                  children: [
-                    IconButton(icon:
-                        Icon(Icons.chevron_left, color: Colors.black),
-                        onPressed: () {
-                          _calculateNextMonthToShow(AxisDirection.right);
-                    }),
-                    Expanded(child:
-                        Column(
-                        children: [
-                          Text(month,
-                              style:
-                              new TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
-                          SizedBox(height: 10),
-                          CalendarWidget(currentMonth:monthToPresent)
-                        ],
-                      ),
-                    ),
-                    IconButton(icon:
-                    Icon(Icons.chevron_right, color: Colors.black),
-                        onPressed: () {
-                          _calculateNextMonthToShow(AxisDirection.left);
-                        }),
-                  ],
-                )
-              )
+      new GestureDetector(
+      onHorizontalDragUpdate: _decideOnNextMonthToShow,
+        child:
+        new Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          new Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              new Text(month, style: new TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold))
+            ],
+          ),
+          new Expanded(child:
+            new Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              new IconButton(icon:
+              new Icon(Icons.chevron_left, color: Colors.black),
+                  onPressed: () {
+                    _calculateNextMonthToShow(AxisDirection.right);
+                  }),
+              new Expanded(child:
+              new CalendarWidget(currentMonth:monthToPresent),
+              ),
+              new IconButton(icon:
+              new Icon(Icons.chevron_right, color: Colors.black),
+                  onPressed: () {
+                    _calculateNextMonthToShow(AxisDirection.left);
+                  }),
+            ],
           )
-        )
-      );
+          ),
+        ],
+      )
+      )
+    );
   }
 }
