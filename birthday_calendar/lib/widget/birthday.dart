@@ -7,11 +7,13 @@ import 'package:birthday_calendar/model/user_birthday.dart';
 class BirthdayWidget extends StatefulWidget {
   final UserBirthday birthdayOfPerson;
   final VoidCallback onDeletePressedCallback;
+  final int indexOfBirthday;
 
   BirthdayWidget(
       {Key key,
       @required this.birthdayOfPerson,
-      @required this.onDeletePressedCallback})
+      @required this.onDeletePressedCallback,
+      @required this.indexOfBirthday})
       : super(key: key);
 
   @override
@@ -37,6 +39,14 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
     }
   }
 
+  Color _getColorBasedOnPosition(int index, String element) {
+    if (element == "background") {
+      return index % 2 == 0 ? Colors.indigoAccent : Colors.white24;
+    }
+
+    return index % 2 == 0 ? Colors.white : Colors.black;
+  }
+
   @override
   void initState() {
     isNotificationEnabledForPerson = widget.birthdayOfPerson.hasNotification;
@@ -47,14 +57,14 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
   Widget build(BuildContext context) {
     return Container(
       height: 40,
-      color: Colors.indigoAccent,
+      color: _getColorBasedOnPosition(widget.indexOfBirthday, "background"),
       child: Row(
         children: [
           new Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
               widget.birthdayOfPerson.name,
-              style: new TextStyle(fontSize: 20.0, color: Colors.white),
+              style: new TextStyle(fontSize: 20.0, color: _getColorBasedOnPosition(widget.indexOfBirthday, "text")),
             ),
           ),
           new Spacer(),
@@ -63,12 +73,12 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                   isNotificationEnabledForPerson
                       ? Icons.notifications_off_outlined
                       : Icons.notifications_active_outlined,
-                  color: Colors.white),
+                  color:  _getColorBasedOnPosition(widget.indexOfBirthday, "icon")),
               onPressed: () {
                 updateNotificationStatusForBirthday();
               }),
           new IconButton(
-              icon: Icon(Icons.clear, color: Colors.white),
+              icon: Icon(Icons.clear, color: _getColorBasedOnPosition(widget.indexOfBirthday, "icon")),
               onPressed: widget.onDeletePressedCallback),
         ],
       ),

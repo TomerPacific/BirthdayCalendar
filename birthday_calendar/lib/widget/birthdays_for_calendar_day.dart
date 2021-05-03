@@ -124,7 +124,8 @@ class _BirthdaysForCalendarDayWidgetState
                     birthdayOfPerson: currentBirthdays[index],
                     onDeletePressedCallback: () {
                       _removeBirthdayFromList(currentBirthdays[index]);
-                    });
+                    },
+                    indexOfBirthday: index);
               },
             ),
           ),
