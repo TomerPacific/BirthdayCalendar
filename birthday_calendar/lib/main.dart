@@ -89,11 +89,14 @@ class _MyHomePageState extends State<MyHomePage> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          new Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              new Text(month, style: new TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold))
-            ],
+          new Padding(
+            padding: const EdgeInsets.only(bottom: 60),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                new Text(month, style: new TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold))
+              ],
+            ),
           ),
           new Expanded(child:
             new Row(
