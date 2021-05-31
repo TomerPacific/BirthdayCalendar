@@ -90,11 +90,11 @@ class _MyHomePageState extends State<MyHomePage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           new Padding(
-            padding: const EdgeInsets.only(bottom: 60),
+            padding: const EdgeInsets.only(bottom: 50, top: 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                new Text(month, style: new TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold))
+                new Text(month, style: new TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold))
               ],
             ),
           ),
