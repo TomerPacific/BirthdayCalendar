@@ -22,6 +22,12 @@ class _CalendarDayState extends State<CalendarDayWidget> {
     super.initState();
   }
 
+  @override
+  void didUpdateWidget(CalendarDayWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _fetchBirthdaysFromStorage();
+  }
+
   void _fetchBirthdaysFromStorage() {
     setState(() {
       _birthdays = SharedPrefs().getBirthdaysForDate(widget.date);
