@@ -37,8 +37,7 @@ class SharedPrefs {
         DateService().formatDateForSharedPrefs(date), encoded);
   }
 
-  void updateNotificationStatusForBirthday(
-      UserBirthday birthday, bool updatedStatus) {
+  void updateNotificationStatusForBirthday(UserBirthday birthday, bool updatedStatus) {
     List<UserBirthday> birthdays = getBirthdaysForDate(birthday.birthdayDate);
     for (int i = 0; i < birthdays.length; i++) {
       UserBirthday savedBirthday = birthdays[i];
@@ -48,5 +47,9 @@ class SharedPrefs {
     }
 
     setBirthdaysForDate(birthday.birthdayDate, birthdays);
+  }
+
+  Future<bool> clearAllNotifications() async {
+    return await _sharedPreferences.clear();
   }
 }
