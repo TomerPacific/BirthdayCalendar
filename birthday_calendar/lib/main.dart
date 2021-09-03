@@ -118,6 +118,17 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           )
           ),
+          new TextButton(
+              onPressed: () {
+                
+              },
+              child: new Text("Clear Notifications",
+              style: new TextStyle(
+                fontSize: 15.0,
+                fontWeight: FontWeight.bold
+                )
+              )
+          )
         ],
       )
       )
