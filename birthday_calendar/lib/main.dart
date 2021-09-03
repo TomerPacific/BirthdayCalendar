@@ -120,7 +120,13 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           new TextButton(
               onPressed: () {
-                
+                SharedPrefs().clearAllNotifications()
+                    .then((didClearAllNotifications) =>
+                      {
+                        if (didClearAllNotifications) {
+                          setState(() {})
+                        }
+                      });
               },
               child: new Text("Clear Notifications",
               style: new TextStyle(
