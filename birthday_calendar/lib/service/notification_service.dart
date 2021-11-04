@@ -22,14 +22,17 @@ class NotificationService {
 
   static const channel_id = "123";
 
-  Future<void> init() async {
+  Future<void> init(Function onDidReceive) async {
 
     final AndroidInitializationSettings initializationSettingsAndroid =
     AndroidInitializationSettings('app_icon');
 
+    final IOSInitializationSettings initializationSettingsIOS =
+    IOSInitializationSettings(onDidReceiveLocalNotification: onDidReceive);
+
     final InitializationSettings initializationSettings =
         InitializationSettings(
-            android: initializationSettingsAndroid, iOS: null, macOS: null);
+            android: initializationSettingsAndroid, iOS: initializationSettingsIOS, macOS: null);
     await flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onSelectNotification: selectNotification);
     tz.initializeTimeZones();
