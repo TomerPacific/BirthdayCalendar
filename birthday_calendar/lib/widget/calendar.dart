@@ -41,6 +41,7 @@ class _CalendarState extends State<CalendarWidget> {
               shrinkWrap: true,
               itemBuilder: (BuildContext context, int index) {
                 return new CalendarDayWidget(
+                    key: Key(widget.currentMonth.toString()),
                     date: DateService().constructDateTimeFromDayAndMonth(
                         (index + 1), widget.currentMonth));
               })
