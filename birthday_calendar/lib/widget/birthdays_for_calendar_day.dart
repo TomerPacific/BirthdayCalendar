@@ -13,7 +13,7 @@ class BirthdaysForCalendarDayWidget extends StatefulWidget {
   final List<UserBirthday> birthdays;
 
   BirthdaysForCalendarDayWidget(
-      {Key key, @required this.dateOfDay, @required this.birthdays})
+      {required Key key, required this.dateOfDay, required this.birthdays})
       : super(key: key);
 
   @override
@@ -23,7 +23,7 @@ class BirthdaysForCalendarDayWidget extends StatefulWidget {
 
 class _BirthdaysForCalendarDayWidgetState
     extends State<BirthdaysForCalendarDayWidget> {
-  List<UserBirthday> currentBirthdays;
+  List<UserBirthday> currentBirthdays = [];
   TextEditingController _birthdayPersonController = new TextEditingController();
 
   bool _isValidName(String userInput) {
@@ -31,7 +31,7 @@ class _BirthdaysForCalendarDayWidgetState
   }
 
   bool _isUniqueName(String name) {
-    UserBirthday birthday =
+    UserBirthday? birthday =
         currentBirthdays.firstWhereOrNull((element) => element.name == name);
     return birthday == null;
   }
@@ -121,11 +121,12 @@ class _BirthdaysForCalendarDayWidgetState
               itemCount: currentBirthdays.length,
               itemBuilder: (BuildContext context, int index) {
                 return BirthdayWidget(
-                    birthdayOfPerson: currentBirthdays[index],
-                    onDeletePressedCallback: () {
+                  key: Key(currentBirthdays[index].name),
+                  birthdayOfPerson: currentBirthdays[index],
+                  onDeletePressedCallback: () {
                       _removeBirthdayFromList(currentBirthdays[index]);
-                    },
-                    indexOfBirthday: index);
+                  },
+                  indexOfBirthday: index);
               },
             ),
           ),

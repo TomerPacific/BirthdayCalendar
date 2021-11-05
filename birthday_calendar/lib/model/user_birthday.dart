@@ -18,7 +18,7 @@ class UserBirthday {
 
   UserBirthday.fromJson(Map<String, dynamic> json)
       : name = json[userBirthdayNameKey],
-        birthdayDate = DateTime.tryParse(json[userBirthdayDateKey]),
+        birthdayDate = DateTime.tryParse(json[userBirthdayDateKey]) ?? DateTime.now(),
         hasNotification = json[userBirthdayHasNotificationKey];
 
   Map<String, dynamic> toJson() => {
