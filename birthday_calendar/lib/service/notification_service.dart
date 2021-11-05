@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io' show Platform;
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -109,14 +110,18 @@ class NotificationService {
     await flutterLocalNotificationsPlugin.cancelAll();
   }
 
-  void handleApplicationWasLaunchedFromNotification() async {
+  void handleApplicationWasLaunchedFromNotification(String payload) async {
+
+    if (Platform.isIOS) {
+      _rescheduleNotificationFromPayload(payload);
+      return;
+    }
+
     final NotificationAppLaunchDetails notificationAppLaunchDetails =
         await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
 
     if (notificationAppLaunchDetails.didNotificationLaunchApp) {
-      UserBirthday userBirthday = getUserBirthdayFromPayload(notificationAppLaunchDetails.payload);
-      cancelNotificationForBirthday(userBirthday);
-      scheduleNotificationForBirthday(userBirthday, "${userBirthday.name} has an upcoming birthday!");
+      _rescheduleNotificationFromPayload(notificationAppLaunchDetails.payload);
     }
   }
 
@@ -131,5 +136,11 @@ class NotificationService {
     await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
 
     return notificationAppLaunchDetails.didNotificationLaunchApp;
+  }
+
+  void _rescheduleNotificationFromPayload(String payload) {
+    UserBirthday userBirthday = getUserBirthdayFromPayload(payload);
+    cancelNotificationForBirthday(userBirthday);
+    scheduleNotificationForBirthday(userBirthday, "${userBirthday.name} has an upcoming birthday!");
   }
 }
