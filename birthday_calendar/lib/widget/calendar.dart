@@ -6,7 +6,7 @@ import 'package:birthday_calendar/service/date_service.dart';
 class CalendarWidget extends StatefulWidget {
   final int currentMonth;
 
-  const CalendarWidget({Key key, this.currentMonth}) : super(key: key);
+  const CalendarWidget({required Key key, required this.currentMonth}) : super(key: key);
 
   @override
   _CalendarState createState() => _CalendarState();
@@ -18,7 +18,7 @@ class _CalendarState extends State<CalendarWidget> {
   @override
   void initState() {
     _amountOfDaysToPresent = DateService().amountOfDaysInMonth(
-        DateService().convertMonthToWord(widget.currentMonth));
+        DateService().convertMonthToWord(widget.currentMonth)!);
     super.initState();
   }
 
@@ -26,7 +26,7 @@ class _CalendarState extends State<CalendarWidget> {
   void didUpdateWidget(CalendarWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     _amountOfDaysToPresent = DateService().amountOfDaysInMonth(
-        DateService().convertMonthToWord(widget.currentMonth));
+        DateService().convertMonthToWord(widget.currentMonth)!);
   }
 
   @override
