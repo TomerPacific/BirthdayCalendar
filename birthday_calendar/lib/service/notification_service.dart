@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io' show Platform;
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -22,14 +23,17 @@ class NotificationService {
 
   static const channel_id = "123";
 
-  Future<void> init() async {
+  Future<void> init(Future<dynamic> Function(int, String?, String?, String?)? onDidReceive) async {
 
     final AndroidInitializationSettings initializationSettingsAndroid =
     AndroidInitializationSettings('app_icon');
 
+    final IOSInitializationSettings initializationSettingsIOS =
+    IOSInitializationSettings(onDidReceiveLocalNotification: onDidReceive);
+
     final InitializationSettings initializationSettings =
         InitializationSettings(
-            android: initializationSettingsAndroid, iOS: null, macOS: null);
+            android: initializationSettingsAndroid, iOS: initializationSettingsIOS, macOS: null);
     await flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onSelectNotification: selectNotification);
     tz.initializeTimeZones();
@@ -106,14 +110,17 @@ class NotificationService {
     await flutterLocalNotificationsPlugin.cancelAll();
   }
 
-  void handleApplicationWasLaunchedFromNotification() async {
+  void handleApplicationWasLaunchedFromNotification(String payload) async {
+    if (Platform.isIOS) {
+      _rescheduleNotificationFromPayload(payload);
+      return;
+    }
+
     final NotificationAppLaunchDetails? notificationAppLaunchDetails =
-        await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+    await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
 
     if (notificationAppLaunchDetails != null && notificationAppLaunchDetails.didNotificationLaunchApp) {
-      UserBirthday userBirthday = getUserBirthdayFromPayload(notificationAppLaunchDetails.payload ?? '');
-      cancelNotificationForBirthday(userBirthday);
-      scheduleNotificationForBirthday(userBirthday, "${userBirthday.name} has an upcoming birthday!");
+      _rescheduleNotificationFromPayload(notificationAppLaunchDetails.payload ?? "");
     }
   }
 
@@ -131,5 +138,11 @@ class NotificationService {
     }
 
     return false;
+  }
+
+  void _rescheduleNotificationFromPayload(String payload) {
+    UserBirthday userBirthday = getUserBirthdayFromPayload(payload);
+    cancelNotificationForBirthday(userBirthday);
+    scheduleNotificationForBirthday(userBirthday, "${userBirthday.name} has an upcoming birthday!");
   }
 }
