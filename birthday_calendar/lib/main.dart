@@ -6,6 +6,7 @@ import 'package:birthday_calendar/service/date_service.dart';
 import 'package:birthday_calendar/service/notification_service.dart';
 import 'package:birthday_calendar/service/shared_prefs.dart';
 
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SharedPrefs().init();
@@ -75,13 +76,13 @@ class _MyHomePageState extends State<MyHomePage> {
               context: context,
               builder: (BuildContext context) =>
                   AlertDialog(
-                      title: Text(title),
-                      content: Text(body),
+                      title: Text(title ?? ''),
+                      content: Text(body ?? ''),
                       actions: [
                         TextButton(
                           child: Text("Ok"),
                            onPressed: () async {
-                              main();
+                             NotificationService().handleApplicationWasLaunchedFromNotification(payload ?? '');
                             }
                           )
                       ]
@@ -95,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
     monthToPresent = widget.currentMonth;
     month = DateService().convertMonthToWord(monthToPresent);
     NotificationService().init(_onDidReceiveLocalNotification).whenComplete(() =>
-        NotificationService().handleApplicationWasLaunchedFromNotification()
+        NotificationService().handleApplicationWasLaunchedFromNotification("")
     );
     super.initState();
   }
