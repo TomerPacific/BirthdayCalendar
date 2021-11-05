@@ -107,11 +107,11 @@ class NotificationService {
   }
 
   void handleApplicationWasLaunchedFromNotification() async {
-    final NotificationAppLaunchDetails notificationAppLaunchDetails =
+    final NotificationAppLaunchDetails? notificationAppLaunchDetails =
         await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
 
-    if (notificationAppLaunchDetails.didNotificationLaunchApp) {
-      UserBirthday userBirthday = getUserBirthdayFromPayload(notificationAppLaunchDetails.payload);
+    if (notificationAppLaunchDetails != null && notificationAppLaunchDetails.didNotificationLaunchApp) {
+      UserBirthday userBirthday = getUserBirthdayFromPayload(notificationAppLaunchDetails.payload ?? '');
       cancelNotificationForBirthday(userBirthday);
       scheduleNotificationForBirthday(userBirthday, "${userBirthday.name} has an upcoming birthday!");
     }
@@ -124,9 +124,12 @@ class NotificationService {
   }
 
   Future<bool> _wasApplicationLaunchedFromNotification() async {
-    final NotificationAppLaunchDetails notificationAppLaunchDetails =
-    await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+    NotificationAppLaunchDetails? notificationAppLaunchDetails = await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
 
-    return notificationAppLaunchDetails.didNotificationLaunchApp;
+    if (notificationAppLaunchDetails != null) {
+      return notificationAppLaunchDetails.didNotificationLaunchApp;
+    }
+
+    return false;
   }
 }
