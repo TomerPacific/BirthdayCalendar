@@ -10,10 +10,10 @@ class BirthdayWidget extends StatefulWidget {
   final int indexOfBirthday;
 
   BirthdayWidget(
-      {Key key,
-      @required this.birthdayOfPerson,
-      @required this.onDeletePressedCallback,
-      @required this.indexOfBirthday})
+      {required Key key ,
+      required this.birthdayOfPerson,
+      required this.onDeletePressedCallback,
+      required this.indexOfBirthday})
       : super(key: key);
 
   @override

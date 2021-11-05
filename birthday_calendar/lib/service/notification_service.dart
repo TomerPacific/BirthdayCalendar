@@ -23,7 +23,7 @@ class NotificationService {
 
   static const channel_id = "123";
 
-  Future<void> init(Function onDidReceive) async {
+  Future<void> init(Future<dynamic> Function(int, String?, String?, String?)? onDidReceive) async {
 
     final AndroidInitializationSettings initializationSettingsAndroid =
     AndroidInitializationSettings('app_icon');
@@ -39,8 +39,8 @@ class NotificationService {
     tz.initializeTimeZones();
   }
 
-  Future selectNotification(String payload) async {
-    UserBirthday userBirthday = getUserBirthdayFromPayload(payload);
+  Future selectNotification(String? payload) async {
+    UserBirthday userBirthday = getUserBirthdayFromPayload(payload ?? '');
     cancelNotificationForBirthday(userBirthday);
     scheduleNotificationForBirthday(userBirthday, "${userBirthday.name} has an upcoming birthday!");
   }
@@ -111,17 +111,16 @@ class NotificationService {
   }
 
   void handleApplicationWasLaunchedFromNotification(String payload) async {
-
     if (Platform.isIOS) {
       _rescheduleNotificationFromPayload(payload);
       return;
     }
 
-    final NotificationAppLaunchDetails notificationAppLaunchDetails =
-        await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+    final NotificationAppLaunchDetails? notificationAppLaunchDetails =
+    await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
 
-    if (notificationAppLaunchDetails.didNotificationLaunchApp) {
-      _rescheduleNotificationFromPayload(notificationAppLaunchDetails.payload);
+    if (notificationAppLaunchDetails != null && notificationAppLaunchDetails.didNotificationLaunchApp) {
+      _rescheduleNotificationFromPayload(notificationAppLaunchDetails.payload ?? "");
     }
   }
 
@@ -132,10 +131,13 @@ class NotificationService {
   }
 
   Future<bool> _wasApplicationLaunchedFromNotification() async {
-    final NotificationAppLaunchDetails notificationAppLaunchDetails =
-    await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+    NotificationAppLaunchDetails? notificationAppLaunchDetails = await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
 
-    return notificationAppLaunchDetails.didNotificationLaunchApp;
+    if (notificationAppLaunchDetails != null) {
+      return notificationAppLaunchDetails.didNotificationLaunchApp;
+    }
+
+    return false;
   }
 
   void _rescheduleNotificationFromPayload(String payload) {

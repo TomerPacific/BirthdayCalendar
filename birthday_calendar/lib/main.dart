@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: MyHomePage(
+          key: Key("BirthdayCalendar"),
           title: applicationName,
           currentMonth: DateService().getCurrentMonthNumber()
       ),
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title, this.currentMonth}) : super(key: key);
+  MyHomePage({required Key key, required this.title, required this.currentMonth}) : super(key: key);
 
   final String title;
   final int currentMonth;
@@ -41,8 +42,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  int monthToPresent;
-  String month;
+  int monthToPresent = -1;
+  String month = "";
 
   int _correctMonthOverflow(int month) {
     if (month == 0) {
@@ -57,7 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       monthToPresent = direction == AxisDirection.left ? monthToPresent + 1 : monthToPresent - 1;
       monthToPresent = _correctMonthOverflow(monthToPresent);
-      month = DateService().convertMonthToWord(monthToPresent);
+      month = DateService().convertMonthToWord(monthToPresent)!;
     });
   }
 
@@ -67,11 +68,11 @@ class _MyHomePageState extends State<MyHomePage> {
     _calculateNextMonthToShow(AxisDirection.left);
   }
 
-  void _onDidReceiveLocalNotification(
+  Future<dynamic> _onDidReceiveLocalNotification(
       int id,
-      String title,
-      String body,
-      String payload) async {
+      String? title,
+      String? body,
+      String? payload) async {
           showDialog(
               context: context,
               builder: (BuildContext context) =>
@@ -94,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     monthToPresent = widget.currentMonth;
-    month = DateService().convertMonthToWord(monthToPresent);
+    month = DateService().convertMonthToWord(monthToPresent)!;
     NotificationService().init(_onDidReceiveLocalNotification).whenComplete(() =>
         NotificationService().handleApplicationWasLaunchedFromNotification("")
     );
@@ -134,7 +135,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     _calculateNextMonthToShow(AxisDirection.right);
                   }),
               new Expanded(child:
-              new CalendarWidget(currentMonth:monthToPresent),
+              new CalendarWidget(
+                  key: Key(monthToPresent.toString()),
+                  currentMonth:monthToPresent),
               ),
               new IconButton(icon:
               new Icon(Icons.chevron_right, color: Colors.black),
