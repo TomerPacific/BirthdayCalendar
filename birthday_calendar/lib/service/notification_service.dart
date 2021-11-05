@@ -35,8 +35,8 @@ class NotificationService {
     tz.initializeTimeZones();
   }
 
-  Future selectNotification(String payload) async {
-    UserBirthday userBirthday = getUserBirthdayFromPayload(payload);
+  Future selectNotification(String? payload) async {
+    UserBirthday userBirthday = getUserBirthdayFromPayload(payload ?? '');
     cancelNotificationForBirthday(userBirthday);
     scheduleNotificationForBirthday(userBirthday, "${userBirthday.name} has an upcoming birthday!");
   }
