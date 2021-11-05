@@ -7,7 +7,7 @@ import 'package:birthday_calendar/model/user_birthday.dart';
 class CalendarDayWidget extends StatefulWidget {
   final DateTime date;
 
-  const CalendarDayWidget({Key key, this.date}) : super(key: key);
+  const CalendarDayWidget({required Key key, required this.date}) : super(key: key);
 
   @override
   _CalendarDayState createState() => _CalendarDayState();
@@ -50,8 +50,9 @@ class _CalendarDayState extends State<CalendarDayWidget> {
               context,
               MaterialPageRoute(
                 builder: (context) => BirthdaysForCalendarDayWidget(
-                    dateOfDay: widget.date,
-                    birthdays: _birthdays != null ? _birthdays : []),
+                  key: Key(widget.date.toString()),
+                  dateOfDay: widget.date,
+                  birthdays: _birthdays != null ? _birthdays : []),
               )).then((value) => _fetchBirthdaysFromStorage());
         },
         child: FittedBox(
