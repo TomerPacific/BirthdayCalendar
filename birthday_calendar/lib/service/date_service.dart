@@ -15,12 +15,12 @@ class DateService {
     return now.month;
   }
 
-  String convertMonthToWord(int month) {
+  String? convertMonthToWord(int month) {
     return months[month];
   }
 
   String getCurrentMonthName() {
-    return convertMonthToWord(getCurrentMonthNumber());
+    return convertMonthToWord(getCurrentMonthNumber()) ?? 'No month name';
   }
 
   int amountOfDaysInMonth(String month) {
