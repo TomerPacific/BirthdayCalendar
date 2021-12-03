@@ -27,7 +27,7 @@ class _BirthdaysForCalendarDayWidgetState
   TextEditingController _birthdayPersonController = new TextEditingController();
 
   bool _isValidName(String userInput) {
-    return (userInput != null && userInput.isNotEmpty && userInput.length > 0);
+    return (userInput.isNotEmpty && userInput.length > 0);
   }
 
   bool _isUniqueName(String name) {

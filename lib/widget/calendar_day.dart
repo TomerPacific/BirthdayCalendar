@@ -52,7 +52,7 @@ class _CalendarDayState extends State<CalendarDayWidget> {
                 builder: (context) => BirthdaysForCalendarDayWidget(
                   key: Key(widget.date.toString()),
                   dateOfDay: widget.date,
-                  birthdays: _birthdays != null ? _birthdays : []),
+                  birthdays: _birthdays),
               )).then((value) => _fetchBirthdaysFromStorage());
         },
         child: FittedBox(
@@ -61,7 +61,7 @@ class _CalendarDayState extends State<CalendarDayWidget> {
               Text(widget.date.day.toString(),
                 style:  new TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold)
               ),
-              if (_birthdays != null && _birthdays.length > 0)
+              if (_birthdays.length > 0)
                 _showBirthdayIcon()
             ])));
   }
