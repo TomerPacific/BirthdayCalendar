@@ -18,7 +18,7 @@ class _CalendarState extends State<CalendarWidget> {
   @override
   void initState() {
     _amountOfDaysToPresent = DateService().amountOfDaysInMonth(
-        DateService().convertMonthToWord(widget.currentMonth)!);
+        DateService().convertMonthToWord(widget.currentMonth));
     super.initState();
   }
 
@@ -26,7 +26,7 @@ class _CalendarState extends State<CalendarWidget> {
   void didUpdateWidget(CalendarWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     _amountOfDaysToPresent = DateService().amountOfDaysInMonth(
-        DateService().convertMonthToWord(widget.currentMonth)!);
+        DateService().convertMonthToWord(widget.currentMonth));
   }
 
   @override
