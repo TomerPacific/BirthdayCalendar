@@ -7,4 +7,10 @@ void main() {
     final monthName = DateService().convertMonthToWord(monthNumber);
     expect(monthName, equals("August"));
   });
+
+  test("DateService invalid month number returns empty string", () {
+    final monthNumber = 14;
+    final monthName = DateService().convertMonthToWord(monthNumber);
+    expect(monthName, isEmpty);
+  });
 }
