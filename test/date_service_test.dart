@@ -25,4 +25,10 @@ void main() {
     final int amountOfDays = DateService().amountOfDaysInMonth(monthName);
     expect(amountOfDays, equals(0));
   });
+
+  test("DateService for the date of 5/12/21 we should get the day as Sunday", () {
+    final DateTime dateTime = DateTime(2021, 12, 5);
+    final String day = DateService().getWeekdayNameFromDate(dateTime);
+    expect(day, equals("Sunday"));
+  });
 }
