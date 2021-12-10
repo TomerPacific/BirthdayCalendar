@@ -58,7 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       monthToPresent = direction == AxisDirection.left ? monthToPresent + 1 : monthToPresent - 1;
       monthToPresent = _correctMonthOverflow(monthToPresent);
-      month = DateService().convertMonthToWord(monthToPresent)!;
+      month = DateService().convertMonthToWord(monthToPresent);
     });
   }
 
@@ -95,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     monthToPresent = widget.currentMonth;
-    month = DateService().convertMonthToWord(monthToPresent)!;
+    month = DateService().convertMonthToWord(monthToPresent);
     NotificationService().init(_onDidReceiveLocalNotification).whenComplete(() =>
         NotificationService().handleApplicationWasLaunchedFromNotification("")
     );

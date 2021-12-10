@@ -64,6 +64,7 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               widget.birthdayOfPerson.name,
+              textDirection: TextDirection.ltr,
               style: new TextStyle(fontSize: 20.0, color: _getColorBasedOnPosition(widget.indexOfBirthday, "text")),
             ),
           ),
