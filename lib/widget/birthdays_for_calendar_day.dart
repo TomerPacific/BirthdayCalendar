@@ -25,6 +25,7 @@ class _BirthdaysForCalendarDayWidgetState
     extends State<BirthdaysForCalendarDayWidget> {
   List<UserBirthday> currentBirthdays = [];
   TextEditingController _birthdayPersonController = new TextEditingController();
+  TextEditingController _phoneNumberController = new TextEditingController();
 
   bool _isValidName(String userInput) {
     return (userInput.isNotEmpty && userInput.length > 0);
@@ -36,10 +37,10 @@ class _BirthdaysForCalendarDayWidgetState
     return birthday == null;
   }
 
-  void _handleUserInput(String userInput) {
-    if (_isValidName(userInput) && _isUniqueName(userInput)) {
+  void _handleUserInput(String name, String phoneNumber) {
+    if (_isValidName(name) && _isUniqueName(name)) {
       UserBirthday userBirthday =
-          new UserBirthday(userInput, widget.dateOfDay, false);
+          new UserBirthday(name, widget.dateOfDay, false, phoneNumber);
       _addBirthdayToList(userBirthday);
       _birthdayPersonController.text = "";
       NotificationService().scheduleNotificationForBirthday(
@@ -56,16 +57,26 @@ class _BirthdaysForCalendarDayWidgetState
       context: context,
       builder: (_) => new AlertDialog(
         title: new Text(addBirthday),
-        content: new TextField(
-          autofocus: true,
-          controller: _birthdayPersonController,
-          decoration: InputDecoration(hintText: "Enter the person's name"),
+        content: new Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            new TextField(
+              autofocus: true,
+              controller: _birthdayPersonController,
+              decoration: InputDecoration(hintText: "Enter the person's name"),
+            ),
+            new TextField(
+              keyboardType: TextInputType.number,
+              controller: _phoneNumberController,
+              decoration: InputDecoration(hintText: "Enter the person's phone number"),
+            ),
+          ],
         ),
         actions: [
           TextButton(
             style: TextButton.styleFrom(primary: Colors.green),
             onPressed: () {
-              _handleUserInput(_birthdayPersonController.text);
+              _handleUserInput(_birthdayPersonController.text, _phoneNumberController.text);
             },
             child: new Text("OK"),
           ),
