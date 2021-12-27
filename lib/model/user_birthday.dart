@@ -4,8 +4,9 @@ class UserBirthday {
   final String name;
   final DateTime birthdayDate;
   bool hasNotification;
+  final String phoneNumber;
 
-  UserBirthday(this.name, this.birthdayDate, this.hasNotification);
+  UserBirthday(this.name, this.birthdayDate, this.hasNotification, this.phoneNumber);
 
   void updateNotificationStatus(bool status) {
     this.hasNotification = status;
@@ -19,11 +20,13 @@ class UserBirthday {
   UserBirthday.fromJson(Map<String, dynamic> json)
       : name = json[userBirthdayNameKey],
         birthdayDate = DateTime.tryParse(json[userBirthdayDateKey]) ?? DateTime.now(),
-        hasNotification = json[userBirthdayHasNotificationKey];
+        hasNotification = json[userBirthdayHasNotificationKey],
+        phoneNumber = json[userBirthdayPhoneNumberKey];
 
   Map<String, dynamic> toJson() => {
         userBirthdayNameKey: name,
         userBirthdayDateKey: birthdayDate.toIso8601String(),
-        userBirthdayHasNotificationKey: hasNotification
+        userBirthdayHasNotificationKey: hasNotification,
+        userBirthdayPhoneNumberKey: phoneNumber
       };
 }
