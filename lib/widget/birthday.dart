@@ -47,6 +47,10 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
     return index % 2 == 0 ? Colors.white : Colors.black;
   }
 
+  void _handleCallButtonPressed() {
+
+  }
+
   @override
   void initState() {
     isNotificationEnabledForPerson = widget.birthdayOfPerson.hasNotification;
@@ -78,6 +82,9 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
               onPressed: () {
                 updateNotificationStatusForBirthday();
               }),
+          new IconButton(
+              icon: Icon(Icons.call, color: _getColorBasedOnPosition(widget.indexOfBirthday, "icon")),
+              onPressed: _handleCallButtonPressed),
           new IconButton(
               icon: Icon(Icons.clear, color: _getColorBasedOnPosition(widget.indexOfBirthday, "icon")),
               onPressed: widget.onDeletePressedCallback),
