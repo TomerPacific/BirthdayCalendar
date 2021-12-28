@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/services.dart';
 
 import 'package:birthday_calendar/widget/birthday.dart';
 import 'package:birthday_calendar/constants.dart';
@@ -66,7 +67,8 @@ class _BirthdaysForCalendarDayWidgetState
               decoration: InputDecoration(hintText: "Enter the person's name"),
             ),
             new TextField(
-              keyboardType: TextInputType.number,
+              keyboardType: TextInputType.phone,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               controller: _phoneNumberController,
               decoration: InputDecoration(hintText: "Enter the person's phone number"),
             ),
