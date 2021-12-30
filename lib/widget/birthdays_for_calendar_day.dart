@@ -169,4 +169,10 @@ class _BirthdaysForCalendarDayWidgetState
           child: Icon(Icons.add)),
     );
   }
+
+  @override dispose() {
+    _birthdayPersonController.dispose();
+    _phoneNumberController.dispose();
+    super.dispose();
+  }
 }
