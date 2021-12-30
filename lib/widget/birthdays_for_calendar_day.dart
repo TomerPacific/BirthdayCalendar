@@ -68,11 +68,9 @@ class _BirthdaysForCalendarDayWidgetState
               decoration: InputDecoration(hintText: "Enter the person's name"),
             ),
             InternationalPhoneNumberInput(
-              onInputChanged: (PhoneNumber number) {
-                print(number.phoneNumber);
-              },
+              onInputChanged: (PhoneNumber number) {},
               onInputValidated: (bool value) {
-                print(value);
+
               },
               selectorConfig: SelectorConfig(
                 selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
@@ -87,7 +85,7 @@ class _BirthdaysForCalendarDayWidgetState
               TextInputType.numberWithOptions(signed: true, decimal: true),
               inputBorder: OutlineInputBorder(),
               onSaved: (PhoneNumber number) {
-                print('On Saved: $number');
+                _number = number;
               },
             ),
           ],
@@ -96,7 +94,7 @@ class _BirthdaysForCalendarDayWidgetState
           TextButton(
             style: TextButton.styleFrom(primary: Colors.green),
             onPressed: () {
-              _handleUserInput(_birthdayPersonController.text, _phoneNumberController.text);
+              _handleUserInput(_birthdayPersonController.text, _number.parseNumber());
             },
             child: new Text("OK"),
           ),
