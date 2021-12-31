@@ -27,7 +27,7 @@ class _BirthdaysForCalendarDayWidgetState
   List<UserBirthday> currentBirthdays = [];
   TextEditingController _birthdayPersonController = new TextEditingController();
   TextEditingController _phoneNumberController = new TextEditingController();
-  PhoneNumber _number = PhoneNumber(isoCode: 'US');
+  PhoneNumber _phoneNumber = PhoneNumber(isoCode: 'US');
 
   bool _isValidName(String userInput) {
     return (userInput.isNotEmpty && userInput.length > 0);
@@ -68,7 +68,9 @@ class _BirthdaysForCalendarDayWidgetState
               decoration: InputDecoration(hintText: "Enter the person's name"),
             ),
             InternationalPhoneNumberInput(
-              onInputChanged: (PhoneNumber number) {},
+              onInputChanged: (PhoneNumber number) {
+                _phoneNumber = number;
+              },
               onInputValidated: (bool value) {
 
               },
@@ -78,14 +80,14 @@ class _BirthdaysForCalendarDayWidgetState
               ignoreBlank: false,
               autoValidateMode: AutovalidateMode.disabled,
               selectorTextStyle: TextStyle(color: Colors.black),
-              initialValue: _number,
+              initialValue: _phoneNumber,
               textFieldController: _phoneNumberController,
               formatInput: false,
               keyboardType:
               TextInputType.numberWithOptions(signed: true, decimal: true),
               inputBorder: OutlineInputBorder(),
               onSaved: (PhoneNumber number) {
-                _number = number;
+                _phoneNumber = number;
               },
             ),
           ],
@@ -94,7 +96,9 @@ class _BirthdaysForCalendarDayWidgetState
           TextButton(
             style: TextButton.styleFrom(primary: Colors.green),
             onPressed: () {
-              _handleUserInput(_birthdayPersonController.text, _number.parseNumber());
+              _handleUserInput(_birthdayPersonController.text, _phoneNumber.parseNumber());
+              _birthdayPersonController.text = "";
+              _phoneNumberController.text = "";
             },
             child: new Text("OK"),
           ),
@@ -102,6 +106,7 @@ class _BirthdaysForCalendarDayWidgetState
             style: TextButton.styleFrom(primary: Colors.red),
             onPressed: () {
               _birthdayPersonController.text = "";
+              _phoneNumberController.text = "";
               Navigator.pop(context);
             },
             child: new Text("BACK"),
