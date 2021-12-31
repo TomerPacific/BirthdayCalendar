@@ -19,6 +19,9 @@ void main() {
   });
 
   testWidgets("BirthdayWidget shows birthday for Someone", (WidgetTester tester) async {
+
+    UserBirthday userBirthday = new UserBirthday("Someone", DateTime.now(), false, "");
+
     await tester.pumpWidget(
         MaterialApp(
             home: Material(
@@ -26,7 +29,7 @@ void main() {
                       height: 40,
                 child: BirthdayWidget(
                     key: Key("123"),
-                    birthdayOfPerson: new UserBirthday("Someone", DateTime.now(), false),
+                    birthdayOfPerson: userBirthday,
                     onDeletePressedCallback: () {},
                     indexOfBirthday: 1)
               )
@@ -40,6 +43,8 @@ void main() {
 
   testWidgets("BirthdayWidget click on remove notification icon", (WidgetTester tester) async {
 
+    UserBirthday userBirthday = new UserBirthday("Someone", DateTime.now(), false, "");
+
     await tester.pumpWidget(
         MaterialApp(
             home: Material(
@@ -47,7 +52,7 @@ void main() {
                     height: 40,
                     child: BirthdayWidget(
                         key: Key("123"),
-                        birthdayOfPerson: new UserBirthday("Someone", DateTime.now(), false),
+                        birthdayOfPerson: userBirthday,
                         onDeletePressedCallback: () {
                           print("Deleted");
                         },
