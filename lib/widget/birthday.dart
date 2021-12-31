@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:birthday_calendar/service/notification_service.dart';
 import 'package:birthday_calendar/service/shared_prefs.dart';
@@ -48,7 +49,7 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
   }
 
   void _handleCallButtonPressed() {
-
+    launch('tel://' + widget.birthdayOfPerson.phoneNumber);
   }
 
   @override
