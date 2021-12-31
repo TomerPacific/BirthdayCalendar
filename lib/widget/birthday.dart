@@ -48,8 +48,11 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
     return index % 2 == 0 ? Colors.white : Colors.black;
   }
 
-  void _handleCallButtonPressed() {
-    launch('tel://' + widget.birthdayOfPerson.phoneNumber);
+  void _handleCallButtonPressed() async {
+    String phoneUrl = 'tel://' + widget.birthdayOfPerson.phoneNumber;
+    if (await canLaunch(phoneUrl)) {
+      launch('tel://' + widget.birthdayOfPerson.phoneNumber);
+    }
   }
 
   @override
