@@ -18,7 +18,7 @@ void main() {
     });
   });
 
-  testWidgets("BirthdayWidget shows birthday for Someone", (WidgetTester tester) async {
+  testWidgets("BirthdayWidget show birthday for Someone", (WidgetTester tester) async {
 
     UserBirthday userBirthday = new UserBirthday("Someone", DateTime.now(), false, "");
 
@@ -68,6 +68,32 @@ void main() {
 
     expect(printLog.length, 1);
     expect(printLog[0], contains('Deleted'));
+  });
+
+  testWidgets("BirthdayWidget press on call button", (WidgetTester tester) async {
+
+    UserBirthday userBirthday = new UserBirthday("Someone", DateTime.now(), false, "");
+
+    await tester.pumpWidget(
+        MaterialApp(
+            home: Material(
+                child:  new SizedBox(
+                    height: 40,
+                    child: BirthdayWidget(
+                        key: Key("123"),
+                        birthdayOfPerson: userBirthday,
+                        onDeletePressedCallback: () {},
+                        indexOfBirthday: 1)
+                )
+            )
+        )
+    );
+
+    await tester.tap(find.descendant(of: find.byType(IconButton), matching: find.byIcon(Icons.call)));
+    await tester.pump();
+
+    final callButtonIcon = find.byIcon(Icons.call);
+    expect(callButtonIcon, findsOneWidget);
   });
 }
 
