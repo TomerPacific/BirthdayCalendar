@@ -1,7 +1,9 @@
 import 'package:birthday_calendar/model/user_birthday.dart';
+import 'package:birthday_calendar/service/shared_prefs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:collection/collection.dart';
 
 import 'package:birthday_calendar/constants.dart';
 
@@ -21,6 +23,19 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
   TextEditingController _birthdayPersonController = new TextEditingController();
   TextEditingController _phoneNumberController = new TextEditingController();
   PhoneNumber _phoneNumber = PhoneNumber(isoCode: 'US');
+  List<UserBirthday> birthdaysForDate = [];
+
+  bool _isUniqueName(String name) {
+    UserBirthday? birthday =
+    birthdaysForDate.firstWhereOrNull((element) => element.name == name);
+    return birthday == null;
+  }
+
+  @override
+  void initState() {
+    birthdaysForDate = SharedPrefs().getBirthdaysForDate(widget.dateOfDay);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +53,9 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter a valid name';
+                      }
+                      if (!_isUniqueName(value)) {
+                        return "A birthday with this name already exists";
                       }
                       return null;
                     },
@@ -74,6 +92,7 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
           onPressed: () {
             if (_formKey.currentState != null && _formKey.currentState!.validate()) {
               _formKey.currentState!.save();
+
               UserBirthday userBirthday = new UserBirthday(_birthdayPersonController.text,
                   widget.dateOfDay,
                   false,
