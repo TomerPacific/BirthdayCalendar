@@ -1,7 +1,6 @@
 import 'package:birthday_calendar/widget/add_birthday_form.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
-import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
 import 'package:birthday_calendar/widget/birthday.dart';
 import 'package:birthday_calendar/constants.dart';
@@ -26,9 +25,6 @@ class BirthdaysForCalendarDayWidget extends StatefulWidget {
 class _BirthdaysForCalendarDayWidgetState
     extends State<BirthdaysForCalendarDayWidget> {
   List<UserBirthday> currentBirthdays = [];
-  TextEditingController _birthdayPersonController = new TextEditingController();
-  TextEditingController _phoneNumberController = new TextEditingController();
-  PhoneNumber _phoneNumber = PhoneNumber(isoCode: 'US');
 
   bool _isValidName(String userInput) {
     return (userInput.isNotEmpty && userInput.length > 0);
@@ -40,19 +36,10 @@ class _BirthdaysForCalendarDayWidgetState
     return birthday == null;
   }
 
-  void _handleUserInput(String name, String phoneNumber) {
-    if (_isValidName(name) && _isUniqueName(name)) {
-      UserBirthday userBirthday =
-          new UserBirthday(name, widget.dateOfDay, false, phoneNumber);
+  void _handleUserInput(UserBirthday userBirthday) {
       _addBirthdayToList(userBirthday);
-      _birthdayPersonController.text = "";
       NotificationService().scheduleNotificationForBirthday(
           userBirthday, "${userBirthday.name} has an upcoming birthday!");
-      Navigator.pop(context);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-          new SnackBar(content: new Text(invalidNameErrorMessage)));
-    }
   }
 
   void _addBirthdayToList(UserBirthday userBirthday) {
@@ -107,17 +94,14 @@ class _BirthdaysForCalendarDayWidgetState
       )
       ),
       floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            showDialog(context: context,
-                builder: (_) => AddBirthdayForm());
+          onPressed: () async {
+            var result = await showDialog(context: context,
+                builder: (_) => AddBirthdayForm(dateOfDay: widget.dateOfDay));
+            if (result != null) {
+              _handleUserInput(result);
+            }
           },
           child: Icon(Icons.add)),
     );
-  }
-
-  @override dispose() {
-    _birthdayPersonController.dispose();
-    _phoneNumberController.dispose();
-    super.dispose();
   }
 }
