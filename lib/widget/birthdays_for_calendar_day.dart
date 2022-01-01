@@ -1,3 +1,4 @@
+import 'package:birthday_calendar/widget/add_birthday_form.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
@@ -54,68 +55,6 @@ class _BirthdaysForCalendarDayWidgetState
     }
   }
 
-  void _showAddBirthdayDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (_) => new AlertDialog(
-        title: new Text(addBirthday),
-        content: new Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            new TextField(
-              autofocus: true,
-              controller: _birthdayPersonController,
-              decoration: InputDecoration(hintText: "Enter the person's name"),
-            ),
-            InternationalPhoneNumberInput(
-              onInputChanged: (PhoneNumber number) {
-                _phoneNumber = number;
-              },
-              onInputValidated: (bool value) {
-
-              },
-              selectorConfig: SelectorConfig(
-                selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
-              ),
-              ignoreBlank: false,
-              autoValidateMode: AutovalidateMode.disabled,
-              selectorTextStyle: TextStyle(color: Colors.black),
-              initialValue: _phoneNumber,
-              textFieldController: _phoneNumberController,
-              formatInput: false,
-              keyboardType:
-              TextInputType.numberWithOptions(signed: true, decimal: true),
-              inputBorder: OutlineInputBorder(),
-              onSaved: (PhoneNumber number) {
-                _phoneNumber = number;
-              },
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            style: TextButton.styleFrom(primary: Colors.green),
-            onPressed: () {
-              _handleUserInput(_birthdayPersonController.text, _phoneNumber.parseNumber());
-              _birthdayPersonController.text = "";
-              _phoneNumberController.text = "";
-            },
-            child: new Text("OK"),
-          ),
-          TextButton(
-            style: TextButton.styleFrom(primary: Colors.red),
-            onPressed: () {
-              _birthdayPersonController.text = "";
-              _phoneNumberController.text = "";
-              Navigator.pop(context);
-            },
-            child: new Text("BACK"),
-          )
-        ],
-      ),
-    );
-  }
-
   void _addBirthdayToList(UserBirthday userBirthday) {
     setState(() {
       currentBirthdays.add(userBirthday);
@@ -169,7 +108,8 @@ class _BirthdaysForCalendarDayWidgetState
       ),
       floatingActionButton: FloatingActionButton(
           onPressed: () {
-            _showAddBirthdayDialog(context);
+            showDialog(context: context,
+                builder: (_) => AddBirthdayForm());
           },
           child: Icon(Icons.add)),
     );
