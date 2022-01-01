@@ -20,6 +20,9 @@ class AddBirthdayForm extends StatefulWidget {
 
 class AddBirthdayFormState extends State<AddBirthdayForm> {
   final _formKey = GlobalKey<FormState>();
+  final _birthdayNameKey = GlobalKey<FormFieldState>();
+  final _phoneNumberKey = GlobalKey<FormFieldState>();
+
   TextEditingController _birthdayPersonController = new TextEditingController();
   TextEditingController _phoneNumberController = new TextEditingController();
   PhoneNumber _phoneNumber = PhoneNumber(isoCode: 'US');
@@ -50,6 +53,7 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                     autofocus: true,
                     controller: _birthdayPersonController,
                     decoration: InputDecoration(hintText: "Enter the person's name"),
+                    key: _birthdayNameKey,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter a valid name';
@@ -61,6 +65,7 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                     },
                   ),
                   new InternationalPhoneNumberInput(
+                    key: _phoneNumberKey,
                     onInputChanged: (PhoneNumber number) {
                       _phoneNumber = number;
                     },
@@ -98,9 +103,14 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                   false,
                   _phoneNumber.parseNumber());
               Navigator.pop(context, userBirthday);
+            } else {
+              if (_birthdayNameKey.currentState != null && !_birthdayNameKey.currentState!.isValid) {
+                _birthdayPersonController.clear();
+              }
+              if (_phoneNumberKey.currentState != null && !_phoneNumberKey.currentState!.isValid) {
+                _birthdayPersonController.clear();
+              }
             }
-            _birthdayPersonController.text = "";
-            _phoneNumberController.text = "";
           },
           child: new Text("OK")
         ),
