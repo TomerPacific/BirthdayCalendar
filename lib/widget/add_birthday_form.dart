@@ -1,3 +1,4 @@
+import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
@@ -5,7 +6,9 @@ import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:birthday_calendar/constants.dart';
 
 class AddBirthdayForm extends StatefulWidget {
-  const AddBirthdayForm({Key? key}) : super(key: key);
+  final DateTime dateOfDay;
+
+  AddBirthdayForm({Key? key, required this.dateOfDay}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -71,6 +74,11 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
           onPressed: () {
             if (_formKey.currentState != null && _formKey.currentState!.validate()) {
               _formKey.currentState!.save();
+              UserBirthday userBirthday = new UserBirthday(_birthdayPersonController.text,
+                  widget.dateOfDay,
+                  false,
+                  _phoneNumber.parseNumber());
+              Navigator.pop(context, userBirthday);
             }
             _birthdayPersonController.text = "";
             _phoneNumberController.text = "";
@@ -88,6 +96,12 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
         )
       ],
     );
+  }
+
+  @override dispose() {
+    _birthdayPersonController.dispose();
+    _phoneNumberController.dispose();
+    super.dispose();
   }
 
 }
