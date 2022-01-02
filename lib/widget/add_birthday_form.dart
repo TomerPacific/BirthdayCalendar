@@ -117,8 +117,8 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
         TextButton(
           style: TextButton.styleFrom(primary: Colors.red),
           onPressed: () {
-            _birthdayPersonController.text = "";
-            _phoneNumberController.text = "";
+            _birthdayPersonController.clear();
+            _phoneNumberController.clear();
             Navigator.pop(context);
           },
           child: new Text("BACK")
