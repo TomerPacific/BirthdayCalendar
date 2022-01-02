@@ -18,7 +18,10 @@ void main() {
     });
   });
 
-  testWidgets("BirthdayWidget shows birthday for Someone", (WidgetTester tester) async {
+  testWidgets("BirthdayWidget show birthday for Someone", (WidgetTester tester) async {
+    final String phoneNumber =  '+234 500 500 5005';
+    UserBirthday userBirthday = new UserBirthday("Someone", DateTime.now(), false, phoneNumber);
+
     await tester.pumpWidget(
         MaterialApp(
             home: Material(
@@ -26,7 +29,7 @@ void main() {
                       height: 40,
                 child: BirthdayWidget(
                     key: Key("123"),
-                    birthdayOfPerson: new UserBirthday("Someone", DateTime.now(), false),
+                    birthdayOfPerson: userBirthday,
                     onDeletePressedCallback: () {},
                     indexOfBirthday: 1)
               )
@@ -40,6 +43,9 @@ void main() {
 
   testWidgets("BirthdayWidget click on remove notification icon", (WidgetTester tester) async {
 
+    final String phoneNumber =  '+234 500 500 5005';
+    UserBirthday userBirthday = new UserBirthday("Someone", DateTime.now(), false, phoneNumber);
+
     await tester.pumpWidget(
         MaterialApp(
             home: Material(
@@ -47,7 +53,7 @@ void main() {
                     height: 40,
                     child: BirthdayWidget(
                         key: Key("123"),
-                        birthdayOfPerson: new UserBirthday("Someone", DateTime.now(), false),
+                        birthdayOfPerson: userBirthday,
                         onDeletePressedCallback: () {
                           print("Deleted");
                         },
@@ -63,6 +69,33 @@ void main() {
 
     expect(printLog.length, 1);
     expect(printLog[0], contains('Deleted'));
+  });
+
+  testWidgets("BirthdayWidget press on call button", (WidgetTester tester) async {
+
+    final String phoneNumber =  '+234 500 500 5005';
+    UserBirthday userBirthday = new UserBirthday("Someone", DateTime.now(), false, phoneNumber);
+
+    await tester.pumpWidget(
+        MaterialApp(
+            home: Material(
+                child:  new SizedBox(
+                    height: 40,
+                    child: BirthdayWidget(
+                        key: Key("123"),
+                        birthdayOfPerson: userBirthday,
+                        onDeletePressedCallback: () {},
+                        indexOfBirthday: 1)
+                )
+            )
+        )
+    );
+
+    await tester.tap(find.descendant(of: find.byType(IconButton), matching: find.byIcon(Icons.call)));
+    await tester.pump();
+
+    final callButtonIcon = find.byIcon(Icons.call);
+    expect(callButtonIcon, findsOneWidget);
   });
 }
 
