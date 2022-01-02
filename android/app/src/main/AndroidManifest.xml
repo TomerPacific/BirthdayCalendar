@@ -2,7 +2,8 @@
     package="com.tomerpacific.birthday_calendar">
    <application
         android:label="Birthday Calendar"
-        android:icon="@mipmap/launcher_icon">
+        android:icon="@mipmap/launcher_icon"
+        android:allowBackup="true">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
