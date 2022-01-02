@@ -19,8 +19,8 @@ void main() {
 
   test("SharedPreferences set birthday for date", () async {
     final DateTime dateTime = DateTime(2021, 12, 5);
-
-    final UserBirthday userBirthday = new UserBirthday("Someone", DateTime.now(), false, "");
+    final String phoneNumber =  '+234 500 500 5005';
+    final UserBirthday userBirthday = new UserBirthday("Someone", DateTime.now(), false, phoneNumber);
     List<UserBirthday> birthdays = [];
     birthdays.add(userBirthday);
     SharedPrefs().setBirthdaysForDate(dateTime, birthdays);
@@ -35,8 +35,9 @@ void main() {
 
   test("SharedPreferences clear all birthday for date", () async {
     final DateTime dateTime = DateTime(2021, 12, 5);
+    final String phoneNumber =  '+234 500 500 5005';
 
-    final UserBirthday userBirthday = new UserBirthday("Someone", DateTime.now(), false, "");
+    final UserBirthday userBirthday = new UserBirthday("Someone", DateTime.now(), false, phoneNumber);
     List<UserBirthday> birthdays = [];
     birthdays.add(userBirthday);
     SharedPrefs().setBirthdaysForDate(dateTime, birthdays);

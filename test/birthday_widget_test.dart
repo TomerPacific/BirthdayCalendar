@@ -19,8 +19,8 @@ void main() {
   });
 
   testWidgets("BirthdayWidget show birthday for Someone", (WidgetTester tester) async {
-
-    UserBirthday userBirthday = new UserBirthday("Someone", DateTime.now(), false, "");
+    final String phoneNumber =  '+234 500 500 5005';
+    UserBirthday userBirthday = new UserBirthday("Someone", DateTime.now(), false, phoneNumber);
 
     await tester.pumpWidget(
         MaterialApp(
@@ -43,7 +43,8 @@ void main() {
 
   testWidgets("BirthdayWidget click on remove notification icon", (WidgetTester tester) async {
 
-    UserBirthday userBirthday = new UserBirthday("Someone", DateTime.now(), false, "");
+    final String phoneNumber =  '+234 500 500 5005';
+    UserBirthday userBirthday = new UserBirthday("Someone", DateTime.now(), false, phoneNumber);
 
     await tester.pumpWidget(
         MaterialApp(
@@ -72,7 +73,8 @@ void main() {
 
   testWidgets("BirthdayWidget press on call button", (WidgetTester tester) async {
 
-    UserBirthday userBirthday = new UserBirthday("Someone", DateTime.now(), false, "");
+    final String phoneNumber =  '+234 500 500 5005';
+    UserBirthday userBirthday = new UserBirthday("Someone", DateTime.now(), false, phoneNumber);
 
     await tester.pumpWidget(
         MaterialApp(
