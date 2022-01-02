@@ -51,7 +51,7 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
   void _handleCallButtonPressed() async {
     String phoneUrl = 'tel://' + widget.birthdayOfPerson.phoneNumber;
     if (await canLaunch(phoneUrl)) {
-      launch('tel://' + widget.birthdayOfPerson.phoneNumber);
+      launch(phoneUrl);
     }
   }
 
