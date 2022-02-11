@@ -105,9 +105,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(applicationName),
-      ),
       body:
       new GestureDetector(
       onHorizontalDragUpdate: _decideOnNextMonthToShow,
@@ -117,7 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           new Padding(
-            padding: const EdgeInsets.only(bottom: 50, top: 20),
+            padding: const EdgeInsets.only(bottom: 50, top: 50),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
