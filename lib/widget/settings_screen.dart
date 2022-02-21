@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/service/shared_prefs.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class SettingsScreen extends StatefulWidget {
   final Function onClearNotifications;
@@ -16,10 +17,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   bool _isDarkModeEnabled = false;
   bool _importContacts = false;
+  String versionNumber = "";
 
   @override
   void initState() {
     _isDarkModeEnabled = SharedPrefs().getThemeModeSetting();
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+        setState(() {
+          versionNumber = packageInfo.version;
+        });
+      });
+    });
+
     super.initState();
   }
 
@@ -62,50 +72,63 @@ class _SettingsScreenState extends State<SettingsScreen> {
       appBar: AppBar(
         title: new Text("Settings"),
       ),
-      body: new Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          SwitchListTile(
-              title: const Text('Dark Mode'),
-              value: _isDarkModeEnabled,
-              secondary:
+      body:
+          new Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SwitchListTile(
+                title: const Text('Dark Mode'),
+                value: _isDarkModeEnabled,
+                secondary:
                 new Icon(Icons.dark_mode,
-                  color: Color(0xFF642ef3)
+                    color: Color(0xFF642ef3)
                 ),
-            onChanged: (bool value) {
-                setState(() {
-                  _isDarkModeEnabled = value;
-                  SharedPrefs().saveThemeModeSetting(_isDarkModeEnabled);
-                  ThemeMode mode = _isDarkModeEnabled ? ThemeMode.dark : ThemeMode.light;
-                  widget.onThemeChanged(mode);
-                });
-              },
-          ),
-          CheckboxListTile(
-            title: const Text("Import Contacts"),
-              value: _importContacts,
-              onChanged: (bool? value) {
-                if (value != null) {
+                onChanged: (bool value) {
                   setState(() {
-                    _importContacts = value;
+                    _isDarkModeEnabled = value;
+                    SharedPrefs().saveThemeModeSetting(_isDarkModeEnabled);
+                    ThemeMode mode = _isDarkModeEnabled ? ThemeMode.dark : ThemeMode.light;
+                    widget.onThemeChanged(mode);
                   });
-              }
-            },
-            secondary: const Icon(Icons.contacts,
-              color: Colors.blue
-            ),
+                },
+              ),
+              CheckboxListTile(
+                title: const Text("Import Contacts"),
+                value: _importContacts,
+                onChanged: (bool? value) {
+                  if (value != null) {
+                    setState(() {
+                      _importContacts = value;
+                    });
+                  }
+                },
+                secondary: const Icon(Icons.contacts,
+                    color: Colors.blue
+                ),
+              ),
+              ListTile(
+                  title: const Text("Clear Notifications"),
+                  leading: const Icon(
+                      Icons.clear,
+                      color: Colors.redAccent),
+                  onTap: () {
+                    _showAlertDialog(context);
+                  }
+              ),
+              Spacer(),
+              new Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Align(
+                      alignment: Alignment.bottomRight,
+                      child: Text(
+                          "v " + this.versionNumber
+                      )
+                  )
+                ],
+              )
+            ],
           ),
-          ListTile(
-            title: const Text("Clear Notifications"),
-            leading: const Icon(
-              Icons.clear,
-              color: Colors.redAccent),
-              onTap: () {
-                _showAlertDialog(context);
-              }
-          )
-        ],
-      ),
     );
   }
 
