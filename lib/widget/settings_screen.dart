@@ -10,6 +10,7 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
 
   bool _isDarkModeEnabled = false;
+  bool _importContacts = false;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         title: new Text("Settings"),
       ),
       body: new Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           SwitchListTile(
               title: const Text('Dark Mode'),
@@ -31,8 +32,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 setState(() {
                   _isDarkModeEnabled = value;
                 });
-
+              },
+          ),
+          CheckboxListTile(
+            title: const Text("Import Contacts?"),
+              value: _importContacts,
+              onChanged: (bool? value) {
+                if (value != null) {
+                  setState(() {
+                    _importContacts = value;
+                  });
+              }
             },
+            secondary: const Icon(Icons.contacts,
+              color: Colors.blue
+            ),
           )
         ],
       ),
