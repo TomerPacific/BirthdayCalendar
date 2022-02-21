@@ -68,6 +68,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             onChanged: (bool value) {
                 setState(() {
                   _isDarkModeEnabled = value;
+                  SharedPrefs().saveThemeModeSetting(_isDarkModeEnabled);
                 });
               },
           ),
