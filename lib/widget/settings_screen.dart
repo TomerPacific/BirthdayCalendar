@@ -4,8 +4,9 @@ import 'package:birthday_calendar/service/shared_prefs.dart';
 
 class SettingsScreen extends StatefulWidget {
   final Function onClearNotifications;
+  final Function onThemeChanged;
 
-  const SettingsScreen({required this.onClearNotifications});
+  const SettingsScreen({required this.onClearNotifications, required this.onThemeChanged});
 
   @override
   State<StatefulWidget> createState() => _SettingsScreenState();
@@ -15,6 +16,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   bool _isDarkModeEnabled = false;
   bool _importContacts = false;
+
+  @override
+  void initState() {
+    _isDarkModeEnabled = SharedPrefs().getThemeModeSetting();
+    super.initState();
+  }
 
 
   void _showAlertDialog(BuildContext context) {
@@ -69,6 +76,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 setState(() {
                   _isDarkModeEnabled = value;
                   SharedPrefs().saveThemeModeSetting(_isDarkModeEnabled);
+                  ThemeMode mode = _isDarkModeEnabled ? ThemeMode.dark : ThemeMode.light;
+                  widget.onThemeChanged(mode);
                 });
               },
           ),
