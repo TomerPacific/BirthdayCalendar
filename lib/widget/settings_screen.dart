@@ -17,6 +17,37 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _importContacts = false;
 
 
+  void _showAlertDialog(BuildContext context) {
+    AlertDialog alert = AlertDialog(
+      title: Text("Are You Sure?"),
+      content: Text("Do you want to remove all notifications?"),
+      actions: [
+        TextButton(
+        onPressed: () {
+          SharedPrefs().clearAllNotifications()
+              .then((didClearAllNotifications) =>
+          {
+            if (didClearAllNotifications) {
+              widget.onClearNotifications()
+            }
+          });
+          Navigator.pop(context);
+        },
+        child: const Text("Yes"),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text("No"),
+        ),
+      ],
+    );
+    showDialog(context: context,
+    builder: (BuildContext context) {
+      return alert;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,13 +91,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Icons.clear,
               color: Colors.redAccent),
               onTap: () {
-                SharedPrefs().clearAllNotifications()
-                    .then((didClearAllNotifications) =>
-                {
-                  if (didClearAllNotifications) {
-                     widget.onClearNotifications()
-                  }
-                });
+                _showAlertDialog(context);
               }
           )
         ],
