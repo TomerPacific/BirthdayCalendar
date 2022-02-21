@@ -143,16 +143,19 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         actions: [
                 IconButton(
-                icon: Icon(
-                Icons.settings,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SettingsScreen(onClearNotifications: _onClearNotifications, onThemeChanged: _onThemeChanged)),
-              );
-            },
+                  icon: Icon(
+                  Icons.settings,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SettingsScreen(
+                        onClearNotifications: _onClearNotifications,
+                        onThemeChanged: _onThemeChanged)
+                    ),
+                  );
+                },
             )
         ],
       ),
