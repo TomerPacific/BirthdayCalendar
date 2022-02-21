@@ -1,3 +1,4 @@
+import 'package:birthday_calendar/widget/settings_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:birthday_calendar/widget/calendar.dart';
@@ -105,6 +106,22 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+                IconButton(
+                icon: Icon(
+                Icons.settings,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SettingsScreen()),
+              );
+            },
+            )
+        ],
+      ),
       body:
       new GestureDetector(
       onHorizontalDragUpdate: _decideOnNextMonthToShow,
