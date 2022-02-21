@@ -7,28 +7,50 @@ import 'package:birthday_calendar/service/date_service.dart';
 import 'package:birthday_calendar/service/notification_service.dart';
 import 'package:birthday_calendar/service/shared_prefs.dart';
 
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SharedPrefs().init();
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State {
+
+  static _MyAppState? of(BuildContext context) => context.findAncestorStateOfType<_MyAppState>();
+  ThemeMode _themeMode = ThemeMode.system;
+
+  void changeTheme(ThemeMode themeMode) {
+    setState(() {
+      _themeMode = themeMode;
+    });
+  }
+
+  @override
+  void initState() {
+    bool isDarkModeEnabled = SharedPrefs().getThemeModeSetting();
+    _themeMode = isDarkModeEnabled ? ThemeMode.dark : ThemeMode.light;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: applicationName,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(
-          key: Key("BirthdayCalendar"),
+        return MaterialApp(
           title: applicationName,
-          currentMonth: DateService().getCurrentMonthNumber()
-      ),
-    );
-  }
+          theme: ThemeData(),
+          darkTheme: ThemeData.dark(),
+          themeMode: _themeMode,
+          home: MyHomePage(
+              key: Key("BirthdayCalendar"),
+              title: applicationName,
+              currentMonth: DateService().getCurrentMonthNumber()
+          ),
+        );
+      }
 }
 
 class MyHomePage extends StatefulWidget {
@@ -109,6 +131,12 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void _onThemeChanged(ThemeMode themeMode) {
+    setState(() {
+      _MyAppState.of(context)?.changeTheme(themeMode);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -122,7 +150,7 @@ class _MyHomePageState extends State<MyHomePage> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SettingsScreen(onClearNotifications: _onClearNotifications)),
+                MaterialPageRoute(builder: (context) => SettingsScreen(onClearNotifications: _onClearNotifications, onThemeChanged: _onThemeChanged)),
               );
             },
             )
