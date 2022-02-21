@@ -50,6 +50,16 @@ class SharedPrefs {
     setBirthdaysForDate(birthday.birthdayDate, birthdays);
   }
 
+  void saveThemeModeSetting(bool isDarkModeEnabled) {
+    _sharedPreferences!.setBool("darkMode", isDarkModeEnabled);
+  }
+
+  bool getThemeModeSetting() {
+      bool? isDarkModeEnabled = _sharedPreferences!.getBool("darkMode");
+      return isDarkModeEnabled != null ? isDarkModeEnabled : false;
+  }
+
+
   Future<bool> clearAllNotifications() async {
     return await _sharedPreferences!.clear();
   }
