@@ -103,6 +103,12 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
   }
 
+  void _onClearNotifications() {
+    setState(() {
+
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -116,7 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SettingsScreen()),
+                MaterialPageRoute(builder: (context) => SettingsScreen(onClearNotifications: _onClearNotifications)),
               );
             },
             )
@@ -158,25 +164,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   onPressed: () {
                     _calculateNextMonthToShow(AxisDirection.left);
                   }),
-            ],
-          )
-          ),
-          new TextButton(
-              onPressed: () {
-                SharedPrefs().clearAllNotifications()
-                    .then((didClearAllNotifications) =>
-                      {
-                        if (didClearAllNotifications) {
-                          setState(() {})
-                        }
-                      });
-              },
-              child: new Text("Clear Notifications",
-              style: new TextStyle(
-                fontSize: 15.0,
-                fontWeight: FontWeight.bold
-                )
-              )
+              ],
+            )
           )
         ],
       )
