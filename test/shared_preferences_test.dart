@@ -1,11 +1,15 @@
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:birthday_calendar/service/shared_prefs.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
 
   setUp(() {
     return Future(() async {
+      WidgetsFlutterBinding.ensureInitialized();
+      SharedPreferences.setMockInitialValues({});
       await SharedPrefs().init();
       SharedPrefs().clearAllNotifications();
     });
