@@ -92,20 +92,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   });
                 },
               ),
-              CheckboxListTile(
-                title: const Text("Import Contacts"),
-                value: _importContacts,
-                onChanged: (bool? value) {
-                  if (value != null) {
-                    setState(() {
-                      _importContacts = value;
-                    });
-                  }
-                },
-                secondary: const Icon(Icons.contacts,
-                    color: Colors.blue
-                ),
-              ),
               ListTile(
                   title: const Text("Clear Notifications"),
                   leading: const Icon(
