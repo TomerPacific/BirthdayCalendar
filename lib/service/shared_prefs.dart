@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:birthday_calendar/service/date_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
+import 'package:birthday_calendar/constants.dart';
 
 class SharedPrefs {
   static SharedPreferences? _sharedPreferences;
@@ -49,6 +50,16 @@ class SharedPrefs {
 
     setBirthdaysForDate(birthday.birthdayDate, birthdays);
   }
+
+  void saveThemeModeSetting(bool isDarkModeEnabled) {
+    _sharedPreferences!.setBool(darkModeKey, isDarkModeEnabled);
+  }
+
+  bool getThemeModeSetting() {
+      bool? isDarkModeEnabled = _sharedPreferences!.getBool(darkModeKey);
+      return isDarkModeEnabled != null ? isDarkModeEnabled : false;
+  }
+
 
   Future<bool> clearAllNotifications() async {
     return await _sharedPreferences!.clear();

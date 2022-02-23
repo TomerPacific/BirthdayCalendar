@@ -1,3 +1,4 @@
+import 'package:birthday_calendar/widget/settings_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:birthday_calendar/widget/calendar.dart';
@@ -6,28 +7,50 @@ import 'package:birthday_calendar/service/date_service.dart';
 import 'package:birthday_calendar/service/notification_service.dart';
 import 'package:birthday_calendar/service/shared_prefs.dart';
 
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SharedPrefs().init();
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State {
+
+  static _MyAppState? of(BuildContext context) => context.findAncestorStateOfType<_MyAppState>();
+  ThemeMode _themeMode = ThemeMode.system;
+
+  void changeTheme(ThemeMode themeMode) {
+    setState(() {
+      _themeMode = themeMode;
+    });
+  }
+
+  @override
+  void initState() {
+    bool isDarkModeEnabled = SharedPrefs().getThemeModeSetting();
+    _themeMode = isDarkModeEnabled ? ThemeMode.dark : ThemeMode.light;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: applicationName,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(
-          key: Key("BirthdayCalendar"),
+        return MaterialApp(
           title: applicationName,
-          currentMonth: DateService().getCurrentMonthNumber()
-      ),
-    );
-  }
+          theme: ThemeData(),
+          darkTheme: ThemeData.dark(),
+          themeMode: _themeMode,
+          home: MyHomePage(
+              key: Key("BirthdayCalendar"),
+              title: applicationName,
+              currentMonth: DateService().getCurrentMonthNumber()
+          ),
+        );
+      }
 }
 
 class MyHomePage extends StatefulWidget {
@@ -102,9 +125,40 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
   }
 
+  void _onClearNotifications() {
+    setState(() {
+
+    });
+  }
+
+  void _onThemeChanged(ThemeMode themeMode) {
+    setState(() {
+      _MyAppState.of(context)?.changeTheme(themeMode);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+                IconButton(
+                  icon: Icon(
+                  Icons.settings,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SettingsScreen(
+                        onClearNotifications: _onClearNotifications,
+                        onThemeChanged: _onThemeChanged)
+                    ),
+                  );
+                },
+            )
+        ],
+      ),
       body:
       new GestureDetector(
       onHorizontalDragUpdate: _decideOnNextMonthToShow,
@@ -141,25 +195,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   onPressed: () {
                     _calculateNextMonthToShow(AxisDirection.left);
                   }),
-            ],
-          )
-          ),
-          new TextButton(
-              onPressed: () {
-                SharedPrefs().clearAllNotifications()
-                    .then((didClearAllNotifications) =>
-                      {
-                        if (didClearAllNotifications) {
-                          setState(() {})
-                        }
-                      });
-              },
-              child: new Text("Clear Notifications",
-              style: new TextStyle(
-                fontSize: 15.0,
-                fontWeight: FontWeight.bold
-                )
-              )
+              ],
+            )
           )
         ],
       )
