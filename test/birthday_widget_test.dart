@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:birthday_calendar/widget/birthday.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 var printLog = [];
 void print(String s) => printLog.add(s);
@@ -13,7 +14,9 @@ void main() {
 
   setUp(() {
     return Future(() async {
+      WidgetsFlutterBinding.ensureInitialized();
       await NotificationService().init(_onDidReceiveLocalNotification);
+      SharedPreferences.setMockInitialValues({});
       await SharedPrefs().init();
     });
   });
