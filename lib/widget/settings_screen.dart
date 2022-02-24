@@ -16,6 +16,7 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
 
   bool _isDarkModeEnabled = false;
+  bool _importContacts = false;
   String versionNumber = "";
 
   @override
@@ -89,6 +90,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ThemeMode mode = _isDarkModeEnabled ? ThemeMode.dark : ThemeMode.light;
                     widget.onThemeChanged(mode);
                   });
+                },
+              ),
+              ListTile(
+                title: const Text("Import Contacts"),
+                leading: const Icon(Icons.contacts,
+                    color: Colors.blue
+                ),
+                onTap: () {
+
                 },
               ),
               ListTile(
