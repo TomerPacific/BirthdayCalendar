@@ -1,6 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tomerpacific.birthday_calendar">
-   <application
+
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
+    <application
         android:label="Birthday Calendar"
         android:icon="@mipmap/launcher_icon"
         android:allowBackup="true">
