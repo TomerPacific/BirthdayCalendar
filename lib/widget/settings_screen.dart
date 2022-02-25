@@ -1,9 +1,9 @@
 import 'package:birthday_calendar/service/PermissionServicePermissionHandler.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/service/shared_prefs.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:birthday_calendar/constants.dart';
 
 class SettingsScreen extends StatefulWidget {
   final Function onClearNotifications;
@@ -73,7 +73,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _requestContactsPermission() async {
-    PermissionStatus status = await widget.permissionServicePermissionHandler.requestPermissionAndGetStatus("contacts");
+    PermissionStatus status = await widget.permissionServicePermissionHandler.requestPermissionAndGetStatus(contactsPermissionKey);
     if (status == PermissionStatus.granted) {
       //Import contacts
     } else if (status == PermissionStatus.permanentlyDenied) {
@@ -84,7 +84,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _handleImportingContacts() async {
-      PermissionStatus status = await widget.permissionServicePermissionHandler.getPermissionStatus("contacts");
+      PermissionStatus status = await widget.permissionServicePermissionHandler.getPermissionStatus(contactsPermissionKey);
       if (status == PermissionStatus.denied) {
           _requestContactsPermission();
       } else if (status == PermissionStatus.permanentlyDenied) {
