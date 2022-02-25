@@ -1,3 +1,4 @@
+import 'package:birthday_calendar/service/PermissionServicePermissionHandler.dart';
 import 'package:birthday_calendar/widget/settings_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -67,6 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   int monthToPresent = -1;
   String month = "";
+  PermissionServicePermissionHandler _permissionServicePermissionHandler = new PermissionServicePermissionHandler();
 
   int _correctMonthOverflow(int month) {
     if (month == 0) {
@@ -152,7 +154,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     context,
                     MaterialPageRoute(builder: (context) => SettingsScreen(
                         onClearNotifications: _onClearNotifications,
-                        onThemeChanged: _onThemeChanged)
+                        onThemeChanged: _onThemeChanged,
+                        permissionServicePermissionHandler: _permissionServicePermissionHandler)
                     ),
                   );
                 },
