@@ -17,7 +17,7 @@ class PermissionServicePermissionHandler extends PermissionsService {
 
   @override
   Future<PermissionStatus> requestPermissionAndGetStatus(String permissionName) async {
-    PermissionStatus status = false;
+    PermissionStatus status = PermissionStatus.denied;
     switch(permissionName) {
       case "contacts":
         await Permission.contacts.shouldShowRequestRationale;
