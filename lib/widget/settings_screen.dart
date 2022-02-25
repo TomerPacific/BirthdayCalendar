@@ -1,9 +1,12 @@
+import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/service/PermissionServicePermissionHandler.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/service/shared_prefs.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:birthday_calendar/constants.dart';
+import 'package:contacts_service/contacts_service.dart';
+import 'package:birthday_calendar/service/notification_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   final Function onClearNotifications;
@@ -75,7 +78,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _requestContactsPermission() async {
     PermissionStatus status = await widget.permissionServicePermissionHandler.requestPermissionAndGetStatus(contactsPermissionKey);
     if (status == PermissionStatus.granted) {
-      //Import contacts
+      _addBirthdaysOfContactsAndSetNotifications();
     } else if (status == PermissionStatus.permanentlyDenied) {
       setState(() {
         _shouldImportContactsTileBeDisabled = true;
@@ -92,6 +95,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _shouldImportContactsTileBeDisabled = true;
         });
       }
+  }
+
+  void _addBirthdaysOfContactsAndSetNotifications() async {
+    List<Contact> contacts = await ContactsService.getContacts(withThumbnails: false);
+    for (Contact person in contacts) {
+      if (person.birthday != null &&
+          person.displayName != null &&
+          person.phones != null) {
+        Item phoneNumber = person.phones!.first;
+        UserBirthday birthday = new UserBirthday( person.displayName!, person.birthday!, false, phoneNumber.value!);
+        NotificationService().scheduleNotificationForBirthday(birthday, "${person.displayName!} has an upcoming birthday!");
+        List<UserBirthday> birthdays = SharedPrefs().getBirthdaysForDate(person.birthday!);
+        birthdays.add(birthday);
+        SharedPrefs().setBirthdaysForDate(person.birthday!, birthdays);
+      }
+    }
   }
 
   @override
