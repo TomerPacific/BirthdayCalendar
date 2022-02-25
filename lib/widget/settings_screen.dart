@@ -1,13 +1,19 @@
+import 'package:birthday_calendar/service/PermissionServicePermissionHandler.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/service/shared_prefs.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class SettingsScreen extends StatefulWidget {
   final Function onClearNotifications;
   final Function onThemeChanged;
+  final PermissionServicePermissionHandler permissionServicePermissionHandler;
 
-  const SettingsScreen({required this.onClearNotifications, required this.onThemeChanged});
+  const SettingsScreen({
+    required this.onClearNotifications,
+    required this.onThemeChanged,
+    required this.permissionServicePermissionHandler});
 
   @override
   State<StatefulWidget> createState() => _SettingsScreenState();
@@ -16,8 +22,8 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
 
   bool _isDarkModeEnabled = false;
-  bool _importContacts = false;
   String versionNumber = "";
+  bool _shouldImportContactsTileBeDisabled = false;
 
   @override
   void initState() {
@@ -66,6 +72,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
     });
   }
 
+  void _requestContactsPermission() async {
+    PermissionStatus status = await widget.permissionServicePermissionHandler.requestPermissionAndGetStatus("contacts");
+    if (status == PermissionStatus.granted) {
+      //Import contacts
+    } else if (status == PermissionStatus.permanentlyDenied) {
+      setState(() {
+        _shouldImportContactsTileBeDisabled = true;
+      });
+    }
+  }
+
+  void _handleImportingContacts() async {
+      PermissionStatus status = await widget.permissionServicePermissionHandler.getPermissionStatus("contacts");
+      if (status == PermissionStatus.denied) {
+          _requestContactsPermission();
+      } else if (status == PermissionStatus.permanentlyDenied) {
+        setState(() {
+          _shouldImportContactsTileBeDisabled = true;
+        });
+      }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,14 +120,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   });
                 },
               ),
-              ListTile(
-                title: const Text("Import Contacts"),
-                leading: const Icon(Icons.contacts,
-                    color: Colors.blue
-                ),
-                onTap: () {
-
-                },
+             ListTile(
+                  title: const Text("Import Contacts"),
+                  leading: Icon(Icons.contacts,
+                      color: !_shouldImportContactsTileBeDisabled ? Colors.blue : Colors.grey
+                  ),
+                  onTap: _handleImportingContacts,
+                  enabled: !_shouldImportContactsTileBeDisabled,
               ),
               ListTile(
                   title: const Text("Clear Notifications"),
