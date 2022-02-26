@@ -1,23 +1,26 @@
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:birthday_calendar/service/shared_prefs.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:birthday_calendar/service/StorageService.dart';
+import 'package:birthday_calendar/service/service_locator.dart';
 
 void main() {
+
+  setupServiceLocator();
+  StorageService _storageService = getIt<StorageService>();
 
   setUp(() {
     return Future(() async {
       WidgetsFlutterBinding.ensureInitialized();
       SharedPreferences.setMockInitialValues({});
-      await SharedPrefs().init();
-      SharedPrefs().clearAllNotifications();
+      _storageService.clearAllBirthdays();
     });
   });
 
-  test("SharedPreferences get empty birthday array for date", () {
+  test("SharedPreferences get empty birthday array for date", () async {
     final DateTime dateTime = DateTime(2021, 12, 5);
-    final birthdays = SharedPrefs().getBirthdaysForDate(dateTime);
+    final birthdays = await _storageService.getBirthdaysForDate(dateTime);
     expect(birthdays.length, 0);
   });
 
@@ -27,9 +30,9 @@ void main() {
     final UserBirthday userBirthday = new UserBirthday("Someone", DateTime.now(), false, phoneNumber);
     List<UserBirthday> birthdays = [];
     birthdays.add(userBirthday);
-    SharedPrefs().setBirthdaysForDate(dateTime, birthdays);
+    _storageService.saveBirthdaysForDate(dateTime, birthdays);
 
-    final storedBirthdays = SharedPrefs().getBirthdaysForDate(dateTime);
+    final storedBirthdays = await _storageService.getBirthdaysForDate(dateTime);
     expect(storedBirthdays.length, 1);
     expect(storedBirthdays[0].name, equals(userBirthday.name));
     expect(storedBirthdays[0].birthdayDate, equals(userBirthday.birthdayDate));
@@ -44,14 +47,14 @@ void main() {
     final UserBirthday userBirthday = new UserBirthday("Someone", DateTime.now(), false, phoneNumber);
     List<UserBirthday> birthdays = [];
     birthdays.add(userBirthday);
-    SharedPrefs().setBirthdaysForDate(dateTime, birthdays);
+   _storageService.saveBirthdaysForDate(dateTime, birthdays);
 
-    List<UserBirthday> storedBirthdays = SharedPrefs().getBirthdaysForDate(dateTime);
+    List<UserBirthday> storedBirthdays = await _storageService.getBirthdaysForDate(dateTime);
     expect(storedBirthdays.length, 1);
 
-    SharedPrefs().clearAllNotifications();
+    _storageService.clearAllBirthdays();
 
-    storedBirthdays = SharedPrefs().getBirthdaysForDate(dateTime);
+    storedBirthdays = await _storageService.getBirthdaysForDate(dateTime);
 
     expect(storedBirthdays.length, 0);
 
