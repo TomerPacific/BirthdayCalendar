@@ -35,6 +35,7 @@ dependencies:
   intl_phone_number_input: ^0.7.0+2
   url_launcher: ^6.0.17
   package_info_plus: ^1.4.0
+  get_it: ^6.0.0
 
 dev_dependencies:
   flutter_test:
