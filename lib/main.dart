@@ -1,3 +1,5 @@
+import 'package:birthday_calendar/service/StorageService.dart';
+import 'package:birthday_calendar/service/service_locator.dart';
 import 'package:birthday_calendar/widget/settings_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -5,11 +7,10 @@ import 'package:birthday_calendar/widget/calendar.dart';
 import 'constants.dart';
 import 'package:birthday_calendar/service/date_service.dart';
 import 'package:birthday_calendar/service/notification_service.dart';
-import 'package:birthday_calendar/service/shared_prefs.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await SharedPrefs().init();
+  setupServiceLocator();
   runApp(MyApp());
 }
 
@@ -23,6 +24,7 @@ class _MyAppState extends State {
 
   static _MyAppState? of(BuildContext context) => context.findAncestorStateOfType<_MyAppState>();
   ThemeMode _themeMode = ThemeMode.system;
+  StorageService _storageService = getIt<StorageService>();
 
   void changeTheme(ThemeMode themeMode) {
     setState(() {
@@ -32,9 +34,16 @@ class _MyAppState extends State {
 
   @override
   void initState() {
-    bool isDarkModeEnabled = SharedPrefs().getThemeModeSetting();
-    _themeMode = isDarkModeEnabled ? ThemeMode.dark : ThemeMode.light;
     super.initState();
+    _setThemeMode();
+  }
+
+  void _setThemeMode() async {
+    bool isDarkModeEnabled = await _storageService.getThemeModeSetting();
+    setState(() {
+      _themeMode = isDarkModeEnabled ? ThemeMode.dark : ThemeMode.light;
+    });
+
   }
 
   @override

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'birthdays_for_calendar_day.dart';
-import 'package:birthday_calendar/service/shared_prefs.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
+import 'package:birthday_calendar/service/StorageService.dart';
+import 'package:birthday_calendar/service/service_locator.dart';
 
 class CalendarDayWidget extends StatefulWidget {
   final DateTime date;
@@ -15,6 +16,7 @@ class CalendarDayWidget extends StatefulWidget {
 
 class _CalendarDayState extends State<CalendarDayWidget> {
   List<UserBirthday> _birthdays = [];
+  StorageService _storageService = getIt<StorageService>();
 
   @override
   void initState() {
@@ -28,9 +30,10 @@ class _CalendarDayState extends State<CalendarDayWidget> {
     _fetchBirthdaysFromStorage();
   }
 
-  void _fetchBirthdaysFromStorage() {
+  void _fetchBirthdaysFromStorage() async {
+    List<UserBirthday> storedBirthdays = await _storageService.getBirthdaysForDate(widget.date);
     setState(() {
-      _birthdays = SharedPrefs().getBirthdaysForDate(widget.date);
+      _birthdays = storedBirthdays;
     });
   }
 

@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:birthday_calendar/widget/birthday.dart';
 import 'package:birthday_calendar/service/date_service.dart';
 import 'package:birthday_calendar/service/notification_service.dart';
-import 'package:birthday_calendar/service/shared_prefs.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
+import 'package:birthday_calendar/service/StorageService.dart';
+import 'package:birthday_calendar/service/service_locator.dart';
 
 class BirthdaysForCalendarDayWidget extends StatefulWidget {
   final DateTime dateOfDay;
@@ -23,6 +24,7 @@ class BirthdaysForCalendarDayWidget extends StatefulWidget {
 class _BirthdaysForCalendarDayWidgetState
     extends State<BirthdaysForCalendarDayWidget> {
   List<UserBirthday> currentBirthdays = [];
+  StorageService _storageService = getIt<StorageService>();
 
   void _handleUserInput(UserBirthday userBirthday) {
       _addBirthdayToList(userBirthday);
@@ -34,14 +36,14 @@ class _BirthdaysForCalendarDayWidgetState
     setState(() {
       currentBirthdays.add(userBirthday);
     });
-    SharedPrefs().setBirthdaysForDate(widget.dateOfDay, currentBirthdays);
+    _storageService.saveBirthdaysForDate(widget.dateOfDay, currentBirthdays);
   }
 
   void _removeBirthdayFromList(UserBirthday birthdayToRemove) {
     setState(() {
       currentBirthdays.remove(birthdayToRemove);
     });
-    SharedPrefs().setBirthdaysForDate(widget.dateOfDay, currentBirthdays);
+    _storageService.saveBirthdaysForDate(widget.dateOfDay, currentBirthdays);
 
   }
 
