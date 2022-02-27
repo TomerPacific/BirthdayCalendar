@@ -1,5 +1,4 @@
 import 'package:birthday_calendar/model/user_birthday.dart';
-import 'package:birthday_calendar/service/notification_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:birthday_calendar/widget/birthday.dart';
 import 'package:flutter/material.dart';
@@ -13,11 +12,10 @@ void main() {
 
   setupServiceLocator();
 
+
   setUp(() {
     return Future(() async {
       WidgetsFlutterBinding.ensureInitialized();
-
-      await NotificationService().init(_onDidReceiveLocalNotification);
       SharedPreferences.setMockInitialValues({});
     });
   });
@@ -101,12 +99,4 @@ void main() {
     final callButtonIcon = find.byIcon(Icons.call);
     expect(callButtonIcon, findsOneWidget);
   });
-}
-
-Future<dynamic> _onDidReceiveLocalNotification(
-    int id,
-    String? title,
-    String? body,
-    String? payload) async {
-
 }
