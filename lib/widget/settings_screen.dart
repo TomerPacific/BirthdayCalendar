@@ -1,7 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:birthday_calendar/service/shared_prefs.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:birthday_calendar/service/StorageService.dart';
+import 'package:birthday_calendar/service/service_locator.dart';
 
 class SettingsScreen extends StatefulWidget {
   final Function onClearNotifications;
@@ -17,10 +17,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   bool _isDarkModeEnabled = false;
   String versionNumber = "";
+  StorageService _storageService = getIt<StorageService>();
 
   @override
   void initState() {
-    _isDarkModeEnabled = SharedPrefs().getThemeModeSetting();
+    super.initState();
     WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
       PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
         setState(() {
@@ -28,10 +29,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
         });
       });
     });
-
-    super.initState();
+   _getStoredThemeSetting();
   }
 
+  void _getStoredThemeSetting() async {
+    bool savedThemeModeSetting = await _storageService.getThemeModeSetting();
+    setState(() {
+      _isDarkModeEnabled = savedThemeModeSetting;
+    });
+
+  }
 
   void _showAlertDialog(BuildContext context) {
     AlertDialog alert = AlertDialog(
@@ -40,7 +47,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       actions: [
         TextButton(
         onPressed: () {
-          SharedPrefs().clearAllNotifications()
+          _storageService.clearAllBirthdays()
               .then((didClearAllNotifications) =>
           {
             if (didClearAllNotifications) {
@@ -85,7 +92,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 onChanged: (bool value) {
                   setState(() {
                     _isDarkModeEnabled = value;
-                    SharedPrefs().saveThemeModeSetting(_isDarkModeEnabled);
+                    _storageService.saveThemeModeSetting(_isDarkModeEnabled);
                     ThemeMode mode = _isDarkModeEnabled ? ThemeMode.dark : ThemeMode.light;
                     widget.onThemeChanged(mode);
                   });
