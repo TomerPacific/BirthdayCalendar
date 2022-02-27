@@ -55,8 +55,6 @@ class StorageServiceSharedPreferences extends StorageService {
 
   @override
   Future<void> updateNotificationStatusForBirthday(UserBirthday userBirthday, bool updatedStatus) async {
-    final sharedPreferences = await SharedPreferences.getInstance();
-
     List<UserBirthday> birthdays = await getBirthdaysForDate(userBirthday.birthdayDate);
     for (int i = 0; i < birthdays.length; i++) {
       UserBirthday savedBirthday = birthdays[i];
