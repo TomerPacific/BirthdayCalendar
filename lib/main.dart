@@ -1,11 +1,12 @@
 import 'package:birthday_calendar/service/StorageService.dart';
+import 'package:birthday_calendar/service/notification_service.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 import 'package:birthday_calendar/widget/settings_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:birthday_calendar/widget/calendar.dart';
 import 'constants.dart';
-import 'package:birthday_calendar/service/notification_service.dart';
+import 'package:birthday_calendar/service/notification_service_impl.dart';
 import 'package:birthday_calendar/service/date_service.dart';
 
 Future<void> main() async {
@@ -15,7 +16,6 @@ Future<void> main() async {
 }
 
 class MyApp extends StatefulWidget {
-
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -78,6 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int monthToPresent = -1;
   String month = "";
   DateService _dateService = getIt<DateService>();
+  NotificationService _notificationService = getIt<NotificationService>();
 
   int _correctMonthOverflow(int month) {
     if (month == 0) {
@@ -117,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         TextButton(
                           child: Text("Ok"),
                            onPressed: () async {
-                             NotificationService().handleApplicationWasLaunchedFromNotification(payload ?? '');
+                             _notificationService.handleApplicationWasLaunchedFromNotification(payload ?? '');
                             }
                           )
                       ]
@@ -130,16 +131,12 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     monthToPresent = widget.currentMonth;
     month = _dateService.convertMonthToWord(monthToPresent);
-    NotificationService().init(_onDidReceiveLocalNotification).whenComplete(() =>
-        NotificationService().handleApplicationWasLaunchedFromNotification("")
-    );
+    _notificationService.init(_onDidReceiveLocalNotification);
     super.initState();
   }
 
   void _onClearNotifications() {
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   void _onThemeChanged(ThemeMode themeMode) {
