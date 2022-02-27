@@ -2,10 +2,13 @@ import 'dart:convert';
 import 'package:birthday_calendar/constants.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/service/StorageService.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:birthday_calendar/service/date_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:birthday_calendar/service/service_locator.dart';
 
 class StorageServiceSharedPreferences extends StorageService {
+
+  DateService _dateService = getIt<DateService>();
 
   @override
   Future<bool> clearAllBirthdays() async {
@@ -16,7 +19,7 @@ class StorageServiceSharedPreferences extends StorageService {
   @override
   Future<List<UserBirthday>> getBirthdaysForDate(DateTime dateTime) async {
     final sharedPreferences = await SharedPreferences.getInstance();
-    String formattedDate = DateService().formatDateForSharedPrefs(dateTime);
+    String formattedDate = _dateService.formatDateForSharedPrefs(dateTime);
     String? birthdaysJSON = sharedPreferences.getString(formattedDate);
     if (birthdaysJSON != null) {
       List decodedBirthdaysForDate = jsonDecode(birthdaysJSON);
@@ -40,7 +43,7 @@ class StorageServiceSharedPreferences extends StorageService {
   Future<void> saveBirthdaysForDate(DateTime dateTime, List<UserBirthday> birthdays) async {
     final sharedPreferences = await SharedPreferences.getInstance();
     String encoded = jsonEncode(birthdays);
-    String formattedDate = DateService().formatDateForSharedPrefs(dateTime);
+    String formattedDate = _dateService.formatDateForSharedPrefs(dateTime);
     sharedPreferences.setString(formattedDate, encoded);
   }
 

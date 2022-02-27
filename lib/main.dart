@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 
 import 'package:birthday_calendar/widget/calendar.dart';
 import 'constants.dart';
-import 'package:birthday_calendar/service/date_service.dart';
 import 'package:birthday_calendar/service/notification_service.dart';
+import 'package:birthday_calendar/service/date_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,6 +25,7 @@ class _MyAppState extends State {
   static _MyAppState? of(BuildContext context) => context.findAncestorStateOfType<_MyAppState>();
   ThemeMode _themeMode = ThemeMode.system;
   StorageService _storageService = getIt<StorageService>();
+  DateService _dateService = getIt<DateService>();
 
   void changeTheme(ThemeMode themeMode) {
     setState(() {
@@ -56,7 +57,7 @@ class _MyAppState extends State {
           home: MyHomePage(
               key: Key("BirthdayCalendar"),
               title: applicationName,
-              currentMonth: DateService().getCurrentMonthNumber()
+              currentMonth: _dateService.getCurrentMonthNumber()
           ),
         );
       }
@@ -76,6 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   int monthToPresent = -1;
   String month = "";
+  DateService _dateService = getIt<DateService>();
 
   int _correctMonthOverflow(int month) {
     if (month == 0) {
@@ -90,7 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       monthToPresent = direction == AxisDirection.left ? monthToPresent + 1 : monthToPresent - 1;
       monthToPresent = _correctMonthOverflow(monthToPresent);
-      month = DateService().convertMonthToWord(monthToPresent);
+      month = _dateService.convertMonthToWord(monthToPresent);
     });
   }
 
@@ -127,7 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     monthToPresent = widget.currentMonth;
-    month = DateService().convertMonthToWord(monthToPresent);
+    month = _dateService.convertMonthToWord(monthToPresent);
     NotificationService().init(_onDidReceiveLocalNotification).whenComplete(() =>
         NotificationService().handleApplicationWasLaunchedFromNotification("")
     );
