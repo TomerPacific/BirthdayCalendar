@@ -2,11 +2,11 @@ import 'package:birthday_calendar/widget/add_birthday_form.dart';
 import 'package:flutter/material.dart';
 
 import 'package:birthday_calendar/widget/birthday.dart';
-import 'package:birthday_calendar/service/notification_service_impl.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/service/StorageService.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 import 'package:birthday_calendar/service/date_service.dart';
+import 'package:birthday_calendar/service/notification_service.dart';
 
 class BirthdaysForCalendarDayWidget extends StatefulWidget {
   final DateTime dateOfDay;
@@ -23,13 +23,16 @@ class BirthdaysForCalendarDayWidget extends StatefulWidget {
 
 class _BirthdaysForCalendarDayWidgetState
     extends State<BirthdaysForCalendarDayWidget> {
+
   List<UserBirthday> currentBirthdays = [];
   StorageService _storageService = getIt<StorageService>();
   DateService _dateService = getIt<DateService>();
+  NotificationService _notificationService = getIt<NotificationService>();
+
 
   void _handleUserInput(UserBirthday userBirthday) {
       _addBirthdayToList(userBirthday);
-      NotificationServiceImpl().scheduleNotificationForBirthday(
+      _notificationService.scheduleNotificationForBirthday(
           userBirthday, "${userBirthday.name} has an upcoming birthday!");
   }
 

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:birthday_calendar/service/notification_service_impl.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/service/StorageService.dart';
+import 'package:birthday_calendar/service/notification_service.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 
 class BirthdayWidget extends StatefulWidget {
@@ -25,6 +25,8 @@ class BirthdayWidget extends StatefulWidget {
 class _BirthdayWidgetState extends State<BirthdayWidget> {
   bool isNotificationEnabledForPerson = false;
   StorageService _storageService = getIt<StorageService>();
+  NotificationService _notificationService = getIt<NotificationService>();
+
 
   void updateNotificationStatusForBirthday() {
     setState(() {
@@ -33,10 +35,9 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
     _storageService.updateNotificationStatusForBirthday(
         widget.birthdayOfPerson, isNotificationEnabledForPerson);
     if (!isNotificationEnabledForPerson) {
-      NotificationServiceImpl()
-          .cancelNotificationForBirthday(widget.birthdayOfPerson);
+      _notificationService.cancelNotificationForBirthday(widget.birthdayOfPerson);
     } else {
-      NotificationServiceImpl().scheduleNotificationForBirthday(
+      _notificationService.scheduleNotificationForBirthday(
           widget.birthdayOfPerson,
           "${widget.birthdayOfPerson.name} has an upcoming birthday!");
     }
