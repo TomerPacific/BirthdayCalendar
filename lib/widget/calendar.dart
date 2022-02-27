@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
 import 'package:birthday_calendar/widget/calendar_day.dart';
+import 'package:birthday_calendar/service/service_locator.dart';
 import 'package:birthday_calendar/service/date_service.dart';
 
 class CalendarWidget extends StatefulWidget {
@@ -14,19 +14,20 @@ class CalendarWidget extends StatefulWidget {
 
 class _CalendarState extends State<CalendarWidget> {
   int _amountOfDaysToPresent = 0;
+  DateService _dateService = getIt<DateService>();
 
   @override
   void initState() {
-    _amountOfDaysToPresent = DateService().amountOfDaysInMonth(
-        DateService().convertMonthToWord(widget.currentMonth));
+    _amountOfDaysToPresent = _dateService.amountOfDaysInMonth(
+        _dateService.convertMonthToWord(widget.currentMonth));
     super.initState();
   }
 
   @override
   void didUpdateWidget(CalendarWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _amountOfDaysToPresent = DateService().amountOfDaysInMonth(
-        DateService().convertMonthToWord(widget.currentMonth));
+    _amountOfDaysToPresent = _dateService.amountOfDaysInMonth(
+        _dateService.convertMonthToWord(widget.currentMonth));
   }
 
   @override
@@ -42,7 +43,7 @@ class _CalendarState extends State<CalendarWidget> {
               itemBuilder: (BuildContext context, int index) {
                 return new CalendarDayWidget(
                     key: Key(widget.currentMonth.toString()),
-                    date: DateService().constructDateTimeFromDayAndMonth(
+                    date: _dateService.constructDateTimeFromDayAndMonth(
                         (index + 1), widget.currentMonth));
               })
       ),

@@ -1,11 +1,10 @@
 import 'package:birthday_calendar/model/user_birthday.dart';
-import 'package:birthday_calendar/service/shared_prefs.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:collection/collection.dart';
-
 import 'package:birthday_calendar/constants.dart';
+import 'package:birthday_calendar/service/StorageService.dart';
+import 'package:birthday_calendar/service/service_locator.dart';
 
 class AddBirthdayForm extends StatefulWidget {
   final DateTime dateOfDay;
@@ -22,6 +21,7 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
   final _formKey = GlobalKey<FormState>();
   final _birthdayNameKey = GlobalKey<FormFieldState>();
   final _phoneNumberKey = GlobalKey<FormFieldState>();
+  StorageService _storageService = getIt<StorageService>();
 
   TextEditingController _birthdayPersonController = new TextEditingController();
   TextEditingController _phoneNumberController = new TextEditingController();
@@ -36,8 +36,12 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
 
   @override
   void initState() {
-    birthdaysForDate = SharedPrefs().getBirthdaysForDate(widget.dateOfDay);
     super.initState();
+    _getBirthdaysForDate();
+  }
+
+  void _getBirthdaysForDate() async {
+    birthdaysForDate = await _storageService.getBirthdaysForDate(widget.dateOfDay);
   }
 
   @override
