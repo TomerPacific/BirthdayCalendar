@@ -118,9 +118,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
       if (person.birthday == null) {
           usersWithoutBirthdays.add(person);
-      }
-
-      if (person.birthday != null &&
+      } else if (person.birthday != null &&
           person.displayName != null &&
           person.phones != null) {
         Item phoneNumber = person.phones!.first;
@@ -132,7 +130,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
       }
     }
 
-    _presentDialogToEnterBirthdayForUser(usersWithoutBirthdays);
+    if (usersWithoutBirthdays.length > 0) {
+      _presentDialogToEnterBirthdayForUser(usersWithoutBirthdays);
+    }
   }
 
   Widget setupAlertDialogContainer(List<Contact> usersWithoutBirthdays) {
@@ -141,23 +141,47 @@ class _SettingsScreenState extends State<SettingsScreen> {
       return Container(
         height: 300.0,
         width: 300.0,
-        child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: usersWithoutBirthdays.length,
-          itemBuilder: (BuildContext context, int index) {
-            return CheckboxListTile(
-                title: Text(usersWithoutBirthdays[index].displayName!),
-                value: isChecked[index],
-                onChanged: (bool? value) {
-                  if (value != null) {
-                    setState(() {
-                      isChecked[index] = value;
-                    });
-                  }
-                }
-            );
-          },
-        ),
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: usersWithoutBirthdays.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return CheckboxListTile(
+                      title: Text(usersWithoutBirthdays[index].displayName!),
+                      value: isChecked[index],
+                      onChanged: (bool? value) {
+                        if (value != null) {
+                          setState(() {
+                            isChecked[index] = value;
+                          });
+                        }
+                      }
+                  );
+                },
+              ),
+            ),
+            Spacer(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                TextButton(
+                    child: Text("Cancel"),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                TextButton(
+                  child: Text("Continue"),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            )
+          ],
+        )
       );
     });
   }
