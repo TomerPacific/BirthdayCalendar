@@ -30,6 +30,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _isDarkModeEnabled = false;
   String versionNumber = "";
   bool _shouldImportContactsTileBeDisabled = false;
+  List<bool> isChecked = [];
   StorageService _storageService = getIt<StorageService>();
   NotificationService _notificationService = getIt<NotificationService>();
 
@@ -105,12 +106,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
         setState(() {
           _shouldImportContactsTileBeDisabled = true;
         });
+      } else if (status == PermissionStatus.granted) {
+        _addBirthdaysOfContactsAndSetNotifications();
       }
   }
 
   void _addBirthdaysOfContactsAndSetNotifications() async {
     List<Contact> contacts = await ContactsService.getContacts(withThumbnails: false);
+    List<Contact> usersWithoutBirthdays = [];
     for (Contact person in contacts) {
+
+      if (person.birthday == null) {
+          usersWithoutBirthdays.add(person);
+      }
+
       if (person.birthday != null &&
           person.displayName != null &&
           person.phones != null) {
@@ -122,6 +131,62 @@ class _SettingsScreenState extends State<SettingsScreen> {
         _storageService.saveBirthdaysForDate(person.birthday!, birthdays);
       }
     }
+
+    _presentDialogToEnterBirthdayForUser(usersWithoutBirthdays);
+  }
+
+  Widget setupAlertDialogContainer(List<Contact> usersWithoutBirthdays) {
+    isChecked = List.generate(usersWithoutBirthdays.length, (index) => false);
+    return StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
+      return Container(
+        height: 300.0,
+        width: 300.0,
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: usersWithoutBirthdays.length,
+          itemBuilder: (BuildContext context, int index) {
+            return CheckboxListTile(
+                title: Text(usersWithoutBirthdays[index].displayName!),
+                value: isChecked[index],
+                onChanged: (bool? value) {
+                  if (value != null) {
+                    setState(() {
+                      isChecked[index] = value;
+                    });
+                  }
+                }
+            );
+          },
+        ),
+      );
+    });
+  }
+
+  void _presentDialogToEnterBirthdayForUser(List<Contact> usersWithoutBirthdays) {
+    AlertDialog alert = AlertDialog(
+      title: Text("Add Birthdays For People"),
+      content: Text("Select which people to add birthdays for"),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text('People Without Birthdays'),
+                    content: setupAlertDialogContainer(usersWithoutBirthdays),
+                  );
+                });
+          },
+          child: const Text("Proceed"),
+        ),
+      ],
+    );
+    showDialog(context: context,
+        builder: (BuildContext context) {
+          return alert;
+        });
   }
 
   @override
