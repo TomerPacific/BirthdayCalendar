@@ -189,23 +189,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _presentDialogToEnterBirthdayForUser(List<Contact> usersWithoutBirthdays) {
     AlertDialog alert = AlertDialog(
       title: Text("Add Birthdays For People"),
-      content: Text("Select which people to add birthdays for"),
+      content: Text(
+          "There are contacts on your phone who do not have a birth date. "
+          "Would you like to manually add birth dates for them?"),
       actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-            showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text('People Without Birthdays'),
-                    content: setupAlertDialogContainer(usersWithoutBirthdays),
-                  );
-                });
-          },
-          child: const Text("Proceed"),
-        ),
-      ],
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text("No"),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('People Without Birthdays'),
+                          content: setupAlertDialogContainer(usersWithoutBirthdays),
+                        );
+                      });
+                },
+                child: const Text("Proceed"),
+              ),
+            ]
     );
     showDialog(context: context,
         builder: (BuildContext context) {
