@@ -45,7 +45,7 @@ class SettingsScreen extends StatelessWidget {
                           Icons.clear,
                           color: Colors.redAccent),
                       onTap: () {
-                        _showAlertDialog(context);
+                        _showClearBirthdaysConfirmationDialog(context);
                       }
                   ),
                   Spacer(),
@@ -67,7 +67,7 @@ class SettingsScreen extends StatelessWidget {
       );
   }
 
-  void _showAlertDialog(BuildContext context) {
+  void _showClearBirthdaysConfirmationDialog(BuildContext context) {
     AlertDialog alert = AlertDialog(
       title: Text("Are You Sure?"),
       content: Text("Do you want to remove all notifications?"),
