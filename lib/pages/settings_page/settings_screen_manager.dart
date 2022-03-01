@@ -1,13 +1,13 @@
 
-import '../service/permission_service/PermissionServicePermissionHandler.dart';
-import 'package:birthday_calendar/widget/ThemeChangeNotifier.dart';
+import 'package:birthday_calendar/service/permission_service/PermissionServicePermissionHandler.dart';
+import 'notifiers/ThemeChangeNotifier.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:birthday_calendar/constants.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
-import '../service/notification_service/notification_service.dart';
-import '../service/storage_service/storage_service.dart';
+import 'package:birthday_calendar/service/notification_service/notification_service.dart';
+import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 

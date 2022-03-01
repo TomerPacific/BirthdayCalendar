@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:birthday_calendar/widget/settings_screen_manager.dart';
+import 'package:birthday_calendar/pages/settings_page/settings_screen_manager.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 
 class SettingsScreen extends StatelessWidget {
