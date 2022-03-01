@@ -2,7 +2,7 @@
 import 'package:birthday_calendar/pages/settings_page/notifiers/ClearBirthdaysNotifier.dart';
 import 'package:birthday_calendar/pages/settings_page/notifiers/ImportContactsNotifier.dart';
 import 'package:birthday_calendar/pages/settings_page/notifiers/VersionNotifier.dart';
-import 'package:birthday_calendar/service/permission_service/PermissionServicePermissionHandler.dart';
+import 'package:birthday_calendar/service/permission_service/permissions_service.dart';
 import 'notifiers/ThemeChangeNotifier.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -16,7 +16,7 @@ import 'package:birthday_calendar/service/service_locator.dart';
 class SettingsScreenManager extends ChangeNotifier {
 
   List<bool> usersSelectedToAddBirthdaysFor = [];
-  final PermissionServicePermissionHandler permissionServicePermissionHandler = new PermissionServicePermissionHandler();
+  PermissionsService _permissionsService = getIt<PermissionsService>();
   StorageService _storageService = getIt<StorageService>();
   NotificationService _notificationService = getIt<NotificationService>();
   final ThemeChangeNotifier themeChangeNotifier = ThemeChangeNotifier();
@@ -41,7 +41,7 @@ class SettingsScreenManager extends ChangeNotifier {
   }
 
   void handleImportingContacts() async {
-    PermissionStatus status = await permissionServicePermissionHandler.getPermissionStatus(contactsPermissionKey);
+    PermissionStatus status = await _permissionsService.getPermissionStatus(contactsPermissionKey);
     if (status == PermissionStatus.denied) {
       _requestContactsPermission();
     } else if (status == PermissionStatus.permanentlyDenied) {
@@ -52,7 +52,7 @@ class SettingsScreenManager extends ChangeNotifier {
   }
 
   void _requestContactsPermission() async {
-    PermissionStatus status = await permissionServicePermissionHandler.requestPermissionAndGetStatus(contactsPermissionKey);
+    PermissionStatus status = await _permissionsService.requestPermissionAndGetStatus(contactsPermissionKey);
     if (status == PermissionStatus.granted) {
       _addBirthdaysOfContactsAndSetNotifications();
     } else if (status == PermissionStatus.permanentlyDenied) {
