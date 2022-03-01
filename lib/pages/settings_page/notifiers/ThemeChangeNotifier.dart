@@ -5,9 +5,17 @@ import 'package:birthday_calendar/service/service_locator.dart';
 
 class ThemeChangeNotifier extends ValueNotifier<bool> {
 
-  ThemeChangeNotifier(): super(false);
-
   StorageService _storageService = getIt<StorageService>();
+
+  ThemeChangeNotifier() : super(false) {
+    _getThemeModeFromStorage();
+  }
+
+  void _getThemeModeFromStorage() async {
+    value = await _storageService.getThemeModeSetting();
+  }
+
+
 
   void toggleTheme() {
     value = !value;
