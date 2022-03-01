@@ -9,6 +9,9 @@ import 'package:birthday_calendar/widget/calendar.dart';
 import 'constants.dart';
 import 'service/date_service/date_service.dart';
 
+final DateService _dateService = getIt<DateService>();
+final SettingsScreenManager settingsScreenManager = getIt<SettingsScreenManager>();
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setupServiceLocator();
@@ -17,8 +20,7 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
 
-  final SettingsScreenManager settingsScreenManager = getIt<SettingsScreenManager>();
-  final DateService _dateService = getIt<DateService>();
+
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +55,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   int monthToPresent = -1;
   String month = "";
-  DateService _dateService = getIt<DateService>();
   NotificationService _notificationService = getIt<NotificationService>();
 
   int _correctMonthOverflow(int month) {
@@ -132,47 +133,51 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       body:
-      new GestureDetector(
-      onHorizontalDragUpdate: _decideOnNextMonthToShow,
-        child:
-        new Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          new Padding(
-            padding: const EdgeInsets.only(bottom: 50, top: 50),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                new Text(month, style: new TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold))
-              ],
-            ),
-          ),
-          new Expanded(child:
-            new Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              new IconButton(icon:
-              new Icon(Icons.chevron_left, color: Colors.black),
-                  onPressed: () {
-                    _calculateNextMonthToShow(AxisDirection.right);
-                  }),
-              new Expanded(child:
-              new CalendarWidget(
-                  key: Key(monthToPresent.toString()),
-                  currentMonth:monthToPresent),
-              ),
-              new IconButton(icon:
-              new Icon(Icons.chevron_right, color: Colors.black),
-                  onPressed: () {
-                    _calculateNextMonthToShow(AxisDirection.left);
-                  }),
-              ],
-            )
-          )
-        ],
-      )
-      )
+          ValueListenableBuilder<bool>(
+              valueListenable: settingsScreenManager.clearBirthdaysNotifier,
+              builder: (context, value, child) {
+              return new GestureDetector(
+                  onHorizontalDragUpdate: _decideOnNextMonthToShow,
+                  child:
+                  new Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      new Padding(
+                        padding: const EdgeInsets.only(bottom: 50, top: 50),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            new Text(month, style: new TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold))
+                          ],
+                        ),
+                      ),
+                      new Expanded(child:
+                      new Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          new IconButton(icon:
+                          new Icon(Icons.chevron_left, color: Colors.black),
+                              onPressed: () {
+                                _calculateNextMonthToShow(AxisDirection.right);
+                              }),
+                          new Expanded(child:
+                          new CalendarWidget(
+                              key: Key(monthToPresent.toString()),
+                              currentMonth:monthToPresent),
+                          ),
+                          new IconButton(icon:
+                          new Icon(Icons.chevron_right, color: Colors.black),
+                              onPressed: () {
+                                _calculateNextMonthToShow(AxisDirection.left);
+                              }),
+                        ],
+                      )
+                      )
+                    ],
+                  )
+              );
+          })
     );
   }
 }

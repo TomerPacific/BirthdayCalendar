@@ -1,4 +1,5 @@
 
+import 'package:birthday_calendar/pages/settings_page/notifiers/ClearBirthdaysNotifier.dart';
 import 'package:birthday_calendar/pages/settings_page/notifiers/VersionNotifier.dart';
 import 'package:birthday_calendar/service/permission_service/PermissionServicePermissionHandler.dart';
 import 'notifiers/ThemeChangeNotifier.dart';
@@ -18,9 +19,9 @@ class SettingsScreenManager extends ChangeNotifier {
   final PermissionServicePermissionHandler permissionServicePermissionHandler = new PermissionServicePermissionHandler();
   StorageService _storageService = getIt<StorageService>();
   NotificationService _notificationService = getIt<NotificationService>();
-  late Function _onClearNotifications;
   final ThemeChangeNotifier themeChangeNotifier = ThemeChangeNotifier();
   final VersionNotifier versionNotifier = VersionNotifier();
+  final ClearBirthdaysNotifier clearBirthdaysNotifier = ClearBirthdaysNotifier();
 
 
   bool shouldImportContactsTileBeEnabled() {
@@ -36,13 +37,7 @@ class SettingsScreenManager extends ChangeNotifier {
   }
 
   void onClearBirthdaysPressed() {
-    _storageService.clearAllBirthdays()
-        .then((didClearAllNotifications) =>
-    {
-      if (didClearAllNotifications) {
-        _onClearNotifications()
-      }
-    });
+    clearBirthdaysNotifier.clearBirthdays();
   }
 
   void handleThemeModeSettingChange(bool isDarkModeEnabled) {
