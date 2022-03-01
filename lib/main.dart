@@ -2,7 +2,7 @@
 import 'service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 import 'pages/settings_page/settings_screen.dart';
-import 'package:birthday_calendar/pages/settings_page//settings_screen_manager.dart';
+import 'package:birthday_calendar/pages/settings_page/settings_screen_manager.dart';
 import 'package:flutter/material.dart';
 
 import 'package:birthday_calendar/widget/calendar.dart';
