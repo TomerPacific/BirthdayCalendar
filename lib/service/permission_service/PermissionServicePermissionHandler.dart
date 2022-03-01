@@ -1,5 +1,5 @@
 
-import 'package:birthday_calendar/service/PermissionsService.dart';
+import 'PermissionsService.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:birthday_calendar/constants.dart';
 

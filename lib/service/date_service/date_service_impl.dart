@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
-import '../constants.dart';
-import 'package:birthday_calendar/service/date_service.dart';
+import '../../constants.dart';
+import 'date_service.dart';
 
 class DateServiceImpl extends DateService {
 
