@@ -1,5 +1,5 @@
 
-import 'package:birthday_calendar/service/notification_service.dart';
+import 'service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 import 'package:birthday_calendar/widget/settings_screen.dart';
 import 'package:birthday_calendar/widget/settings_screen_manager.dart';
@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 
 import 'package:birthday_calendar/widget/calendar.dart';
 import 'constants.dart';
-import 'package:birthday_calendar/service/date_service.dart';
+import 'service/date_service/date_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

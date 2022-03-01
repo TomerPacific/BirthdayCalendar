@@ -1,6 +1,6 @@
 
 import 'package:flutter/cupertino.dart';
-import 'package:birthday_calendar/service/StorageService.dart';
+import '../service/storage_service/storage_service.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 
 class ThemeChangeNotifier extends ValueNotifier<bool> {
