@@ -1,8 +1,8 @@
-import 'package:birthday_calendar/service/PermissionServicePermissionHandler.dart';
-import 'package:birthday_calendar/service/StorageService.dart';
+
 import 'package:birthday_calendar/service/notification_service.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 import 'package:birthday_calendar/widget/settings_screen.dart';
+import 'package:birthday_calendar/widget/settings_screen_manager.dart';
 import 'package:flutter/material.dart';
 
 import 'package:birthday_calendar/widget/calendar.dart';
@@ -15,51 +15,27 @@ Future<void> main() async {
   runApp(MyApp());
 }
 
-class MyApp extends StatefulWidget {
-  @override
-  _MyAppState createState() => _MyAppState();
-}
+class MyApp extends StatelessWidget {
 
-class _MyAppState extends State {
-
-  static _MyAppState? of(BuildContext context) => context.findAncestorStateOfType<_MyAppState>();
-  ThemeMode _themeMode = ThemeMode.system;
-  StorageService _storageService = getIt<StorageService>();
-  DateService _dateService = getIt<DateService>();
-
-  void changeTheme(ThemeMode themeMode) {
-    setState(() {
-      _themeMode = themeMode;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _setThemeMode();
-  }
-
-  void _setThemeMode() async {
-    bool isDarkModeEnabled = await _storageService.getThemeModeSetting();
-    setState(() {
-      _themeMode = isDarkModeEnabled ? ThemeMode.dark : ThemeMode.light;
-    });
-
-  }
+  final SettingsScreenManager settingsScreenManager = getIt<SettingsScreenManager>();
+  final DateService _dateService = getIt<DateService>();
 
   @override
   Widget build(BuildContext context) {
-        return MaterialApp(
-          title: applicationName,
-          theme: ThemeData(),
-          darkTheme: ThemeData.dark(),
-          themeMode: _themeMode,
-          home: MyHomePage(
-              key: Key("BirthdayCalendar"),
+        return
+          ValueListenableBuilder(valueListenable: settingsScreenManager.themeChangeNotifier, builder: (context, value, child) {
+            return MaterialApp(
               title: applicationName,
-              currentMonth: _dateService.getCurrentMonthNumber()
-          ),
-        );
+              theme: ThemeData(),
+              darkTheme: ThemeData.dark(),
+              themeMode: value == true ? ThemeMode.dark : ThemeMode.light,
+              home: MyHomePage(
+                  key: Key("BirthdayCalendar"),
+                  title: applicationName,
+                  currentMonth: _dateService.getCurrentMonthNumber()
+              ),
+            );
+          });
       }
 }
 
@@ -77,7 +53,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   int monthToPresent = -1;
   String month = "";
-  PermissionServicePermissionHandler _permissionServicePermissionHandler = new PermissionServicePermissionHandler();
   DateService _dateService = getIt<DateService>();
   NotificationService _notificationService = getIt<NotificationService>();
 
@@ -136,16 +111,6 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
   }
 
-  void _onClearNotifications() {
-    setState(() {});
-  }
-
-  void _onThemeChanged(ThemeMode themeMode) {
-    setState(() {
-      _MyAppState.of(context)?.changeTheme(themeMode);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -159,10 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => SettingsScreen(
-                        onClearNotifications: _onClearNotifications,
-                        onThemeChanged: _onThemeChanged,
-                        permissionServicePermissionHandler: _permissionServicePermissionHandler)
+                    MaterialPageRoute(builder: (context) => SettingsScreen()
                     ),
                   );
                 },
