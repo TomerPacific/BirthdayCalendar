@@ -1,9 +1,9 @@
 
-import 'PermissionsService.dart';
+import 'permissions_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:birthday_calendar/constants.dart';
 
-class PermissionServicePermissionHandler extends PermissionsService {
+class PermissionsServiceImpl extends PermissionsService {
   @override
   Future<PermissionStatus> getPermissionStatus(String permissionName) async {
     PermissionStatus status = PermissionStatus.denied;
