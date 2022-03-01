@@ -52,12 +52,14 @@ class SettingsScreen extends StatelessWidget {
                   new Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Align(
-                          alignment: Alignment.bottomRight,
-                          child: Text(
-                              "v " + _settingsScreenManager.getVersion()
-                          )
-                      )
+                      ValueListenableBuilder<String>(valueListenable: _settingsScreenManager.versionNotifier, builder: (context, value, child) {
+                        return Align(
+                            alignment: Alignment.bottomRight,
+                            child: Text(
+                                "v " + value
+                            )
+                        );
+                      })
                     ],
                   )
                 ],

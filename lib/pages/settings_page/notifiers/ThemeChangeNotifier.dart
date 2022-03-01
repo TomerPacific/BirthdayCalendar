@@ -15,8 +15,6 @@ class ThemeChangeNotifier extends ValueNotifier<bool> {
     value = await _storageService.getThemeModeSetting();
   }
 
-
-
   void toggleTheme() {
     value = !value;
     _storageService.saveThemeModeSetting(value);

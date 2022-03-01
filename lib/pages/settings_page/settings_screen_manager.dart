@@ -1,4 +1,5 @@
 
+import 'package:birthday_calendar/pages/settings_page/notifiers/VersionNotifier.dart';
 import 'package:birthday_calendar/service/permission_service/PermissionServicePermissionHandler.dart';
 import 'notifiers/ThemeChangeNotifier.dart';
 import 'package:flutter/material.dart';
@@ -9,29 +10,18 @@ import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 
 class SettingsScreenManager extends ChangeNotifier {
 
   bool _shouldImportContactsTileBeDisabled = false;
-  String versionNumber = "";
   List<bool> usersSelectedToAddBirthdaysFor = [];
   final PermissionServicePermissionHandler permissionServicePermissionHandler = new PermissionServicePermissionHandler();
   StorageService _storageService = getIt<StorageService>();
   NotificationService _notificationService = getIt<NotificationService>();
   late Function _onClearNotifications;
   final ThemeChangeNotifier themeChangeNotifier = ThemeChangeNotifier();
+  final VersionNotifier versionNotifier = VersionNotifier();
 
-  SettingsScreenManager() {
-    PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
-      versionNumber = packageInfo.version;
-      }
-    );
-  }
-
-  String getVersion() {
-    return versionNumber;
-  }
 
   bool shouldImportContactsTileBeEnabled() {
     return !_shouldImportContactsTileBeDisabled;
