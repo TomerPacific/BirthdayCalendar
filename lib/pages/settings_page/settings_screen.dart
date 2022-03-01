@@ -30,15 +30,16 @@ class SettingsScreen extends StatelessWidget {
                         );
                     }
                   ),
-
-                  ListTile(
-                    title: const Text("Import Contacts"),
-                    leading: Icon(Icons.contacts,
-                        color: _settingsScreenManager.getColorForImportContactsTile()
-                    ),
-                    onTap: _settingsScreenManager.handleImportingContacts,
-                    enabled: _settingsScreenManager.shouldImportContactsTileBeEnabled(),
-                  ),
+                  ValueListenableBuilder<bool>(valueListenable: _settingsScreenManager.importContactsNotifier, builder: (context, value, child) {
+                    return ListTile(
+                      title: const Text("Import Contacts"),
+                      leading: Icon(Icons.contacts,
+                          color: _settingsScreenManager.getColorForImportContactsTile()
+                      ),
+                      onTap: _settingsScreenManager.handleImportingContacts,
+                      enabled: !value
+                    );
+                  }),
                   ListTile(
                       title: const Text("Clear Notifications"),
                       leading: const Icon(

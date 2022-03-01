@@ -1,5 +1,6 @@
 
 import 'package:birthday_calendar/pages/settings_page/notifiers/ClearBirthdaysNotifier.dart';
+import 'package:birthday_calendar/pages/settings_page/notifiers/ImportContactsNotifier.dart';
 import 'package:birthday_calendar/pages/settings_page/notifiers/VersionNotifier.dart';
 import 'package:birthday_calendar/service/permission_service/PermissionServicePermissionHandler.dart';
 import 'notifiers/ThemeChangeNotifier.dart';
@@ -14,7 +15,6 @@ import 'package:birthday_calendar/service/service_locator.dart';
 
 class SettingsScreenManager extends ChangeNotifier {
 
-  bool _shouldImportContactsTileBeDisabled = false;
   List<bool> usersSelectedToAddBirthdaysFor = [];
   final PermissionServicePermissionHandler permissionServicePermissionHandler = new PermissionServicePermissionHandler();
   StorageService _storageService = getIt<StorageService>();
@@ -22,14 +22,10 @@ class SettingsScreenManager extends ChangeNotifier {
   final ThemeChangeNotifier themeChangeNotifier = ThemeChangeNotifier();
   final VersionNotifier versionNotifier = VersionNotifier();
   final ClearBirthdaysNotifier clearBirthdaysNotifier = ClearBirthdaysNotifier();
-
-
-  bool shouldImportContactsTileBeEnabled() {
-    return !_shouldImportContactsTileBeDisabled;
-  }
+  final ImportContactsNotifier importContactsNotifier = ImportContactsNotifier();
 
   MaterialColor getColorForImportContactsTile() {
-    return !_shouldImportContactsTileBeDisabled ? Colors.blue : Colors.grey;
+    return !importContactsNotifier.value? Colors.blue : Colors.grey;
   }
 
   List<bool> usersWithNoBirthdates() {
@@ -49,8 +45,7 @@ class SettingsScreenManager extends ChangeNotifier {
     if (status == PermissionStatus.denied) {
       _requestContactsPermission();
     } else if (status == PermissionStatus.permanentlyDenied) {
-        _shouldImportContactsTileBeDisabled = true;
-        notifyListeners();
+        importContactsNotifier.toggleImportContacts();
     } else if (status == PermissionStatus.granted) {
       _addBirthdaysOfContactsAndSetNotifications();
     }
@@ -61,8 +56,7 @@ class SettingsScreenManager extends ChangeNotifier {
     if (status == PermissionStatus.granted) {
       _addBirthdaysOfContactsAndSetNotifications();
     } else if (status == PermissionStatus.permanentlyDenied) {
-      _shouldImportContactsTileBeDisabled = true;
-      notifyListeners();
+      importContactsNotifier.toggleImportContacts();
     }
   }
 
