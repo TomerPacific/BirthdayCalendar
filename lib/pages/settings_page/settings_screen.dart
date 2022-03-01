@@ -24,7 +24,7 @@ class SettingsScreen extends StatelessWidget {
                           value: value,
                           secondary:
                           new Icon(Icons.dark_mode,
-                              color: Color(0xFF642ef3)
+                              color: value == false ? Color(0xFF642ef3) : Color.fromARGB(200, 243, 231, 106)
                           ),
                           onChanged:_settingsScreenManager.handleThemeModeSettingChange
                         );
@@ -53,13 +53,15 @@ class SettingsScreen extends StatelessWidget {
                   new Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      ValueListenableBuilder<String>(valueListenable: _settingsScreenManager.versionNotifier, builder: (context, value, child) {
-                        return Align(
-                            alignment: Alignment.bottomRight,
-                            child: Text(
-                                "v " + value
-                            )
-                        );
+                      ValueListenableBuilder<String>(
+                          valueListenable: _settingsScreenManager.versionNotifier,
+                          builder: (context, value, child) {
+                            return Align(
+                                alignment: Alignment.bottomRight,
+                                child: Text(
+                                    "v " + value
+                                )
+                            );
                       })
                     ],
                   )
@@ -75,17 +77,17 @@ class SettingsScreen extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () {
-            _settingsScreenManager.onClearBirthdaysPressed();
-            Navigator.pop(context);
-          },
-          child: const Text("Yes"),
-        ),
-        TextButton(
-          onPressed: () {
             Navigator.pop(context);
           },
           child: const Text("No"),
         ),
+        TextButton(
+          onPressed: () {
+            _settingsScreenManager.onClearBirthdaysPressed();
+            Navigator.pop(context);
+          },
+          child: const Text("Yes"),
+        )
       ],
     );
     showDialog(context: context,
