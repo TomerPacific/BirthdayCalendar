@@ -108,6 +108,22 @@ class SettingsScreen extends StatelessWidget {
     if (pair.item1 == PermissionStatus.granted) {
       UsersWithoutBirthdaysDialogs assignBirthdaysToUsers = UsersWithoutBirthdaysDialogs(pair.item2);
       List<Contact> users = await assignBirthdaysToUsers.showConfirmationDialog(context);
+      if (users.length > 0) {
+        _setBirthdaysForUsers(context, users);
+      }
+    }
+  }
+
+  void _setBirthdaysForUsers(BuildContext context, List<Contact> users) async {
+    for (Contact contact in users) {
+      showDatePicker(context: context,
+          initialDate: DateTime(1970, 1, 1),
+          firstDate: DateTime(1970, 1, 1),
+          lastDate: DateTime.now(),
+          initialEntryMode: DatePickerEntryMode.input,
+          helpText: "Choose birth date for ${contact.displayName}",
+          fieldLabelText: "${contact.displayName}'s birth date"
+      );
     }
   }
 }
