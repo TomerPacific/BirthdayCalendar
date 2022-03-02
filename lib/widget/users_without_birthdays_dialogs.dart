@@ -8,7 +8,7 @@ class UsersWithoutBirthdaysDialogs {
 
   final List<Contact> usersWithoutBirthdays;
 
-  void showConfirmationDialog(BuildContext context) {
+  Future<List<Contact>> showConfirmationDialog(BuildContext context) async {
     AlertDialog alert = AlertDialog(
         title: Text("Add Birthdays For People"),
         content: Text(
@@ -22,25 +22,27 @@ class UsersWithoutBirthdaysDialogs {
             child: const Text("No"),
           ),
           TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              showDialog(
+            onPressed: () async {
+              var result = await showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return showUsersDialog(context);
+                    return _showUsersDialog(context);
                   });
+              Navigator.pop(context, result);
             },
             child: const Text("Proceed"),
           ),
         ]
     );
-    showDialog(context: context,
+    var result = await showDialog(context: context,
         builder: (BuildContext context) {
           return alert;
         });
+
+    return result == null ? [] : result;
   }
 
-  Widget showUsersDialog(BuildContext context) {
+  Widget _showUsersDialog(BuildContext context) {
     List<bool> _usersSelectedToAddBirthdaysFor = List.filled(usersWithoutBirthdays.length, false);
     AlertDialog alert = AlertDialog(
         title: Text('People Without Birthdays'),
@@ -80,7 +82,13 @@ class UsersWithoutBirthdaysDialogs {
                       TextButton(
                         child: Text("Continue"),
                         onPressed: () {
-                          Navigator.pop(context);
+                          List<Contact> usersToSetBirthDatesTo = [];
+                          usersWithoutBirthdays.asMap().forEach((index, value) {
+                            if (_usersSelectedToAddBirthdaysFor[index]) {
+                              usersToSetBirthDatesTo.add(value);
+                            }
+                          });
+                          Navigator.pop(context, usersToSetBirthDatesTo);
                         },
                       ),
                     ],

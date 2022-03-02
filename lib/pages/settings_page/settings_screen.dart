@@ -107,7 +107,7 @@ class SettingsScreen extends StatelessWidget {
     Tuple2<PermissionStatus, List<Contact>> pair = await _settingsScreenManager.handleImportingContacts();
     if (pair.item1 == PermissionStatus.granted) {
       UsersWithoutBirthdaysDialogs assignBirthdaysToUsers = UsersWithoutBirthdaysDialogs(pair.item2);
-      assignBirthdaysToUsers.showConfirmationDialog(context);
+      List<Contact> users = await assignBirthdaysToUsers.showConfirmationDialog(context);
     }
   }
 }

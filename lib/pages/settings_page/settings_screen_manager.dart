@@ -15,9 +15,9 @@ import 'package:tuple/tuple.dart';
 
 class SettingsScreenManager {
 
-  PermissionsService _permissionsService = getIt<PermissionsService>();
-  StorageService _storageService = getIt<StorageService>();
-  NotificationService _notificationService = getIt<NotificationService>();
+  final PermissionsService _permissionsService = getIt<PermissionsService>();
+  final StorageService _storageService = getIt<StorageService>();
+  final NotificationService _notificationService = getIt<NotificationService>();
   final ThemeChangeNotifier themeChangeNotifier = ThemeChangeNotifier();
   final VersionNotifier versionNotifier = VersionNotifier();
   final ClearBirthdaysNotifier clearBirthdaysNotifier = ClearBirthdaysNotifier();
