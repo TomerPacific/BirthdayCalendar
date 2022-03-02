@@ -4,7 +4,6 @@ import 'package:birthday_calendar/pages/settings_page/notifiers/ImportContactsNo
 import 'package:birthday_calendar/pages/settings_page/notifiers/VersionNotifier.dart';
 import 'package:birthday_calendar/service/permission_service/permissions_service.dart';
 import 'notifiers/ThemeChangeNotifier.dart';
-import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:birthday_calendar/constants.dart';
 import 'package:contacts_service/contacts_service.dart';
@@ -12,10 +11,10 @@ import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
+import 'package:tuple/tuple.dart';
 
-class SettingsScreenManager extends ChangeNotifier {
+class SettingsScreenManager {
 
-  List<bool> usersSelectedToAddBirthdaysFor = [];
   PermissionsService _permissionsService = getIt<PermissionsService>();
   StorageService _storageService = getIt<StorageService>();
   NotificationService _notificationService = getIt<NotificationService>();
@@ -23,14 +22,6 @@ class SettingsScreenManager extends ChangeNotifier {
   final VersionNotifier versionNotifier = VersionNotifier();
   final ClearBirthdaysNotifier clearBirthdaysNotifier = ClearBirthdaysNotifier();
   final ImportContactsNotifier importContactsNotifier = ImportContactsNotifier();
-
-  MaterialColor getColorForImportContactsTile() {
-    return !importContactsNotifier.value? Colors.blue : Colors.grey;
-  }
-
-  List<bool> usersWithNoBirthdates() {
-    return usersSelectedToAddBirthdaysFor;
-  }
 
   void onClearBirthdaysPressed() {
     clearBirthdaysNotifier.clearBirthdays();
@@ -40,27 +31,34 @@ class SettingsScreenManager extends ChangeNotifier {
     themeChangeNotifier.toggleTheme();
   }
 
-  void handleImportingContacts() async {
+  Future<Tuple2<PermissionStatus, List<Contact>>> handleImportingContacts() async {
     PermissionStatus status = await _permissionsService.getPermissionStatus(contactsPermissionKey);
+    Tuple2<PermissionStatus, List<Contact>> pair = Tuple2(status, []);
     if (status == PermissionStatus.denied) {
-      _requestContactsPermission();
+      pair = await _requestContactsPermission();
     } else if (status == PermissionStatus.permanentlyDenied) {
         importContactsNotifier.toggleImportContacts();
     } else if (status == PermissionStatus.granted) {
-      _addBirthdaysOfContactsAndSetNotifications();
+      List<Contact> contacts = await _addBirthdaysOfContactsAndSetNotifications();
+      pair = Tuple2(status, contacts);
     }
+
+    return pair;
   }
 
-  void _requestContactsPermission() async {
+  Future<Tuple2<PermissionStatus, List<Contact>>> _requestContactsPermission() async {
     PermissionStatus status = await _permissionsService.requestPermissionAndGetStatus(contactsPermissionKey);
+    List<Contact> contacts = [];
     if (status == PermissionStatus.granted) {
-      _addBirthdaysOfContactsAndSetNotifications();
+      contacts = await _addBirthdaysOfContactsAndSetNotifications();
     } else if (status == PermissionStatus.permanentlyDenied) {
       importContactsNotifier.toggleImportContacts();
     }
+
+    return Tuple2(status, contacts);
   }
 
-  void _addBirthdaysOfContactsAndSetNotifications() async {
+  Future<List<Contact>> _addBirthdaysOfContactsAndSetNotifications() async {
     List<Contact> contacts = await ContactsService.getContacts(
         withThumbnails: false);
     List<Contact> usersWithoutBirthdays = [];
@@ -81,62 +79,7 @@ class SettingsScreenManager extends ChangeNotifier {
         _storageService.saveBirthdaysForDate(person.birthday!, birthdays);
       }
     }
-
-    if (usersWithoutBirthdays.length > 0) {
-      _presentDialogToEnterBirthdayForUser(usersWithoutBirthdays);
-    }
+    
+    return usersWithoutBirthdays;
   }
-
-  void _presentDialogToEnterBirthdayForUser(List<Contact> usersWithoutBirthdays) async {
-
-  }
-
-  Widget setupAlertDialogContainer(List<Contact> usersWithoutBirthdays) {
-    return StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
-      return Container(
-          height: 300.0,
-          width: 300.0,
-          child: Column(
-            children: [
-              Expanded(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: usersWithoutBirthdays.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return CheckboxListTile(
-                        title: Text(usersWithoutBirthdays[index].displayName!),
-                        value: usersSelectedToAddBirthdaysFor[index],
-                        onChanged: (bool? value) {
-                          if (value != null) {
-                              usersSelectedToAddBirthdaysFor[index] = value;
-                          }
-                        }
-                    );
-                  },
-                ),
-              ),
-              Spacer(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  TextButton(
-                    child: Text("Cancel"),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  TextButton(
-                    child: Text("Continue"),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                ],
-              )
-            ],
-          )
-      );
-    });
-  }
-
 }

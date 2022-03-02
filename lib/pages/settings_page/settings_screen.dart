@@ -1,6 +1,11 @@
+
 import 'package:flutter/material.dart';
+import 'package:tuple/tuple.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:contacts_service/contacts_service.dart';
 import 'package:birthday_calendar/pages/settings_page/settings_screen_manager.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
+import 'package:birthday_calendar/widget/users_without_birthdays_dialogs.dart';
 
 class SettingsScreen extends StatelessWidget {
 
@@ -34,9 +39,11 @@ class SettingsScreen extends StatelessWidget {
                     return ListTile(
                       title: const Text("Import Contacts"),
                       leading: Icon(Icons.contacts,
-                          color: _settingsScreenManager.getColorForImportContactsTile()
+                          color: value == false ? Colors.blue : Colors.grey
                       ),
-                      onTap: _settingsScreenManager.handleImportingContacts,
+                      onTap: () {
+                        _handleImportContactsButtonClicked(context);
+                      },
                       enabled: !value
                     );
                   }),
@@ -94,5 +101,13 @@ class SettingsScreen extends StatelessWidget {
         builder: (BuildContext context) {
           return alert;
         });
+  }
+
+  void _handleImportContactsButtonClicked(BuildContext context) async {
+    Tuple2<PermissionStatus, List<Contact>> pair = await _settingsScreenManager.handleImportingContacts();
+    if (pair.item1 == PermissionStatus.granted) {
+      UsersWithoutBirthdaysDialogs assignBirthdaysToUsers = UsersWithoutBirthdaysDialogs(pair.item2);
+      assignBirthdaysToUsers.showConfirmationDialog(context);
+    }
   }
 }
