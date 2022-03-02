@@ -38,6 +38,7 @@ dependencies:
   permission_handler: ^9.2.0
   contacts_service: ^0.6.3
   get_it: ^6.0.0
+  tuple: ^2.0.0
 
 dev_dependencies:
   flutter_test:
