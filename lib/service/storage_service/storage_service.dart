@@ -9,4 +9,6 @@ abstract class StorageService {
 
   Future<bool> getThemeModeSetting();
   Future<void> saveThemeModeSetting(bool isDarkModeEnabled);
+  Stream<List<UserBirthday>> getBirthdaysStream();
+  void dispose();
 }

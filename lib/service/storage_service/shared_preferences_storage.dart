@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:async';
 import 'package:birthday_calendar/constants.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'storage_service.dart';
@@ -9,6 +10,7 @@ import 'package:birthday_calendar/service/service_locator.dart';
 class StorageServiceSharedPreferences extends StorageService {
 
   DateService _dateService = getIt<DateService>();
+  StreamController<List<UserBirthday>> streamController = StreamController<List<UserBirthday>>.broadcast();
 
   @override
   Future<bool> clearAllBirthdays() async {
@@ -45,6 +47,8 @@ class StorageServiceSharedPreferences extends StorageService {
     String encoded = jsonEncode(birthdays);
     String formattedDate = _dateService.formatDateForSharedPrefs(dateTime);
     sharedPreferences.setString(formattedDate, encoded);
+
+    streamController.sink.add(birthdays);
   }
 
   @override
@@ -64,4 +68,12 @@ class StorageServiceSharedPreferences extends StorageService {
     }
   }
 
+  @override
+  Stream<List<UserBirthday>> getBirthdaysStream() {
+    return streamController.stream;
+  }
+
+  void dispose() {
+    streamController.close();
+  }
 }
