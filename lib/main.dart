@@ -1,4 +1,6 @@
 
+import 'package:birthday_calendar/service/storage_service/storage_service.dart';
+
 import 'service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 import 'pages/settings_page/settings_screen.dart';
@@ -10,7 +12,8 @@ import 'constants.dart';
 import 'service/date_service/date_service.dart';
 
 final DateService _dateService = getIt<DateService>();
-final SettingsScreenManager settingsScreenManager = getIt<SettingsScreenManager>();
+final SettingsScreenManager _settingsScreenManager = getIt<SettingsScreenManager>();
+final StorageService _storageService = getIt<StorageService>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,12 +23,10 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
 
-
-
   @override
   Widget build(BuildContext context) {
         return
-          ValueListenableBuilder(valueListenable: settingsScreenManager.themeChangeNotifier, builder: (context, value, child) {
+          ValueListenableBuilder(valueListenable: _settingsScreenManager.themeChangeNotifier, builder: (context, value, child) {
             return MaterialApp(
               title: applicationName,
               theme: ThemeData(),
@@ -134,7 +135,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body:
           ValueListenableBuilder<bool>(
-              valueListenable: settingsScreenManager.clearBirthdaysNotifier,
+              valueListenable: _settingsScreenManager.clearBirthdaysNotifier,
               builder: (context, value, child) {
               return new GestureDetector(
                   onHorizontalDragUpdate: _decideOnNextMonthToShow,
@@ -179,5 +180,11 @@ class _MyHomePageState extends State<MyHomePage> {
               );
           })
     );
+  }
+
+
+  @override void dispose() {
+    _storageService.dispose();
+    super.dispose();
   }
 }
