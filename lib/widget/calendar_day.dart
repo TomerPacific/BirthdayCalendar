@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 
+import 'package:flutter/material.dart';
+import 'dart:async';
 import 'birthdays_for_calendar_day.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import '../service/storage_service/storage_service.dart';
@@ -17,11 +18,34 @@ class CalendarDayWidget extends StatefulWidget {
 class _CalendarDayState extends State<CalendarDayWidget> {
   List<UserBirthday> _birthdays = [];
   StorageService _storageService = getIt<StorageService>();
+  late StreamSubscription<List<UserBirthday>> _streamSubscription;
 
   @override
   void initState() {
     _fetchBirthdaysFromStorage();
+    Stream<List<UserBirthday>> stream = _storageService.getBirthdaysStream();
+    _streamSubscription = stream.listen(_handleEventFromStorageService);
     super.initState();
+  }
+
+  void _handleEventFromStorageService(List<UserBirthday> event) {
+    List<UserBirthday> receivedBirthdays = [];
+    for(UserBirthday birthday in event) {
+
+      DateTime firstDateWithoutYear = new DateTime(birthday.birthdayDate.month, birthday.birthdayDate.day);
+      DateTime secondDateWithoutYear = new DateTime(widget.date.month, widget.date.day);
+
+      if (firstDateWithoutYear == secondDateWithoutYear && !receivedBirthdays.contains(birthday)) {
+        receivedBirthdays.add(birthday);
+      }
+    }
+
+    if (receivedBirthdays.length > 0) {
+      setState(() {
+        _birthdays = receivedBirthdays;
+      });
+    }
+
   }
 
   @override
@@ -67,5 +91,10 @@ class _CalendarDayState extends State<CalendarDayWidget> {
               if (_birthdays.length > 0)
                 _showBirthdayIcon()
             ])));
+  }
+
+  @override void dispose() {
+    _streamSubscription.cancel();
+    super.dispose();
   }
 }
