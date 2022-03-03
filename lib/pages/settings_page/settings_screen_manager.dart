@@ -1,4 +1,6 @@
 
+import 'dart:async';
+
 import 'package:birthday_calendar/pages/settings_page/notifiers/ClearBirthdaysNotifier.dart';
 import 'package:birthday_calendar/pages/settings_page/notifiers/ImportContactsNotifier.dart';
 import 'package:birthday_calendar/pages/settings_page/notifiers/VersionNotifier.dart';
@@ -39,8 +41,9 @@ class SettingsScreenManager {
     } else if (status == PermissionStatus.permanentlyDenied) {
         importContactsNotifier.toggleImportContacts();
     } else if (status == PermissionStatus.granted) {
-      List<Contact> contacts = await _addBirthdaysOfContactsAndSetNotifications();
-      pair = Tuple2(status, contacts);
+      List<Contact> contacts = await ContactsService.getContacts(withThumbnails: false);
+      List<Contact> contactsWithoutBirthDates = await _addBirthdaysOfContactsAndSetNotifications(contacts);
+      pair = Tuple2(status, contactsWithoutBirthDates);
     }
 
     return pair;
@@ -48,19 +51,18 @@ class SettingsScreenManager {
 
   Future<Tuple2<PermissionStatus, List<Contact>>> _requestContactsPermission() async {
     PermissionStatus status = await _permissionsService.requestPermissionAndGetStatus(contactsPermissionKey);
-    List<Contact> contacts = [];
+    List<Contact> contactsWithoutBirthDates = [];
     if (status == PermissionStatus.granted) {
-      contacts = await _addBirthdaysOfContactsAndSetNotifications();
+      List<Contact> contacts = await ContactsService.getContacts(withThumbnails: false);
+      contactsWithoutBirthDates = await _addBirthdaysOfContactsAndSetNotifications(contacts);
     } else if (status == PermissionStatus.permanentlyDenied) {
       importContactsNotifier.toggleImportContacts();
     }
 
-    return Tuple2(status, contacts);
+    return Tuple2(status, contactsWithoutBirthDates);
   }
 
-  Future<List<Contact>> _addBirthdaysOfContactsAndSetNotifications() async {
-    List<Contact> contacts = await ContactsService.getContacts(
-        withThumbnails: false);
+  Future<List<Contact>> _addBirthdaysOfContactsAndSetNotifications(List<Contact> contacts) async {
     List<Contact> usersWithoutBirthdays = [];
     for (Contact person in contacts) {
       if (person.birthday == null) {
@@ -68,18 +70,29 @@ class SettingsScreenManager {
       } else if (person.birthday != null &&
           person.displayName != null &&
           person.phones != null) {
-        Item phoneNumber = person.phones!.first;
-        UserBirthday birthday = new UserBirthday(
-            person.displayName!, person.birthday!, false, phoneNumber.value!);
-        _notificationService.scheduleNotificationForBirthday(
-            birthday, "${person.displayName!} has an upcoming birthday!");
-        List<UserBirthday> birthdays = await _storageService
-            .getBirthdaysForDate(person.birthday!);
-        birthdays.add(birthday);
-        _storageService.saveBirthdaysForDate(person.birthday!, birthdays);
+        addContactToCalendar(person);
       }
     }
     
     return usersWithoutBirthdays;
+  }
+
+  void addContactToCalendar(Contact contact) async {
+    String phoneNumber = "";
+    if (contact.phones != null && contact.phones!.length > 0) {
+      phoneNumber = contact.phones!.first.value!;
+    }
+
+    UserBirthday birthday = new UserBirthday(
+        contact.displayName!,
+        contact.birthday!,
+        false,
+        phoneNumber);
+    _notificationService.scheduleNotificationForBirthday(
+        birthday, "${contact.displayName!} has an upcoming birthday!");
+    List<UserBirthday> birthdays = await _storageService
+        .getBirthdaysForDate(contact.birthday!);
+    birthdays.add(birthday);
+    _storageService.saveBirthdaysForDate(contact.birthday!, birthdays);
   }
 }

@@ -109,14 +109,14 @@ class SettingsScreen extends StatelessWidget {
       UsersWithoutBirthdaysDialogs assignBirthdaysToUsers = UsersWithoutBirthdaysDialogs(pair.item2);
       List<Contact> users = await assignBirthdaysToUsers.showConfirmationDialog(context);
       if (users.length > 0) {
-        _setBirthdaysForUsers(context, users);
+        _gatherBirthdaysForUsers(context, users);
       }
     }
   }
 
-  void _setBirthdaysForUsers(BuildContext context, List<Contact> users) async {
+  void _gatherBirthdaysForUsers(BuildContext context, List<Contact> users) async {
     for (Contact contact in users) {
-      showDatePicker(context: context,
+      DateTime? chosenBirthDate = await showDatePicker(context: context,
           initialDate: DateTime(1970, 1, 1),
           firstDate: DateTime(1970, 1, 1),
           lastDate: DateTime.now(),
@@ -124,6 +124,11 @@ class SettingsScreen extends StatelessWidget {
           helpText: "Choose birth date for ${contact.displayName}",
           fieldLabelText: "${contact.displayName}'s birth date"
       );
+
+      if (chosenBirthDate != null) {
+        contact.birthday = chosenBirthDate;
+        _settingsScreenManager.addContactToCalendar(contact);
+      }
     }
   }
 }
