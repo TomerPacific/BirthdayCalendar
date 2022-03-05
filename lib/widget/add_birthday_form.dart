@@ -41,7 +41,7 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
   }
 
   void _getBirthdaysForDate() async {
-    birthdaysForDate = await _storageService.getBirthdaysForDate(widget.dateOfDay);
+    birthdaysForDate = await _storageService.getBirthdaysForDate(widget.dateOfDay, true);
   }
 
   @override

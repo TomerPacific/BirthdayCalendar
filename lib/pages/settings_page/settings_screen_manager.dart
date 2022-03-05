@@ -91,8 +91,9 @@ class SettingsScreenManager {
     _notificationService.scheduleNotificationForBirthday(
         birthday, "${contact.displayName!} has an upcoming birthday!");
     List<UserBirthday> birthdays = await _storageService
-        .getBirthdaysForDate(contact.birthday!);
+        .getBirthdaysForDate(contact.birthday!, false);
     birthdays.add(birthday);
+
     _storageService.saveBirthdaysForDate(contact.birthday!, birthdays);
   }
 }
