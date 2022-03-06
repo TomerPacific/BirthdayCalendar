@@ -1,11 +1,11 @@
 
-import 'dart:async';
-import 'package:tuple/tuple.dart';
+import 'package:flutter/material.dart';
 import 'package:birthday_calendar/pages/settings_page/notifiers/ClearBirthdaysNotifier.dart';
 import 'package:birthday_calendar/pages/settings_page/notifiers/ImportContactsNotifier.dart';
 import 'package:birthday_calendar/pages/settings_page/notifiers/VersionNotifier.dart';
 import 'package:birthday_calendar/service/contacts_service/bc_contacts_service.dart';
 import 'package:birthday_calendar/service/permission_service/permissions_service.dart';
+import '../../widget/users_without_birthdays_dialogs.dart';
 import 'notifiers/ThemeChangeNotifier.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:birthday_calendar/constants.dart';
@@ -30,38 +30,71 @@ class SettingsScreenManager {
     themeChangeNotifier.toggleTheme();
   }
 
-  Future<Tuple2<PermissionStatus, List<Contact>>> handleImportingContacts() async {
+  void handleImportingContacts(BuildContext context) async {
     PermissionStatus status = await _permissionsService.getPermissionStatus(contactsPermissionKey);
-    Tuple2<PermissionStatus, List<Contact>> pair = Tuple2(status, []);
-    if (status == PermissionStatus.denied) {
-      pair = await _requestContactsPermission();
-    } else if (status == PermissionStatus.permanentlyDenied) {
-        importContactsNotifier.toggleImportContacts();
-    } else if (status == PermissionStatus.granted) {
+
+    if (status == PermissionStatus.permanentlyDenied) {
+      importContactsNotifier.toggleImportContacts();
+      return;
+    }
+
+    if (status == PermissionStatus.granted) {
       List<Contact> contacts = await _bcContactsService.fetchContacts(false);
       List<Contact> contactsWithoutBirthDates = await _bcContactsService.gatherContactsWithoutBirthdays(contacts);
       _bcContactsService.addContactsWithBirthdays(contacts);
-      pair = Tuple2(status, contactsWithoutBirthDates);
+      UsersWithoutBirthdaysDialogs assignBirthdaysToUsers = UsersWithoutBirthdaysDialogs(contactsWithoutBirthDates);
+      List<Contact> users = await assignBirthdaysToUsers.showConfirmationDialog(context);
+      if (users.length > 0) {
+        _gatherBirthdaysForUsers(context, users);
+      }
     }
 
-    return pair;
+    if (status == PermissionStatus.denied) {
+      _handleRequestingContactsPermission(context);
+    }
   }
 
-  Future<Tuple2<PermissionStatus, List<Contact>>> _requestContactsPermission() async {
+  void _handleRequestingContactsPermission(BuildContext context) async {
     PermissionStatus status = await _permissionsService.requestPermissionAndGetStatus(contactsPermissionKey);
-    List<Contact> contactsWithoutBirthDates = [];
-    if (status == PermissionStatus.granted) {
-      List<Contact> contacts = await _bcContactsService.fetchContacts(false);
-      contactsWithoutBirthDates = await _bcContactsService.gatherContactsWithoutBirthdays(contacts);
-      _bcContactsService.addContactsWithBirthdays(contacts);
-    } else if (status == PermissionStatus.permanentlyDenied) {
+
+    if (status == PermissionStatus.permanentlyDenied) {
       importContactsNotifier.toggleImportContacts();
+      return;
     }
 
-    return Tuple2(status, contactsWithoutBirthDates);
+    if (status == PermissionStatus.granted) {
+      List<Contact> contacts = await _bcContactsService.fetchContacts(false);
+      List<Contact> contactsWithoutBirthDates =
+      await _bcContactsService.gatherContactsWithoutBirthdays(contacts);
+      _bcContactsService.addContactsWithBirthdays(contacts);
+      UsersWithoutBirthdaysDialogs assignBirthdaysToUsers = UsersWithoutBirthdaysDialogs(contactsWithoutBirthDates);
+      List<Contact> users = await assignBirthdaysToUsers.showConfirmationDialog(context);
+      if (users.length > 0) {
+        _gatherBirthdaysForUsers(context, users);
+      }
+    }
+
   }
 
   void addContactToCalendar(Contact contact) {
     _bcContactsService.addContactToCalendar(contact);
+  }
+
+  void _gatherBirthdaysForUsers(BuildContext context, List<Contact> users) async {
+    for (Contact contact in users) {
+      DateTime? chosenBirthDate = await showDatePicker(context: context,
+          initialDate: DateTime(1970, 1, 1),
+          firstDate: DateTime(1970, 1, 1),
+          lastDate: DateTime.now(),
+          initialEntryMode: DatePickerEntryMode.input,
+          helpText: "Choose birth date for ${contact.displayName}",
+          fieldLabelText: "${contact.displayName}'s birth date"
+      );
+
+      if (chosenBirthDate != null) {
+        contact.birthday = chosenBirthDate;
+        addContactToCalendar(contact);
+      }
+    }
   }
 }
