@@ -39,14 +39,8 @@ class SettingsScreenManager {
     }
 
     if (status == PermissionStatus.granted) {
-      List<Contact> contacts = await _bcContactsService.fetchContacts(false);
-      List<Contact> contactsWithoutBirthDates = await _bcContactsService.gatherContactsWithoutBirthdays(contacts);
-      _bcContactsService.addContactsWithBirthdays(contacts);
-      UsersWithoutBirthdaysDialogs assignBirthdaysToUsers = UsersWithoutBirthdaysDialogs(contactsWithoutBirthDates);
-      List<Contact> users = await assignBirthdaysToUsers.showConfirmationDialog(context);
-      if (users.length > 0) {
-        _gatherBirthdaysForUsers(context, users);
-      }
+      _processContacts(context);
+      return;
     }
 
     if (status == PermissionStatus.denied) {
@@ -63,17 +57,19 @@ class SettingsScreenManager {
     }
 
     if (status == PermissionStatus.granted) {
-      List<Contact> contacts = await _bcContactsService.fetchContacts(false);
-      List<Contact> contactsWithoutBirthDates =
-      await _bcContactsService.gatherContactsWithoutBirthdays(contacts);
-      _bcContactsService.addContactsWithBirthdays(contacts);
-      UsersWithoutBirthdaysDialogs assignBirthdaysToUsers = UsersWithoutBirthdaysDialogs(contactsWithoutBirthDates);
-      List<Contact> users = await assignBirthdaysToUsers.showConfirmationDialog(context);
-      if (users.length > 0) {
-        _gatherBirthdaysForUsers(context, users);
-      }
+      _processContacts(context);
     }
+  }
 
+  void _processContacts(BuildContext context) async {
+    List<Contact> contacts = await _bcContactsService.fetchContacts(false);
+    List<Contact> contactsWithoutBirthDates = await _bcContactsService.gatherContactsWithoutBirthdays(contacts);
+    _bcContactsService.addContactsWithBirthdays(contacts);
+    UsersWithoutBirthdaysDialogs assignBirthdaysToUsers = UsersWithoutBirthdaysDialogs(contactsWithoutBirthDates);
+    List<Contact> users = await assignBirthdaysToUsers.showConfirmationDialog(context);
+    if (users.length > 0) {
+      _gatherBirthdaysForUsers(context, users);
+    }
   }
 
   void addContactToCalendar(Contact contact) {
