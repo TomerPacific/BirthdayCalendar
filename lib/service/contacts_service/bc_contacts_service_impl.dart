@@ -4,6 +4,7 @@ import 'package:birthday_calendar/service/service_locator.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
+import 'package:collection/collection.dart';
 
 class BCContactsServiceImpl extends BCContactsService {
 
@@ -38,6 +39,16 @@ class BCContactsServiceImpl extends BCContactsService {
 
   void addContactToCalendar(Contact contact) async {
     String phoneNumber = "";
+    List<UserBirthday> birthdays = await _storageService.getBirthdaysForDate(contact.birthday!, false);
+    String contactName = contact.displayName!;
+
+    UserBirthday? birthdayWithSameName = birthdays.firstWhereOrNull((element) => element.name == contactName);
+
+
+    if (birthdayWithSameName != null) {
+      return;
+    }
+
     if (contact.phones != null && contact.phones!.length > 0) {
       phoneNumber = contact.phones!.first.value!;
     }
@@ -49,8 +60,7 @@ class BCContactsServiceImpl extends BCContactsService {
         phoneNumber);
     _notificationService.scheduleNotificationForBirthday(
         birthday, "${contact.displayName!} has an upcoming birthday!");
-    List<UserBirthday> birthdays = await _storageService
-        .getBirthdaysForDate(contact.birthday!, false);
+
     birthdays.add(birthday);
 
     _storageService.saveBirthdaysForDate(contact.birthday!, birthdays);
