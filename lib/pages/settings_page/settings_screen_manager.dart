@@ -65,7 +65,7 @@ class SettingsScreenManager {
     List<Contact> contacts = await _bcContactsService.fetchContacts(false);
     _bcContactsService.addContactsWithBirthdays(contacts);
     List<Contact> contactsWithoutBirthDates = await _bcContactsService.gatherContactsWithoutBirthdays(contacts);
-    
+
     if (contactsWithoutBirthDates.length > 0) {
        _handleAddingBirthdaysToContacts(context, contactsWithoutBirthDates);
     }
