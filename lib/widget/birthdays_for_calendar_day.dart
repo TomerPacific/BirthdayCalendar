@@ -38,7 +38,9 @@ class _BirthdaysForCalendarDayWidgetState
     setState(() {
       currentBirthdays.add(userBirthday);
     });
-    _storageService.saveBirthdaysForDate(widget.dateOfDay, currentBirthdays);
+
+    List<UserBirthday> birthdaysMatchingDate = currentBirthdays.where((element) => element.birthdayDate == userBirthday.birthdayDate).toList();
+    _storageService.saveBirthdaysForDate(widget.dateOfDay, birthdaysMatchingDate);
   }
 
   void _removeBirthdayFromList(UserBirthday birthdayToRemove) {
