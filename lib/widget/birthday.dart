@@ -83,8 +83,8 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
           new IconButton(
               icon: Icon(
                   isNotificationEnabledForPerson
-                      ? Icons.notifications_off_outlined
-                      : Icons.notifications_active_outlined,
+                      ? Icons.notifications_active_outlined
+                      : Icons.notifications_off_outlined,
                   color:  _getColorBasedOnPosition(widget.indexOfBirthday, "icon")),
               onPressed: () {
                 updateNotificationStatusForBirthday();
