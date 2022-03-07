@@ -104,7 +104,7 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
 
               UserBirthday userBirthday = new UserBirthday(_birthdayPersonController.text,
                   widget.dateOfDay,
-                  false,
+                  true,
                   _phoneNumber.parseNumber());
               Navigator.pop(context, userBirthday);
             } else {
