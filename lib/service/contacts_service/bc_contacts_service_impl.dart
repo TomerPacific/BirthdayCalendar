@@ -56,7 +56,7 @@ class BCContactsServiceImpl extends BCContactsService {
     UserBirthday birthday = new UserBirthday(
         contact.displayName!,
         contact.birthday!,
-        false,
+        true,
         phoneNumber);
     _notificationService.scheduleNotificationForBirthday(
         birthday, "${contact.displayName!} has an upcoming birthday!");
