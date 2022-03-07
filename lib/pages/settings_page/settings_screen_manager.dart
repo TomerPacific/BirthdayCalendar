@@ -5,6 +5,7 @@ import 'package:birthday_calendar/pages/settings_page/notifiers/ImportContactsNo
 import 'package:birthday_calendar/pages/settings_page/notifiers/VersionNotifier.dart';
 import 'package:birthday_calendar/service/contacts_service/bc_contacts_service.dart';
 import 'package:birthday_calendar/service/permission_service/permissions_service.dart';
+import 'package:birthday_calendar/service/snackbar_service/SnackbarService.dart';
 import '../../widget/users_without_birthdays_dialogs.dart';
 import 'notifiers/ThemeChangeNotifier.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -12,11 +13,11 @@ import 'package:birthday_calendar/constants.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 
-
 class SettingsScreenManager {
 
   final PermissionsService _permissionsService = getIt<PermissionsService>();
   final BCContactsService _bcContactsService = getIt<BCContactsService>();
+  final SnackbarService _snackbarService = getIt<SnackbarService>();
   final ThemeChangeNotifier themeChangeNotifier = ThemeChangeNotifier();
   final VersionNotifier versionNotifier = VersionNotifier();
   final ClearBirthdaysNotifier clearBirthdaysNotifier = ClearBirthdaysNotifier();
@@ -63,11 +64,19 @@ class SettingsScreenManager {
 
   void _processContacts(BuildContext context) async {
     List<Contact> contacts = await _bcContactsService.fetchContacts(false);
+
+    if (contacts.length == 0) {
+      _snackbarService.showSnackbarWithMessage(context, "There are no contacts on your device.");
+      return;
+    }
+
     _bcContactsService.addContactsWithBirthdays(contacts);
     List<Contact> contactsWithoutBirthDates = await _bcContactsService.gatherContactsWithoutBirthdays(contacts);
 
     if (contactsWithoutBirthDates.length > 0) {
        _handleAddingBirthdaysToContacts(context, contactsWithoutBirthDates);
+    } else {
+      _snackbarService.showSnackbarWithMessage(context, "Contacts Imported Successfully");
     }
   }
 
@@ -99,5 +108,6 @@ class SettingsScreenManager {
         addContactToCalendar(contact);
       }
     }
+    _snackbarService.showSnackbarWithMessage(context, "Contacts Imported Successfully");
   }
 }
