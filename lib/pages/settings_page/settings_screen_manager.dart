@@ -1,4 +1,5 @@
 
+import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/pages/settings_page/notifiers/ClearBirthdaysNotifier.dart';
 import 'package:birthday_calendar/pages/settings_page/notifiers/ImportContactsNotifier.dart';
@@ -18,6 +19,7 @@ class SettingsScreenManager {
   final PermissionsService _permissionsService = getIt<PermissionsService>();
   final BCContactsService _bcContactsService = getIt<BCContactsService>();
   final SnackbarService _snackbarService = getIt<SnackbarService>();
+  final StorageService _storageService = getIt<StorageService>();
   final ThemeChangeNotifier themeChangeNotifier = ThemeChangeNotifier();
   final VersionNotifier versionNotifier = VersionNotifier();
   final ClearBirthdaysNotifier clearBirthdaysNotifier = ClearBirthdaysNotifier();
@@ -36,6 +38,7 @@ class SettingsScreenManager {
 
     if (status == PermissionStatus.permanentlyDenied) {
       importContactsNotifier.toggleImportContacts();
+      _storageService.saveContactsPermissionStatus(true);
       return;
     }
 
@@ -54,6 +57,7 @@ class SettingsScreenManager {
 
     if (status == PermissionStatus.permanentlyDenied) {
       importContactsNotifier.toggleImportContacts();
+      _storageService.saveContactsPermissionStatus(true);
       return;
     }
 
