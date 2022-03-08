@@ -45,7 +45,7 @@ class UsersWithoutBirthdaysDialogs {
   Widget _showUsersDialog(BuildContext context) {
     List<bool> _usersSelectedToAddBirthdaysFor = List.filled(usersWithoutBirthdays.length, false);
     bool _haveAnyContactsBeenSelected = false;
-    
+
     AlertDialog alert = AlertDialog(
         title: Text('People Without Birthdays'),
         content: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
