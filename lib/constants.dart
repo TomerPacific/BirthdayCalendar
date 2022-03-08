@@ -22,3 +22,4 @@ const invalidNameErrorMessage = "The name you entered is invalid";
 
 const darkModeKey = "darkMode";
 const contactsPermissionKey = "contacts";
+const contactsPermissionStatusKey = "contactsPermissionStatusKey";
