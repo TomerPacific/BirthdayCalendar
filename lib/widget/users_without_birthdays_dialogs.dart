@@ -44,6 +44,8 @@ class UsersWithoutBirthdaysDialogs {
 
   Widget _showUsersDialog(BuildContext context) {
     List<bool> _usersSelectedToAddBirthdaysFor = List.filled(usersWithoutBirthdays.length, false);
+    bool _haveAnyContactsBeenSelected = false;
+    
     AlertDialog alert = AlertDialog(
         title: Text('People Without Birthdays'),
         content: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
@@ -62,7 +64,10 @@ class UsersWithoutBirthdaysDialogs {
                             value: _usersSelectedToAddBirthdaysFor[index],
                             onChanged: (bool? value) {
                               if (value != null) {
-                                setState(() => _usersSelectedToAddBirthdaysFor[index] = value);
+                                setState(() {
+                                  _usersSelectedToAddBirthdaysFor[index] = value;
+                                  _haveAnyContactsBeenSelected = _haveUsersBeenSelected(_usersSelectedToAddBirthdaysFor);
+                                });
                               }
                             }
                         );
@@ -81,26 +86,34 @@ class UsersWithoutBirthdaysDialogs {
                       ),
                       TextButton(
                         child: Text("Continue"),
-                        onPressed: () {
-                          List<Contact> usersToSetBirthDatesTo = [];
-                          usersWithoutBirthdays.asMap().forEach((index, value) {
-                            if (_usersSelectedToAddBirthdaysFor[index]) {
-                              usersToSetBirthDatesTo.add(value);
-                            }
-                          });
-                          Navigator.pop(context, usersToSetBirthDatesTo);
-                        },
+                        onPressed:
+                          !_haveAnyContactsBeenSelected ?
+                          null : () => _collectUsersToAddBirthdaysTo(context, _usersSelectedToAddBirthdaysFor)
                       ),
                     ],
                   )
                 ],
               )
-          );
-        }
+            );
+          }
         )
     );
 
     return alert;
   }
 
+  bool _haveUsersBeenSelected(List<bool> usersSelectedToAddBirthdaysFor) {
+    return usersSelectedToAddBirthdaysFor.firstWhere(
+            (element) => element == true, orElse: () => false);
+  }
+
+  void _collectUsersToAddBirthdaysTo(BuildContext context, List<bool> usersSelectedToAddBirthdaysFor) {
+    List<Contact> usersToSetBirthDatesTo = [];
+    usersWithoutBirthdays.asMap().forEach((index, value) {
+      if (usersSelectedToAddBirthdaysFor[index]) {
+        usersToSetBirthDatesTo.add(value);
+      }
+    });
+    Navigator.pop(context, usersToSetBirthDatesTo);
+  }
 }
