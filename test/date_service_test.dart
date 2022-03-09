@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
-import '../lib/service/date_service/date_service.dart';
+import 'package:birthday_calendar/service/date_service/date_service.dart';
 
 void main() {
 
