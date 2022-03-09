@@ -77,4 +77,15 @@ class DateServiceImpl extends DateService {
     DateFormat dateFormat = DateFormat("yyyy-MM-dd");
     return dateFormat.format(date);
   }
+
+  bool isADate(String date) {
+    bool isValidDate = true;
+    try {
+        DateTime.parse(date);
+    } catch(exception) {
+      isValidDate = false;
+    }
+
+    return isValidDate;
+  }
 }

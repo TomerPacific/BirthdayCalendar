@@ -8,4 +8,5 @@ abstract class DateService {
   String getWeekdayNameFromDate(DateTime date);
   DateTime constructDateTimeFromDayAndMonth(int day, int month);
   String formatDateForSharedPrefs(DateTime date);
+  bool isADate(String date);
 }
