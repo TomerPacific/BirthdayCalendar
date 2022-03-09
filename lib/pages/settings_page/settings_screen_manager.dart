@@ -97,6 +97,9 @@ class SettingsScreenManager {
   }
 
   void _gatherBirthdaysForUsers(BuildContext context, List<Contact> users) async {
+
+    int amountOfBirthdaysSet = 0;
+
     for (Contact contact in users) {
       DateTime? chosenBirthDate = await showDatePicker(context: context,
           initialDate: DateTime(1970, 1, 1),
@@ -110,8 +113,12 @@ class SettingsScreenManager {
       if (chosenBirthDate != null) {
         contact.birthday = chosenBirthDate;
         addContactToCalendar(contact);
+        amountOfBirthdaysSet++;
       }
     }
-    _snackbarService.showSnackbarWithMessage(context, "Contacts Imported Successfully");
+
+    if (amountOfBirthdaysSet > 0) {
+      _snackbarService.showSnackbarWithMessage(context, "Contacts Imported Successfully");
+    }
   }
 }
