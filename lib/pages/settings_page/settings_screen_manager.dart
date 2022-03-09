@@ -70,7 +70,7 @@ class SettingsScreenManager {
     List<Contact> contacts = await _bcContactsService.fetchContacts(false);
 
     if (contacts.length == 0) {
-      _snackbarService.showSnackbarWithMessage(context, "There are no contacts on your device.");
+      _snackbarService.showSnackbarWithMessage(context, noContactsFoundMsg);
       return;
     }
 
@@ -80,7 +80,7 @@ class SettingsScreenManager {
     if (contactsWithoutBirthDates.length > 0) {
        _handleAddingBirthdaysToContacts(context, contactsWithoutBirthDates);
     } else {
-      _snackbarService.showSnackbarWithMessage(context, "Contacts Imported Successfully");
+      _snackbarService.showSnackbarWithMessage(context, contactsImportedSuccessfullyMsg);
     }
   }
 
@@ -118,7 +118,7 @@ class SettingsScreenManager {
     }
 
     if (amountOfBirthdaysSet > 0) {
-      _snackbarService.showSnackbarWithMessage(context, "Contacts Imported Successfully");
+      _snackbarService.showSnackbarWithMessage(context, contactsImportedSuccessfullyMsg);
     }
   }
 }

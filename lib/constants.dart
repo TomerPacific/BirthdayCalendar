@@ -23,3 +23,6 @@ const invalidNameErrorMessage = "The name you entered is invalid";
 const darkModeKey = "darkMode";
 const contactsPermissionKey = "contacts";
 const contactsPermissionStatusKey = "contactsPermissionStatusKey";
+
+const contactsImportedSuccessfullyMsg = "Contacts Imported Successfully";
+const noContactsFoundMsg = "There are no contacts on your device";
