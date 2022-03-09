@@ -17,6 +17,8 @@ jobs:
       - uses: dart-lang/setup-dart@v1
         with:
           sdk: '2.15.0'
+
+      - run: dart pub get
       
       - run: flutter pub get
 
