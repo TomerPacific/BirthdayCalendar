@@ -59,9 +59,15 @@ class NotificationServiceImpl extends NotificationService {
   void scheduleNotificationForBirthday(UserBirthday userBirthday, String notificationMessage) async {
     DateTime now = DateTime.now();
     DateTime birthdayDate = userBirthday.birthdayDate;
-    Duration difference = now.isAfter(birthdayDate)
-        ? now.difference(birthdayDate)
-        : birthdayDate.difference(now);
+    DateTime correctedBirthdayDate = birthdayDate;
+
+    if (birthdayDate.year < now.year) {
+      correctedBirthdayDate = new DateTime(now.year, birthdayDate.month, birthdayDate.day);
+    }
+
+    Duration difference = now.isAfter(correctedBirthdayDate)
+        ? now.difference(correctedBirthdayDate)
+        : correctedBirthdayDate.difference(now);
 
     _wasApplicationLaunchedFromNotification()
         .then((bool didApplicationLaunchFromNotification) => {
