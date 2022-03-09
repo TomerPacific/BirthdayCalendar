@@ -59,7 +59,13 @@ class StorageServiceSharedPreferences extends StorageService {
     List<DateTime> matchingBirthdays = [];
     final sharedPreferences = await SharedPreferences.getInstance();
     Set<String> dates = sharedPreferences.getKeys();
+
     for (String date in dates) {
+
+      if (!_dateService.isADate(date)) {
+        continue;
+      }
+      
       DateTime converted = DateTime.parse(date);
       if (dateTime.month == converted.month && dateTime.day == converted.day) {
         matchingBirthdays.add(converted);
