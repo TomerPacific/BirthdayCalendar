@@ -107,6 +107,8 @@ class StorageServiceSharedPreferences extends StorageService {
         savedBirthday.updateNotificationStatus(updatedStatus);
       }
     }
+
+    saveBirthdaysForDate(userBirthday.birthdayDate, birthdays);
   }
 
   @override
