@@ -50,8 +50,8 @@ class UsersWithoutBirthdaysDialogs {
         title: Text('People Without Birthdays'),
         content: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
           return Container(
-              height: 300.0,
-              width: 300.0,
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
               child: Column(
                 children: [
                   Expanded(
