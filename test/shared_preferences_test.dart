@@ -60,4 +60,15 @@ void main() {
 
   });
 
+  test("SharedPreferences set ThemeMode to dark mode", () async {
+    await _storageService.saveThemeModeSetting(true);
+    bool isDarkModeEnabled = await _storageService.getThemeModeSetting();
+    expect(isDarkModeEnabled, equals(true));
+  });
+
+  test("SharedPreferences default contact permission status is not permanently denied", () async {
+    bool isContactsPermissionStatusPermanentlyDenied = await _storageService.getContactsPermissionStatus();
+    expect(isContactsPermissionStatusPermanentlyDenied, equals(false));
+  });
+
 }
