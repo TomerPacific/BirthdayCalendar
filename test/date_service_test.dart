@@ -40,4 +40,16 @@ void main() {
     final String day = _dateService.getWeekdayNameFromDate(dateTime);
     expect(day, equals("Sunday"));
   });
+
+  test("DateService convert String representing actual date", () {
+    final String date = "2020-01-04";
+    final bool isAValidDate = _dateService.isADate(date);
+    expect(isAValidDate, equals(true));
+  });
+
+  test("DateService convert String NOT representing date", () {
+    final String date = "Hello World!";
+    final bool isAValidDate = _dateService.isADate(date);
+    expect(isAValidDate, equals(false));
+  });
 }
