@@ -1,6 +1,6 @@
 
 import 'package:birthday_calendar/model/user_birthday.dart';
-import 'package:birthday_calendar/service/VersionSpecificService.dart';
+import 'VersionSpecificService.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';

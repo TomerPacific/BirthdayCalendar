@@ -1,7 +1,7 @@
 
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'service/notification_service/notification_service.dart';
-import 'package:birthday_calendar/service/VersionSpecificService.dart';
+import 'service/version_specific_service/VersionSpecificService.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 import 'pages/settings_page/settings_screen.dart';
 import 'package:birthday_calendar/pages/settings_page/settings_screen_manager.dart';

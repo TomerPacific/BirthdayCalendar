@@ -12,8 +12,8 @@ import 'package:birthday_calendar/service/permission_service/permissions_service
 import 'package:birthday_calendar/service/contacts_service/bc_contacts_service_impl.dart';
 import 'package:birthday_calendar/service/snackbar_service/SnackbarService.dart';
 import 'package:birthday_calendar/service/snackbar_service/SnackbarServiceImpl.dart';
-import 'package:birthday_calendar/service/VersionSpecificService.dart';
-import 'package:birthday_calendar/service/VersionSpecificServiceImpl.dart';
+import 'version_specific_service/VersionSpecificService.dart';
+import 'version_specific_service/VersionSpecificServiceImpl.dart';
 
 import 'package:get_it/get_it.dart';
 
