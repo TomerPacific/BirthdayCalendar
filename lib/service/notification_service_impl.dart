@@ -63,13 +63,14 @@ class NotificationServiceImpl extends NotificationService {
         ? now.difference(birthdayDate)
         : birthdayDate.difference(now);
 
-    _wasApplicationLaunchedFromNotification()
-        .then((bool didApplicationLaunchFromNotification) => {
-      if (didApplicationLaunchFromNotification && difference.inDays == 0) {
-          scheduleNotificationForNextYear(userBirthday, notificationMessage)}
-      else if (!didApplicationLaunchFromNotification && difference.inDays == 0) {
-          showNotification(userBirthday, notificationMessage)}
-        });
+    bool didApplicationLaunchFromNotification = await _wasApplicationLaunchedFromNotification();
+    if (didApplicationLaunchFromNotification && difference.inDays == 0) {
+      scheduleNotificationForNextYear(userBirthday, notificationMessage);
+      return;
+    } else if (!didApplicationLaunchFromNotification && difference.inDays == 0) {
+      showNotification(userBirthday, notificationMessage);
+      return;
+    }
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
         userBirthday.hashCode,
