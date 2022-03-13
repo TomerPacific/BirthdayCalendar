@@ -9,4 +9,6 @@ abstract class StorageService {
 
   Future<bool> getThemeModeSetting();
   Future<void> saveThemeModeSetting(bool isDarkModeEnabled);
+  void saveDidAlreadyMigrateNotificationStatus(bool status);
+  Future<bool> getAlreadyMigrateNotificationStatus();
 }
