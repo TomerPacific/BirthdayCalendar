@@ -127,6 +127,18 @@ class StorageServiceSharedPreferences extends StorageService {
     return isPermanentlyDenied != null ? isPermanentlyDenied : false;
   }
 
+  void saveDidAlreadyMigrateNotificationStatus(bool status) async {
+    final sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences.setBool(didAlreadyMigrateNotificationStatusFlag, status);
+  }
+
+
+  Future<bool> getAlreadyMigrateNotificationStatus() async {
+    final sharedPreferences = await SharedPreferences.getInstance();
+    bool? hasAlreadyMigratedNotificationStatus = sharedPreferences.getBool(didAlreadyMigrateNotificationStatusFlag);
+    return hasAlreadyMigratedNotificationStatus != null ? hasAlreadyMigratedNotificationStatus : false;
+  }
+
   void dispose() {
     streamController.close();
   }

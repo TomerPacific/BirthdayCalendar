@@ -1,4 +1,5 @@
 import 'package:birthday_calendar/model/user_birthday.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 abstract class NotificationService {
   void init(Future<dynamic> Function(int, String?, String?, String?)? onDidReceive);
@@ -10,4 +11,5 @@ abstract class NotificationService {
   void cancelAllNotifications();
   void handleApplicationWasLaunchedFromNotification(String payload);
   UserBirthday getUserBirthdayFromPayload(String payload);
+  Future<List<PendingNotificationRequest>> getAllScheduledNotifications();
 }

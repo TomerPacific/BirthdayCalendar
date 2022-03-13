@@ -49,8 +49,10 @@ class NotificationServiceImpl extends NotificationService {
         applicationName,
         notificationMessage,
         const NotificationDetails(
-            android: AndroidNotificationDetails(channel_id, applicationName,
-                'To remind you about upcoming birthdays')
+            android: AndroidNotificationDetails(
+                channel_id,
+                applicationName,
+                channelDescription: 'To remind you about upcoming birthdays')
         ),
         payload: jsonEncode(userBirthday)
     );
@@ -69,13 +71,14 @@ class NotificationServiceImpl extends NotificationService {
         ? now.difference(correctedBirthdayDate)
         : correctedBirthdayDate.difference(now);
 
-    _wasApplicationLaunchedFromNotification()
-        .then((bool didApplicationLaunchFromNotification) => {
-      if (didApplicationLaunchFromNotification && difference.inDays == 0) {
-          scheduleNotificationForNextYear(userBirthday, notificationMessage)}
-      else if (!didApplicationLaunchFromNotification && difference.inDays == 0) {
-          showNotification(userBirthday, notificationMessage)}
-        });
+    bool didApplicationLaunchFromNotification = await _wasApplicationLaunchedFromNotification();
+    if (didApplicationLaunchFromNotification && difference.inDays == 0) {
+      scheduleNotificationForNextYear(userBirthday, notificationMessage);
+      return;
+    } else if (!didApplicationLaunchFromNotification && difference.inDays == 0) {
+      showNotification(userBirthday, notificationMessage);
+      return;
+    }
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
         userBirthday.hashCode,
@@ -83,8 +86,11 @@ class NotificationServiceImpl extends NotificationService {
         notificationMessage,
         tz.TZDateTime.now(tz.local).add(difference),
         const NotificationDetails(
-            android: AndroidNotificationDetails(channel_id, applicationName,
-                'To remind you about upcoming birthdays')),
+            android: AndroidNotificationDetails(
+                channel_id,
+                applicationName,
+                channelDescription: 'To remind you about upcoming birthdays')
+        ),
         payload: jsonEncode(userBirthday),
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation:
@@ -98,8 +104,11 @@ class NotificationServiceImpl extends NotificationService {
         notificationMessage,
         tz.TZDateTime.now(tz.local).add(new Duration(days: 365)),
         const NotificationDetails(
-            android: AndroidNotificationDetails(channel_id, applicationName,
-                'To remind you about upcoming birthdays')),
+            android: AndroidNotificationDetails(
+                channel_id,
+                applicationName,
+                channelDescription: 'To remind you about upcoming birthdays')
+        ),
         payload: jsonEncode(userBirthday),
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation:
@@ -149,4 +158,10 @@ class NotificationServiceImpl extends NotificationService {
     cancelNotificationForBirthday(userBirthday);
     scheduleNotificationForBirthday(userBirthday, "${userBirthday.name} has an upcoming birthday!");
   }
+
+  Future<List<PendingNotificationRequest>> getAllScheduledNotifications() async {
+    List<PendingNotificationRequest> pendingNotifications = await flutterLocalNotificationsPlugin.pendingNotificationRequests();
+    return pendingNotifications;
+  }
+  
 }

@@ -1,7 +1,7 @@
 
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
-
 import 'service/notification_service/notification_service.dart';
+import 'package:birthday_calendar/service/VersionSpecificService.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 import 'pages/settings_page/settings_screen.dart';
 import 'package:birthday_calendar/pages/settings_page/settings_screen_manager.dart';
@@ -57,6 +57,8 @@ class _MyHomePageState extends State<MyHomePage> {
   int monthToPresent = -1;
   String month = "";
   NotificationService _notificationService = getIt<NotificationService>();
+  StorageService _storageService = getIt<StorageService>();
+  VersionSpecificService _versionSpecificService = getIt<VersionSpecificService>();
 
   int _correctMonthOverflow(int month) {
     if (month == 0) {
@@ -110,7 +112,15 @@ class _MyHomePageState extends State<MyHomePage> {
     monthToPresent = widget.currentMonth;
     month = _dateService.convertMonthToWord(monthToPresent);
     _notificationService.init(_onDidReceiveLocalNotification);
+    _makeVersionAdjustments();
     super.initState();
+  }
+
+  void _makeVersionAdjustments() async {
+    bool didAlreadyMigrateNotificationStatus = await _storageService.getAlreadyMigrateNotificationStatus();
+    if (!didAlreadyMigrateNotificationStatus) {
+      _versionSpecificService.migrateNotificationStatus();
+    }
   }
 
   @override
@@ -181,7 +191,6 @@ class _MyHomePageState extends State<MyHomePage> {
           })
     );
   }
-
 
   @override void dispose() {
     _storageService.dispose();

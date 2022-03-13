@@ -12,5 +12,7 @@ abstract class StorageService {
   Stream<List<UserBirthday>> getBirthdaysStream();
   void saveContactsPermissionStatus(bool isPermanentlyDenied);
   Future<bool> getContactsPermissionStatus();
+  void saveDidAlreadyMigrateNotificationStatus(bool status);
+  Future<bool> getAlreadyMigrateNotificationStatus();
   void dispose();
 }
