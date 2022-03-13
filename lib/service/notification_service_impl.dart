@@ -49,8 +49,10 @@ class NotificationServiceImpl extends NotificationService {
         applicationName,
         notificationMessage,
         const NotificationDetails(
-            android: AndroidNotificationDetails(channel_id, applicationName,
-                'To remind you about upcoming birthdays')
+            android: AndroidNotificationDetails(
+                channel_id,
+                applicationName,
+                channelDescription: 'To remind you about upcoming birthdays')
         ),
         payload: jsonEncode(userBirthday)
     );
@@ -78,8 +80,11 @@ class NotificationServiceImpl extends NotificationService {
         notificationMessage,
         tz.TZDateTime.now(tz.local).add(difference),
         const NotificationDetails(
-            android: AndroidNotificationDetails(channel_id, applicationName,
-                'To remind you about upcoming birthdays')),
+            android: AndroidNotificationDetails(
+                channel_id,
+                applicationName,
+                channelDescription: 'To remind you about upcoming birthdays')
+        ),
         payload: jsonEncode(userBirthday),
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation:
@@ -93,8 +98,11 @@ class NotificationServiceImpl extends NotificationService {
         notificationMessage,
         tz.TZDateTime.now(tz.local).add(new Duration(days: 365)),
         const NotificationDetails(
-            android: AndroidNotificationDetails(channel_id, applicationName,
-                'To remind you about upcoming birthdays')),
+            android: AndroidNotificationDetails(
+                channel_id,
+                applicationName,
+                channelDescription: 'To remind you about upcoming birthdays')
+        ),
         payload: jsonEncode(userBirthday),
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation:
