@@ -143,4 +143,10 @@ class NotificationServiceImpl extends NotificationService {
     cancelNotificationForBirthday(userBirthday);
     scheduleNotificationForBirthday(userBirthday, "${userBirthday.name} has an upcoming birthday!");
   }
+
+  Future<List<PendingNotificationRequest>> getAllScheduledNotifications() async {
+    List<PendingNotificationRequest> pendingNotifications = await flutterLocalNotificationsPlugin.pendingNotificationRequests();
+    return pendingNotifications;
+  }
+  
 }
