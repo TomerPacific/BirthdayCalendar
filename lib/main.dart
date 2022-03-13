@@ -57,7 +57,6 @@ class _MyHomePageState extends State<MyHomePage> {
   int monthToPresent = -1;
   String month = "";
   NotificationService _notificationService = getIt<NotificationService>();
-  StorageService _storageService = getIt<StorageService>();
   VersionSpecificService _versionSpecificService = getIt<VersionSpecificService>();
 
   int _correctMonthOverflow(int month) {
