@@ -21,3 +21,5 @@ const userBirthdayPhoneNumberKey = "phoneNumber";
 const invalidNameErrorMessage = "The name you entered is invalid";
 
 const darkModeKey = "darkMode";
+const versionToMigrateNotificationStatusFrom = "1.2.1";
+const didAlreadyMigrateNotificationStatusFlag = "migrateNotificationStatus";
