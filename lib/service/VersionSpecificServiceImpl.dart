@@ -41,14 +41,16 @@ class VersionSpecificServiceImpl extends VersionSpecificService {
   }
 
   bool _isVersionGreaterThan(String newVersion, String currentVersion){
-    List<String> currentV = currentVersion.split(".");
-    List<String> newV = newVersion.split(".");
-    bool a = false;
-    for (var i = 0 ; i <= currentV.length; i++){
-      a = int.parse(newV[i]) > int.parse(currentV[i]);
-      if(int.parse(newV[i]) != int.parse(currentV[i])) break;
+    List<String> currentVersionSplit = currentVersion.split(".");
+    List<String> newVersionSplit = newVersion.split(".");
+    bool isNewVersionGreaterThanCurrentVersion = false;
+    for (var i = 0 ; i <= currentVersionSplit.length; i++){
+      isNewVersionGreaterThanCurrentVersion = int.parse(newVersionSplit[i]) > int.parse(currentVersionSplit[i]);
+      if(int.parse(newVersionSplit[i]) != int.parse(currentVersionSplit[i])) {
+        break;
+      }
     }
-    return a;
+    return isNewVersionGreaterThanCurrentVersion;
   }
 
 }
