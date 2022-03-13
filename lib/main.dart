@@ -1,4 +1,5 @@
 import 'package:birthday_calendar/service/StorageService.dart';
+import 'package:birthday_calendar/service/VersionSpecificService.dart';
 import 'package:birthday_calendar/service/notification_service.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 import 'package:birthday_calendar/widget/settings_screen.dart';
@@ -78,6 +79,8 @@ class _MyHomePageState extends State<MyHomePage> {
   String month = "";
   DateService _dateService = getIt<DateService>();
   NotificationService _notificationService = getIt<NotificationService>();
+  StorageService _storageService = getIt<StorageService>();
+  VersionSpecificService _versionSpecificService = getIt<VersionSpecificService>();
 
   int _correctMonthOverflow(int month) {
     if (month == 0) {
@@ -131,7 +134,15 @@ class _MyHomePageState extends State<MyHomePage> {
     monthToPresent = widget.currentMonth;
     month = _dateService.convertMonthToWord(monthToPresent);
     _notificationService.init(_onDidReceiveLocalNotification);
+    _makeVersionAdjustments();
     super.initState();
+  }
+
+  void _makeVersionAdjustments() async {
+    bool didAlreadyMigrateNotificationStatus = await _storageService.getAlreadyMigrateNotificationStatus();
+    if (!didAlreadyMigrateNotificationStatus) {
+      _versionSpecificService.migrateNotificationStatus();
+    }
   }
 
   void _onClearNotifications() {
