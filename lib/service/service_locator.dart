@@ -26,6 +26,6 @@ setupServiceLocator() {
   getIt.registerLazySingleton<PermissionsService>(() => PermissionsServiceImpl());
   getIt.registerLazySingleton<SettingsScreenManager>(() => SettingsScreenManager());
   getIt.registerLazySingleton<BCContactsService>(() => BCContactsServiceImpl());
-  getIt.registerLazySingleton<SnackbarService>(() => SnakcbarServiceImpl());
+  getIt.registerLazySingleton<SnackbarService>(() => SnackbarServiceImpl());
   getIt.registerLazySingleton<VersionSpecificService>(() => VersionSpecificServiceImpl());
 }
