@@ -7,6 +7,7 @@ import '../service/storage_service/storage_service.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 import '../service/date_service/date_service.dart';
 import '../service/notification_service/notification_service.dart';
+import 'package:collection/collection.dart';
 
 class BirthdaysForCalendarDayWidget extends StatefulWidget {
   final DateTime dateOfDay;
@@ -43,12 +44,24 @@ class _BirthdaysForCalendarDayWidgetState
     _storageService.saveBirthdaysForDate(widget.dateOfDay, birthdaysMatchingDate);
   }
 
-  void _removeBirthdayFromList(UserBirthday birthdayToRemove) {
+  void _removeBirthdayFromList(UserBirthday birthdayToRemove) async {
     setState(() {
       currentBirthdays.remove(birthdayToRemove);
     });
-    _storageService.saveBirthdaysForDate(widget.dateOfDay, currentBirthdays);
 
+    List<UserBirthday> birthdaysForDateDeleted = await _storageService.getBirthdaysForDate(birthdayToRemove.birthdayDate, false);
+    bool found = false;
+    int i = 0;
+    for (; i < birthdaysForDateDeleted.length && !found; i++) {
+      if (birthdaysForDateDeleted[i].equals(birthdayToRemove)) {
+        found = true;
+      }
+    }
+
+    if (found) {
+      birthdaysForDateDeleted.removeAt(--i);
+    }
+    _storageService.saveBirthdaysForDate(birthdayToRemove.birthdayDate, birthdaysForDateDeleted);
   }
 
   @override
