@@ -7,7 +7,6 @@ import '../service/storage_service/storage_service.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 import '../service/date_service/date_service.dart';
 import '../service/notification_service/notification_service.dart';
-import 'package:collection/collection.dart';
 
 class BirthdaysForCalendarDayWidget extends StatefulWidget {
   final DateTime dateOfDay;
