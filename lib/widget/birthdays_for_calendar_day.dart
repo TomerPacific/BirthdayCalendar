@@ -49,18 +49,10 @@ class _BirthdaysForCalendarDayWidgetState
     });
 
     List<UserBirthday> birthdaysForDateDeleted = await _storageService.getBirthdaysForDate(birthdayToRemove.birthdayDate, false);
-    bool found = false;
-    int i = 0;
-    for (; i < birthdaysForDateDeleted.length && !found; i++) {
-      if (birthdaysForDateDeleted[i].equals(birthdayToRemove)) {
-        found = true;
-      }
-    }
 
-    if (found) {
-      birthdaysForDateDeleted.removeAt(--i);
-    }
-    _storageService.saveBirthdaysForDate(birthdayToRemove.birthdayDate, birthdaysForDateDeleted);
+    List<UserBirthday> filtered = birthdaysForDateDeleted.where((element) => !element.equals(birthdayToRemove)).toList();
+
+    _storageService.saveBirthdaysForDate(birthdayToRemove.birthdayDate, filtered);
   }
 
   @override
