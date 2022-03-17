@@ -52,46 +52,45 @@ class UsersWithoutBirthdaysDialogs {
           return Container(
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
-              child: Column(
+              child: ListView(
                 children: [
-                  Expanded(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: usersWithoutBirthdays.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return CheckboxListTile(
-                            title: Text(usersWithoutBirthdays[index].displayName!),
-                            value: _usersSelectedToAddBirthdaysFor[index],
-                            onChanged: (bool? value) {
-                              if (value != null) {
-                                setState(() {
-                                  _usersSelectedToAddBirthdaysFor[index] = value;
-                                  _haveAnyContactsBeenSelected = _haveUsersBeenSelected(_usersSelectedToAddBirthdaysFor);
-                                });
-                              }
+                    ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: usersWithoutBirthdays.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return CheckboxListTile(
+                          title: Text(usersWithoutBirthdays[index].displayName!),
+                          value: _usersSelectedToAddBirthdaysFor[index],
+                          onChanged: (bool? value) {
+                            if (value != null) {
+                              setState(() {
+                                _usersSelectedToAddBirthdaysFor[index] = value;
+                                _haveAnyContactsBeenSelected = _haveUsersBeenSelected(_usersSelectedToAddBirthdaysFor);
+                              });
                             }
+                          }
                         );
                       },
                     ),
-                  ),
-                  Spacer(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      TextButton(
-                        child: Text("Cancel"),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                      TextButton(
-                        child: Text("Continue"),
-                        onPressed:
-                          !_haveAnyContactsBeenSelected ?
-                          null : () => _collectUsersToAddBirthdaysTo(context, _usersSelectedToAddBirthdaysFor)
-                      ),
-                    ],
-                  )
+                    Spacer(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        TextButton(
+                          child: Text("Cancel"),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                        TextButton(
+                            child: Text("Continue"),
+                            onPressed:
+                            !_haveAnyContactsBeenSelected ?
+                            null : () => _collectUsersToAddBirthdaysTo(context, _usersSelectedToAddBirthdaysFor)
+                        ),
+                      ],
+                    )
                 ],
               )
             );
