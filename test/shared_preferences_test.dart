@@ -67,7 +67,7 @@ void main() {
   });
 
   test("SharedPreferences default contact permission status is not permanently denied", () async {
-    bool isContactsPermissionStatusPermanentlyDenied = await _storageService.getContactsPermissionStatus();
+    bool isContactsPermissionStatusPermanentlyDenied = await _storageService.getIsContactPermissionPermanentlyDenied();
     expect(isContactsPermissionStatusPermanentlyDenied, equals(false));
   });
 
