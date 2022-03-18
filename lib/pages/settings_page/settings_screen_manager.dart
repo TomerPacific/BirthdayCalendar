@@ -37,8 +37,8 @@ class SettingsScreenManager {
     PermissionStatus status = await _permissionsService.getPermissionStatus(contactsPermissionKey);
 
     if (status == PermissionStatus.permanentlyDenied) {
-      importContactsNotifier.toggleImportContacts();
-      _storageService.saveContactsPermissionStatus(true);
+      importContactsNotifier.toggleContactsPermissionPermanentlyDenied();
+      _storageService.saveIsContactsPermissionPermanentlyDenied(true);
       return;
     }
 
@@ -56,8 +56,8 @@ class SettingsScreenManager {
     PermissionStatus status = await _permissionsService.requestPermissionAndGetStatus(contactsPermissionKey);
 
     if (status == PermissionStatus.permanentlyDenied) {
-      importContactsNotifier.toggleImportContacts();
-      _storageService.saveContactsPermissionStatus(true);
+      importContactsNotifier.toggleContactsPermissionPermanentlyDenied();
+      _storageService.saveIsContactsPermissionPermanentlyDenied(true);
       return;
     }
 

@@ -11,11 +11,11 @@ class ImportContactsNotifier extends ValueNotifier<bool> {
   StorageService _storageService = getIt<StorageService>();
 
   void _getImportContactsStatus() async {
-    bool isContactsPermissionPermanentlyDenied = await _storageService.getContactsPermissionStatus();
+    bool isContactsPermissionPermanentlyDenied = await _storageService.getIsContactPermissionPermanentlyDenied();
     value = isContactsPermissionPermanentlyDenied;
   }
 
-  void toggleImportContacts() {
+  void toggleContactsPermissionPermanentlyDenied() {
     value = !value;
   }
 

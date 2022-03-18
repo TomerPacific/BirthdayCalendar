@@ -116,12 +116,12 @@ class StorageServiceSharedPreferences extends StorageService {
     return streamController.stream;
   }
 
-  void saveContactsPermissionStatus(bool isPermanentlyDenied) async {
+  void saveIsContactsPermissionPermanentlyDenied(bool isPermanentlyDenied) async {
     final sharedPreferences = await SharedPreferences.getInstance();
     sharedPreferences.setBool(contactsPermissionStatusKey, isPermanentlyDenied);
   }
 
-  Future<bool> getContactsPermissionStatus() async {
+  Future<bool> getIsContactPermissionPermanentlyDenied() async {
     final sharedPreferences = await SharedPreferences.getInstance();
     bool? isPermanentlyDenied = sharedPreferences.getBool(contactsPermissionStatusKey);
     return isPermanentlyDenied != null ? isPermanentlyDenied : false;
