@@ -17,6 +17,7 @@ class ImportContactsNotifier extends ValueNotifier<bool> {
 
   void toggleContactsPermissionPermanentlyDenied() {
     value = !value;
+    _storageService.saveIsContactsPermissionPermanentlyDenied(value);
   }
 
 }

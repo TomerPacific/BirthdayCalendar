@@ -38,7 +38,6 @@ class SettingsScreenManager {
 
     if (status == PermissionStatus.permanentlyDenied) {
       importContactsNotifier.toggleContactsPermissionPermanentlyDenied();
-      _storageService.saveIsContactsPermissionPermanentlyDenied(true);
       return;
     }
 
@@ -57,7 +56,6 @@ class SettingsScreenManager {
 
     if (status == PermissionStatus.permanentlyDenied) {
       importContactsNotifier.toggleContactsPermissionPermanentlyDenied();
-      _storageService.saveIsContactsPermissionPermanentlyDenied(true);
       return;
     }
 
