@@ -17,13 +17,7 @@ class BCContactsServiceImpl extends BCContactsService {
   }
 
   Future<List<Contact>> gatherContactsWithoutBirthdays(List<Contact> contacts) async {
-    List<Contact> usersWithoutBirthdays = [];
-    for (Contact person in contacts) {
-      if (person.birthday == null) {
-        usersWithoutBirthdays.add(person);
-      }
-    }
-
+    List<Contact> usersWithoutBirthdays = contacts.where((element) => element.birthday == null).toList();
     return usersWithoutBirthdays;
   }
 
