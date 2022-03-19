@@ -1,5 +1,4 @@
 
-import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/pages/settings_page/notifiers/ClearBirthdaysNotifier.dart';
 import 'package:birthday_calendar/pages/settings_page/notifiers/ImportContactsNotifier.dart';
@@ -7,7 +6,7 @@ import 'package:birthday_calendar/pages/settings_page/notifiers/VersionNotifier.
 import 'package:birthday_calendar/service/contacts_service/bc_contacts_service.dart';
 import 'package:birthday_calendar/service/permission_service/permissions_service.dart';
 import 'package:birthday_calendar/service/snackbar_service/SnackbarService.dart';
-import '../../widget/users_without_birthdays_dialogs.dart';
+import 'package:birthday_calendar/widget/users_without_birthdays_dialogs.dart';
 import 'notifiers/ThemeChangeNotifier.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:birthday_calendar/constants.dart';
@@ -19,7 +18,6 @@ class SettingsScreenManager {
   final PermissionsService _permissionsService = getIt<PermissionsService>();
   final BCContactsService _bcContactsService = getIt<BCContactsService>();
   final SnackbarService _snackbarService = getIt<SnackbarService>();
-  final StorageService _storageService = getIt<StorageService>();
   final ThemeChangeNotifier themeChangeNotifier = ThemeChangeNotifier();
   final VersionNotifier versionNotifier = VersionNotifier();
   final ClearBirthdaysNotifier clearBirthdaysNotifier = ClearBirthdaysNotifier();
