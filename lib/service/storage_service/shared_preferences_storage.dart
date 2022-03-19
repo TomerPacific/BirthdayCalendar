@@ -20,35 +20,33 @@ class StorageServiceSharedPreferences extends StorageService {
 
   @override
   Future<List<UserBirthday>> getBirthdaysForDate(DateTime dateTime, bool shouldGetBirthdaysFromSimilarDate) async {
-    final sharedPreferences = await SharedPreferences.getInstance();
 
     if (shouldGetBirthdaysFromSimilarDate) {
       List<UserBirthday> birthdays = [];
       List<DateTime> birthdaysWithSimilarDates = await _getBirthdaysWithSimilarDate(dateTime);
       for (DateTime dateTime in birthdaysWithSimilarDates) {
-        String formattedDate = _dateService.formatDateForSharedPrefs(dateTime);
-        String? birthdaysJSON = sharedPreferences.getString(formattedDate);
-        if (birthdaysJSON != null) {
-          List decodedBirthdaysForDate = jsonDecode(birthdaysJSON);
-          List<UserBirthday> decodedBirthdays = decodedBirthdaysForDate
-              .map((decodedBirthday) => UserBirthday.fromJson(decodedBirthday))
-              .toList();
-          for(UserBirthday userBirthday in decodedBirthdays) {
-            birthdays.add(userBirthday);
-          }
-        }
+          List<UserBirthday> decodedBirthdays = await _decodeBirthdaysFromDate(dateTime);
+          birthdays.addAll(decodedBirthdays);
       }
 
       return birthdays;
     }
+
+    List<UserBirthday> decodedBirthdays = await _decodeBirthdaysFromDate(dateTime);
+    return decodedBirthdays;
+
+  }
+
+  Future<List<UserBirthday>> _decodeBirthdaysFromDate(DateTime dateTime) async {
+    final sharedPreferences = await SharedPreferences.getInstance();
 
     String formattedDate = _dateService.formatDateForSharedPrefs(dateTime);
     String? birthdaysJSON = sharedPreferences.getString(formattedDate);
     if (birthdaysJSON != null) {
       List decodedBirthdaysForDate = jsonDecode(birthdaysJSON);
       List<UserBirthday> decodedBirthdays = decodedBirthdaysForDate
-            .map((decodedBirthday) => UserBirthday.fromJson(decodedBirthday))
-            .toList();
+          .map((decodedBirthday) => UserBirthday.fromJson(decodedBirthday))
+          .toList();
       return decodedBirthdays;
     }
 
