@@ -73,7 +73,6 @@ class UsersWithoutBirthdaysDialogs {
                         );
                       },
                     ),
-                    Spacer(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
