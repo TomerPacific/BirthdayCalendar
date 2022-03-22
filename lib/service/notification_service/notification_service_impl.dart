@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io' show Platform;
 
-import 'package:birthday_calendar/service/notification_service.dart';
+import 'notification_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -61,9 +61,15 @@ class NotificationServiceImpl extends NotificationService {
   void scheduleNotificationForBirthday(UserBirthday userBirthday, String notificationMessage) async {
     DateTime now = DateTime.now();
     DateTime birthdayDate = userBirthday.birthdayDate;
-    Duration difference = now.isAfter(birthdayDate)
-        ? now.difference(birthdayDate)
-        : birthdayDate.difference(now);
+    DateTime correctedBirthdayDate = birthdayDate;
+
+    if (birthdayDate.year < now.year) {
+      correctedBirthdayDate = new DateTime(now.year, birthdayDate.month, birthdayDate.day);
+    }
+
+    Duration difference = now.isAfter(correctedBirthdayDate)
+        ? now.difference(correctedBirthdayDate)
+        : correctedBirthdayDate.difference(now);
 
     bool didApplicationLaunchFromNotification = await _wasApplicationLaunchedFromNotification();
     if (didApplicationLaunchFromNotification && difference.inDays == 0) {

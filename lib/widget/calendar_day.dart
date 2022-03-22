@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
 
+import 'package:flutter/material.dart';
+import 'dart:async';
 import 'birthdays_for_calendar_day.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
-import 'package:birthday_calendar/service/StorageService.dart';
+import '../service/storage_service/storage_service.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 
 class CalendarDayWidget extends StatefulWidget {
@@ -17,11 +18,34 @@ class CalendarDayWidget extends StatefulWidget {
 class _CalendarDayState extends State<CalendarDayWidget> {
   List<UserBirthday> _birthdays = [];
   StorageService _storageService = getIt<StorageService>();
+  late StreamSubscription<List<UserBirthday>> _streamSubscription;
 
   @override
   void initState() {
     _fetchBirthdaysFromStorage();
+    Stream<List<UserBirthday>> stream = _storageService.getBirthdaysStream();
+    _streamSubscription = stream.listen(_handleEventFromStorageService);
     super.initState();
+  }
+
+  void _handleEventFromStorageService(List<UserBirthday> event) {
+    List<UserBirthday> currentBirthdays = _birthdays;
+    for(UserBirthday birthday in event) {
+
+      DateTime firstDateWithoutYear = new DateTime(birthday.birthdayDate.month, birthday.birthdayDate.day);
+      DateTime secondDateWithoutYear = new DateTime(widget.date.month, widget.date.day);
+
+      if (firstDateWithoutYear == secondDateWithoutYear && !currentBirthdays.contains(birthday)) {
+        currentBirthdays.add(birthday);
+      }
+    }
+
+    if (currentBirthdays.length > 0) {
+      setState(() {
+        _birthdays = currentBirthdays;
+      });
+    }
+
   }
 
   @override
@@ -31,7 +55,7 @@ class _CalendarDayState extends State<CalendarDayWidget> {
   }
 
   void _fetchBirthdaysFromStorage() async {
-    List<UserBirthday> storedBirthdays = await _storageService.getBirthdaysForDate(widget.date);
+    List<UserBirthday> storedBirthdays = await _storageService.getBirthdaysForDate(widget.date, true);
     setState(() {
       _birthdays = storedBirthdays;
     });
@@ -67,5 +91,10 @@ class _CalendarDayState extends State<CalendarDayWidget> {
               if (_birthdays.length > 0)
                 _showBirthdayIcon()
             ])));
+  }
+
+  @override void dispose() {
+    _streamSubscription.cancel();
+    super.dispose();
   }
 }

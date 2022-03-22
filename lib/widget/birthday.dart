@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:birthday_calendar/model/user_birthday.dart';
-import 'package:birthday_calendar/service/StorageService.dart';
-import 'package:birthday_calendar/service/notification_service.dart';
+import '../service/storage_service/storage_service.dart';
+import '../service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 
 class BirthdayWidget extends StatefulWidget {

@@ -2,7 +2,7 @@ import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:birthday_calendar/service/StorageService.dart';
+import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 
 void main() {
@@ -20,7 +20,7 @@ void main() {
 
   test("SharedPreferences get empty birthday array for date", () async {
     final DateTime dateTime = DateTime(2021, 12, 5);
-    final birthdays = await _storageService.getBirthdaysForDate(dateTime);
+    final birthdays = await _storageService.getBirthdaysForDate(dateTime, false);
     expect(birthdays.length, 0);
   });
 
@@ -32,7 +32,7 @@ void main() {
     birthdays.add(userBirthday);
     _storageService.saveBirthdaysForDate(dateTime, birthdays);
 
-    final storedBirthdays = await _storageService.getBirthdaysForDate(dateTime);
+    final storedBirthdays = await _storageService.getBirthdaysForDate(dateTime, false);
     expect(storedBirthdays.length, 1);
     expect(storedBirthdays[0].name, equals(userBirthday.name));
     expect(storedBirthdays[0].birthdayDate, equals(userBirthday.birthdayDate));
@@ -49,15 +49,26 @@ void main() {
     birthdays.add(userBirthday);
    _storageService.saveBirthdaysForDate(dateTime, birthdays);
 
-    List<UserBirthday> storedBirthdays = await _storageService.getBirthdaysForDate(dateTime);
+    List<UserBirthday> storedBirthdays = await _storageService.getBirthdaysForDate(dateTime, false);
     expect(storedBirthdays.length, 1);
 
     _storageService.clearAllBirthdays();
 
-    storedBirthdays = await _storageService.getBirthdaysForDate(dateTime);
+    storedBirthdays = await _storageService.getBirthdaysForDate(dateTime, false);
 
     expect(storedBirthdays.length, 0);
 
+  });
+
+  test("SharedPreferences set ThemeMode to dark mode", () async {
+    await _storageService.saveThemeModeSetting(true);
+    bool isDarkModeEnabled = await _storageService.getThemeModeSetting();
+    expect(isDarkModeEnabled, equals(true));
+  });
+
+  test("SharedPreferences default contact permission status is not permanently denied", () async {
+    bool isContactsPermissionStatusPermanentlyDenied = await _storageService.getIsContactPermissionPermanentlyDenied();
+    expect(isContactsPermissionStatusPermanentlyDenied, equals(false));
   });
 
 }

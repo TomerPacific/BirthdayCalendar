@@ -1,9 +1,9 @@
 
 import 'package:birthday_calendar/model/user_birthday.dart';
-import 'package:birthday_calendar/service/StorageService.dart';
-import 'package:birthday_calendar/service/VersionSpecificService.dart';
-import 'package:birthday_calendar/service/notification_service.dart';
+import 'VersionSpecificService.dart';
+import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
+import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:birthday_calendar/constants.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -25,7 +25,7 @@ class VersionSpecificServiceImpl extends VersionSpecificService {
           String payload = request.payload!;
           UserBirthday userBirthday = UserBirthday.fromJson(jsonDecode(payload));
           if (!userBirthday.hasNotification) {
-            List<UserBirthday> birthdays = await _storageService.getBirthdaysForDate(userBirthday.birthdayDate);
+            List<UserBirthday> birthdays = await _storageService.getBirthdaysForDate(userBirthday.birthdayDate, false);
             UserBirthday? found = birthdays.firstWhereOrNull((element) => element.equals(userBirthday));
             if (found != null) {
               birthdays.remove(found);

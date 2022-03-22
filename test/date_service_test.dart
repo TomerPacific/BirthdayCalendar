@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
-import 'package:birthday_calendar/service/date_service.dart';
+import 'package:birthday_calendar/service/date_service/date_service.dart';
 
 void main() {
 
@@ -39,5 +39,17 @@ void main() {
     final DateTime dateTime = DateTime(2021, 12, 5);
     final String day = _dateService.getWeekdayNameFromDate(dateTime);
     expect(day, equals("Sunday"));
+  });
+
+  test("DateService convert String representing actual date", () {
+    final String date = "2020-01-04";
+    final bool isAValidDate = _dateService.isADate(date);
+    expect(isAValidDate, equals(true));
+  });
+
+  test("DateService convert String NOT representing date", () {
+    final String date = "Hello World!";
+    final bool isAValidDate = _dateService.isADate(date);
+    expect(isAValidDate, equals(false));
   });
 }

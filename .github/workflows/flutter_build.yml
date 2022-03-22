@@ -13,10 +13,12 @@ jobs:
           java-version: '12.x'
       - uses: subosito/flutter-action@v1
         with:
-          flutter-version: '2.5.0'
+          flutter-version: '2.8.0'
       - uses: dart-lang/setup-dart@v1
         with:
           sdk: '2.15.0'
+
+      - run: dart pub get
       
       - run: flutter pub get
 

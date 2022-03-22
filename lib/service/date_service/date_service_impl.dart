@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
-import '../constants.dart';
-import 'package:birthday_calendar/service/date_service.dart';
+import '../../constants.dart';
+import 'date_service.dart';
 
 class DateServiceImpl extends DateService {
 
@@ -76,5 +76,16 @@ class DateServiceImpl extends DateService {
   String formatDateForSharedPrefs(DateTime date) {
     DateFormat dateFormat = DateFormat("yyyy-MM-dd");
     return dateFormat.format(date);
+  }
+
+  bool isADate(String date) {
+    bool isValidDate = true;
+    try {
+        DateTime.parse(date);
+    } catch(exception) {
+      isValidDate = false;
+    }
+
+    return isValidDate;
   }
 }
