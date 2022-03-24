@@ -167,7 +167,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           new IconButton(icon:
-                          new Icon(Icons.chevron_left, color: Colors.black),
+                          new Icon(Icons.chevron_left),
                               onPressed: () {
                                 _calculateNextMonthToShow(AxisDirection.right);
                               }),
@@ -177,7 +177,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               currentMonth:monthToPresent),
                           ),
                           new IconButton(icon:
-                          new Icon(Icons.chevron_right, color: Colors.black),
+                          new Icon(Icons.chevron_right),
                               onPressed: () {
                                 _calculateNextMonthToShow(AxisDirection.left);
                               }),
