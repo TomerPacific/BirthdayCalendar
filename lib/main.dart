@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'constants.dart';
 import 'service/date_service/date_service.dart';
-import 'package:birthday_calendar/page/main_page/main_page.dart';
+import 'package:birthday_calendar/page/main_page/main_screen.dart';
 
 final DateService _dateService = getIt<DateService>();
 final SettingsScreenManager _settingsScreenManager = getIt<SettingsScreenManager>();
