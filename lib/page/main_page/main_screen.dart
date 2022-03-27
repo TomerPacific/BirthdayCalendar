@@ -1,11 +1,11 @@
 
+import 'package:birthday_calendar/page/main_page/main_screen_manager.dart';
 import 'package:birthday_calendar/page/settings_page/settings_screen_manager.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter/material.dart';
 import '../settings_page/settings_screen.dart';
 import 'package:birthday_calendar/widget/calendar.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
-import 'package:birthday_calendar/service/version_specific_service/VersionSpecificService.dart';
 import 'package:birthday_calendar/service/date_service/date_service.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 
@@ -24,24 +24,16 @@ class _MainPageState extends State<MainPage> {
   int monthToPresent = -1;
   String month = "";
   NotificationService _notificationService = getIt<NotificationService>();
-  VersionSpecificService _versionSpecificService = getIt<VersionSpecificService>();
   DateService _dateService = getIt<DateService>();
   StorageService _storageService = getIt<StorageService>();
   SettingsScreenManager _settingsScreenManager = getIt<SettingsScreenManager>();
 
-  int _correctMonthOverflow(int month) {
-    if (month == 0) {
-      month = 12;
-    } else if (month == 13) {
-      month = 1;
-    }
-    return month;
-  }
+  MainScreenManager _mainScreenManager = MainScreenManager();
 
   void _calculateNextMonthToShow(AxisDirection direction) {
     setState(() {
       monthToPresent = direction == AxisDirection.left ? monthToPresent + 1 : monthToPresent - 1;
-      monthToPresent = _correctMonthOverflow(monthToPresent);
+      monthToPresent = _mainScreenManager.correctMonthOverflow(monthToPresent);
       month = _dateService.convertMonthToWord(monthToPresent);
     });
   }
@@ -81,15 +73,8 @@ class _MainPageState extends State<MainPage> {
     monthToPresent = widget.currentMonth;
     month = _dateService.convertMonthToWord(monthToPresent);
     _notificationService.init(_onDidReceiveLocalNotification);
-    _makeVersionAdjustments();
+    _mainScreenManager.makeVersionAdjustments();
     super.initState();
-  }
-
-  void _makeVersionAdjustments() async {
-    bool didAlreadyMigrateNotificationStatus = await _storageService.getAlreadyMigrateNotificationStatus();
-    if (!didAlreadyMigrateNotificationStatus) {
-      _versionSpecificService.migrateNotificationStatus();
-    }
   }
 
   @override
