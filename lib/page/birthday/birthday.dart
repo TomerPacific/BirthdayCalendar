@@ -1,7 +1,5 @@
 import 'package:birthday_calendar/page/birthday/birthday_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
-
 import 'package:birthday_calendar/model/user_birthday.dart';
 import '../../service/storage_service/storage_service.dart';
 import '../../service/notification_service/notification_service.dart';
@@ -45,13 +43,6 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
     }
   }
 
-  void _handleCallButtonPressed() async {
-    String phoneUrl = 'tel://' + widget.birthdayOfPerson.phoneNumber;
-    if (await canLaunch(phoneUrl)) {
-      launch(phoneUrl);
-    }
-  }
-
   @override
   void initState() {
     isNotificationEnabledForPerson = widget.birthdayOfPerson.hasNotification;
@@ -84,7 +75,9 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
               }),
           new IconButton(
               icon: Icon(Icons.call, color: _birthdayManager.getColorBasedOnPosition(widget.indexOfBirthday, "icon")),
-              onPressed: _handleCallButtonPressed),
+              onPressed: () {
+                _birthdayManager.handleCallButtonPressed(widget.birthdayOfPerson.phoneNumber);
+              }),
           new IconButton(
               icon: Icon(Icons.clear, color: _birthdayManager.getColorBasedOnPosition(widget.indexOfBirthday, "icon")),
               onPressed: widget.onDeletePressedCallback),

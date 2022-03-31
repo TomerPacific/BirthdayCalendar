@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class BirthdayManager {
 
@@ -9,6 +10,13 @@ class BirthdayManager {
     }
 
     return index % 2 == 0 ? Colors.white : Colors.black;
+  }
+
+  void handleCallButtonPressed(String phoneNumber) async {
+    String phoneUrl = 'tel://' + phoneNumber;
+    if (await canLaunch(phoneUrl)) {
+      launch(phoneUrl);
+    }
   }
 
 }
