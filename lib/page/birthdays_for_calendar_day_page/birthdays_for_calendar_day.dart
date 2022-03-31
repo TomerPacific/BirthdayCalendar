@@ -55,7 +55,7 @@ class BirthdaysForCalendarDayWidget extends StatelessWidget {
                 ),
                 floatingActionButton: FloatingActionButton(
                 onPressed: () {
-                  Provider.of<BirthdaysForCalendarDayManager>(context, listen: false).handleAddBirthdayBtnPressed(context, this.dateOfDay);
+                  Provider.of<BirthdaysForCalendarDayManager>(context, listen: false).handleAddBirthdayBtnPressed(context, dateOfDay);
                   },
                 child: Icon(Icons.add)),
               );
