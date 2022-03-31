@@ -1,7 +1,7 @@
 
 import 'package:birthday_calendar/page/birthdays_for_calendar_day_page/birthdays_for_calendar_day_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:birthday_calendar/widget/birthday.dart';
+import '../birthday/birthday.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 import '../../service/date_service/date_service.dart';
