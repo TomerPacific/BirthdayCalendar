@@ -1,9 +1,10 @@
+import 'package:birthday_calendar/page/birthday/birthday_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:birthday_calendar/model/user_birthday.dart';
-import '../service/storage_service/storage_service.dart';
-import '../service/notification_service/notification_service.dart';
+import '../../service/storage_service/storage_service.dart';
+import '../../service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 
 class BirthdayWidget extends StatefulWidget {
@@ -26,6 +27,7 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
   bool isNotificationEnabledForPerson = false;
   StorageService _storageService = getIt<StorageService>();
   NotificationService _notificationService = getIt<NotificationService>();
+  BirthdayManager _birthdayManager = new BirthdayManager();
 
 
   void updateNotificationStatusForBirthday() {
@@ -43,14 +45,6 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
     }
   }
 
-  Color _getColorBasedOnPosition(int index, String element) {
-    if (element == "background") {
-      return index % 2 == 0 ? Colors.indigoAccent : Colors.white24;
-    }
-
-    return index % 2 == 0 ? Colors.white : Colors.black;
-  }
-
   void _handleCallButtonPressed() async {
     String phoneUrl = 'tel://' + widget.birthdayOfPerson.phoneNumber;
     if (await canLaunch(phoneUrl)) {
@@ -63,12 +57,11 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
     isNotificationEnabledForPerson = widget.birthdayOfPerson.hasNotification;
     super.initState();
   }
-
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 40,
-      color: _getColorBasedOnPosition(widget.indexOfBirthday, "background"),
+      color: _birthdayManager.getColorBasedOnPosition(widget.indexOfBirthday, "background"),
       child: Row(
         children: [
           new Padding(
@@ -76,7 +69,7 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
             child: Text(
               widget.birthdayOfPerson.name,
               textDirection: TextDirection.ltr,
-              style: new TextStyle(fontSize: 20.0, color: _getColorBasedOnPosition(widget.indexOfBirthday, "text")),
+              style: new TextStyle(fontSize: 20.0, color: _birthdayManager.getColorBasedOnPosition(widget.indexOfBirthday, "text")),
             ),
           ),
           new Spacer(),
@@ -85,15 +78,15 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                   !isNotificationEnabledForPerson
                       ? Icons.notifications_off_outlined
                       : Icons.notifications_active_outlined,
-                  color:  _getColorBasedOnPosition(widget.indexOfBirthday, "icon")),
+                  color:  _birthdayManager.getColorBasedOnPosition(widget.indexOfBirthday, "icon")),
               onPressed: () {
                 updateNotificationStatusForBirthday();
               }),
           new IconButton(
-              icon: Icon(Icons.call, color: _getColorBasedOnPosition(widget.indexOfBirthday, "icon")),
+              icon: Icon(Icons.call, color: _birthdayManager.getColorBasedOnPosition(widget.indexOfBirthday, "icon")),
               onPressed: _handleCallButtonPressed),
           new IconButton(
-              icon: Icon(Icons.clear, color: _getColorBasedOnPosition(widget.indexOfBirthday, "icon")),
+              icon: Icon(Icons.clear, color: _birthdayManager.getColorBasedOnPosition(widget.indexOfBirthday, "icon")),
               onPressed: widget.onDeletePressedCallback),
         ],
       ),
