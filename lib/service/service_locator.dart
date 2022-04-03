@@ -6,7 +6,7 @@ import 'date_service/date_service_impl.dart';
 import 'notification_service/notification_service_impl.dart';
 import 'notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/contacts_service/bc_contacts_service.dart';
-import 'package:birthday_calendar/pages/settings_page/settings_screen_manager.dart';
+import 'package:birthday_calendar/page/settings_page/settings_screen_manager.dart';
 import 'package:birthday_calendar/service/permission_service/permissions_service.dart';
 import 'package:birthday_calendar/service/permission_service/permissions_service_impl.dart';
 import 'package:birthday_calendar/service/contacts_service/bc_contacts_service_impl.dart';

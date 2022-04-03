@@ -1,8 +1,8 @@
 
 import 'package:flutter/material.dart';
-import 'package:birthday_calendar/pages/settings_page/notifiers/ClearBirthdaysNotifier.dart';
-import 'package:birthday_calendar/pages/settings_page/notifiers/ImportContactsNotifier.dart';
-import 'package:birthday_calendar/pages/settings_page/notifiers/VersionNotifier.dart';
+import 'package:birthday_calendar/page/settings_page/notifiers/ClearBirthdaysNotifier.dart';
+import 'package:birthday_calendar/page/settings_page/notifiers/ImportContactsNotifier.dart';
+import 'package:birthday_calendar/page/settings_page/notifiers/VersionNotifier.dart';
 import 'package:birthday_calendar/service/contacts_service/bc_contacts_service.dart';
 import 'package:birthday_calendar/service/permission_service/permissions_service.dart';
 import 'package:birthday_calendar/service/snackbar_service/SnackbarService.dart';
