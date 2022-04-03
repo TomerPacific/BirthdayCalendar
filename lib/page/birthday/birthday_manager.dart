@@ -5,8 +5,14 @@ import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class BirthdayManager extends ChangeNotifier {
+enum ElementType {
+  background,
+  icon,
+  text
+}
 
+class BirthdayManager extends ChangeNotifier {
+  
   StorageService _storageService = getIt<StorageService>();
   NotificationService _notificationService = getIt<NotificationService>();
   UserBirthday _userBirthday = new UserBirthday("", DateTime.now(), false, "");
@@ -17,8 +23,8 @@ class BirthdayManager extends ChangeNotifier {
     _userBirthday = birthday;
   }
 
-  Color getColorBasedOnPosition(int index, String element) {
-    if (element == "background") {
+  Color getColorBasedOnPosition(int index, ElementType type) {
+    if (type == ElementType.background) {
       return index % 2 == 0 ? Colors.indigoAccent : Colors.white24;
     }
 
