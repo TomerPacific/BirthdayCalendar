@@ -1,4 +1,5 @@
 
+import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/page/settings_page/notifiers/ClearBirthdaysNotifier.dart';
 import 'package:birthday_calendar/page/settings_page/notifiers/ImportContactsNotifier.dart';
@@ -13,15 +14,29 @@ import 'package:birthday_calendar/constants.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 
-class SettingsScreenManager {
+class SettingsScreenManager extends ChangeNotifier {
 
   final PermissionsService _permissionsService = getIt<PermissionsService>();
   final BCContactsService _bcContactsService = getIt<BCContactsService>();
   final SnackbarService _snackbarService = getIt<SnackbarService>();
+  StorageService _storageService = getIt<StorageService>();
+
+  ThemeMode _themeMode = ThemeMode.light;
+  get themeMode => _themeMode;
+
   final ThemeChangeNotifier themeChangeNotifier = ThemeChangeNotifier();
   final VersionNotifier versionNotifier = VersionNotifier();
   final ClearBirthdaysNotifier clearBirthdaysNotifier = ClearBirthdaysNotifier();
   final ImportContactsNotifier importContactsNotifier = ImportContactsNotifier();
+
+  SettingsScreenManager() {
+    _getThemeModeFromStorage();
+  }
+
+  void _getThemeModeFromStorage() async {
+    bool isDarkModeEnabled = await _storageService.getThemeModeSetting();
+    _themeMode = isDarkModeEnabled ? ThemeMode.dark : ThemeMode.light;
+  }
 
   void onClearBirthdaysPressed() {
     clearBirthdaysNotifier.clearBirthdays();
