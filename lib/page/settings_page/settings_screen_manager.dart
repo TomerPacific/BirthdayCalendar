@@ -43,7 +43,7 @@ class SettingsScreenManager extends ChangeNotifier {
   }
 
   void handleThemeModeSettingChange(bool isDarkModeEnabled) {
-    themeChangeNotifier.toggleTheme();
+    _themeMode = _themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
   }
 
   void handleImportingContacts(BuildContext context) async {
