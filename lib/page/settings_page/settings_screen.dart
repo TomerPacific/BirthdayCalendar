@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/page/settings_page/settings_screen_manager.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
+import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatelessWidget {
 
@@ -17,18 +18,18 @@ class SettingsScreen extends StatelessWidget {
               new Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  ValueListenableBuilder<bool>(
-                      valueListenable: _settingsScreenManager.themeChangeNotifier,
-                      builder: (context, value, child) {
-                        return SwitchListTile(
-                          title: const Text('Dark Mode'),
-                          value: value,
-                          secondary:
-                          new Icon(Icons.dark_mode,
-                              color: value == false ? Color(0xFF642ef3) : Color.fromARGB(200, 243, 231, 106)
-                          ),
-                          onChanged:_settingsScreenManager.handleThemeModeSettingChange
-                        );
+                  Consumer<SettingsScreenManager>(
+                    builder: (context, notifier, child) {
+                      return  SwitchListTile(
+                      title: const Text('Dark Mode'),
+                      value: notifier.themeMode == ThemeMode.light ? false : true,
+                      secondary:
+                      new Icon(
+                          Icons.dark_mode,
+                          color: notifier.themeMode == ThemeMode.light ? Color(0xFF642ef3) : Color.fromARGB(200, 243, 231, 106)
+                        ),
+                         onChanged:notifier.handleThemeModeSettingChange
+                      );
                     }
                   ),
                   ValueListenableBuilder<bool>(valueListenable: _settingsScreenManager.importContactsNotifier, builder: (context, value, child) {
