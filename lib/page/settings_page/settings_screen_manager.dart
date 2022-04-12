@@ -8,7 +8,6 @@ import 'package:birthday_calendar/service/contacts_service/bc_contacts_service.d
 import 'package:birthday_calendar/service/permission_service/permissions_service.dart';
 import 'package:birthday_calendar/service/snackbar_service/SnackbarService.dart';
 import 'package:birthday_calendar/widget/users_without_birthdays_dialogs.dart';
-import 'notifiers/ThemeChangeNotifier.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:birthday_calendar/constants.dart';
 import 'package:contacts_service/contacts_service.dart';
@@ -24,7 +23,6 @@ class SettingsScreenManager extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.light;
   get themeMode => _themeMode;
 
-  final ThemeChangeNotifier themeChangeNotifier = ThemeChangeNotifier();
   final VersionNotifier versionNotifier = VersionNotifier();
   final ClearBirthdaysNotifier clearBirthdaysNotifier = ClearBirthdaysNotifier();
   final ImportContactsNotifier importContactsNotifier = ImportContactsNotifier();
@@ -36,6 +34,7 @@ class SettingsScreenManager extends ChangeNotifier {
   void _getThemeModeFromStorage() async {
     bool isDarkModeEnabled = await _storageService.getThemeModeSetting();
     _themeMode = isDarkModeEnabled ? ThemeMode.dark : ThemeMode.light;
+    notifyListeners();
   }
 
   void onClearBirthdaysPressed() {
@@ -44,6 +43,8 @@ class SettingsScreenManager extends ChangeNotifier {
 
   void handleThemeModeSettingChange(bool isDarkModeEnabled) {
     _themeMode = _themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
+    _storageService.saveThemeModeSetting(isDarkModeEnabled);
+    notifyListeners();
   }
 
   void handleImportingContacts(BuildContext context) async {
