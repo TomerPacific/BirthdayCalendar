@@ -3,7 +3,6 @@ import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/page/settings_page/notifiers/ClearBirthdaysNotifier.dart';
 import 'package:birthday_calendar/page/settings_page/notifiers/ImportContactsNotifier.dart';
-import 'package:birthday_calendar/page/settings_page/notifiers/VersionNotifier.dart';
 import 'package:birthday_calendar/service/contacts_service/bc_contacts_service.dart';
 import 'package:birthday_calendar/service/permission_service/permissions_service.dart';
 import 'package:birthday_calendar/service/snackbar_service/SnackbarService.dart';
@@ -12,6 +11,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:birthday_calendar/constants.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class SettingsScreenManager extends ChangeNotifier {
 
@@ -21,14 +21,23 @@ class SettingsScreenManager extends ChangeNotifier {
   StorageService _storageService = getIt<StorageService>();
 
   ThemeMode _themeMode = ThemeMode.light;
-  get themeMode => _themeMode;
+  String _version = "";
 
-  final VersionNotifier versionNotifier = VersionNotifier();
+  get themeMode => _themeMode;
+  get version => _version;
+
   final ClearBirthdaysNotifier clearBirthdaysNotifier = ClearBirthdaysNotifier();
   final ImportContactsNotifier importContactsNotifier = ImportContactsNotifier();
 
   SettingsScreenManager() {
     _getThemeModeFromStorage();
+    _getVersionInfo();
+  }
+
+  void _getVersionInfo() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    _version = packageInfo.version;
+    notifyListeners();
   }
 
   void _getThemeModeFromStorage() async {
