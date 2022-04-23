@@ -1,7 +1,6 @@
 
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter/material.dart';
-import 'package:birthday_calendar/page/settings_page/notifiers/ClearBirthdaysNotifier.dart';
 import 'package:birthday_calendar/page/settings_page/notifiers/ImportContactsNotifier.dart';
 import 'package:birthday_calendar/service/contacts_service/bc_contacts_service.dart';
 import 'package:birthday_calendar/service/permission_service/permissions_service.dart';
@@ -22,11 +21,12 @@ class SettingsScreenManager extends ChangeNotifier {
 
   ThemeMode _themeMode = ThemeMode.light;
   String _version = "";
+  bool _didClearNotifications = false;
 
   get themeMode => _themeMode;
   get version => _version;
+  get didClearNotifications => _didClearNotifications;
 
-  final ClearBirthdaysNotifier clearBirthdaysNotifier = ClearBirthdaysNotifier();
   final ImportContactsNotifier importContactsNotifier = ImportContactsNotifier();
 
   SettingsScreenManager() {
@@ -46,8 +46,13 @@ class SettingsScreenManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  void onClearBirthdaysPressed() {
-    clearBirthdaysNotifier.clearBirthdays();
+  void onClearBirthdaysPressed() async {
+    await _storageService.clearAllBirthdays();
+    _didClearNotifications = true;
+  }
+
+  void setOnClearBirthdaysFlag(bool state) {
+    _didClearNotifications = state;
   }
 
   void handleThemeModeSettingChange(bool isDarkModeEnabled) {
