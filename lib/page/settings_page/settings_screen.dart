@@ -1,12 +1,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/page/settings_page/settings_screen_manager.dart';
-import 'package:birthday_calendar/service/service_locator.dart';
 import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatelessWidget {
-
-  final SettingsScreenManager _settingsScreenManager = getIt<SettingsScreenManager>();
 
   @override
   Widget build(BuildContext context) {
@@ -37,16 +34,17 @@ class SettingsScreen extends StatelessWidget {
                               );
                             }
                         ),
-                        ValueListenableBuilder<bool>(valueListenable: _settingsScreenManager.importContactsNotifier, builder: (context, value, child) {
+                       Consumer<SettingsScreenManager>(
+                           builder: (context, notifier, child) {
                           return ListTile(
                               title: const Text("Import Contacts"),
                               leading: Icon(Icons.contacts,
-                                  color: value == false ? Colors.blue : Colors.grey
+                                  color: !notifier.isContactsPermissionPermanentlyDenied ? Colors.blue : Colors.grey
                               ),
                               onTap: () {
-                                _settingsScreenManager.handleImportingContacts(context);
+                                Provider.of<SettingsScreenManager>(context, listen: false).handleImportingContacts(context);
                               },
-                              enabled: !value
+                              enabled: !notifier.isContactsPermissionPermanentlyDenied
                           );
                         }),
                         ListTile(

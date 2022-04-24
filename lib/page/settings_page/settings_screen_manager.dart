@@ -1,7 +1,6 @@
 
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter/material.dart';
-import 'package:birthday_calendar/page/settings_page/notifiers/ImportContactsNotifier.dart';
 import 'package:birthday_calendar/service/contacts_service/bc_contacts_service.dart';
 import 'package:birthday_calendar/service/permission_service/permissions_service.dart';
 import 'package:birthday_calendar/service/snackbar_service/SnackbarService.dart';
@@ -22,16 +21,17 @@ class SettingsScreenManager extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.light;
   String _version = "";
   bool _didClearNotifications = false;
+  bool _isContactsPermissionPermanentlyDenied = false;
 
   get themeMode => _themeMode;
   get version => _version;
   get didClearNotifications => _didClearNotifications;
-
-  final ImportContactsNotifier importContactsNotifier = ImportContactsNotifier();
+  get isContactsPermissionPermanentlyDenied => _isContactsPermissionPermanentlyDenied;
 
   SettingsScreenManager() {
     _getThemeModeFromStorage();
     _getVersionInfo();
+    _getContactsPermissionStatus();
   }
 
   void _getVersionInfo() async {
@@ -43,6 +43,11 @@ class SettingsScreenManager extends ChangeNotifier {
   void _getThemeModeFromStorage() async {
     bool isDarkModeEnabled = await _storageService.getThemeModeSetting();
     _themeMode = isDarkModeEnabled ? ThemeMode.dark : ThemeMode.light;
+    notifyListeners();
+  }
+
+  void _getContactsPermissionStatus() async {
+    _isContactsPermissionPermanentlyDenied = await _storageService.getIsContactPermissionPermanentlyDenied();
     notifyListeners();
   }
 
@@ -65,7 +70,9 @@ class SettingsScreenManager extends ChangeNotifier {
     PermissionStatus status = await _permissionsService.getPermissionStatus(contactsPermissionKey);
 
     if (status == PermissionStatus.permanentlyDenied) {
-      importContactsNotifier.toggleContactsPermissionPermanentlyDenied();
+      _isContactsPermissionPermanentlyDenied = !_isContactsPermissionPermanentlyDenied;
+      _storageService.saveIsContactsPermissionPermanentlyDenied(_isContactsPermissionPermanentlyDenied);
+      notifyListeners();
       return;
     }
 
@@ -83,7 +90,9 @@ class SettingsScreenManager extends ChangeNotifier {
     PermissionStatus status = await _permissionsService.requestPermissionAndGetStatus(contactsPermissionKey);
 
     if (status == PermissionStatus.permanentlyDenied) {
-      importContactsNotifier.toggleContactsPermissionPermanentlyDenied();
+      _isContactsPermissionPermanentlyDenied = !_isContactsPermissionPermanentlyDenied;
+      _storageService.saveIsContactsPermissionPermanentlyDenied(_isContactsPermissionPermanentlyDenied);
+      notifyListeners();
       return;
     }
 
