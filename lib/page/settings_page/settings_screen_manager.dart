@@ -29,25 +29,20 @@ class SettingsScreenManager extends ChangeNotifier {
   get isContactsPermissionPermanentlyDenied => _isContactsPermissionPermanentlyDenied;
 
   SettingsScreenManager() {
-    _getThemeModeFromStorage();
+    _gatherDataFromStorage();
     _getVersionInfo();
-    _getContactsPermissionStatus();
+  }
+
+  void _gatherDataFromStorage() async {
+    bool isDarkModeEnabled = await _storageService.getThemeModeSetting();
+    _themeMode = isDarkModeEnabled ? ThemeMode.dark : ThemeMode.light;
+    _isContactsPermissionPermanentlyDenied = await _storageService.getIsContactPermissionPermanentlyDenied();
+    notifyListeners();
   }
 
   void _getVersionInfo() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     _version = packageInfo.version;
-    notifyListeners();
-  }
-
-  void _getThemeModeFromStorage() async {
-    bool isDarkModeEnabled = await _storageService.getThemeModeSetting();
-    _themeMode = isDarkModeEnabled ? ThemeMode.dark : ThemeMode.light;
-    notifyListeners();
-  }
-
-  void _getContactsPermissionStatus() async {
-    _isContactsPermissionPermanentlyDenied = await _storageService.getIsContactPermissionPermanentlyDenied();
     notifyListeners();
   }
 
