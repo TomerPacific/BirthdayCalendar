@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:collection/collection.dart';
 import 'package:birthday_calendar/constants.dart';
-import '../service/storage_service/storage_service.dart';
+import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 
 class AddBirthdayForm extends StatefulWidget {
