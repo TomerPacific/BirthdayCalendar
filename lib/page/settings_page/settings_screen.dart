@@ -1,11 +1,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/page/settings_page/settings_screen_manager.dart';
-import 'package:birthday_calendar/service/service_locator.dart';
+import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatelessWidget {
-
-  final SettingsScreenManager _settingsScreenManager = getIt<SettingsScreenManager>();
 
   @override
   Widget build(BuildContext context) {
@@ -14,62 +12,69 @@ class SettingsScreen extends StatelessWidget {
                 title: new Text("Settings"),
               ),
               body:
-              new Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  ValueListenableBuilder<bool>(
-                      valueListenable: _settingsScreenManager.themeChangeNotifier,
-                      builder: (context, value, child) {
-                        return SwitchListTile(
-                          title: const Text('Dark Mode'),
-                          value: value,
-                          secondary:
-                          new Icon(Icons.dark_mode,
-                              color: value == false ? Color(0xFF642ef3) : Color.fromARGB(200, 243, 231, 106)
-                          ),
-                          onChanged:_settingsScreenManager.handleThemeModeSettingChange
-                        );
-                    }
-                  ),
-                  ValueListenableBuilder<bool>(valueListenable: _settingsScreenManager.importContactsNotifier, builder: (context, value, child) {
-                    return ListTile(
-                      title: const Text("Import Contacts"),
-                      leading: Icon(Icons.contacts,
-                          color: value == false ? Colors.blue : Colors.grey
-                      ),
-                      onTap: () {
-                        _settingsScreenManager.handleImportingContacts(context);
-                      },
-                      enabled: !value
-                    );
-                  }),
-                  ListTile(
-                      title: const Text("Clear Notifications"),
-                      leading: const Icon(
-                          Icons.clear,
-                          color: Colors.redAccent),
-                      onTap: () {
-                        _showClearBirthdaysConfirmationDialog(context);
-                      }
-                  ),
-                  Spacer(),
-                  new Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      ValueListenableBuilder<String>(
-                          valueListenable: _settingsScreenManager.versionNotifier,
-                          builder: (context, value, child) {
-                            return Align(
-                                alignment: Alignment.bottomRight,
-                                child: Text(
-                                    "v " + value
-                                )
-                            );
-                      })
-                    ],
+                  WillPopScope(
+                    onWillPop: () async {
+                      Navigator.pop(context, Provider.of<SettingsScreenManager>(context, listen: false).didClearNotifications);
+                      return false;
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Consumer<SettingsScreenManager>(
+                            builder: (context, notifier, child) {
+                              return  SwitchListTile(
+                                  title: const Text('Dark Mode'),
+                                  value: notifier.themeMode == ThemeMode.light ? false : true,
+                                  secondary:
+                                  new Icon(
+                                      Icons.dark_mode,
+                                      color: notifier.themeMode == ThemeMode.light ? Color(0xFF642ef3) : Color.fromARGB(200, 243, 231, 106)
+                                  ),
+                                  onChanged:notifier.handleThemeModeSettingChange
+                              );
+                            }
+                        ),
+                       Consumer<SettingsScreenManager>(
+                           builder: (context, notifier, child) {
+                          return ListTile(
+                              title: const Text("Import Contacts"),
+                              leading: Icon(Icons.contacts,
+                                  color: !notifier.isContactsPermissionPermanentlyDenied ? Colors.blue : Colors.grey
+                              ),
+                              onTap: () {
+                                Provider.of<SettingsScreenManager>(context, listen: false).handleImportingContacts(context);
+                              },
+                              enabled: !notifier.isContactsPermissionPermanentlyDenied
+                          );
+                        }),
+                        ListTile(
+                            title: const Text("Clear Notifications"),
+                            leading: const Icon(
+                                Icons.clear,
+                                color: Colors.redAccent),
+                            onTap: () {
+                              _showClearBirthdaysConfirmationDialog(context);
+                            }
+                        ),
+                        Spacer(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Consumer<SettingsScreenManager>(
+                                builder: (context, notifier, child) {
+                                  return Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: Text(
+                                          "v " + notifier.version
+                                      )
+                                  );
+                                }
+                            )
+                          ],
+                        )
+                      ],
+                    ),
                   )
-                ],
-              ),
       );
   }
 
@@ -86,7 +91,7 @@ class SettingsScreen extends StatelessWidget {
         ),
         TextButton(
           onPressed: () {
-            _settingsScreenManager.onClearBirthdaysPressed();
+            Provider.of<SettingsScreenManager>(context, listen: false).onClearBirthdaysPressed();
             Navigator.pop(context);
           },
           child: const Text("Yes"),

@@ -1,41 +1,73 @@
 
+import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter/material.dart';
-import 'package:birthday_calendar/page/settings_page/notifiers/ClearBirthdaysNotifier.dart';
-import 'package:birthday_calendar/page/settings_page/notifiers/ImportContactsNotifier.dart';
-import 'package:birthday_calendar/page/settings_page/notifiers/VersionNotifier.dart';
 import 'package:birthday_calendar/service/contacts_service/bc_contacts_service.dart';
 import 'package:birthday_calendar/service/permission_service/permissions_service.dart';
 import 'package:birthday_calendar/service/snackbar_service/SnackbarService.dart';
 import 'package:birthday_calendar/widget/users_without_birthdays_dialogs.dart';
-import 'notifiers/ThemeChangeNotifier.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:birthday_calendar/constants.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
-class SettingsScreenManager {
+class SettingsScreenManager extends ChangeNotifier {
 
   final PermissionsService _permissionsService = getIt<PermissionsService>();
   final BCContactsService _bcContactsService = getIt<BCContactsService>();
   final SnackbarService _snackbarService = getIt<SnackbarService>();
-  final ThemeChangeNotifier themeChangeNotifier = ThemeChangeNotifier();
-  final VersionNotifier versionNotifier = VersionNotifier();
-  final ClearBirthdaysNotifier clearBirthdaysNotifier = ClearBirthdaysNotifier();
-  final ImportContactsNotifier importContactsNotifier = ImportContactsNotifier();
+  StorageService _storageService = getIt<StorageService>();
 
-  void onClearBirthdaysPressed() {
-    clearBirthdaysNotifier.clearBirthdays();
+  ThemeMode _themeMode = ThemeMode.light;
+  String _version = "";
+  bool _didClearNotifications = false;
+  bool _isContactsPermissionPermanentlyDenied = false;
+
+  get themeMode => _themeMode;
+  get version => _version;
+  get didClearNotifications => _didClearNotifications;
+  get isContactsPermissionPermanentlyDenied => _isContactsPermissionPermanentlyDenied;
+
+  SettingsScreenManager() {
+    _gatherDataFromStorage();
+    _getVersionInfo();
+  }
+
+  void _gatherDataFromStorage() async {
+    bool isDarkModeEnabled = await _storageService.getThemeModeSetting();
+    _themeMode = isDarkModeEnabled ? ThemeMode.dark : ThemeMode.light;
+    _isContactsPermissionPermanentlyDenied = await _storageService.getIsContactPermissionPermanentlyDenied();
+    notifyListeners();
+  }
+
+  void _getVersionInfo() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    _version = packageInfo.version;
+    notifyListeners();
+  }
+
+  void onClearBirthdaysPressed() async {
+    await _storageService.clearAllBirthdays();
+    _didClearNotifications = true;
+  }
+
+  void setOnClearBirthdaysFlag(bool state) {
+    _didClearNotifications = state;
   }
 
   void handleThemeModeSettingChange(bool isDarkModeEnabled) {
-    themeChangeNotifier.toggleTheme();
+    _themeMode = _themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
+    _storageService.saveThemeModeSetting(isDarkModeEnabled);
+    notifyListeners();
   }
 
   void handleImportingContacts(BuildContext context) async {
     PermissionStatus status = await _permissionsService.getPermissionStatus(contactsPermissionKey);
 
     if (status == PermissionStatus.permanentlyDenied) {
-      importContactsNotifier.toggleContactsPermissionPermanentlyDenied();
+      _isContactsPermissionPermanentlyDenied = !_isContactsPermissionPermanentlyDenied;
+      _storageService.saveIsContactsPermissionPermanentlyDenied(_isContactsPermissionPermanentlyDenied);
+      notifyListeners();
       return;
     }
 
@@ -53,7 +85,9 @@ class SettingsScreenManager {
     PermissionStatus status = await _permissionsService.requestPermissionAndGetStatus(contactsPermissionKey);
 
     if (status == PermissionStatus.permanentlyDenied) {
-      importContactsNotifier.toggleContactsPermissionPermanentlyDenied();
+      _isContactsPermissionPermanentlyDenied = !_isContactsPermissionPermanentlyDenied;
+      _storageService.saveIsContactsPermissionPermanentlyDenied(_isContactsPermissionPermanentlyDenied);
+      notifyListeners();
       return;
     }
 

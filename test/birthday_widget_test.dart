@@ -1,6 +1,6 @@
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:flutter_test/flutter_test.dart';
-import '../lib/page/birthday/birthday.dart';
+import 'package:birthday_calendar/page/birthday/birthday.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:birthday_calendar/service/service_locator.dart';

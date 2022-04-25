@@ -1,9 +1,9 @@
 
 import 'package:flutter/material.dart';
 import 'dart:async';
-import '../page/birthdays_for_calendar_day_page/birthdays_for_calendar_day.dart';
+import 'package:birthday_calendar/page/birthdays_for_calendar_day_page/birthdays_for_calendar_day.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
-import '../service/storage_service/storage_service.dart';
+import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 
 class CalendarDayWidget extends StatefulWidget {
