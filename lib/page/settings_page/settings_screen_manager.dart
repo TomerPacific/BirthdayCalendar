@@ -47,7 +47,7 @@ class SettingsScreenManager extends ChangeNotifier {
   }
 
   void onClearBirthdaysPressed() async {
-    await _storageService.clearAllBirthdays();
+    _storageService.clearAllBirthdays();
     _didClearNotifications = true;
   }
 
