@@ -2,6 +2,7 @@
 import 'package:birthday_calendar/page/main_page/main_screen_manager.dart';
 import 'package:birthday_calendar/page/settings_page/settings_screen_manager.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
+import 'package:birthday_calendar/service/update_service/update_service.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/page/settings_page/settings_screen.dart';
 import 'package:birthday_calendar/widget/calendar.dart';
@@ -27,6 +28,7 @@ class _MainPageState extends State<MainPage> {
   NotificationService _notificationService = getIt<NotificationService>();
   DateService _dateService = getIt<DateService>();
   StorageService _storageService = getIt<StorageService>();
+  UpdateService _updateService = getIt<UpdateService>();
 
   MainScreenManager _mainScreenManager = MainScreenManager();
 
@@ -67,13 +69,29 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
+  void _checkForUpdateAvailability() {
+    bool needToUpdate = _updateService.isUpdateAvailable();
+    if (needToUpdate) {
+      bool isImmediateUpdateAvailable = _updateService.isImmediateUpdatePossible();
+      if (isImmediateUpdateAvailable) {
+        _updateService.applyImmediateUpdate();
+      } else {
+        bool isFlexibleUpdateAvailable = _updateService.isFlexibleUpdatePossible();
+        if (isFlexibleUpdateAvailable) {
+          _updateService.startFlexibleUpdate();
+        }
+      }
+    }
+  }
+
 
   @override
-  void initState() {
+  void initState()  {
     monthToPresent = widget.currentMonth;
     month = _dateService.convertMonthToWord(monthToPresent);
     _notificationService.init(_onDidReceiveLocalNotification);
     _mainScreenManager.makeVersionAdjustments();
+    _updateService.init();
     super.initState();
   }
 
