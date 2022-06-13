@@ -4,28 +4,40 @@ import 'package:in_app_update/in_app_update.dart';
 
 class UpdateServiceImpl extends UpdateService {
 
-  late AppUpdateInfo _appUpdateInfo;
+  AppUpdateInfo? _appUpdateInfo;
 
-  UpdateServiceImpl() {
-    _init();
-  }
-
-  void _init() async {
-    _appUpdateInfo = await InAppUpdate.checkForUpdate();
-  }
-
-  @override
-  Future<bool> isUpdateAvailable() async {
-      return _appUpdateInfo.updateAvailability == UpdateAvailability.updateAvailable;
-  }
-  @override
-  Future<bool> isImmediateUpdatePossible() async {
-    return _appUpdateInfo.immediateUpdateAllowed;
+  void init()  {
+    InAppUpdate.checkForUpdate().then((value) => 
+      _appUpdateInfo = value
+    ).catchError((error) {
+      print(error);
+    });
   }
 
   @override
-  Future<bool> isFlexibleUpdatePossible() async {
-    return _appUpdateInfo.flexibleUpdateAllowed;
+  bool isUpdateAvailable() {
+    if (_appUpdateInfo != null) {
+      return _appUpdateInfo!.updateAvailability == UpdateAvailability.updateAvailable;
+    }
+     return false;
+  }
+
+  @override
+  bool isImmediateUpdatePossible() {
+    if (_appUpdateInfo != null) {
+      return _appUpdateInfo!.immediateUpdateAllowed;
+    }
+
+    return false;
+  }
+
+  @override
+  bool isFlexibleUpdatePossible() {
+    if (_appUpdateInfo != null) {
+      return _appUpdateInfo!.flexibleUpdateAllowed;
+    }
+
+    return false;
   }
 
   @override
