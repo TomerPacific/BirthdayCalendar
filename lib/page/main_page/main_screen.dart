@@ -69,22 +69,6 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  void _checkForUpdateAvailability() {
-    bool needToUpdate = _updateService.isUpdateAvailable();
-    if (needToUpdate) {
-      bool isImmediateUpdateAvailable = _updateService.isImmediateUpdatePossible();
-      if (isImmediateUpdateAvailable) {
-        _updateService.applyImmediateUpdate();
-      } else {
-        bool isFlexibleUpdateAvailable = _updateService.isFlexibleUpdatePossible();
-        if (isFlexibleUpdateAvailable) {
-          _updateService.startFlexibleUpdate();
-        }
-      }
-    }
-  }
-
-
   @override
   void initState()  {
     monthToPresent = widget.currentMonth;

@@ -7,10 +7,11 @@ class UpdateServiceImpl extends UpdateService {
   AppUpdateInfo? _appUpdateInfo;
 
   void init()  {
-    InAppUpdate.checkForUpdate().then((value) => 
-      _appUpdateInfo = value
-    ).catchError((error) {
-      print(error);
+    InAppUpdate.checkForUpdate().then((value) {
+      _appUpdateInfo = value;
+      _checkForUpdateAvailability();
+    }).catchError((error) {
+
     });
   }
 
@@ -58,6 +59,19 @@ class UpdateServiceImpl extends UpdateService {
     }
   }
 
-
+  void _checkForUpdateAvailability() {
+    bool needToUpdate = isUpdateAvailable();
+    if (needToUpdate) {
+      bool isImmediateUpdateAvailable = isImmediateUpdatePossible();
+      if (isImmediateUpdateAvailable) {
+        applyImmediateUpdate();
+      } else {
+        bool isFlexibleUpdateAvailable = isFlexibleUpdatePossible();
+        if (isFlexibleUpdateAvailable) {
+          startFlexibleUpdate();
+        }
+      }
+    }
+  }
 
 }
