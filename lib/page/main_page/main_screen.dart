@@ -69,13 +69,22 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
+  void _onUpdateSuccess() {
+
+  }
+
+  void _onUpdateFailure(String error) {
+    //Show dialog with error
+
+  }
+
   @override
   void initState()  {
     monthToPresent = widget.currentMonth;
     month = _dateService.convertMonthToWord(monthToPresent);
     _notificationService.init(_onDidReceiveLocalNotification);
     _mainScreenManager.makeVersionAdjustments();
-    _updateService.init();
+    _updateService.init(_onUpdateSuccess, _onUpdateFailure);
     super.initState();
   }
 
