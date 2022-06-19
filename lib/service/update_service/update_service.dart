@@ -1,9 +1,9 @@
 
 abstract class UpdateService {
-  void init();
+  void init(Function onSuccess, Function onFailure);
   bool isUpdateAvailable();
   bool isImmediateUpdatePossible();
   bool isFlexibleUpdatePossible();
-  Future<void> applyImmediateUpdate();
+  Future<void> applyImmediateUpdate(Function onSuccess, Function onFailure);
   Future<void> startFlexibleUpdate();
 }
