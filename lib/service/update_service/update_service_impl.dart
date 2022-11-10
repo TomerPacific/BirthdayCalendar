@@ -9,7 +9,7 @@ class UpdateServiceImpl extends UpdateService {
   void init(Function onSuccess, Function onFailure)  {
     InAppUpdate.checkForUpdate().then((value) {
       _appUpdateInfo = value;
-      _checkForUpdateAvailability(onSuccess, onFailure);
+      checkForUpdateAvailability(onSuccess, onFailure);
     }).catchError((error) {
       onFailure(error.toString());
     });
@@ -64,7 +64,7 @@ class UpdateServiceImpl extends UpdateService {
     }
   }
 
-  void _checkForUpdateAvailability(Function onSuccess, Function onFailure) {
+  void checkForUpdateAvailability(Function onSuccess, Function onFailure) {
     bool needToUpdate = isUpdateAvailable();
     if (needToUpdate) {
       bool isImmediateUpdateAvailable = isImmediateUpdatePossible();
