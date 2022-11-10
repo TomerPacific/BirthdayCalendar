@@ -70,11 +70,45 @@ class _MainPageState extends State<MainPage> {
   }
 
   void _onUpdateSuccess() {
-
+    Widget alertDialogOkButton = TextButton(
+        onPressed: () {},
+        child: const Text("Ok")
+    );
+      AlertDialog alertDialog = AlertDialog(
+        title: const Text("Update Successfully Installed"),
+        content: const Text("Birthday Calendar has been updated successfully"),
+        actions: [
+          alertDialogOkButton
+        ],
+      );
+      showDialog(context: context,
+          builder: (BuildContext context) {
+        return alertDialog;
+      });
   }
 
   void _onUpdateFailure(String error) {
-    //Show dialog with error
+    Widget alertDialogOkButton = TextButton(
+        onPressed: () {
+          _updateService.checkForUpdateAvailability(_onUpdateSuccess, _onUpdateFailure);
+        },
+        child: const Text("Try Again?")
+    );
+    Widget alertDialogCancelButton = TextButton(
+      onPressed: () {},
+      child: const Text("Dismiss"),
+    );
+    AlertDialog alertDialog = AlertDialog(
+      title: const Text("Update Failed To Install"),
+      content: Text("Birthday Calendar has failed to update because $error"),
+      actions: [
+        alertDialogOkButton
+      ],
+    );
+    showDialog(context: context,
+        builder: (BuildContext context) {
+          return alertDialog;
+        });
 
   }
 
