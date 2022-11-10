@@ -77,8 +77,8 @@ class _MainPageState extends State<MainPage> {
         child: const Text("Ok")
     );
       AlertDialog alertDialog = AlertDialog(
-        title: const Text("Update Successfully Installed"),
-        content: const Text("Birthday Calendar has been updated successfully"),
+        title: const Text("Update Successfully Installed 🎂"),
+        content: const Text("Birthday Calendar has been updated successfully!"),
         actions: [
           alertDialogOkButton
         ],
@@ -103,10 +103,11 @@ class _MainPageState extends State<MainPage> {
       child: const Text("Dismiss"),
     );
     AlertDialog alertDialog = AlertDialog(
-      title: const Text("Update Failed To Install"),
-      content: Text("Birthday Calendar has failed to update because $error"),
+      title: const Text("Update Failed To Install ❌"),
+      content: Text("Birthday Calendar has failed to update because: \n $error"),
       actions: [
-        alertDialogOkButton
+        alertDialogOkButton,
+        alertDialogCancelButton
       ],
     );
     showDialog(context: context,
