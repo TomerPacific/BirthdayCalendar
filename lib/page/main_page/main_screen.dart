@@ -77,8 +77,8 @@ class _MainPageState extends State<MainPage> {
         child: const Text("Ok")
     );
       AlertDialog alertDialog = AlertDialog(
-        title: const Text("Update Successfully Installed 🎂"),
-        content: const Text("Birthday Calendar has been updated successfully!"),
+        title: const Text("Update Successfully Installed"),
+        content: const Text("Birthday Calendar has been updated successfully! 🎂"),
         actions: [
           alertDialogOkButton
         ],
