@@ -90,7 +90,7 @@ class _MainPageState extends State<MainPage> {
   }
 
   void _onUpdateFailure(String error) {
-    Widget alertDialogOkButton = TextButton(
+    Widget alertDialogTryAgainButton = TextButton(
         onPressed: () {
           _updateService.checkForInAppUpdate(_onUpdateSuccess, _onUpdateFailure);
           Navigator.pop(context);
@@ -107,7 +107,7 @@ class _MainPageState extends State<MainPage> {
       title: const Text("Update Failed To Install ❌"),
       content: Text("Birthday Calendar has failed to update because: \n $error"),
       actions: [
-        alertDialogOkButton,
+        alertDialogTryAgainButton,
         alertDialogCancelButton
       ],
     );
