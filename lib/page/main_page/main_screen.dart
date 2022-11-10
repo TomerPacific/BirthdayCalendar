@@ -92,7 +92,8 @@ class _MainPageState extends State<MainPage> {
   void _onUpdateFailure(String error) {
     Widget alertDialogOkButton = TextButton(
         onPressed: () {
-          _updateService.checkForUpdateAvailability(_onUpdateSuccess, _onUpdateFailure);
+          _updateService.checkForInAppUpdate(_onUpdateSuccess, _onUpdateFailure);
+          Navigator.pop(context);
         },
         child: const Text("Try Again?")
     );
@@ -123,7 +124,7 @@ class _MainPageState extends State<MainPage> {
     month = _dateService.convertMonthToWord(monthToPresent);
     _notificationService.init(_onDidReceiveLocalNotification);
     _mainScreenManager.makeVersionAdjustments();
-    _updateService.init(_onUpdateSuccess, _onUpdateFailure);
+    _updateService.checkForInAppUpdate(_onUpdateSuccess, _onUpdateFailure);
     super.initState();
   }
 
