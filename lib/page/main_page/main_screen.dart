@@ -115,7 +115,6 @@ class _MainPageState extends State<MainPage> {
         builder: (BuildContext context) {
           return alertDialog;
         });
-
   }
 
   @override
