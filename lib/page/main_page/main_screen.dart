@@ -71,7 +71,9 @@ class _MainPageState extends State<MainPage> {
 
   void _onUpdateSuccess() {
     Widget alertDialogOkButton = TextButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pop(context);
+        },
         child: const Text("Ok")
     );
       AlertDialog alertDialog = AlertDialog(
@@ -95,7 +97,9 @@ class _MainPageState extends State<MainPage> {
         child: const Text("Try Again?")
     );
     Widget alertDialogCancelButton = TextButton(
-      onPressed: () {},
+      onPressed: () {
+        Navigator.pop(context);
+      },
       child: const Text("Dismiss"),
     );
     AlertDialog alertDialog = AlertDialog(
