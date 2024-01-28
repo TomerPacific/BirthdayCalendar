@@ -34,9 +34,9 @@ void main() {
 
     final storedBirthdays = await _storageService.getBirthdaysForDate(dateTime, false);
     expect(storedBirthdays.length, 1);
-    expect(storedBirthdays[0].name, equals(userBirthday.name));
-    expect(storedBirthdays[0].birthdayDate, equals(userBirthday.birthdayDate));
-    expect(storedBirthdays[0].hasNotification, equals(userBirthday.hasNotification));
+    expect(storedBirthdays[0].name, userBirthday.name);
+    expect(storedBirthdays[0].birthdayDate, userBirthday.birthdayDate);
+    expect(storedBirthdays[0].hasNotification, userBirthday.hasNotification);
 
   });
 
@@ -63,12 +63,12 @@ void main() {
   test("SharedPreferences set ThemeMode to dark mode", () async {
     await _storageService.saveThemeModeSetting(true);
     bool isDarkModeEnabled = await _storageService.getThemeModeSetting();
-    expect(isDarkModeEnabled, equals(true));
+    expect(isDarkModeEnabled, true);
   });
 
   test("SharedPreferences default contact permission status is not permanently denied", () async {
     bool isContactsPermissionStatusPermanentlyDenied = await _storageService.getIsContactPermissionPermanentlyDenied();
-    expect(isContactsPermissionStatusPermanentlyDenied, equals(false));
+    expect(isContactsPermissionStatusPermanentlyDenied, false);
   });
 
 }
