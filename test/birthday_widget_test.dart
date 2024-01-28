@@ -70,7 +70,8 @@ void main() {
     await tester.pump();
 
     expect(printLog.length, 1);
-    expect(printLog[0], contains('Deleted'));
+    bool sawDeletedMessage = printLog[0].toString().contains('Deleted');
+    expect(sawDeletedMessage, true);
   });
 
   testWidgets("BirthdayWidget press on call button", (WidgetTester tester) async {
