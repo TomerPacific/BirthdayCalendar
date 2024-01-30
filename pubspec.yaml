@@ -34,7 +34,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   intl_phone_number_input: ^0.7.3
   url_launcher: ^6.0.17
-  package_info_plus: ^4.2.0
+  package_info_plus: ^3.1.2
   permission_handler: ^10.2.0
   contacts_service: ^0.6.3
   get_it: ^6.0.0
