@@ -97,7 +97,7 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
         ),
       actions: [
         TextButton(
-          style: TextButton.styleFrom(primary: Colors.green),
+          style: TextButton.styleFrom(foregroundColor: Colors.green),
           onPressed: () {
             if (_formKey.currentState != null && _formKey.currentState!.validate()) {
               _formKey.currentState!.save();
@@ -119,7 +119,7 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
           child: new Text("OK")
         ),
         TextButton(
-          style: TextButton.styleFrom(primary: Colors.red),
+          style: TextButton.styleFrom(foregroundColor: Colors.red),
           onPressed: () {
             _birthdayPersonController.clear();
             _phoneNumberController.clear();
