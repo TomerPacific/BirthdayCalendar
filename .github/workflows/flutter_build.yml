@@ -16,6 +16,9 @@ jobs:
         with:
           flutter-version: '3.7.7'
           channel: 'stable'
+      - uses: dart-lang/setup-dart@v1
+        with:
+          channel: 'stable'
 
       - run: dart pub get
       
