@@ -39,8 +39,8 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.tomerpacific.birthday_calendar"
-        minSdkVersion 16
+        namespace "com.tomerpacific.birthday_calendar"
+        minSdkVersion 19
         targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

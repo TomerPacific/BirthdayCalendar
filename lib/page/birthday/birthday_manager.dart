@@ -32,9 +32,11 @@ class BirthdayManager extends ChangeNotifier {
   }
 
   void handleCallButtonPressed(String phoneNumber) async {
-    String phoneUrl = 'tel://' + phoneNumber;
-    if (await canLaunch(phoneUrl)) {
-      launch(phoneUrl);
+    Uri phoneUri = Uri.parse('tel:$phoneNumber');
+    if (await canLaunchUrl(phoneUri)) {
+      launchUrl(phoneUri);
+    } else {
+      print("Cannot call $phoneUri");
     }
   }
 
