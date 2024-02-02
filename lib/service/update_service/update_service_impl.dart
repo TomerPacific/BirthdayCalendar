@@ -52,7 +52,7 @@ class UpdateServiceImpl extends UpdateService {
       onSuccess()
     }
     }).catchError((onError) {
-      onFailure(onError);
+      return onFailure(onError);
     });
   }
 
