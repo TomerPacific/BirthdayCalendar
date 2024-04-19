@@ -124,27 +124,55 @@ class StorageServiceSharedPreferences extends StorageService {
     return streamController.stream;
   }
 
+  @override
   void saveIsContactsPermissionPermanentlyDenied(bool isPermanentlyDenied) async {
     final sharedPreferences = await SharedPreferences.getInstance();
     sharedPreferences.setBool(contactsPermissionStatusKey, isPermanentlyDenied);
   }
 
+  @override
   Future<bool> getIsContactPermissionPermanentlyDenied() async {
     final sharedPreferences = await SharedPreferences.getInstance();
     bool? isPermanentlyDenied = sharedPreferences.getBool(contactsPermissionStatusKey);
     return isPermanentlyDenied != null ? isPermanentlyDenied : false;
   }
 
+  @override
   void saveDidAlreadyMigrateNotificationStatus(bool status) async {
     final sharedPreferences = await SharedPreferences.getInstance();
     sharedPreferences.setBool(didAlreadyMigrateNotificationStatusFlag, status);
   }
 
 
+  @override
   Future<bool> getAlreadyMigrateNotificationStatus() async {
     final sharedPreferences = await SharedPreferences.getInstance();
     bool? hasAlreadyMigratedNotificationStatus = sharedPreferences.getBool(didAlreadyMigrateNotificationStatusFlag);
     return hasAlreadyMigratedNotificationStatus != null ? hasAlreadyMigratedNotificationStatus : false;
+  }
+
+  @override
+  Future<List<String>> getAllBirthdays() async {
+    List<String> names = [];
+    final sharedPreferences = await SharedPreferences.getInstance();
+    Set<String> dates = sharedPreferences.getKeys();
+
+    for (String date in dates) {
+      if (!_dateService.isADate(date)) {
+        continue;
+      }
+
+      String? birthdaysJSON = sharedPreferences.getString(date);
+      if (birthdaysJSON != null) {
+        List decodedBirthdaysForDate = jsonDecode(birthdaysJSON);
+        List<UserBirthday> userBirthdays = decodedBirthdaysForDate
+            .map((decodedBirthday) => UserBirthday.fromJson(decodedBirthday)).toList();
+        List<String> people = userBirthdays.map((e) => e.name).toList();
+        names = names + people;
+      }
+    }
+
+    return names;
   }
 
   void dispose() {
