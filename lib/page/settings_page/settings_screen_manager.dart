@@ -105,7 +105,20 @@ class SettingsScreenManager extends ChangeNotifier {
       return;
     }
 
+    contacts = await _filterAlreadyImportedContacts(contacts);
+
+    if (contacts.length == 0) {
+      _snackbarService.showSnackbarWithMessage(context, noContactsFoundMsg);
+      return;
+    }
+
     _handleAddingBirthdaysToContacts(context, contacts);
+  }
+
+  Future<List<Contact>> _filterAlreadyImportedContacts(List<Contact> contacts) async {
+    List<String> namesOfPeopleWithBirthdays = await _storageService.getAllBirthdays();
+    List<Contact> filtered = contacts.where((contact) => !namesOfPeopleWithBirthdays.contains(contact.displayName)).toList();
+    return filtered;
   }
 
   void addContactToCalendar(UserBirthday contact) {
