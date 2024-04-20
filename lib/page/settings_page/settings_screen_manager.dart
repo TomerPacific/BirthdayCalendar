@@ -116,8 +116,9 @@ class SettingsScreenManager extends ChangeNotifier {
   }
 
   Future<List<Contact>> _filterAlreadyImportedContacts(List<Contact> contacts) async {
-    List<String> namesOfPeopleWithBirthdays = await _storageService.getAllBirthdays();
-    List<Contact> filtered = contacts.where((contact) => !namesOfPeopleWithBirthdays.contains(contact.displayName)).toList();
+    List<UserBirthday> allStoredBirthdays = await _storageService.getAllBirthdays();
+    List<String> names = allStoredBirthdays.map((e) => e.name).toList();
+    List<Contact> filtered = contacts.where((contact) => !names.contains(contact.displayName)).toList();
     return filtered;
   }
 
