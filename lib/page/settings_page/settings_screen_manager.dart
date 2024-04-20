@@ -108,7 +108,7 @@ class SettingsScreenManager extends ChangeNotifier {
     contacts = await _filterAlreadyImportedContacts(contacts);
 
     if (contacts.length == 0) {
-      _snackbarService.showSnackbarWithMessage(context, noContactsFoundMsg);
+      _snackbarService.showSnackbarWithMessage(context, alreadyAddedContactsMsg);
       return;
     }
 
