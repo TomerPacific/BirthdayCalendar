@@ -4,7 +4,7 @@ import 'package:birthday_calendar/constants.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:intl/intl.dart';
 import 'storage_service.dart';
-import '../date_service/date_service.dart';
+import 'package:birthday_calendar/service/date_service/date_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 
@@ -152,8 +152,8 @@ class StorageServiceSharedPreferences extends StorageService {
   }
 
   @override
-  Future<List<String>> getAllBirthdays() async {
-    List<String> names = [];
+  Future<List<UserBirthday>> getAllBirthdays() async {
+    List<UserBirthday> birthdays = [];
     final sharedPreferences = await SharedPreferences.getInstance();
     Set<String> dates = sharedPreferences.getKeys();
 
@@ -167,12 +167,11 @@ class StorageServiceSharedPreferences extends StorageService {
         List decodedBirthdaysForDate = jsonDecode(birthdaysJSON);
         List<UserBirthday> userBirthdays = decodedBirthdaysForDate
             .map((decodedBirthday) => UserBirthday.fromJson(decodedBirthday)).toList();
-        List<String> people = userBirthdays.map((e) => e.name).toList();
-        names = names + people;
+        birthdays = birthdays + userBirthdays;
       }
     }
 
-    return names;
+    return birthdays;
   }
 
   void dispose() {

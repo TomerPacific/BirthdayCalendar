@@ -14,6 +14,6 @@ abstract class StorageService {
   Future<bool> getIsContactPermissionPermanentlyDenied();
   void saveDidAlreadyMigrateNotificationStatus(bool status);
   Future<bool> getAlreadyMigrateNotificationStatus();
-  Future<List<String>> getAllBirthdays();
+  Future<List<UserBirthday>> getAllBirthdays();
   void dispose();
 }
