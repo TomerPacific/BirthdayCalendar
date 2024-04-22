@@ -11,6 +11,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:birthday_calendar/constants.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:birthday_calendar/utils.dart';
 
 class SettingsScreenManager extends ChangeNotifier {
 
@@ -105,7 +106,7 @@ class SettingsScreenManager extends ChangeNotifier {
       return;
     }
 
-    contacts = await _filterAlreadyImportedContacts(contacts);
+    contacts = await Utils.filterAlreadyImportedContacts(_storageService, contacts);
 
     if (contacts.length == 0) {
       _snackbarService.showSnackbarWithMessage(context, alreadyAddedContactsMsg);
@@ -115,12 +116,7 @@ class SettingsScreenManager extends ChangeNotifier {
     _handleAddingBirthdaysToContacts(context, contacts);
   }
 
-  Future<List<Contact>> _filterAlreadyImportedContacts(List<Contact> contacts) async {
-    List<UserBirthday> allStoredBirthdays = await _storageService.getAllBirthdays();
-    List<String> names = allStoredBirthdays.map((e) => e.name).toList();
-    List<Contact> filtered = contacts.where((contact) => !names.contains(contact.displayName)).toList();
-    return filtered;
-  }
+
 
   void addContactToCalendar(UserBirthday contact) {
     _bcContactsService.addContactToCalendar(contact);
