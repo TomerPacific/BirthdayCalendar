@@ -47,11 +47,13 @@ class BirthdayWidget extends StatelessWidget {
                         Provider.of<BirthdayManager>(context, listen: false).updateNotificationStatusForBirthday();
                       }),
                 ),
-                new IconButton(
-                    icon: Icon(Icons.call, color: Provider.of<BirthdayManager>(context, listen: false).getColorBasedOnPosition(indexOfBirthday, ElementType.icon)),
-                    onPressed: () {
-                      Provider.of<BirthdayManager>(context, listen: false).handleCallButtonPressed(birthdayOfPerson.phoneNumber);
-                    }),
+                if (birthdayOfPerson.phoneNumber.isNotEmpty) ...[
+                  new IconButton(
+                      icon: Icon(Icons.call, color: Provider.of<BirthdayManager>(context, listen: false).getColorBasedOnPosition(indexOfBirthday, ElementType.icon)),
+                      onPressed: () {
+                        Provider.of<BirthdayManager>(context, listen: false).handleCallButtonPressed(birthdayOfPerson.phoneNumber);
+                      })
+                ],
                 new IconButton(
                     icon: Icon(Icons.clear, color: Provider.of<BirthdayManager>(context, listen: false).getColorBasedOnPosition(indexOfBirthday, ElementType.icon)),
                     onPressed: onDeletePressedCallback),
