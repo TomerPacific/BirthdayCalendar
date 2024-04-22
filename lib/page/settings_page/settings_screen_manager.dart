@@ -1,15 +1,17 @@
 
+import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/service/contacts_service/bc_contacts_service.dart';
 import 'package:birthday_calendar/service/permission_service/permissions_service.dart';
 import 'package:birthday_calendar/service/snackbar_service/SnackbarService.dart';
 import 'package:birthday_calendar/widget/users_without_birthdays_dialogs.dart';
+import 'package:flutter_contacts/contact.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:birthday_calendar/constants.dart';
-import 'package:contacts_service/contacts_service.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:birthday_calendar/utils.dart';
 
 class SettingsScreenManager extends ChangeNotifier {
 
@@ -99,29 +101,31 @@ class SettingsScreenManager extends ChangeNotifier {
   void _processContacts(BuildContext context) async {
     List<Contact> contacts = await _bcContactsService.fetchContacts(false);
 
-    if (contacts.length == 0) {
+    if (contacts.isEmpty) {
       _snackbarService.showSnackbarWithMessage(context, noContactsFoundMsg);
       return;
     }
 
-    _bcContactsService.addContactsWithBirthdays(contacts);
-    List<Contact> contactsWithoutBirthDates = await _bcContactsService.gatherContactsWithoutBirthdays(contacts);
+    contacts = await Utils.filterAlreadyImportedContacts(_storageService, contacts);
 
-    if (contactsWithoutBirthDates.length > 0) {
-       _handleAddingBirthdaysToContacts(context, contactsWithoutBirthDates);
-    } else {
-      _snackbarService.showSnackbarWithMessage(context, contactsImportedSuccessfullyMsg);
+    if (contacts.isEmpty) {
+      _snackbarService.showSnackbarWithMessage(context, alreadyAddedContactsMsg);
+      return;
     }
+
+    _handleAddingBirthdaysToContacts(context, contacts);
   }
 
-  void addContactToCalendar(Contact contact) {
+
+
+  void addContactToCalendar(UserBirthday contact) {
     _bcContactsService.addContactToCalendar(contact);
   }
 
   void _handleAddingBirthdaysToContacts(BuildContext context, List<Contact> contactsWithoutBirthDates) async {
     UsersWithoutBirthdaysDialogs assignBirthdaysToUsers = UsersWithoutBirthdaysDialogs(contactsWithoutBirthDates);
     List<Contact> users = await assignBirthdaysToUsers.showConfirmationDialog(context);
-    if (users.length > 0) {
+    if (users.isNotEmpty) {
       _gatherBirthdaysForUsers(context, users);
     }
   }
@@ -141,8 +145,12 @@ class SettingsScreenManager extends ChangeNotifier {
       );
 
       if (chosenBirthDate != null) {
-        contact.birthday = chosenBirthDate;
-        addContactToCalendar(contact);
+        UserBirthday userBirthday = new UserBirthday(contact.displayName,
+            chosenBirthDate,
+            true,
+            contact.phones.length > 0 ? contact.phones.first.number : "");
+
+        addContactToCalendar(userBirthday);
         amountOfBirthdaysSet++;
       }
     }

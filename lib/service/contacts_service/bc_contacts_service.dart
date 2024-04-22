@@ -1,8 +1,7 @@
-import 'package:contacts_service/contacts_service.dart';
+import 'package:birthday_calendar/model/user_birthday.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
 
 abstract class BCContactsService {
   Future<List<Contact>> fetchContacts(bool withThumbnails);
-  Future<List<Contact>> gatherContactsWithoutBirthdays(List<Contact> contacts);
-  void addContactsWithBirthdays(List<Contact> contacts);
-  void addContactToCalendar(Contact contact);
+  void addContactToCalendar(UserBirthday contact);
 }

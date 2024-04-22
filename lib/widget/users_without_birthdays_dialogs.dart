@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:contacts_service/contacts_service.dart';
+import 'package:flutter_contacts/contact.dart';
 
 class UsersWithoutBirthdaysDialogs {
 
@@ -10,10 +10,8 @@ class UsersWithoutBirthdaysDialogs {
 
   Future<List<Contact>> showConfirmationDialog(BuildContext context) async {
     AlertDialog alert = AlertDialog(
-        title: Text("Add Birthdays For People"),
-        content: Text(
-            "There are contacts on your phone who do not have a birth date. "
-                "Would you like to manually add birth dates for them?"),
+        title: Text("Add Birthdays To Contacts"),
+        content: Text("Would you like to add birth dates for your imported contacts?"),
         actions: [
           TextButton(
             onPressed: () {
@@ -60,7 +58,7 @@ class UsersWithoutBirthdaysDialogs {
                     itemCount: usersWithoutBirthdays.length,
                     itemBuilder: (BuildContext context, int index) {
                       return CheckboxListTile(
-                          title: Text(usersWithoutBirthdays[index].displayName!),
+                          title: Text(usersWithoutBirthdays[index].displayName),
                           value: _usersSelectedToAddBirthdaysFor[index],
                           onChanged: (bool? value) {
                             if (value != null) {

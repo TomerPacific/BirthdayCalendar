@@ -4,7 +4,7 @@ import 'package:birthday_calendar/constants.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:intl/intl.dart';
 import 'storage_service.dart';
-import '../date_service/date_service.dart';
+import 'package:birthday_calendar/service/date_service/date_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 
@@ -124,27 +124,54 @@ class StorageServiceSharedPreferences extends StorageService {
     return streamController.stream;
   }
 
+  @override
   void saveIsContactsPermissionPermanentlyDenied(bool isPermanentlyDenied) async {
     final sharedPreferences = await SharedPreferences.getInstance();
     sharedPreferences.setBool(contactsPermissionStatusKey, isPermanentlyDenied);
   }
 
+  @override
   Future<bool> getIsContactPermissionPermanentlyDenied() async {
     final sharedPreferences = await SharedPreferences.getInstance();
     bool? isPermanentlyDenied = sharedPreferences.getBool(contactsPermissionStatusKey);
     return isPermanentlyDenied != null ? isPermanentlyDenied : false;
   }
 
+  @override
   void saveDidAlreadyMigrateNotificationStatus(bool status) async {
     final sharedPreferences = await SharedPreferences.getInstance();
     sharedPreferences.setBool(didAlreadyMigrateNotificationStatusFlag, status);
   }
 
 
+  @override
   Future<bool> getAlreadyMigrateNotificationStatus() async {
     final sharedPreferences = await SharedPreferences.getInstance();
     bool? hasAlreadyMigratedNotificationStatus = sharedPreferences.getBool(didAlreadyMigrateNotificationStatusFlag);
     return hasAlreadyMigratedNotificationStatus != null ? hasAlreadyMigratedNotificationStatus : false;
+  }
+
+  @override
+  Future<List<UserBirthday>> getAllBirthdays() async {
+    List<UserBirthday> birthdays = [];
+    final sharedPreferences = await SharedPreferences.getInstance();
+    Set<String> dates = sharedPreferences.getKeys();
+
+    for (String date in dates) {
+      if (!_dateService.isADate(date)) {
+        continue;
+      }
+
+      String? birthdaysJSON = sharedPreferences.getString(date);
+      if (birthdaysJSON != null) {
+        List decodedBirthdaysForDate = jsonDecode(birthdaysJSON);
+        List<UserBirthday> userBirthdays = decodedBirthdaysForDate
+            .map((decodedBirthday) => UserBirthday.fromJson(decodedBirthday)).toList();
+        birthdays = birthdays + userBirthdays;
+      }
+    }
+
+    return birthdays;
   }
 
   void dispose() {
