@@ -101,14 +101,14 @@ class SettingsScreenManager extends ChangeNotifier {
   void _processContacts(BuildContext context) async {
     List<Contact> contacts = await _bcContactsService.fetchContacts(false);
 
-    if (contacts.length == 0) {
+    if (contacts.isEmpty) {
       _snackbarService.showSnackbarWithMessage(context, noContactsFoundMsg);
       return;
     }
 
     contacts = await Utils.filterAlreadyImportedContacts(_storageService, contacts);
 
-    if (contacts.length == 0) {
+    if (contacts.isEmpty) {
       _snackbarService.showSnackbarWithMessage(context, alreadyAddedContactsMsg);
       return;
     }
@@ -125,7 +125,7 @@ class SettingsScreenManager extends ChangeNotifier {
   void _handleAddingBirthdaysToContacts(BuildContext context, List<Contact> contactsWithoutBirthDates) async {
     UsersWithoutBirthdaysDialogs assignBirthdaysToUsers = UsersWithoutBirthdaysDialogs(contactsWithoutBirthDates);
     List<Contact> users = await assignBirthdaysToUsers.showConfirmationDialog(context);
-    if (users.length > 0) {
+    if (users.isNotEmpty) {
       _gatherBirthdaysForUsers(context, users);
     }
   }
