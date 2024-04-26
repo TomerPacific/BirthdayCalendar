@@ -3,7 +3,6 @@ import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/service/contacts_service/bc_contacts_service.dart';
-import 'package:birthday_calendar/service/permission_service/permissions_service.dart';
 import 'package:birthday_calendar/service/snackbar_service/SnackbarService.dart';
 import 'package:birthday_calendar/widget/users_without_birthdays_dialogs.dart';
 import 'package:flutter_contacts/contact.dart';
@@ -15,7 +14,6 @@ import 'package:birthday_calendar/utils.dart';
 
 class SettingsScreenManager extends ChangeNotifier {
 
-  final PermissionsService _permissionsService = getIt<PermissionsService>();
   final BCContactsService _bcContactsService = getIt<BCContactsService>();
   final SnackbarService _snackbarService = getIt<SnackbarService>();
   StorageService _storageService = getIt<StorageService>();
