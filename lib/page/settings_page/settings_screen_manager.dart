@@ -64,7 +64,7 @@ class SettingsScreenManager extends ChangeNotifier {
   }
 
   void handleImportingContacts(BuildContext context) async {
-    PermissionStatus status = await _permissionsService.getPermissionStatus(contactsPermissionKey);
+    PermissionStatus status = await _bcContactsService.requestContactsPermission();
 
     if (status == PermissionStatus.permanentlyDenied) {
       _isContactsPermissionPermanentlyDenied = !_isContactsPermissionPermanentlyDenied;
@@ -84,7 +84,7 @@ class SettingsScreenManager extends ChangeNotifier {
   }
 
   void _handleRequestingContactsPermission(BuildContext context) async {
-    PermissionStatus status = await _permissionsService.requestPermissionAndGetStatus(contactsPermissionKey);
+    PermissionStatus status = await _bcContactsService.requestContactsPermission();
 
     if (status == PermissionStatus.permanentlyDenied) {
       _isContactsPermissionPermanentlyDenied = !_isContactsPermissionPermanentlyDenied;
