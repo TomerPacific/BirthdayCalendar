@@ -13,7 +13,7 @@ class BCContactsServiceImpl extends BCContactsService {
 
   @override
   Future<List<Contact>> fetchContacts(bool withThumbnails) async {
-    return await FlutterContacts.getContacts();
+    return await FlutterContacts.getContacts(withThumbnail: withThumbnails);
   }
 
   void addContactToCalendar(UserBirthday contact) async {
