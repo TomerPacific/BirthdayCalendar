@@ -42,7 +42,7 @@ class BCContactsServiceImpl extends BCContactsService {
 
   @override
   Future<PermissionStatus> requestContactsPermission() async {
-    return await _permissionsService.getPermissionStatus(contactsPermissionKey);
+    return await _permissionsService.requestPermissionAndGetStatus(contactsPermissionKey);
   }
 
 }
