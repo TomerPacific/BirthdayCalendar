@@ -12,4 +12,5 @@ abstract class NotificationService {
   void handleApplicationWasLaunchedFromNotification(String payload);
   UserBirthday getUserBirthdayFromPayload(String payload);
   Future<List<PendingNotificationRequest>> getAllScheduledNotifications();
+  void dispose();
 }
