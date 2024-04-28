@@ -95,12 +95,6 @@ class NotificationServiceImpl extends NotificationService {
       notificationCategories: darwinNotificationCategories,
     );
 
-
-    const DarwinNotificationDetails iosNotificationDetails =
-    DarwinNotificationDetails(
-      categoryIdentifier: darwinNotificationCategoryPlain,
-    );
-
     final InitializationSettings initializationSettings =
     InitializationSettings(
         android: initializationSettingsAndroid,
@@ -184,7 +178,7 @@ class NotificationServiceImpl extends NotificationService {
                 channelDescription: 'To remind you about upcoming birthdays')
         ),
         payload: jsonEncode(userBirthday),
-        androidAllowWhileIdle: true,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         uiLocalNotificationDateInterpretation:
         UILocalNotificationDateInterpretation.absoluteTime);
   }
@@ -202,7 +196,7 @@ class NotificationServiceImpl extends NotificationService {
                 channelDescription: 'To remind you about upcoming birthdays')
         ),
         payload: jsonEncode(userBirthday),
-        androidAllowWhileIdle: true,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         uiLocalNotificationDateInterpretation:
         UILocalNotificationDateInterpretation.absoluteTime);
   }
