@@ -1,18 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io' show Platform;
-
 import 'notification_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
-
 import 'package:birthday_calendar/constants.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 
 const String channel_id = "123";
-const String darwinNotificationCategoryPlain = 'plainCategory';
-const String darwinNotificationCategoryText = 'textCategory';
 const String navigationActionId = 'id_3';
 
 class NotificationServiceImpl extends NotificationService {
