@@ -205,6 +205,7 @@ class _MainPageState extends State<MainPage> {
 
   @override void dispose() {
     _storageService.dispose();
+    _notificationService.dispose();
     super.dispose();
   }
 }
