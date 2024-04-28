@@ -2,8 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io' show Platform;
 
-import 'package:birthday_calendar/model/ReceivedNotification.dart';
-
 import 'notification_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -20,8 +18,6 @@ const String navigationActionId = 'id_3';
 class NotificationServiceImpl extends NotificationService {
 
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  final StreamController<ReceivedNotification> didReceiveLocalNotificationStream =
-  StreamController<ReceivedNotification>.broadcast();
   final StreamController<String?> selectNotificationStream =
   StreamController<String?>.broadcast();
 
@@ -30,75 +26,9 @@ class NotificationServiceImpl extends NotificationService {
     final AndroidInitializationSettings initializationSettingsAndroid =
     AndroidInitializationSettings('app_icon');
 
-    final List<DarwinNotificationCategory> darwinNotificationCategories =
-    <DarwinNotificationCategory>[
-      DarwinNotificationCategory(
-        darwinNotificationCategoryText,
-        actions: <DarwinNotificationAction>[
-          DarwinNotificationAction.text(
-            'text_1',
-            'Action 1',
-            buttonTitle: 'Send',
-            placeholder: 'Placeholder',
-          ),
-        ],
-      ),
-      DarwinNotificationCategory(
-        darwinNotificationCategoryPlain,
-        actions: <DarwinNotificationAction>[
-          DarwinNotificationAction.plain('id_1', 'Action 1'),
-          DarwinNotificationAction.plain(
-            'id_2',
-            'Action 2 (destructive)',
-            options: <DarwinNotificationActionOption>{
-              DarwinNotificationActionOption.destructive,
-            },
-          ),
-          DarwinNotificationAction.plain(
-            navigationActionId,
-            'Action 3 (foreground)',
-            options: <DarwinNotificationActionOption>{
-              DarwinNotificationActionOption.foreground,
-            },
-          ),
-          DarwinNotificationAction.plain(
-            'id_4',
-            'Action 4 (auth required)',
-            options: <DarwinNotificationActionOption>{
-              DarwinNotificationActionOption.authenticationRequired,
-            },
-          ),
-        ],
-        options: <DarwinNotificationCategoryOption>{
-          DarwinNotificationCategoryOption.hiddenPreviewShowTitle,
-        },
-      )
-    ];
-
-
-    final DarwinInitializationSettings initializationSettingsDarwin =
-    DarwinInitializationSettings(
-      requestAlertPermission: false,
-      requestBadgePermission: false,
-      requestSoundPermission: false,
-      onDidReceiveLocalNotification:
-          (int id, String? title, String? body, String? payload) async {
-        didReceiveLocalNotificationStream.add(
-          ReceivedNotification(
-            id: id,
-            title: title,
-            body: body,
-            payload: payload,
-          ),
-        );
-      },
-      notificationCategories: darwinNotificationCategories,
-    );
-
     final InitializationSettings initializationSettings =
     InitializationSettings(
-        android: initializationSettingsAndroid,
-        iOS: initializationSettingsDarwin);
+        android: initializationSettingsAndroid);
 
     initializeLocalNotificationsPlugin(initializationSettings);
 
@@ -210,10 +140,6 @@ class NotificationServiceImpl extends NotificationService {
   }
 
   void handleApplicationWasLaunchedFromNotification(String payload) async {
-    if (Platform.isIOS) {
-      _rescheduleNotificationFromPayload(payload);
-      return;
-    }
 
     final NotificationAppLaunchDetails? notificationAppLaunchDetails =
     await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
@@ -254,7 +180,6 @@ class NotificationServiceImpl extends NotificationService {
 
   @override
   void dispose() {
-    didReceiveLocalNotificationStream.close();
     selectNotificationStream.close();
   }
   
