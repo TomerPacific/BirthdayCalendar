@@ -54,17 +54,19 @@ class _MainPageState extends State<MainPage> {
   void _getNotificationStream(StreamController<String?> notificationStream) {
     notificationStream.stream.listen((String? payload) async {
       if (payload != null) {
-        UserBirthday birthday = Utils.getUserBirthdayFromPayload(payload);
-        List<UserBirthday> birthdays = await _storageService.getBirthdaysForDate(birthday.birthdayDate, true);
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => BirthdaysForCalendarDayWidget(
-                  key: Key(birthday.birthdayDate.toString()),
-                  dateOfDay: birthday.birthdayDate,
-                  birthdays: birthdays),
-            ));
-      }
+        UserBirthday? birthday = Utils.getUserBirthdayFromPayload(payload);
+        if (birthday != null) {
+          List<UserBirthday> birthdays = await _storageService.getBirthdaysForDate(birthday.birthdayDate, true);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => BirthdaysForCalendarDayWidget(
+                    key: Key(birthday.birthdayDate.toString()),
+                    dateOfDay: birthday.birthdayDate,
+                    birthdays: birthdays),
+              ));
+          }
+        }
     });
   }
 
