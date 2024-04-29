@@ -1,8 +1,10 @@
+import 'dart:async';
+
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 abstract class NotificationService {
-  void init(Future<dynamic> Function(int, String?, String?, String?)? onDidReceive);
+  void init(void Function(StreamController<String?>) subscribeToStream);
   Future selectNotification(String? payload);
   void showNotification(UserBirthday userBirthday, String notificationMessage);
   void scheduleNotificationForBirthday(UserBirthday userBirthday, String notificationMessage);

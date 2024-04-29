@@ -16,7 +16,7 @@ class NotificationServiceImpl extends NotificationService {
   final StreamController<String?> selectNotificationStream =
   StreamController<String?>.broadcast();
 
-  void init(Future<dynamic> Function(int, String?, String?, String?)? onDidReceive) {
+  void init(void Function(StreamController<String?>) subscribeToStream) {
 
     final AndroidInitializationSettings initializationSettingsAndroid =
     AndroidInitializationSettings('app_icon');
@@ -24,6 +24,8 @@ class NotificationServiceImpl extends NotificationService {
     final InitializationSettings initializationSettings =
     InitializationSettings(
         android: initializationSettingsAndroid);
+
+    subscribeToStream(selectNotificationStream);
 
     initializeLocalNotificationsPlugin(initializationSettings);
 
