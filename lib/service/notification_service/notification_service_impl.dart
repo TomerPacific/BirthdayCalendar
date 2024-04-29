@@ -10,7 +10,7 @@ import 'package:birthday_calendar/constants.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 
 const String channel_id = "123";
-const String navigationActionId = 'id_3';
+const String navigationActionId = 'id_1';
 
 class NotificationServiceImpl extends NotificationService {
 
