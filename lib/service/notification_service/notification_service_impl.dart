@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:birthday_calendar/utils.dart';
+
 import 'notification_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -51,7 +53,7 @@ class NotificationServiceImpl extends NotificationService {
   }
 
   Future selectNotification(String? payload) async {
-    UserBirthday userBirthday = getUserBirthdayFromPayload(payload ?? '');
+    UserBirthday userBirthday = Utils.getUserBirthdayFromPayload(payload ?? '');
     cancelNotificationForBirthday(userBirthday);
     scheduleNotificationForBirthday(userBirthday, "${userBirthday.name} has an upcoming birthday!");
   }
@@ -148,12 +150,6 @@ class NotificationServiceImpl extends NotificationService {
     }
   }
 
-  UserBirthday getUserBirthdayFromPayload(String payload) {
-    Map<String, dynamic> json = jsonDecode(payload);
-    UserBirthday userBirthday = UserBirthday.fromJson(json);
-    return userBirthday;
-  }
-
   Future<bool> _wasApplicationLaunchedFromNotification() async {
     NotificationAppLaunchDetails? notificationAppLaunchDetails = await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
 
@@ -165,7 +161,7 @@ class NotificationServiceImpl extends NotificationService {
   }
 
   void _rescheduleNotificationFromPayload(String payload) {
-    UserBirthday userBirthday = getUserBirthdayFromPayload(payload);
+    UserBirthday userBirthday = Utils.getUserBirthdayFromPayload(payload);
     cancelNotificationForBirthday(userBirthday);
     scheduleNotificationForBirthday(userBirthday, "${userBirthday.name} has an upcoming birthday!");
   }
