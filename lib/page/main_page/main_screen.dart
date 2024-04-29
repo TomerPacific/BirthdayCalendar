@@ -1,10 +1,13 @@
 
 import 'dart:async';
 
+import 'package:birthday_calendar/model/user_birthday.dart';
+import 'package:birthday_calendar/page/birthdays_for_calendar_day_page/birthdays_for_calendar_day.dart';
 import 'package:birthday_calendar/page/main_page/main_screen_manager.dart';
 import 'package:birthday_calendar/page/settings_page/settings_screen_manager.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:birthday_calendar/service/update_service/update_service.dart';
+import 'package:birthday_calendar/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/page/settings_page/settings_screen.dart';
 import 'package:birthday_calendar/widget/calendar.dart';
@@ -50,7 +53,22 @@ class _MainPageState extends State<MainPage> {
 
   void _getNotificationStream(StreamController<String?> notificationStream) {
     notificationStream.stream.listen((String? payload) async {
-      //TODO logic to navigate to user's birthday
+      if (payload != null) {
+        UserBirthday birthday = Utils.getUserBirthdayFromPayload(payload);
+        List<UserBirthday> birthdays = await _storageService.getBirthdaysForDate(birthday.birthdayDate, true);
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => BirthdaysForCalendarDayWidget(
+                  key: Key(birthday.birthdayDate.toString()),
+                  dateOfDay: birthday.birthdayDate,
+                  birthdays: birthdays),
+            ));
+        // setState(() {
+        //   monthToPresent = _mainScreenManager.correctMonthOverflow(birthdayMonth);
+        //   month = _dateService.convertMonthToWord(birthdayMonth);
+        // });
+      }
     });
   }
 
