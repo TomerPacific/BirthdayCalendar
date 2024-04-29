@@ -1,4 +1,6 @@
 
+import 'dart:async';
+
 import 'package:birthday_calendar/page/main_page/main_screen_manager.dart';
 import 'package:birthday_calendar/page/settings_page/settings_screen_manager.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
@@ -46,27 +48,10 @@ class _MainPageState extends State<MainPage> {
     _calculateNextMonthToShow(AxisDirection.left);
   }
 
-  Future<dynamic> _onDidReceiveLocalNotification(
-      int id,
-      String? title,
-      String? body,
-      String? payload) async {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) =>
-            AlertDialog(
-                title: Text(title ?? ''),
-                content: Text(body ?? ''),
-                actions: [
-                  TextButton(
-                      child: Text("Ok"),
-                      onPressed: () async {
-                        _notificationService.handleApplicationWasLaunchedFromNotification(payload ?? '');
-                      }
-                  )
-                ]
-            )
-    );
+  void _getNotificationStream(StreamController<String?> notificationStream) {
+    notificationStream.stream.listen((String? payload) async {
+      //TODO logic to navigate to user's birthday
+    });
   }
 
   void _onUpdateSuccess() {
@@ -121,7 +106,7 @@ class _MainPageState extends State<MainPage> {
   void initState()  {
     monthToPresent = widget.currentMonth;
     month = _dateService.convertMonthToWord(monthToPresent);
-    _notificationService.init(_onDidReceiveLocalNotification);
+    _notificationService.init(_getNotificationStream);
     _mainScreenManager.makeVersionAdjustments();
     _updateService.checkForInAppUpdate(_onUpdateSuccess, _onUpdateFailure);
     super.initState();
