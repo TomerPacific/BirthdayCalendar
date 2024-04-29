@@ -17,7 +17,11 @@ class Utils {
     return filtered;
   }
 
-  static UserBirthday getUserBirthdayFromPayload(String payload) {
+  static UserBirthday? getUserBirthdayFromPayload(String? payload) {
+    if (payload == null || payload.isEmpty) {
+      return null;
+    }
+
     Map<String, dynamic> json = jsonDecode(payload);
     UserBirthday userBirthday = UserBirthday.fromJson(json);
     return userBirthday;

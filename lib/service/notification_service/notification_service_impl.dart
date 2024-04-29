@@ -53,9 +53,11 @@ class NotificationServiceImpl extends NotificationService {
   }
 
   Future selectNotification(String? payload) async {
-    UserBirthday userBirthday = Utils.getUserBirthdayFromPayload(payload ?? '');
-    cancelNotificationForBirthday(userBirthday);
-    scheduleNotificationForBirthday(userBirthday, "${userBirthday.name} has an upcoming birthday!");
+    UserBirthday? userBirthday = Utils.getUserBirthdayFromPayload(payload);
+    if (userBirthday != null) {
+      cancelNotificationForBirthday(userBirthday);
+      scheduleNotificationForBirthday(userBirthday, "${userBirthday.name} has an upcoming birthday!");
+    }
   }
 
   void showNotification(UserBirthday userBirthday, String notificationMessage) async {
@@ -161,9 +163,11 @@ class NotificationServiceImpl extends NotificationService {
   }
 
   void _rescheduleNotificationFromPayload(String payload) {
-    UserBirthday userBirthday = Utils.getUserBirthdayFromPayload(payload);
-    cancelNotificationForBirthday(userBirthday);
-    scheduleNotificationForBirthday(userBirthday, "${userBirthday.name} has an upcoming birthday!");
+    UserBirthday? userBirthday = Utils.getUserBirthdayFromPayload(payload);
+    if (userBirthday != null) {
+      cancelNotificationForBirthday(userBirthday);
+      scheduleNotificationForBirthday(userBirthday, "${userBirthday.name} has an upcoming birthday!");
+    }
   }
 
   Future<List<PendingNotificationRequest>> getAllScheduledNotifications() async {
