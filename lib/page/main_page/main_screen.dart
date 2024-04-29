@@ -64,10 +64,6 @@ class _MainPageState extends State<MainPage> {
                   dateOfDay: birthday.birthdayDate,
                   birthdays: birthdays),
             ));
-        // setState(() {
-        //   monthToPresent = _mainScreenManager.correctMonthOverflow(birthdayMonth);
-        //   month = _dateService.convertMonthToWord(birthdayMonth);
-        // });
       }
     });
   }
