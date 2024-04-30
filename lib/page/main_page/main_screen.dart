@@ -191,7 +191,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
   }
 
   @override
-  void onNotification(String? payload) async {
+  Future<void> onNotification(String? payload) async {
     if (payload != null) {
       UserBirthday? birthday = Utils.getUserBirthdayFromPayload(payload);
       if (birthday != null) {
