@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:birthday_calendar/service/notification_service/notificationCallbacks.dart';
 import 'package:birthday_calendar/utils.dart';
 
 import 'notification_service.dart';
@@ -17,19 +18,22 @@ class NotificationServiceImpl extends NotificationService {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   final StreamController<String?> selectNotificationStream =
   StreamController<String?>.broadcast();
+  List<NotificationCallbacks> selectNotificationStreamListeners = [];
 
-  void init(void Function(StreamController<String?>) subscribeToNotificationStream) {
+  void init() {
 
     final AndroidInitializationSettings initializationSettingsAndroid =
     AndroidInitializationSettings('app_icon');
 
-    final InitializationSettings initializationSettings =
-    InitializationSettings(
-        android: initializationSettingsAndroid);
-
-    subscribeToNotificationStream(selectNotificationStream);
+    final InitializationSettings initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
 
     initializeLocalNotificationsPlugin(initializationSettings);
+
+    selectNotificationStream.stream.listen((event) {
+      selectNotificationStreamListeners.forEach((element) {
+        element.onNotification(event);
+      });
+    });
 
     tz.initializeTimeZones();
   }
@@ -178,6 +182,19 @@ class NotificationServiceImpl extends NotificationService {
   @override
   void dispose() {
     selectNotificationStream.close();
+    selectNotificationStreamListeners.clear();
   }
-  
+
+  @override
+  void addListenerForSelectNotificationStream(NotificationCallbacks listener) {
+    selectNotificationStreamListeners.add(listener);
+  }
+
+  @override
+  void removeListenerForSelectNotificationStream(NotificationCallbacks listener) {
+    if (selectNotificationStreamListeners.contains(listener)) {
+      selectNotificationStreamListeners.remove(listener);
+    }
+  }
+
 }
