@@ -29,9 +29,9 @@ class NotificationServiceImpl extends NotificationService {
 
     initializeLocalNotificationsPlugin(initializationSettings);
 
-    selectNotificationStream.stream.listen((event) {
-      selectNotificationStreamListeners.forEach((element) {
-        element.onNotification(event);
+    selectNotificationStream.stream.listen((notificationEvent) {
+      selectNotificationStreamListeners.forEach((notificationListener) {
+        notificationListener.onNotification(notificationEvent);
       });
     });
 
