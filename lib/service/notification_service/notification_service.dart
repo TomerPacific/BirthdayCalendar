@@ -6,7 +6,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 abstract class NotificationService {
   void init();
-  Future selectNotification(String? payload);
   void showNotification(UserBirthday userBirthday, String notificationMessage);
   void scheduleNotificationForBirthday(UserBirthday userBirthday, String notificationMessage);
   void scheduleNotificationForNextYear(UserBirthday userBirthday, String notificationMessage);

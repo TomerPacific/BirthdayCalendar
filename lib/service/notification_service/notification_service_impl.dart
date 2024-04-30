@@ -30,6 +30,7 @@ class NotificationServiceImpl extends NotificationService {
     initializeLocalNotificationsPlugin(initializationSettings);
 
     selectNotificationStream.stream.listen((notificationEvent) {
+      _handleNotificationSelected(notificationEvent);
       selectNotificationStreamListeners.forEach((notificationListener) {
         notificationListener.onNotification(notificationEvent);
       });
@@ -56,7 +57,7 @@ class NotificationServiceImpl extends NotificationService {
     handleApplicationWasLaunchedFromNotification("");
   }
 
-  Future selectNotification(String? payload) async {
+  Future<void> _handleNotificationSelected(String? payload) async {
     UserBirthday? userBirthday = Utils.getUserBirthdayFromPayload(payload);
     if (userBirthday != null) {
       cancelNotificationForBirthday(userBirthday);
