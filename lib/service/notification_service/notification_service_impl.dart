@@ -30,7 +30,7 @@ class NotificationServiceImpl extends NotificationService {
     initializeLocalNotificationsPlugin(initializationSettings);
 
     selectNotificationStream.stream.listen((notificationEvent) {
-      _handleNotificationSelected(notificationEvent);
+      _rescheduleNotificationFromPayload(notificationEvent);
       selectNotificationStreamListeners.forEach((notificationListener) {
         notificationListener.onNotificationSelected(notificationEvent);
       });
@@ -55,14 +55,6 @@ class NotificationServiceImpl extends NotificationService {
         }
     );
     handleApplicationWasLaunchedFromNotification("");
-  }
-
-  Future<void> _handleNotificationSelected(String? payload) async {
-    UserBirthday? userBirthday = Utils.getUserBirthdayFromPayload(payload);
-    if (userBirthday != null) {
-      cancelNotificationForBirthday(userBirthday);
-      scheduleNotificationForBirthday(userBirthday, "${userBirthday.name} has an upcoming birthday!");
-    }
   }
 
   void showNotification(UserBirthday userBirthday, String notificationMessage) async {
@@ -167,7 +159,7 @@ class NotificationServiceImpl extends NotificationService {
     return false;
   }
 
-  void _rescheduleNotificationFromPayload(String payload) {
+  void _rescheduleNotificationFromPayload(String? payload) {
     UserBirthday? userBirthday = Utils.getUserBirthdayFromPayload(payload);
     if (userBirthday != null) {
       cancelNotificationForBirthday(userBirthday);
