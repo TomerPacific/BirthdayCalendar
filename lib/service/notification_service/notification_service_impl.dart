@@ -32,7 +32,7 @@ class NotificationServiceImpl extends NotificationService {
     selectNotificationStream.stream.listen((notificationEvent) {
       _handleNotificationSelected(notificationEvent);
       selectNotificationStreamListeners.forEach((notificationListener) {
-        notificationListener.onNotification(notificationEvent);
+        notificationListener.onNotificationSelected(notificationEvent);
       });
     });
 

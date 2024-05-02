@@ -1,4 +1,4 @@
 
 abstract class NotificationCallbacks {
-  Future<void> onNotification(String? payload);
+  Future<void> onNotificationSelected(String? payload);
 }
