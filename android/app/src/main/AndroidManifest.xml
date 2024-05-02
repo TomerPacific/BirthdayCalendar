@@ -2,6 +2,7 @@
     package="com.tomerpacific.birthday_calendar">
 
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
         android:label="Birthday Calendar"
