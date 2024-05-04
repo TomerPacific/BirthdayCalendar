@@ -63,12 +63,14 @@ class NotificationServiceImpl extends NotificationService {
         applicationName,
         notificationMessage,
         const NotificationDetails(
-            android: AndroidNotificationDetails(
+            android: const AndroidNotificationDetails(
                 channel_id,
-                applicationName,
-                channelDescription: 'To remind you about upcoming birthdays')
-        ),
-        payload: jsonEncode(userBirthday)
+                "channelName",
+                channelDescription:  'To remind you about upcoming birthdays',
+                importance: Importance.max,
+                priority: Priority.high,
+                ticker: "ticker")),
+           payload: jsonEncode(userBirthday)
     );
   }
 
