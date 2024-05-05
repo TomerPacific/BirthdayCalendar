@@ -11,6 +11,7 @@ import 'package:birthday_calendar/constants.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 
 const String channel_id = "123";
+const String channel_name = "birthday_notification";
 const String navigationActionId = 'id_1';
 
 class NotificationServiceImpl extends NotificationService {
@@ -65,7 +66,7 @@ class NotificationServiceImpl extends NotificationService {
         const NotificationDetails(
             android: const AndroidNotificationDetails(
                 channel_id,
-                "channelName",
+                channel_name,
                 channelDescription:  'To remind you about upcoming birthdays',
                 importance: Importance.max,
                 priority: Priority.high,
@@ -103,12 +104,12 @@ class NotificationServiceImpl extends NotificationService {
         tz.TZDateTime.now(tz.local).add(difference),
         const NotificationDetails(
             android: const AndroidNotificationDetails(
-            channel_id,
-            "channelName",
-            channelDescription:  'To remind you about upcoming birthdays',
-            importance: Importance.max,
-            priority: Priority.high,
-            ticker: "ticker"),
+                channel_id,
+                channel_name,
+                channelDescription:  'To remind you about upcoming birthdays',
+                importance: Importance.max,
+                priority: Priority.high,
+                ticker: "ticker"),
         ),
         payload: jsonEncode(userBirthday),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
