@@ -102,10 +102,13 @@ class NotificationServiceImpl extends NotificationService {
         notificationMessage,
         tz.TZDateTime.now(tz.local).add(difference),
         const NotificationDetails(
-            android: AndroidNotificationDetails(
-                channel_id,
-                applicationName,
-                channelDescription: 'To remind you about upcoming birthdays')
+            android: const AndroidNotificationDetails(
+            channel_id,
+            "channelName",
+            channelDescription:  'To remind you about upcoming birthdays',
+            importance: Importance.max,
+            priority: Priority.high,
+            ticker: "ticker"),
         ),
         payload: jsonEncode(userBirthday),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
