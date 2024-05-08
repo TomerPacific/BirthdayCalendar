@@ -63,15 +63,9 @@ class NotificationServiceImpl extends NotificationService {
         userBirthday.hashCode,
         applicationName,
         notificationMessage,
-        const NotificationDetails(
-            android: const AndroidNotificationDetails(
-                channel_id,
-                channel_name,
-                channelDescription:  'To remind you about upcoming birthdays',
-                importance: Importance.max,
-                priority: Priority.high,
-                ticker: "ticker")),
-           payload: jsonEncode(userBirthday)
+        NotificationDetails(android: _createAndroidNotificationDetails()),
+        payload: jsonEncode(userBirthday
+        )
     );
   }
 
@@ -102,15 +96,7 @@ class NotificationServiceImpl extends NotificationService {
         applicationName,
         notificationMessage,
         tz.TZDateTime.now(tz.local).add(difference),
-        const NotificationDetails(
-            android: const AndroidNotificationDetails(
-                channel_id,
-                channel_name,
-                channelDescription:  'To remind you about upcoming birthdays',
-                importance: Importance.max,
-                priority: Priority.high,
-                ticker: "ticker"),
-        ),
+        NotificationDetails(android: _createAndroidNotificationDetails()),
         payload: jsonEncode(userBirthday),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         uiLocalNotificationDateInterpretation:
@@ -123,15 +109,7 @@ class NotificationServiceImpl extends NotificationService {
         applicationName,
         notificationMessage,
         tz.TZDateTime.now(tz.local).add(new Duration(days: 365)),
-        const NotificationDetails(
-            android: const AndroidNotificationDetails(
-                channel_id,
-                channel_name,
-                channelDescription:  'To remind you about upcoming birthdays',
-                importance: Importance.max,
-                priority: Priority.high,
-                ticker: "ticker")
-        ),
+        NotificationDetails(android: _createAndroidNotificationDetails()),
         payload: jsonEncode(userBirthday),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         uiLocalNotificationDateInterpretation:
@@ -197,6 +175,16 @@ class NotificationServiceImpl extends NotificationService {
     if (selectNotificationStreamListeners.contains(listener)) {
       selectNotificationStreamListeners.remove(listener);
     }
+  }
+
+  AndroidNotificationDetails _createAndroidNotificationDetails() {
+    return AndroidNotificationDetails(
+        channel_id,
+        channel_name,
+        channelDescription:  'To remind you about upcoming birthdays',
+        importance: Importance.max,
+        priority: Priority.high,
+        ticker: "ticker");
   }
 
 }
