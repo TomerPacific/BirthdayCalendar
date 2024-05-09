@@ -18,12 +18,19 @@ class Utils {
   }
 
   static UserBirthday? getUserBirthdayFromPayload(String? payload) {
+
     if (payload == null || payload.isEmpty) {
       return null;
     }
 
-    Map<String, dynamic> json = jsonDecode(payload);
-    UserBirthday userBirthday = UserBirthday.fromJson(json);
+    UserBirthday? userBirthday;
+    try {
+      Map<String, dynamic> json = jsonDecode(payload);
+      userBirthday = UserBirthday.fromJson(json);
+    } catch (e) {
+
+    }
+
     return userBirthday;
   }
 
