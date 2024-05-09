@@ -11,7 +11,7 @@ abstract class NotificationService {
   void scheduleNotificationForNextYear(UserBirthday userBirthday, String notificationMessage);
   void cancelNotificationForBirthday(UserBirthday birthday);
   void cancelAllNotifications();
-  void handleApplicationWasLaunchedFromNotification(String payload);
+  void handleApplicationWasLaunchedFromNotification();
   Future<List<PendingNotificationRequest>> getAllScheduledNotifications();
   void dispose();
   void addListenerForSelectNotificationStream(NotificationCallbacks listener);

@@ -22,7 +22,6 @@ class NotificationServiceImpl extends NotificationService {
   List<NotificationCallbacks> selectNotificationStreamListeners = [];
 
   void init() {
-
     final AndroidInitializationSettings initializationSettingsAndroid =
     AndroidInitializationSettings('app_icon');
 
@@ -55,7 +54,7 @@ class NotificationServiceImpl extends NotificationService {
           }
         }
     );
-    handleApplicationWasLaunchedFromNotification("");
+    handleApplicationWasLaunchedFromNotification();
   }
 
   void showNotification(UserBirthday userBirthday, String notificationMessage) async {
@@ -124,15 +123,18 @@ class NotificationServiceImpl extends NotificationService {
     await flutterLocalNotificationsPlugin.cancelAll();
   }
 
-  void handleApplicationWasLaunchedFromNotification(String payload) async {
-
+  void handleApplicationWasLaunchedFromNotification() async {
     final NotificationAppLaunchDetails? notificationAppLaunchDetails =
     await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
-
     if (notificationAppLaunchDetails != null && notificationAppLaunchDetails.didNotificationLaunchApp) {
-      _rescheduleNotificationFromPayload(notificationAppLaunchDetails.notificationResponse != null ?
-      notificationAppLaunchDetails.notificationResponse.toString() :
-      "");
+      NotificationResponse? notificationResponse = notificationAppLaunchDetails.notificationResponse;
+      if (notificationResponse != null) {
+        String? payload = notificationResponse.payload;
+        if (payload != null) {
+          selectNotificationStream.add(payload);
+          _rescheduleNotificationFromPayload(payload);
+        }
+      }
     }
   }
 
