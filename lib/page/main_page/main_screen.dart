@@ -1,8 +1,11 @@
-
+import 'package:birthday_calendar/model/user_birthday.dart';
+import 'package:birthday_calendar/page/birthdays_for_calendar_day_page/birthdays_for_calendar_day.dart';
 import 'package:birthday_calendar/page/main_page/main_screen_manager.dart';
 import 'package:birthday_calendar/page/settings_page/settings_screen_manager.dart';
+import 'package:birthday_calendar/service/notification_service/notificationCallbacks.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:birthday_calendar/service/update_service/update_service.dart';
+import 'package:birthday_calendar/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/page/settings_page/settings_screen.dart';
 import 'package:birthday_calendar/widget/calendar.dart';
@@ -21,7 +24,7 @@ class MainPage extends StatefulWidget {
   _MainPageState createState() => _MainPageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _MainPageState extends State<MainPage> implements NotificationCallbacks {
 
   int monthToPresent = -1;
   String month = "";
@@ -44,29 +47,6 @@ class _MainPageState extends State<MainPage> {
     details.delta.dx > 0 ?
     _calculateNextMonthToShow(AxisDirection.right) :
     _calculateNextMonthToShow(AxisDirection.left);
-  }
-
-  Future<dynamic> _onDidReceiveLocalNotification(
-      int id,
-      String? title,
-      String? body,
-      String? payload) async {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) =>
-            AlertDialog(
-                title: Text(title ?? ''),
-                content: Text(body ?? ''),
-                actions: [
-                  TextButton(
-                      child: Text("Ok"),
-                      onPressed: () async {
-                        _notificationService.handleApplicationWasLaunchedFromNotification(payload ?? '');
-                      }
-                  )
-                ]
-            )
-    );
   }
 
   void _onUpdateSuccess() {
@@ -121,7 +101,8 @@ class _MainPageState extends State<MainPage> {
   void initState()  {
     monthToPresent = widget.currentMonth;
     month = _dateService.convertMonthToWord(monthToPresent);
-    _notificationService.init(_onDidReceiveLocalNotification);
+    _notificationService.init();
+    _notificationService.addListenerForSelectNotificationStream(this);
     _mainScreenManager.makeVersionAdjustments();
     _updateService.checkForInAppUpdate(_onUpdateSuccess, _onUpdateFailure);
     super.initState();
@@ -205,6 +186,25 @@ class _MainPageState extends State<MainPage> {
 
   @override void dispose() {
     _storageService.dispose();
+    _notificationService.removeListenerForSelectNotificationStream(this);
     super.dispose();
+  }
+
+  @override
+  Future<void> onNotificationSelected(String? payload) async {
+    if (payload != null) {
+      UserBirthday? birthday = Utils.getUserBirthdayFromPayload(payload);
+      if (birthday != null) {
+        List<UserBirthday> birthdays = await _storageService.getBirthdaysForDate(birthday.birthdayDate, true);
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => BirthdaysForCalendarDayWidget(
+                  key: Key(birthday.birthdayDate.toString()),
+                  dateOfDay: birthday.birthdayDate,
+                  birthdays: birthdays),
+            ));
+      }
+    }
   }
 }
