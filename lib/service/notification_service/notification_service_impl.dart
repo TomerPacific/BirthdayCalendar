@@ -63,8 +63,7 @@ class NotificationServiceImpl extends NotificationService {
         applicationName,
         notificationMessage,
         NotificationDetails(android: _createAndroidNotificationDetails()),
-        payload: jsonEncode(userBirthday
-        )
+        payload: jsonEncode(userBirthday)
     );
   }
 
