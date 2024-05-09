@@ -54,10 +54,10 @@ class NotificationServiceImpl extends NotificationService {
           }
         }
     );
-    handleApplicationWasLaunchedFromNotification();
+    _handleApplicationWasLaunchedFromNotification();
   }
 
-  void showNotification(UserBirthday userBirthday, String notificationMessage) async {
+  void _showNotification(UserBirthday userBirthday, String notificationMessage) async {
     await flutterLocalNotificationsPlugin.show(
         userBirthday.hashCode,
         applicationName,
@@ -83,10 +83,10 @@ class NotificationServiceImpl extends NotificationService {
 
     bool didApplicationLaunchFromNotification = await _wasApplicationLaunchedFromNotification();
     if (didApplicationLaunchFromNotification && difference.inDays == 0) {
-      scheduleNotificationForNextYear(userBirthday, notificationMessage);
+      _scheduleNotificationForNextYear(userBirthday, notificationMessage);
       return;
     } else if (!didApplicationLaunchFromNotification && difference.inDays == 0) {
-      showNotification(userBirthday, notificationMessage);
+      _showNotification(userBirthday, notificationMessage);
       return;
     }
 
@@ -102,7 +102,7 @@ class NotificationServiceImpl extends NotificationService {
         UILocalNotificationDateInterpretation.absoluteTime);
   }
 
-  void scheduleNotificationForNextYear(UserBirthday userBirthday, String notificationMessage) async {
+  void _scheduleNotificationForNextYear(UserBirthday userBirthday, String notificationMessage) async {
     await flutterLocalNotificationsPlugin.zonedSchedule(
         userBirthday.hashCode,
         applicationName,
@@ -123,17 +123,15 @@ class NotificationServiceImpl extends NotificationService {
     await flutterLocalNotificationsPlugin.cancelAll();
   }
 
-  void handleApplicationWasLaunchedFromNotification() async {
+  void _handleApplicationWasLaunchedFromNotification() async {
     final NotificationAppLaunchDetails? notificationAppLaunchDetails =
     await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
     if (notificationAppLaunchDetails != null && notificationAppLaunchDetails.didNotificationLaunchApp) {
       NotificationResponse? notificationResponse = notificationAppLaunchDetails.notificationResponse;
       if (notificationResponse != null) {
         String? payload = notificationResponse.payload;
-        if (payload != null) {
-          selectNotificationStream.add(payload);
-          _rescheduleNotificationFromPayload(payload);
-        }
+        selectNotificationStream.add(payload);
+        _rescheduleNotificationFromPayload(payload);
       }
     }
   }
