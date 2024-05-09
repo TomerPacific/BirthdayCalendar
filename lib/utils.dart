@@ -1,4 +1,6 @@
 
+import 'dart:convert';
+
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter_contacts/contact.dart';
 
@@ -13,6 +15,23 @@ class Utils {
     List<String> names = allStoredBirthdays.map((e) => e.name).toList();
     List<Contact> filtered = contacts.where((contact) => !names.contains(contact.displayName)).toList();
     return filtered;
+  }
+
+  static UserBirthday? getUserBirthdayFromPayload(String? payload) {
+
+    if (payload == null || payload.isEmpty) {
+      return null;
+    }
+
+    UserBirthday? userBirthday;
+    try {
+      Map<String, dynamic> json = jsonDecode(payload);
+      userBirthday = UserBirthday.fromJson(json);
+    } catch (e) {
+
+    }
+
+    return userBirthday;
   }
 
 }
