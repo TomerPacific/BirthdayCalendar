@@ -1,11 +1,11 @@
 
 
-// import 'dart:io';
-// import 'package:path/path.dart';
-// import 'package:integration_test/integration_test_driver_extended.dart';
-// import 'package:flutter_driver/flutter_driver.dart';
-//
-// Future<void> main() async {
+import 'dart:io';
+import 'package:path/path.dart';
+import 'package:integration_test/integration_test_driver_extended.dart';
+import 'package:flutter_driver/flutter_driver.dart';
+
+Future<void> main() async {
 //   final Map<String, String> envVars = Platform.environment;
 //
 //   String? adbPath = join(envVars['ANDROID_SDK_ROOT'] ?? "",
@@ -20,6 +20,20 @@
 //     await integrationDriver(driver: driver);
 // }
 
-import 'package:integration_test/integration_test_driver.dart';
+  final packageName = "com.tomerpacific.birthday_calendar";
+  final adbPath = "C:\\Users\\Tomer\\AppData\\Local\\Android\\sdk\\platform-tools";
+  await Process.run(adbPath, [
+    "-s",
+    "emulator-5554",
+    'shell',
+    'pm',
+    'grant',
+    packageName,
+    'android.permission.READ_CONTACTS'
+  ]);
+  await integrationDriver();
+}
 
-Future<void> main() => integrationDriver();
+// import 'package:integration_test/integration_test_driver.dart';
+//
+// Future<void> main() => integrationDriver();
