@@ -18,7 +18,7 @@ jobs:
           channel: 'stable'
       - uses: dart-lang/setup-dart@v1
         with:
-          sdk: '3.0.0'
+          sdk: '3.2.0'
 
       - run: dart pub get
       
