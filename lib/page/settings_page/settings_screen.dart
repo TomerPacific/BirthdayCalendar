@@ -12,10 +12,13 @@ class SettingsScreen extends StatelessWidget {
                 title: new Text("Settings"),
               ),
               body:
-                  WillPopScope(
-                    onWillPop: () async {
+                  PopScope(
+                    onPopInvoked: (bool didPop) {
+                      if (didPop) {
+                        return;
+                      }
+
                       Navigator.pop(context, Provider.of<SettingsScreenManager>(context, listen: false).didClearNotifications);
-                      return false;
                     },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,

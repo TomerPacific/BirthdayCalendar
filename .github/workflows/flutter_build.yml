@@ -14,11 +14,11 @@ jobs:
           java-version: '12.x'
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.10.4'
+          flutter-version: '3.16.0'
           channel: 'stable'
       - uses: dart-lang/setup-dart@v1
         with:
-          sdk: '3.0.0'
+          sdk: '3.2.0'
 
       - run: dart pub get
       
