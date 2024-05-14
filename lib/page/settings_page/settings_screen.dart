@@ -14,6 +14,10 @@ class SettingsScreen extends StatelessWidget {
               body:
                   PopScope(
                     onPopInvoked: (bool didPop) {
+                      if (didPop) {
+                        return;
+                      }
+
                       Navigator.pop(context, Provider.of<SettingsScreenManager>(context, listen: false).didClearNotifications);
                     },
                     child: Column(
