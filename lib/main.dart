@@ -1,4 +1,3 @@
-
 import 'package:birthday_calendar/ThemeCubit.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 import 'package:flutter/material.dart';
@@ -19,21 +18,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => ThemeCubit(),
-      child: BlocBuilder<ThemeCubit, ThemeData>(
-        builder: (_, theme) {
           return MaterialApp(
             title: applicationName,
-            theme: theme,
-            home: MainPage(
-                key: Key("BirthdayCalendar"),
-                title: applicationName,
-                currentMonth: _dateService.getCurrentMonthNumber()
+            theme: ThemeData.light(),
+            home: BlocProvider<ThemeCubit>(
+                  create: (_) => ThemeCubit(),
+                  child: MainPage(
+                      key: Key("BirthdayCalendar"),
+                      title: applicationName,
+                      currentMonth: _dateService.getCurrentMonthNumber()
+                  )
             )
           );
-        },
-      )
-    );
-  }
-}
+        }
+    }
