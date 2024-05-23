@@ -1,6 +1,8 @@
 
+import 'package:birthday_calendar/ThemeCubit.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/page/settings_page/settings_screen_manager.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -23,56 +25,51 @@ class SettingsScreen extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Consumer<SettingsScreenManager>(
-                            builder: (context, notifier, child) {
-                              return  SwitchListTile(
+                              SwitchListTile(
                                   title: const Text('Dark Mode'),
-                                  value: notifier.themeMode == ThemeMode.light ? false : true,
+                                  value: BlocProvider.of<ThemeCubit>(context).isLightTheme() ?
+                                  false :
+                                  true,
                                   secondary:
                                   new Icon(
                                       Icons.dark_mode,
-                                      color: notifier.themeMode == ThemeMode.light ? Color(0xFF642ef3) : Color.fromARGB(200, 243, 231, 106)
+                                      color: BlocProvider.of<ThemeCubit>(context).isLightTheme() ?
+                                      Color(0xFF642ef3) :
+                                      Color.fromARGB(200, 243, 231, 106)
                                   ),
-                                  onChanged:notifier.handleThemeModeSettingChange
-                              );
-                            }
-                        ),
-                       Consumer<SettingsScreenManager>(
-                           builder: (context, notifier, child) {
-                          return ListTile(
+                                  onChanged: (bool newValue) {
+                                    BlocProvider.of<ThemeCubit>(context).toggleTheme();
+                                  }
+                              ),
+                      ListTile(
                               title: const Text("Import Contacts"),
                               leading: Icon(Icons.contacts,
-                                  color: !notifier.isContactsPermissionPermanentlyDenied ? Colors.blue : Colors.grey
+                                  color: Colors.blue
                               ),
                               onTap: () {
                                 Provider.of<SettingsScreenManager>(context, listen: false).handleImportingContacts(context);
                               },
-                              enabled: !notifier.isContactsPermissionPermanentlyDenied
-                          );
-                        }),
-                        ListTile(
-                            title: const Text("Clear Notifications"),
-                            leading: const Icon(
-                                Icons.clear,
-                                color: Colors.redAccent),
-                            onTap: () {
-                              _showClearBirthdaysConfirmationDialog(context);
-                            }
+                              enabled: true
+                      ),
+                      ListTile(
+                          title: const Text("Clear Notifications"),
+                          leading: const Icon(
+                              Icons.clear,
+                              color: Colors.redAccent),
+                          onTap: () {
+                            _showClearBirthdaysConfirmationDialog(context);
+                          }
                         ),
                         Spacer(),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Consumer<SettingsScreenManager>(
-                                builder: (context, notifier, child) {
-                                  return Align(
+                                Align(
                                       alignment: Alignment.bottomRight,
                                       child: Text(
-                                          "v " + notifier.version
+                                          "v "
                                       )
-                                  );
-                                }
-                            )
+                                  )
                           ],
                         )
                       ],
