@@ -1,3 +1,4 @@
+import 'package:birthday_calendar/ThemeCubit.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/page/birthdays_for_calendar_day_page/birthdays_for_calendar_day.dart';
 import 'package:birthday_calendar/page/main_page/main_screen_manager.dart';
@@ -12,6 +13,7 @@ import 'package:birthday_calendar/widget/calendar.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/date_service/date_service.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 class MainPage extends StatefulWidget {
@@ -126,10 +128,15 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
                           color: Colors.white,
                         ),
                   onPressed: () {
-                        Navigator.push(
+                      Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => SettingsScreen()),
-                        ).then((result) {
+                        MaterialPageRoute(
+                            builder: (_) {
+                              return BlocProvider.value(
+                                  value:BlocProvider.of<ThemeCubit>(context),
+                                  child:SettingsScreen()
+                              );
+                          })).then((result) {
                           if (result == true) {
                             setState(() {});
                             Provider.of<SettingsScreenManager>(context, listen: false).setOnClearBirthdaysFlag(false);
