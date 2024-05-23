@@ -13,4 +13,8 @@ class ThemeCubit extends Cubit<ThemeData> {
   void toggleTheme() {
     emit(state.brightness == Brightness.dark ? _lightTheme : _darkTheme);
   }
+
+  bool isLightTheme() {
+    return state.brightness == Brightness.light;
+  }
 }
