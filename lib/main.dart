@@ -19,8 +19,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-      return BlocProvider(
-        create: (context) => ThemeBloc(),
+      return MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (context) => ThemeBloc())
+        ],
         child: BlocBuilder<ThemeBloc, ThemeMode>(
           builder: (context, state) {
             return MaterialApp(
