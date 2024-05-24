@@ -1,29 +1,14 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'ThemeState.dart';
 
 enum ThemeEvent { toggleDark, toggleLight }
 
-class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
+class ThemeBloc extends Bloc<ThemeEvent, ThemeMode> {
 
-  bool _isDarkMode = false;
-
-  ThemeBloc() : super(ThemeState.lightTheme) {
+  ThemeBloc() : super(ThemeMode.light) {
     on<ThemeEvent>((event, emit) {
-      switch (event) {
-        case ThemeEvent.toggleDark:
-          this._isDarkMode = true;
-          emit(ThemeState.darkTheme);
-          break;
-        case ThemeEvent.toggleLight:
-          this._isDarkMode = false;
-          emit(ThemeState.lightTheme);
-          break;
-      }
+      emit(event.name == 'toggleDark' ? ThemeMode.dark : ThemeMode.light);
     });
-  }
-
-  bool isDarkModeOn() {
-    return this._isDarkMode;
   }
 }
