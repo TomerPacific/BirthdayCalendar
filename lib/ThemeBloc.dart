@@ -6,17 +6,17 @@ enum ThemeEvent { toggleDark, toggleLight }
 
 class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
 
-  bool isDarkMode = false;
+  bool _isDarkMode = false;
 
   ThemeBloc() : super(ThemeState.lightTheme) {
     on<ThemeEvent>((event, emit) {
       switch (event) {
         case ThemeEvent.toggleDark:
-          this.isDarkMode = true;
+          this._isDarkMode = true;
           emit(ThemeState.darkTheme);
           break;
         case ThemeEvent.toggleLight:
-          this.isDarkMode = false;
+          this._isDarkMode = false;
           emit(ThemeState.lightTheme);
           break;
       }
@@ -24,6 +24,6 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
   }
 
   bool isDarkModeOn() {
-    return this.isDarkMode;
+    return this._isDarkMode;
   }
 }
