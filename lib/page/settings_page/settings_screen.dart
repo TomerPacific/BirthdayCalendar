@@ -27,18 +27,18 @@ class SettingsScreen extends StatelessWidget {
                       children: [
                               SwitchListTile(
                                   title: const Text('Dark Mode'),
-                                  value: BlocProvider.of<ThemeBloc>(context).isDarkModeOn() ?
+                                  value: context.read<ThemeBloc>().state == ThemeMode.dark ?
                                   true :
                                   false,
                                   secondary:
                                   new Icon(
                                       Icons.dark_mode,
-                                      color: BlocProvider.of<ThemeBloc>(context).isDarkModeOn() ?
+                                      color: context.read<ThemeBloc>().state == ThemeMode.dark ?
                                       Color.fromARGB(200, 243, 231, 106) :
                                       Color(0xFF642ef3)
                                   ),
                                   onChanged: (bool newValue) {
-                                    ThemeEvent event = BlocProvider.of<ThemeBloc>(context).isDarkModeOn() ?
+                                    ThemeEvent event = context.read<ThemeBloc>().state == ThemeMode.dark ?
                                     ThemeEvent.toggleLight :
                                     ThemeEvent.toggleDark;
                                     BlocProvider.of<ThemeBloc>(context).add(event);
