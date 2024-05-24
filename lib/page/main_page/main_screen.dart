@@ -1,3 +1,4 @@
+import 'package:birthday_calendar/ThemeBloc.dart';
 import 'package:birthday_calendar/ThemeCubit.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/page/birthdays_for_calendar_day_page/birthdays_for_calendar_day.dart';
@@ -133,7 +134,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
                         MaterialPageRoute(
                             builder: (_) {
                               return BlocProvider.value(
-                                  value:BlocProvider.of<ThemeCubit>(context),
+                                  value:BlocProvider.of<ThemeBloc>(context),
                                   child:SettingsScreen()
                               );
                           })).then((result) {

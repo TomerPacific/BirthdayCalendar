@@ -1,5 +1,5 @@
 
-import 'package:birthday_calendar/ThemeCubit.dart';
+import 'package:birthday_calendar/ThemeBloc.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/page/settings_page/settings_screen_manager.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,18 +27,21 @@ class SettingsScreen extends StatelessWidget {
                       children: [
                               SwitchListTile(
                                   title: const Text('Dark Mode'),
-                                  value: BlocProvider.of<ThemeCubit>(context).isLightTheme() ?
-                                  false :
-                                  true,
+                                  value: BlocProvider.of<ThemeBloc>(context).isDarkModeOn() ?
+                                  true :
+                                  false,
                                   secondary:
                                   new Icon(
                                       Icons.dark_mode,
-                                      color: BlocProvider.of<ThemeCubit>(context).isLightTheme() ?
-                                      Color(0xFF642ef3) :
-                                      Color.fromARGB(200, 243, 231, 106)
+                                      color: BlocProvider.of<ThemeBloc>(context).isDarkModeOn() ?
+                                      Color.fromARGB(200, 243, 231, 106) :
+                                      Color(0xFF642ef3)
                                   ),
                                   onChanged: (bool newValue) {
-                                    BlocProvider.of<ThemeCubit>(context).toggleTheme();
+                                    ThemeEvent event = BlocProvider.of<ThemeBloc>(context).isDarkModeOn() ?
+                                    ThemeEvent.toggleLight :
+                                    ThemeEvent.toggleDark;
+                                    BlocProvider.of<ThemeBloc>(context).add(event);
                                   }
                               ),
                       ListTile(
