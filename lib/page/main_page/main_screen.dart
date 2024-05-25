@@ -1,5 +1,4 @@
 import 'package:birthday_calendar/ThemeBloc.dart';
-import 'package:birthday_calendar/ThemeCubit.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/page/birthdays_for_calendar_day_page/birthdays_for_calendar_day.dart';
 import 'package:birthday_calendar/page/main_page/main_screen_manager.dart';
