@@ -1,5 +1,4 @@
 import 'package:birthday_calendar/ThemeBloc.dart';
-import 'package:birthday_calendar/ThemeCubit.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'constants.dart';
@@ -30,15 +29,12 @@ class MyApp extends StatelessWidget {
                 theme: ThemeData.light(),
                 themeMode: state,
                 darkTheme: ThemeData.dark(),
-                home: BlocProvider<ThemeCubit>(
-                create: (_) => ThemeCubit(),
-                  child: MainPage(
+                home: MainPage(
                   key: Key("BirthdayCalendar"),
                   title: applicationName,
                   currentMonth: _dateService.getCurrentMonthNumber()
                 )
-              )
-            );
+              );
           },
         ),
       );
