@@ -1,4 +1,4 @@
-import 'package:birthday_calendar/ThemeBloc.dart';
+import 'package:birthday_calendar/ThemeBloc/ThemeBloc.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'constants.dart';
