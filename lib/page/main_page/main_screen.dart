@@ -3,8 +3,9 @@ import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/page/birthdays_for_calendar_day_page/birthdays_for_calendar_day.dart';
 import 'package:birthday_calendar/page/main_page/main_screen_manager.dart';
 import 'package:birthday_calendar/page/settings_page/settings_screen_manager.dart';
+import 'package:birthday_calendar/service/contacts_service/bc_contacts_service.dart';
 import 'package:birthday_calendar/service/notification_service/notificationCallbacks.dart';
-import 'package:birthday_calendar/service/notification_service/notification_service_impl.dart';
+import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:birthday_calendar/service/update_service/update_service.dart';
 import 'package:birthday_calendar/utils.dart';
@@ -17,10 +18,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 class MainPage extends StatefulWidget {
-  MainPage({required Key key, required this.title, required this.currentMonth}) : super(key: key);
+  MainPage({required Key key,
+    required this.notificationService,
+    required this.contactsService,
+    required this.title,
+    required this.currentMonth}) : super(key: key);
 
   final String title;
   final int currentMonth;
+  final NotificationService notificationService;
+  final BCContactsService contactsService;
 
   @override
   _MainPageState createState() => _MainPageState();
@@ -102,8 +109,8 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
   void initState()  {
     monthToPresent = widget.currentMonth;
     month = _dateService.convertMonthToWord(monthToPresent);
-    RepositoryProvider.of<NotificationServiceImpl>(context).init();
-    RepositoryProvider.of<NotificationServiceImpl>(context).addListenerForSelectNotificationStream(this);
+    widget.notificationService.init();
+    widget.notificationService.addListenerForSelectNotificationStream(this);
     _mainScreenManager.makeVersionAdjustments();
     _updateService.checkForInAppUpdate(_onUpdateSuccess, _onUpdateFailure);
     super.initState();
@@ -133,7 +140,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
                             builder: (_) {
                               return BlocProvider.value(
                                   value:BlocProvider.of<ThemeBloc>(context),
-                                  child:SettingsScreen()
+                                  child:SettingsScreen(contactsService: widget.contactsService)
                               );
                           })).then((result) {
                           if (result == true) {
@@ -192,7 +199,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
 
   @override void dispose() {
     _storageService.dispose();
-    RepositoryProvider.of<NotificationServiceImpl>(context).removeListenerForSelectNotificationStream(this);
+    widget.notificationService.removeListenerForSelectNotificationStream(this);
     super.dispose();
   }
 
