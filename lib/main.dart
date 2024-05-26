@@ -15,22 +15,26 @@ final DateService _dateService = getIt<DateService>();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setupServiceLocator();
-  runApp(MyApp());
+  NotificationService notificationService = NotificationServiceImpl();
+  BCContactsService contactsService = BCContactsServiceImpl();
+  runApp(MyApp(notificationService: notificationService, contactsService: contactsService));
 }
 
 class MyApp extends StatelessWidget {
 
-  final NotificationService notificationService = NotificationServiceImpl();
-  final BCContactsService contactsService = BCContactsServiceImpl();
+  MyApp({
+    required this.notificationService,
+    required this.contactsService
+  });
 
+  final NotificationService notificationService;
+  final BCContactsService contactsService;
 
   @override
   Widget build(BuildContext context) {
       return MultiBlocProvider(
         providers: [
-          BlocProvider(create: (context) => ThemeBloc()),
-          RepositoryProvider(create: (context) => notificationService),
-          RepositoryProvider(create: (context) => contactsService)
+          BlocProvider(create: (context) => ThemeBloc())
         ],
         child: BlocBuilder<ThemeBloc, ThemeMode>(
           builder: (context, state) {
@@ -41,6 +45,8 @@ class MyApp extends StatelessWidget {
                 darkTheme: ThemeData.dark(),
                 home: MainPage(
                   key: Key("BirthdayCalendar"),
+                  notificationService: notificationService,
+                  contactsService: contactsService,
                   title: applicationName,
                   currentMonth: _dateService.getCurrentMonthNumber()
                 )
