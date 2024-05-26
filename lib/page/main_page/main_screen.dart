@@ -4,13 +4,13 @@ import 'package:birthday_calendar/page/birthdays_for_calendar_day_page/birthdays
 import 'package:birthday_calendar/page/main_page/main_screen_manager.dart';
 import 'package:birthday_calendar/page/settings_page/settings_screen_manager.dart';
 import 'package:birthday_calendar/service/notification_service/notificationCallbacks.dart';
+import 'package:birthday_calendar/service/notification_service/notification_service_impl.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:birthday_calendar/service/update_service/update_service.dart';
 import 'package:birthday_calendar/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/page/settings_page/settings_screen.dart';
 import 'package:birthday_calendar/widget/calendar.dart';
-import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/date_service/date_service.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,7 +30,6 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
 
   int monthToPresent = -1;
   String month = "";
-  NotificationService _notificationService = getIt<NotificationService>();
   DateService _dateService = getIt<DateService>();
   StorageService _storageService = getIt<StorageService>();
   UpdateService _updateService = getIt<UpdateService>();
@@ -103,8 +102,8 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
   void initState()  {
     monthToPresent = widget.currentMonth;
     month = _dateService.convertMonthToWord(monthToPresent);
-    _notificationService.init();
-    _notificationService.addListenerForSelectNotificationStream(this);
+    RepositoryProvider.of<NotificationServiceImpl>(context).init();
+    RepositoryProvider.of<NotificationServiceImpl>(context).addListenerForSelectNotificationStream(this);
     _mainScreenManager.makeVersionAdjustments();
     _updateService.checkForInAppUpdate(_onUpdateSuccess, _onUpdateFailure);
     super.initState();
@@ -193,7 +192,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
 
   @override void dispose() {
     _storageService.dispose();
-    _notificationService.removeListenerForSelectNotificationStream(this);
+    RepositoryProvider.of<NotificationServiceImpl>(context).removeListenerForSelectNotificationStream(this);
     super.dispose();
   }
 
