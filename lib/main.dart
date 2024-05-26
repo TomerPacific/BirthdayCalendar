@@ -1,4 +1,7 @@
 import 'package:birthday_calendar/ThemeBloc/ThemeBloc.dart';
+import 'package:birthday_calendar/service/contacts_service/bc_contacts_service.dart';
+import 'package:birthday_calendar/service/contacts_service/bc_contacts_service_impl.dart';
+import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service_impl.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 import 'package:flutter/material.dart';
@@ -17,12 +20,17 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
 
+  final NotificationService notificationService = NotificationServiceImpl();
+  final BCContactsService contactsService = BCContactsServiceImpl();
+
+
   @override
   Widget build(BuildContext context) {
       return MultiBlocProvider(
         providers: [
           BlocProvider(create: (context) => ThemeBloc()),
-          RepositoryProvider(create: (context) => NotificationServiceImpl())
+          RepositoryProvider(create: (context) => notificationService),
+          RepositoryProvider(create: (context) => contactsService)
         ],
         child: BlocBuilder<ThemeBloc, ThemeMode>(
           builder: (context, state) {
