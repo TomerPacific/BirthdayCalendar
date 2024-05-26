@@ -1,11 +1,18 @@
 
 import 'package:birthday_calendar/ThemeBloc/ThemeBloc.dart';
+import 'package:birthday_calendar/service/contacts_service/bc_contacts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/page/settings_page/settings_screen_manager.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatelessWidget {
+
+  SettingsScreen({
+    required this.contactsService
+  });
+
+  final BCContactsService contactsService;
 
   @override
   Widget build(BuildContext context) {
