@@ -4,6 +4,8 @@ import 'package:birthday_calendar/service/contacts_service/bc_contacts_service_i
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service_impl.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
+import 'package:birthday_calendar/service/storage_service/shared_preferences_storage.dart';
+import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'constants.dart';
 import 'service/date_service/date_service.dart';
@@ -16,7 +18,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setupServiceLocator();
   NotificationService notificationService = NotificationServiceImpl();
-  BCContactsService contactsService = BCContactsServiceImpl();
+  StorageService storageService = StorageServiceSharedPreferences();
+  BCContactsService contactsService = BCContactsServiceImpl(storageService: storageService, notificationService: notificationService);
   runApp(MyApp(notificationService: notificationService, contactsService: contactsService));
 }
 
