@@ -1,6 +1,6 @@
 import 'package:birthday_calendar/ThemeBloc/ThemeBloc.dart';
-import 'package:birthday_calendar/service/contacts_service/bc_contacts_service.dart';
-import 'package:birthday_calendar/service/contacts_service/bc_contacts_service_impl.dart';
+import 'package:birthday_calendar/service/contacts_service/contacts_service.dart';
+import 'package:birthday_calendar/service/contacts_service/contacts_service_impl.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service_impl.dart';
 import 'package:birthday_calendar/service/service_locator.dart';

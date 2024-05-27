@@ -1,6 +1,6 @@
 
 import 'package:birthday_calendar/ThemeBloc/ThemeBloc.dart';
-import 'package:birthday_calendar/service/contacts_service/bc_contacts_service.dart';
+import 'package:birthday_calendar/service/contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/page/settings_page/settings_screen_manager.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

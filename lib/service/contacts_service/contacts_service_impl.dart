@@ -1,4 +1,4 @@
-import 'package:birthday_calendar/service/contacts_service/bc_contacts_service.dart';
+import 'package:birthday_calendar/service/contacts_service/contacts_service.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
