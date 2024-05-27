@@ -16,7 +16,7 @@ import 'package:birthday_calendar/utils.dart';
 class SettingsScreenManager extends ChangeNotifier {
 
   final PermissionsService _permissionsService = getIt<PermissionsService>();
-  final BCContactsService _bcContactsService = getIt<BCContactsService>();
+  final ContactsService _bcContactsService = getIt<ContactsService>();
   final SnackbarService _snackbarService = getIt<SnackbarService>();
   StorageService _storageService = getIt<StorageService>();
 

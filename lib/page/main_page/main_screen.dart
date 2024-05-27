@@ -27,7 +27,7 @@ class MainPage extends StatefulWidget {
   final String title;
   final int currentMonth;
   final NotificationService notificationService;
-  final BCContactsService contactsService;
+  final ContactsService contactsService;
 
   @override
   _MainPageState createState() => _MainPageState();

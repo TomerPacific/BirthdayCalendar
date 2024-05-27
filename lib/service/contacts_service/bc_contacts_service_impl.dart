@@ -5,9 +5,9 @@ import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 
-class BCContactsServiceImpl extends BCContactsService {
+class ContactsServiceImpl extends ContactsService {
 
-  BCContactsServiceImpl({
+  ContactsServiceImpl({
     required this.storageService,
     required this.notificationService
   });

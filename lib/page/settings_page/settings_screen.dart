@@ -12,7 +12,7 @@ class SettingsScreen extends StatelessWidget {
     required this.contactsService
   });
 
-  final BCContactsService contactsService;
+  final ContactsService contactsService;
 
   @override
   Widget build(BuildContext context) {

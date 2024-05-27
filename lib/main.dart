@@ -19,7 +19,7 @@ Future<void> main() async {
   setupServiceLocator();
   NotificationService notificationService = NotificationServiceImpl();
   StorageService storageService = StorageServiceSharedPreferences();
-  BCContactsService contactsService = BCContactsServiceImpl(storageService: storageService, notificationService: notificationService);
+  ContactsService contactsService = ContactsServiceImpl(storageService: storageService, notificationService: notificationService);
   runApp(MyApp(notificationService: notificationService, contactsService: contactsService));
 }
 
@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
   });
 
   final NotificationService notificationService;
-  final BCContactsService contactsService;
+  final ContactsService contactsService;
 
   @override
   Widget build(BuildContext context) {
