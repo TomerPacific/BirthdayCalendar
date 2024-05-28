@@ -3,7 +3,11 @@ import 'package:birthday_calendar/service/contacts_service/contacts_service.dart
 import 'package:birthday_calendar/service/contacts_service/contacts_service_impl.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service_impl.dart';
+import 'package:birthday_calendar/service/permission_service/permissions_service.dart';
+import 'package:birthday_calendar/service/permission_service/permissions_service_impl.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
+import 'package:birthday_calendar/service/snackbar_service/SnackbarService.dart';
+import 'package:birthday_calendar/service/snackbar_service/SnackbarServiceImpl.dart';
 import 'package:birthday_calendar/service/storage_service/shared_preferences_storage.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter/material.dart';
@@ -18,8 +22,14 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setupServiceLocator();
   NotificationService notificationService = NotificationServiceImpl();
+  PermissionsService permissionsService = PermissionsServiceImpl();
+  SnackbarService snackbarService = SnackbarServiceImpl();
   StorageService storageService = StorageServiceSharedPreferences();
-  ContactsService contactsService = ContactsServiceImpl(storageService: storageService, notificationService: notificationService);
+  ContactsService contactsService = ContactsServiceImpl(
+      storageService: storageService,
+      notificationService: notificationService,
+      permissionsService: permissionsService,
+      snackbarService: snackbarService);
   runApp(MyApp(notificationService: notificationService, contactsService: contactsService));
 }
 
