@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_contacts/contact.dart';
 
 import 'model/user_birthday.dart';
@@ -32,6 +33,12 @@ class Utils {
     }
 
     return userBirthday;
+  }
+
+  static void showSnackbarWithMessage(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message),
+        ));
   }
 
 }
