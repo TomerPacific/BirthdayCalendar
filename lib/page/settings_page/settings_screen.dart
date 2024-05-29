@@ -1,10 +1,13 @@
-
 import 'package:birthday_calendar/ThemeBloc/ThemeBloc.dart';
+import 'package:birthday_calendar/constants.dart';
 import 'package:birthday_calendar/service/contacts_service/contacts_service.dart';
+import 'package:birthday_calendar/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/page/settings_page/settings_screen_manager.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
 
 class SettingsScreen extends StatelessWidget {
 
@@ -57,7 +60,7 @@ class SettingsScreen extends StatelessWidget {
                                   color: Colors.blue
                               ),
                               onTap: () {
-                                Provider.of<SettingsScreenManager>(context, listen: false).handleImportingContacts(context);
+                                _handleImportingContacts(context);
                               },
                               enabled: true
                       ),
@@ -112,5 +115,37 @@ class SettingsScreen extends StatelessWidget {
         builder: (BuildContext context) {
           return alert;
         });
+  }
+
+  void _handleImportingContacts(BuildContext context) async {
+    PermissionStatus status = await contactsService.getContactsPermissionStatus(context);
+
+    if (status == PermissionStatus.denied) {
+      status = await contactsService.requestContactsPermission(context);
+    }
+
+
+    if (status == PermissionStatus.permanentlyDenied) {
+      contactsService.setContactsPermissionPermanentlyDenied();
+      return;
+    }
+
+    if (status == PermissionStatus.granted) {
+      List<Contact> contacts = await contactsService.fetchContacts(false);
+
+      if (contacts.isEmpty) {
+        Utils.showSnackbarWithMessage(context, noContactsFoundMsg);
+        return;
+      }
+
+      contacts = await contactsService.filterAlreadyImportedContacts(contacts);
+
+      if (contacts.isEmpty) {
+        Utils.showSnackbarWithMessage(context, alreadyAddedContactsMsg);
+        return;
+      }
+
+      contactsService.handleAddingBirthdaysToContacts(context, contacts);
+    }
   }
 }
