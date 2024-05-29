@@ -1,19 +1,86 @@
+import 'package:birthday_calendar/constants.dart';
 import 'package:birthday_calendar/service/contacts_service/contacts_service.dart';
+import 'package:birthday_calendar/service/permission_service/permissions_service.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
+import 'package:birthday_calendar/utils.dart';
+import 'package:birthday_calendar/widget/users_without_birthdays_dialogs.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class ContactsServiceImpl extends ContactsService {
 
   ContactsServiceImpl({
     required this.storageService,
-    required this.notificationService
+    required this.notificationService,
+    required this.permissionsService
   });
 
   final StorageService storageService;
   final NotificationService notificationService;
+  final PermissionsService permissionsService;
+
+  @override
+  Future<PermissionStatus> getContactsPermissionStatus(BuildContext context) async {
+    return await permissionsService.getPermissionStatus(contactsPermissionKey);
+  }
+
+  @override
+  Future<PermissionStatus> requestContactsPermission(BuildContext context) async {
+    return await permissionsService.requestPermissionAndGetStatus(contactsPermissionKey);
+  }
+
+  @override
+  void setContactsPermissionPermanentlyDenied() {
+    storageService.saveIsContactsPermissionPermanentlyDenied(true);
+  }
+
+  @override
+  Future<List<Contact>> filterAlreadyImportedContacts(List<Contact> contacts) async {
+    return Utils.filterAlreadyImportedContacts(storageService, contacts);
+  }
+
+  void handleAddingBirthdaysToContacts(BuildContext context, List<Contact> contactsWithoutBirthDates) async {
+    UsersWithoutBirthdaysDialogs assignBirthdaysToUsers = UsersWithoutBirthdaysDialogs(contactsWithoutBirthDates);
+    List<Contact> users = await assignBirthdaysToUsers.showConfirmationDialog(context);
+    if (users.isNotEmpty) {
+      _gatherBirthdaysForUsers(context, users);
+    }
+  }
+
+  void _gatherBirthdaysForUsers(BuildContext context, List<Contact> users) async {
+
+    int amountOfBirthdaysSet = 0;
+
+    for (Contact contact in users) {
+      DateTime? chosenBirthDate = await showDatePicker(context: context,
+          initialDate: DateTime(1970, 1, 1),
+          firstDate: DateTime(1970, 1, 1),
+          lastDate: DateTime.now(),
+          initialEntryMode: DatePickerEntryMode.input,
+          helpText: "Choose birth date for ${contact.displayName}",
+          fieldLabelText: "${contact.displayName}'s birth date"
+      );
+
+      if (chosenBirthDate != null) {
+        UserBirthday userBirthday = new UserBirthday(contact.displayName,
+            chosenBirthDate,
+            true,
+            contact.phones.length > 0 ? contact.phones.first.number : "");
+
+        addContactToCalendar(userBirthday);
+        amountOfBirthdaysSet++;
+      }
+    }
+
+    if (amountOfBirthdaysSet > 0) {
+      Utils.showSnackbarWithMessage(context, contactsImportedSuccessfullyMsg);
+    }
+  }
+
 
   @override
   Future<List<Contact>> fetchContacts(bool withThumbnails) async {
