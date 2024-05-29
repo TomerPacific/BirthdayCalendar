@@ -8,8 +8,6 @@ import 'notification_service/notification_service.dart';
 import 'package:birthday_calendar/page/settings_page/settings_screen_manager.dart';
 import 'package:birthday_calendar/service/permission_service/permissions_service.dart';
 import 'package:birthday_calendar/service/permission_service/permissions_service_impl.dart';
-import 'package:birthday_calendar/service/snackbar_service/SnackbarService.dart';
-import 'package:birthday_calendar/service/snackbar_service/SnackbarServiceImpl.dart';
 import 'version_specific_service/VersionSpecificService.dart';
 import 'version_specific_service/VersionSpecificServiceImpl.dart';
 import 'package:birthday_calendar/service/update_service/update_service.dart';
@@ -25,7 +23,6 @@ setupServiceLocator() {
   getIt.registerLazySingleton<NotificationService>(() => NotificationServiceImpl());
   getIt.registerLazySingleton<PermissionsService>(() => PermissionsServiceImpl());
   getIt.registerLazySingleton<SettingsScreenManager>(() => SettingsScreenManager());
-  getIt.registerLazySingleton<SnackbarService>(() => SnackbarServiceImpl());
   getIt.registerLazySingleton<VersionSpecificService>(() => VersionSpecificServiceImpl());
   getIt.registerLazySingleton<UpdateService>(() => UpdateServiceImpl());
 }
