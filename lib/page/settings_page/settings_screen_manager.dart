@@ -1,16 +1,11 @@
 
-import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter/material.dart';
-import 'package:birthday_calendar/service/contacts_service/contacts_service.dart';
-import 'package:birthday_calendar/service/permission_service/permissions_service.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class SettingsScreenManager extends ChangeNotifier {
 
-  final PermissionsService _permissionsService = getIt<PermissionsService>();
-  final ContactsService _bcContactsService = getIt<ContactsService>();
   StorageService _storageService = getIt<StorageService>();
 
   ThemeMode _themeMode = ThemeMode.light;
@@ -54,9 +49,5 @@ class SettingsScreenManager extends ChangeNotifier {
     _themeMode = _themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
     _storageService.saveThemeModeSetting(isDarkModeEnabled);
     notifyListeners();
-  }
-
-  void addContactToCalendar(UserBirthday contact) {
-    _bcContactsService.addContactToCalendar(contact);
   }
 }
