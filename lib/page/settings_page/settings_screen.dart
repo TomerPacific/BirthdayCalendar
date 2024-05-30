@@ -1,3 +1,4 @@
+import 'package:birthday_calendar/ContactsPermissionStatusBloc/ContactsPermissionStatusBloc.dart';
 import 'package:birthday_calendar/ThemeBloc/ThemeBloc.dart';
 import 'package:birthday_calendar/constants.dart';
 import 'package:birthday_calendar/service/contacts_service/contacts_service.dart';
@@ -54,15 +55,21 @@ class SettingsScreen extends StatelessWidget {
                                     BlocProvider.of<ThemeBloc>(context).add(event);
                                   }
                               ),
-                      ListTile(
-                              title: const Text("Import Contacts"),
-                              leading: Icon(Icons.contacts,
-                                  color: Colors.blue
-                              ),
-                              onTap: () {
-                                _handleImportingContacts(context);
-                              },
-                              enabled: true
+                      BlocProvider(create: (context) => ContactsPermissionStatusBloc(),
+                          child: BlocBuilder<ContactsPermissionStatusBloc, PermissionStatus>(
+                              builder: (context, state) {
+                                return ListTile(
+                                    title: const Text("Import Contacts"),
+                                    leading: Icon(Icons.contacts,
+                                        color: Colors.blue
+                                    ),
+                                    onTap: () {
+                                      _handleImportingContacts(context);
+                                    },
+                                    enabled: state.isPermanentlyDenied ? false : true
+                                );
+                              }
+                          )
                       ),
                       ListTile(
                           title: const Text("Clear Notifications"),
@@ -127,10 +134,12 @@ class SettingsScreen extends StatelessWidget {
 
     if (status == PermissionStatus.permanentlyDenied) {
       contactsService.setContactsPermissionPermanentlyDenied();
+      BlocProvider.of<ContactsPermissionStatusBloc>(context).add(ContactsPermissionStatusEvent.PermissionPermanentlyDenied);
       return;
     }
 
     if (status == PermissionStatus.granted) {
+      BlocProvider.of<ContactsPermissionStatusBloc>(context).add(ContactsPermissionStatusEvent.PermissionGranted);
       List<Contact> contacts = await contactsService.fetchContacts(false);
 
       if (contacts.isEmpty) {
