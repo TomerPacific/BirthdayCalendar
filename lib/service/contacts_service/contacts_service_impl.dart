@@ -39,6 +39,11 @@ class ContactsServiceImpl extends ContactsService {
   }
 
   @override
+  Future<bool> isContactsPermissionsPermanentlyDenied() async{
+    return storageService.getIsContactPermissionPermanentlyDenied();
+  }
+
+  @override
   Future<List<Contact>> filterAlreadyImportedContacts(List<Contact> contacts) async {
     return Utils.filterAlreadyImportedContacts(storageService, contacts);
   }

@@ -7,7 +7,8 @@ abstract class ContactsService {
   Future<PermissionStatus> getContactsPermissionStatus(BuildContext context);
   Future<PermissionStatus> requestContactsPermission(BuildContext context);
   void setContactsPermissionPermanentlyDenied();
-  Future<List<Contact>> filterAlreadyImportedContacts(List<Contact> contacts);
+  Future<bool> isContactsPermissionsPermanentlyDenied();
+    Future<List<Contact>> filterAlreadyImportedContacts(List<Contact> contacts);
   void handleAddingBirthdaysToContacts(BuildContext context, List<Contact> contactsWithoutBirthDates);
   Future<List<Contact>> fetchContacts(bool withThumbnails);
   void addContactToCalendar(UserBirthday contact);
