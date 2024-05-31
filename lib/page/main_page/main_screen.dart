@@ -1,3 +1,4 @@
+import 'package:birthday_calendar/ContactsPermissionStatusBloc/ContactsPermissionStatusBloc.dart';
 import 'package:birthday_calendar/ThemeBloc/ThemeBloc.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/page/birthdays_for_calendar_day_page/birthdays_for_calendar_day.dart';
@@ -113,6 +114,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
     widget.notificationService.addListenerForSelectNotificationStream(this);
     _mainScreenManager.makeVersionAdjustments();
     _updateService.checkForInAppUpdate(_onUpdateSuccess, _onUpdateFailure);
+    BlocProvider.of<ContactsPermissionStatusBloc>(context).add(ContactsPermissionStatusEvent.PermissionUnknown);
     super.initState();
   }
 
