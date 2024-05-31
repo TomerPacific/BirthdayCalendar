@@ -55,8 +55,7 @@ class SettingsScreen extends StatelessWidget {
                                     BlocProvider.of<ThemeBloc>(context).add(event);
                                   }
                               ),
-                      BlocProvider(create: (context) => ContactsPermissionStatusBloc(),
-                          child: BlocBuilder<ContactsPermissionStatusBloc, PermissionStatus>(
+                          BlocBuilder<ContactsPermissionStatusBloc, PermissionStatus>(
                               builder: (context, state) {
                                 return ListTile(
                                     title: const Text("Import Contacts"),
@@ -69,8 +68,7 @@ class SettingsScreen extends StatelessWidget {
                                     enabled: state.isPermanentlyDenied ? false : true
                                 );
                               }
-                          )
-                      ),
+                          ),
                       ListTile(
                           title: const Text("Clear Notifications"),
                           leading: const Icon(
