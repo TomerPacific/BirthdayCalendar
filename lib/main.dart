@@ -27,18 +27,24 @@ Future<void> main() async {
       storageService: storageService,
       notificationService: notificationService,
       permissionsService: permissionsService);
-  runApp(MyApp(notificationService: notificationService, contactsService: contactsService));
+  runApp(MyApp(
+      notificationService: notificationService,
+      contactsService: contactsService,
+      storageService: storageService)
+  );
 }
 
 class MyApp extends StatelessWidget {
 
   MyApp({
     required this.notificationService,
-    required this.contactsService
+    required this.contactsService,
+    required this.storageService
   });
 
   final NotificationService notificationService;
   final ContactsService contactsService;
+  final StorageService storageService;
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +64,7 @@ class MyApp extends StatelessWidget {
                   key: Key("BirthdayCalendar"),
                   notificationService: notificationService,
                   contactsService: contactsService,
+                  storageService: storageService,
                   title: applicationName,
                   currentMonth: _dateService.getCurrentMonthNumber()
                 )
