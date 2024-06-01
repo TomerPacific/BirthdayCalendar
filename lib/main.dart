@@ -2,6 +2,7 @@ import 'package:birthday_calendar/ContactsPermissionStatusBloc/ContactsPermissio
 import 'package:birthday_calendar/ThemeBloc/ThemeBloc.dart';
 import 'package:birthday_calendar/service/contacts_service/contacts_service.dart';
 import 'package:birthday_calendar/service/contacts_service/contacts_service_impl.dart';
+import 'package:birthday_calendar/service/date_service/date_service_impl.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service_impl.dart';
 import 'package:birthday_calendar/service/permission_service/permissions_service.dart';
@@ -15,14 +16,13 @@ import 'service/date_service/date_service.dart';
 import 'package:birthday_calendar/page/main_page/main_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-final DateService _dateService = getIt<DateService>();
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setupServiceLocator();
+  DateService dateService = DateServiceImpl();
   NotificationService notificationService = NotificationServiceImpl();
   PermissionsService permissionsService = PermissionsServiceImpl();
-  StorageService storageService = StorageServiceSharedPreferences();
+  StorageService storageService = StorageServiceSharedPreferences(dateService: dateService);
   ContactsService contactsService = ContactsServiceImpl(
       storageService: storageService,
       notificationService: notificationService,
@@ -30,7 +30,8 @@ Future<void> main() async {
   runApp(MyApp(
       notificationService: notificationService,
       contactsService: contactsService,
-      storageService: storageService)
+      storageService: storageService,
+      dateService: dateService)
   );
 }
 
@@ -39,12 +40,14 @@ class MyApp extends StatelessWidget {
   MyApp({
     required this.notificationService,
     required this.contactsService,
-    required this.storageService
+    required this.storageService,
+    required this.dateService
   });
 
   final NotificationService notificationService;
   final ContactsService contactsService;
   final StorageService storageService;
+  final DateService dateService;
 
   @override
   Widget build(BuildContext context) {
@@ -65,8 +68,9 @@ class MyApp extends StatelessWidget {
                   notificationService: notificationService,
                   contactsService: contactsService,
                   storageService: storageService,
+                  dateService: dateService,
                   title: applicationName,
-                  currentMonth: _dateService.getCurrentMonthNumber()
+                  currentMonth: dateService.getCurrentMonthNumber()
                 )
               );
           },
