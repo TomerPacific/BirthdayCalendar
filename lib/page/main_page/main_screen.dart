@@ -4,15 +4,17 @@ import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/page/birthdays_for_calendar_day_page/birthdays_for_calendar_day.dart';
 import 'package:birthday_calendar/page/main_page/main_screen_manager.dart';
 import 'package:birthday_calendar/service/contacts_service/contacts_service.dart';
+import 'package:birthday_calendar/service/date_service/date_service.dart';
 import 'package:birthday_calendar/service/notification_service/notificationCallbacks.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:birthday_calendar/service/update_service/update_service.dart';
+import 'package:birthday_calendar/service/version_specific_service/VersionSpecificService.dart';
+import 'package:birthday_calendar/service/version_specific_service/VersionSpecificServiceImpl.dart';
 import 'package:birthday_calendar/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/page/settings_page/settings_screen.dart';
 import 'package:birthday_calendar/widget/calendar.dart';
-import 'package:birthday_calendar/service/date_service/date_service.dart';
 import 'package:birthday_calendar/service/service_locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -21,6 +23,7 @@ class MainPage extends StatefulWidget {
     required this.notificationService,
     required this.contactsService,
     required this.storageService,
+    required this.dateService,
     required this.title,
     required this.currentMonth}) : super(key: key);
 
@@ -29,26 +32,29 @@ class MainPage extends StatefulWidget {
   final NotificationService notificationService;
   final ContactsService contactsService;
   final StorageService storageService;
+  final DateService dateService;
 
   @override
-  _MainPageState createState() => _MainPageState();
+  _MainPageState createState() => _MainPageState(storageService, notificationService);
 }
 
 class _MainPageState extends State<MainPage> implements NotificationCallbacks {
 
+  _MainPageState(this.storageService, this.notificationService);
+
   int monthToPresent = -1;
   String month = "";
-  DateService _dateService = getIt<DateService>();
-  StorageService _storageService = getIt<StorageService>();
+  StorageService storageService;
+  NotificationService notificationService;
   UpdateService _updateService = getIt<UpdateService>();
-
-  MainScreenManager _mainScreenManager = MainScreenManager();
+  late VersionSpecificService versionSpecificService;
+  late MainScreenManager _mainScreenManager;
 
   void _calculateNextMonthToShow(AxisDirection direction) {
     setState(() {
       monthToPresent = direction == AxisDirection.left ? monthToPresent + 1 : monthToPresent - 1;
       monthToPresent = _mainScreenManager.correctMonthOverflow(monthToPresent);
-      month = _dateService.convertMonthToWord(monthToPresent);
+      month = widget.dateService.convertMonthToWord(monthToPresent);
     });
   }
 
@@ -108,8 +114,12 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
 
   @override
   void initState()  {
+    versionSpecificService = new VersionSpecificServiceImpl(
+        storageService: storageService,
+        notificationService: notificationService);
+    _mainScreenManager = MainScreenManager(storageService, versionSpecificService);
     monthToPresent = widget.currentMonth;
-    month = _dateService.convertMonthToWord(monthToPresent);
+    month = widget.dateService.convertMonthToWord(monthToPresent);
     widget.notificationService.init();
     widget.notificationService.addListenerForSelectNotificationStream(this);
     _mainScreenManager.makeVersionAdjustments();
@@ -122,7 +132,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
   void didUpdateWidget(covariant MainPage oldWidget) {
     super.didUpdateWidget(oldWidget);
     monthToPresent = widget.currentMonth;
-    month = _dateService.convertMonthToWord(monthToPresent);
+    month = widget.dateService.convertMonthToWord(monthToPresent);
   }
 
   @override
@@ -197,7 +207,10 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
                                       new Expanded(child:
                                       new CalendarWidget(
                                           key: Key(monthToPresent.toString()),
-                                          currentMonth: monthToPresent),
+                                          currentMonth: monthToPresent,
+                                          dateService: widget.dateService,
+                                          storageService: widget.storageService,
+                                          notificationService: widget.notificationService),
                                       ),
                                       new IconButton(icon:
                                       new Icon(Icons.chevron_right),
@@ -219,7 +232,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
   }
 
   @override void dispose() {
-    _storageService.dispose();
+    widget.storageService.dispose();
     widget.notificationService.removeListenerForSelectNotificationStream(this);
     super.dispose();
   }
@@ -229,14 +242,17 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
     if (payload != null) {
       UserBirthday? birthday = Utils.getUserBirthdayFromPayload(payload);
       if (birthday != null) {
-        List<UserBirthday> birthdays = await _storageService.getBirthdaysForDate(birthday.birthdayDate, true);
+        List<UserBirthday> birthdays = await widget.storageService.getBirthdaysForDate(birthday.birthdayDate, true);
         Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => BirthdaysForCalendarDayWidget(
                   key: Key(birthday.birthdayDate.toString()),
                   dateOfDay: birthday.birthdayDate,
-                  birthdays: birthdays),
+                  birthdays: birthdays,
+                  dateService: widget.dateService,
+                  storageService: widget.storageService,
+                  notificationService: widget.notificationService),
             ));
       }
     }
