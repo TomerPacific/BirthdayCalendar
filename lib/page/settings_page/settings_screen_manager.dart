@@ -44,10 +44,4 @@ class SettingsScreenManager extends ChangeNotifier {
   void setOnClearBirthdaysFlag(bool state) {
     _didClearNotifications = state;
   }
-
-  void handleThemeModeSettingChange(bool isDarkModeEnabled) {
-    _themeMode = _themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
-    _storageService.saveThemeModeSetting(isDarkModeEnabled);
-    notifyListeners();
-  }
 }
