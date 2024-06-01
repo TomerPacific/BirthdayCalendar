@@ -1,13 +1,12 @@
+import 'package:birthday_calendar/ClearNotificationsBloc/ClearNotificationsBloc.dart';
 import 'package:birthday_calendar/ContactsPermissionStatusBloc/ContactsPermissionStatusBloc.dart';
 import 'package:birthday_calendar/ThemeBloc/ThemeBloc.dart';
 import 'package:birthday_calendar/constants.dart';
 import 'package:birthday_calendar/service/contacts_service/contacts_service.dart';
 import 'package:birthday_calendar/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:birthday_calendar/page/settings_page/settings_screen_manager.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -24,16 +23,7 @@ class SettingsScreen extends StatelessWidget {
               appBar: AppBar(
                 title: new Text("Settings"),
               ),
-              body:
-                  PopScope(
-                    onPopInvoked: (bool didPop) {
-                      if (didPop) {
-                        return;
-                      }
-
-                      Navigator.pop(context, Provider.of<SettingsScreenManager>(context, listen: false).didClearNotifications);
-                    },
-                    child: Column(
+              body: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                               SwitchListTile(
@@ -70,14 +60,14 @@ class SettingsScreen extends StatelessWidget {
                               }
                           ),
                       ListTile(
-                          title: const Text("Clear Notifications"),
-                          leading: const Icon(
-                              Icons.clear,
-                              color: Colors.redAccent),
-                          onTap: () {
-                            _showClearBirthdaysConfirmationDialog(context);
-                          }
-                        ),
+                              title: const Text("Clear Notifications"),
+                              leading: const Icon(
+                                  Icons.clear,
+                                  color: Colors.redAccent),
+                              onTap: () {
+                                _showClearBirthdaysConfirmationDialog(context);
+                              }
+                          ),
                         Spacer(),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
@@ -92,7 +82,6 @@ class SettingsScreen extends StatelessWidget {
                         )
                       ],
                     ),
-                  )
       );
   }
 
@@ -109,7 +98,7 @@ class SettingsScreen extends StatelessWidget {
         ),
         TextButton(
           onPressed: () {
-            Provider.of<SettingsScreenManager>(context, listen: false).onClearBirthdaysPressed();
+            BlocProvider.of<ClearNotificationsBloc>(context).add(ClearNotificationsEvent.ClearedNotifications);
             Navigator.pop(context);
           },
           child: const Text("Yes"),
