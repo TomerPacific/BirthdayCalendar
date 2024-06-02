@@ -1,6 +1,6 @@
+
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
-import 'package:birthday_calendar/service/service_locator.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -13,13 +13,18 @@ enum ElementType {
 
 class BirthdayManager extends ChangeNotifier {
   
-  StorageService _storageService = getIt<StorageService>();
-  NotificationService _notificationService = getIt<NotificationService>();
+  late StorageService _storageService;
+  late NotificationService _notificationService;
   UserBirthday _userBirthday = new UserBirthday("", DateTime.now(), false, "");
 
   UserBirthday get userBirthday => _userBirthday;
 
-  BirthdayManager(UserBirthday birthday) {
+  BirthdayManager(
+      UserBirthday birthday,
+      StorageService storageService,
+      NotificationService notificationService) {
+    _storageService = storageService;
+    _notificationService = notificationService;
     _userBirthday = birthday;
   }
 
