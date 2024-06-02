@@ -1,5 +1,6 @@
 import 'package:birthday_calendar/ContactsPermissionStatusBloc/ContactsPermissionStatusBloc.dart';
 import 'package:birthday_calendar/ThemeBloc/ThemeBloc.dart';
+import 'package:birthday_calendar/VersionBloc/VersionBloc.dart';
 import 'package:birthday_calendar/service/contacts_service/contacts_service.dart';
 import 'package:birthday_calendar/service/contacts_service/contacts_service_impl.dart';
 import 'package:birthday_calendar/service/date_service/date_service_impl.dart';
@@ -54,7 +55,8 @@ class MyApp extends StatelessWidget {
       return MultiBlocProvider(
         providers: [
           BlocProvider(create: (context) => ThemeBloc()),
-          BlocProvider(create: (context) => ContactsPermissionStatusBloc(contactsService))
+          BlocProvider(create: (context) => ContactsPermissionStatusBloc(contactsService)),
+          BlocProvider(create: (context) => VersionBloc())
         ],
         child: BlocBuilder<ThemeBloc, ThemeMode>(
           builder: (context, state) {
