@@ -1,4 +1,6 @@
 import 'package:birthday_calendar/page/birthday/birthday_manager.dart';
+import 'package:birthday_calendar/service/notification_service/notification_service.dart';
+import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:provider/provider.dart';
@@ -7,19 +9,23 @@ class BirthdayWidget extends StatelessWidget {
   final UserBirthday birthdayOfPerson;
   final VoidCallback onDeletePressedCallback;
   final int indexOfBirthday;
+  final NotificationService notificationService;
+  final StorageService storageService;
 
   BirthdayWidget(
       {required Key key ,
       required this.birthdayOfPerson,
       required this.onDeletePressedCallback,
-      required this.indexOfBirthday})
+      required this.indexOfBirthday,
+      required this.notificationService,
+      required this.storageService})
       : super(key: key);
 
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create:  (context) => BirthdayManager(birthdayOfPerson),
+        create:  (context) => BirthdayManager(birthdayOfPerson, storageService, notificationService),
         builder: (context, provider) {
           return Container(
             height: 40,
