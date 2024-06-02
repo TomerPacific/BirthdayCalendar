@@ -1,15 +1,24 @@
 
+import 'package:birthday_calendar/service/date_service/date_service.dart';
+import 'package:birthday_calendar/service/notification_service/notification_service.dart';
+import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:birthday_calendar/page/birthdays_for_calendar_day_page/birthdays_for_calendar_day.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
-import 'package:birthday_calendar/service/storage_service/storage_service.dart';
-import 'package:birthday_calendar/service/service_locator.dart';
 
 class CalendarDayWidget extends StatefulWidget {
   final DateTime date;
+  final StorageService storageService;
+  final DateService dateService;
+  final NotificationService notificationService;
 
-  const CalendarDayWidget({required Key key, required this.date}) : super(key: key);
+  const CalendarDayWidget({
+    required Key key,
+    required this.date,
+    required this.storageService,
+    required this.dateService,
+    required this.notificationService}) : super(key: key);
 
   @override
   _CalendarDayState createState() => _CalendarDayState();
@@ -17,13 +26,12 @@ class CalendarDayWidget extends StatefulWidget {
 
 class _CalendarDayState extends State<CalendarDayWidget> {
   List<UserBirthday> _birthdays = [];
-  StorageService _storageService = getIt<StorageService>();
   late StreamSubscription<List<UserBirthday>> _streamSubscription;
 
   @override
   void initState() {
     _fetchBirthdaysFromStorage();
-    Stream<List<UserBirthday>> stream = _storageService.getBirthdaysStream();
+    Stream<List<UserBirthday>> stream = widget.storageService.getBirthdaysStream();
     _streamSubscription = stream.listen(_handleEventFromStorageService);
     super.initState();
   }
@@ -55,7 +63,7 @@ class _CalendarDayState extends State<CalendarDayWidget> {
   }
 
   void _fetchBirthdaysFromStorage() async {
-    List<UserBirthday> storedBirthdays = await _storageService.getBirthdaysForDate(widget.date, true);
+    List<UserBirthday> storedBirthdays = await widget.storageService.getBirthdaysForDate(widget.date, true);
     setState(() {
       _birthdays = storedBirthdays;
     });
@@ -79,7 +87,10 @@ class _CalendarDayState extends State<CalendarDayWidget> {
                 builder: (context) => BirthdaysForCalendarDayWidget(
                   key: Key(widget.date.toString()),
                   dateOfDay: widget.date,
-                  birthdays: _birthdays),
+                  birthdays: _birthdays,
+                  dateService: widget.dateService,
+                  storageService: widget.storageService,
+                  notificationService: widget.notificationService),
               )).then((value) => _fetchBirthdaysFromStorage());
         },
         child: FittedBox(
