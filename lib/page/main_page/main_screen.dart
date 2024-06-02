@@ -1,5 +1,6 @@
 import 'package:birthday_calendar/ClearNotificationsBloc/ClearNotificationsBloc.dart';
 import 'package:birthday_calendar/ContactsPermissionStatusBloc/ContactsPermissionStatusBloc.dart';
+import 'package:birthday_calendar/VersionBloc/VersionBloc.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/page/birthdays_for_calendar_day_page/birthdays_for_calendar_day.dart';
 import 'package:birthday_calendar/page/main_page/main_screen_manager.dart';
@@ -125,6 +126,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
     _mainScreenManager.makeVersionAdjustments();
     _updateService.checkForInAppUpdate(_onUpdateSuccess, _onUpdateFailure);
     BlocProvider.of<ContactsPermissionStatusBloc>(context).add(ContactsPermissionStatusEvent.PermissionUnknown);
+    BlocProvider.of<VersionBloc>(context).add(VersionEvent.versionUnknown);
     super.initState();
   }
 
