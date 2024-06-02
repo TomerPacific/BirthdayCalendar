@@ -1,6 +1,7 @@
 import 'package:birthday_calendar/ClearNotificationsBloc/ClearNotificationsBloc.dart';
 import 'package:birthday_calendar/ContactsPermissionStatusBloc/ContactsPermissionStatusBloc.dart';
 import 'package:birthday_calendar/ThemeBloc/ThemeBloc.dart';
+import 'package:birthday_calendar/VersionBloc/VersionBloc.dart';
 import 'package:birthday_calendar/constants.dart';
 import 'package:birthday_calendar/service/contacts_service/contacts_service.dart';
 import 'package:birthday_calendar/utils.dart';
@@ -12,7 +13,7 @@ import 'package:flutter_contacts/flutter_contacts.dart';
 class SettingsScreen extends StatelessWidget {
 
   SettingsScreen({
-    required this.contactsService
+    required this.contactsService,
   });
 
   final ContactsService contactsService;
@@ -74,8 +75,12 @@ class SettingsScreen extends StatelessWidget {
                           children: [
                                 Align(
                                       alignment: Alignment.bottomRight,
-                                      child: Text(
-                                          "v "
+                                      child: BlocBuilder<VersionBloc, String>(
+                                        builder: (context, state) {
+                                         return  Text(
+                                             "v ${state}"
+                                         );
+                                        }
                                       )
                                   )
                           ],
