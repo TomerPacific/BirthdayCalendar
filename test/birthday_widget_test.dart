@@ -1,4 +1,10 @@
 import 'package:birthday_calendar/model/user_birthday.dart';
+import 'package:birthday_calendar/service/date_service/date_service.dart';
+import 'package:birthday_calendar/service/date_service/date_service_impl.dart';
+import 'package:birthday_calendar/service/notification_service/notification_service.dart';
+import 'package:birthday_calendar/service/notification_service/notification_service_impl.dart';
+import 'package:birthday_calendar/service/storage_service/shared_preferences_storage.dart';
+import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:birthday_calendar/page/birthday/birthday.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +17,9 @@ void print(String s) => printLog.add(s);
 void main() {
 
   setupServiceLocator();
-
+  DateService dateService = DateServiceImpl();
+  StorageService storageService = StorageServiceSharedPreferences(dateService: dateService);
+  NotificationService notificationService = NotificationServiceImpl();
 
   setUp(() {
     return Future(() async {
@@ -33,7 +41,9 @@ void main() {
                     key: Key("123"),
                     birthdayOfPerson: userBirthday,
                     onDeletePressedCallback: () {},
-                    indexOfBirthday: 1)
+                    indexOfBirthday: 1,
+                    storageService: storageService,
+                    notificationService: notificationService)
               )
             )
         )
@@ -59,7 +69,9 @@ void main() {
                         onDeletePressedCallback: () {
                           print("Deleted");
                         },
-                        indexOfBirthday: 1)
+                        indexOfBirthday: 1,
+                        storageService: storageService,
+                        notificationService: notificationService)
                 )
             )
         )
@@ -88,7 +100,9 @@ void main() {
                         key: Key("123"),
                         birthdayOfPerson: userBirthday,
                         onDeletePressedCallback: () {},
-                        indexOfBirthday: 1)
+                        indexOfBirthday: 1,
+                        storageService: storageService,
+                        notificationService: notificationService)
                 )
             )
         )
