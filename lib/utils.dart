@@ -41,4 +41,13 @@ class Utils {
         ));
   }
 
+  static int correctMonthOverflow(int month) {
+    if (month == 0) {
+      month = 12;
+    } else if (month == 13) {
+      month = 1;
+    }
+    return month;
+  }
+
 }
