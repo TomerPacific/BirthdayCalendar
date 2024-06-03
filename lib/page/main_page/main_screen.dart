@@ -3,7 +3,6 @@ import 'package:birthday_calendar/ContactsPermissionStatusBloc/ContactsPermissio
 import 'package:birthday_calendar/VersionBloc/VersionBloc.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/page/birthdays_for_calendar_day_page/birthdays_for_calendar_day.dart';
-import 'package:birthday_calendar/page/main_page/main_screen_manager.dart';
 import 'package:birthday_calendar/service/contacts_service/contacts_service.dart';
 import 'package:birthday_calendar/service/date_service/date_service.dart';
 import 'package:birthday_calendar/service/notification_service/notificationCallbacks.dart';
@@ -49,12 +48,11 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
   NotificationService notificationService;
   UpdateService _updateService = getIt<UpdateService>();
   late VersionSpecificService versionSpecificService;
-  late MainScreenManager _mainScreenManager;
 
   void _calculateNextMonthToShow(AxisDirection direction) {
     setState(() {
       monthToPresent = direction == AxisDirection.left ? monthToPresent + 1 : monthToPresent - 1;
-      monthToPresent = _mainScreenManager.correctMonthOverflow(monthToPresent);
+      monthToPresent = Utils.correctMonthOverflow(monthToPresent);
       month = widget.dateService.convertMonthToWord(monthToPresent);
     });
   }
@@ -118,12 +116,10 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
     versionSpecificService = new VersionSpecificServiceImpl(
         storageService: storageService,
         notificationService: notificationService);
-    _mainScreenManager = MainScreenManager(storageService, versionSpecificService);
     monthToPresent = widget.currentMonth;
     month = widget.dateService.convertMonthToWord(monthToPresent);
     widget.notificationService.init();
     widget.notificationService.addListenerForSelectNotificationStream(this);
-    _mainScreenManager.makeVersionAdjustments();
     _updateService.checkForInAppUpdate(_onUpdateSuccess, _onUpdateFailure);
     BlocProvider.of<ContactsPermissionStatusBloc>(context).add(ContactsPermissionStatusEvent.PermissionUnknown);
     BlocProvider.of<VersionBloc>(context).add(VersionEvent.versionUnknown);
