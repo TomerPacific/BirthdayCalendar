@@ -14,13 +14,22 @@ class VersionSpecificServiceImpl extends VersionSpecificService {
   VersionSpecificServiceImpl({
     required this.storageService,
     required this.notificationService
-  });
+  }) {
+    migrateNotificationStatus();
+  }
 
   final StorageService storageService;
   final NotificationService notificationService;
 
+
   @override
   void migrateNotificationStatus() async {
+
+    bool didAlreadyMigrateNotificationStatus = await storageService.getAlreadyMigrateNotificationStatus();
+    if (didAlreadyMigrateNotificationStatus) {
+      return;
+    }
+
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     if (_isVersionGreaterThan(packageInfo.version, versionToMigrateNotificationStatusFrom)) {
       List<PendingNotificationRequest> pendingNotifications = await notificationService.getAllScheduledNotifications();
