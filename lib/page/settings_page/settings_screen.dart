@@ -78,7 +78,7 @@ class SettingsScreen extends StatelessWidget {
                                       child: BlocBuilder<VersionBloc, String>(
                                         builder: (context, state) {
                                          return  Text(
-                                             "v ${state}"
+                                             "v $state"
                                          );
                                         }
                                       )
