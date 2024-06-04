@@ -6,11 +6,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
-import 'package:birthday_calendar/service/service_locator.dart';
 
 void main() {
 
-  setupServiceLocator();
   DateService dateService = DateServiceImpl();
   StorageService _storageService = StorageServiceSharedPreferences(dateService: dateService);
 

@@ -9,14 +9,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:birthday_calendar/page/birthday/birthday.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:birthday_calendar/service/service_locator.dart';
 
 var printLog = [];
 void print(String s) => printLog.add(s);
 
 void main() {
 
-  setupServiceLocator();
   DateService dateService = DateServiceImpl();
   StorageService storageService = StorageServiceSharedPreferences(dateService: dateService);
   NotificationService notificationService = NotificationServiceImpl();

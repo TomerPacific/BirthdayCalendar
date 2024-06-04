@@ -1,16 +1,10 @@
 import 'package:birthday_calendar/service/date_service/date_service_impl.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:birthday_calendar/service/service_locator.dart';
 import 'package:birthday_calendar/service/date_service/date_service.dart';
 
 void main() {
 
-  setupServiceLocator();
   DateService dateService = DateServiceImpl();
-
-  setUpAll(() {
-    getIt.allowReassignment = true;
-  });
 
   test("DateService convert month number 8 to August", () {
     final int monthNumber = 8;
