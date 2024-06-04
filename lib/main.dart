@@ -8,7 +8,6 @@ import 'package:birthday_calendar/service/notification_service/notification_serv
 import 'package:birthday_calendar/service/notification_service/notification_service_impl.dart';
 import 'package:birthday_calendar/service/permission_service/permissions_service.dart';
 import 'package:birthday_calendar/service/permission_service/permissions_service_impl.dart';
-import 'package:birthday_calendar/service/service_locator.dart';
 import 'package:birthday_calendar/service/storage_service/shared_preferences_storage.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +18,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  setupServiceLocator();
+
   DateService dateService = DateServiceImpl();
   NotificationService notificationService = NotificationServiceImpl();
   PermissionsService permissionsService = PermissionsServiceImpl();
