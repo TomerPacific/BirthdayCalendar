@@ -9,13 +9,13 @@ import 'package:birthday_calendar/service/notification_service/notificationCallb
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:birthday_calendar/service/update_service/update_service.dart';
+import 'package:birthday_calendar/service/update_service/update_service_impl.dart';
 import 'package:birthday_calendar/service/version_specific_service/VersionSpecificService.dart';
 import 'package:birthday_calendar/service/version_specific_service/VersionSpecificServiceImpl.dart';
 import 'package:birthday_calendar/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/page/settings_page/settings_screen.dart';
 import 'package:birthday_calendar/widget/calendar.dart';
-import 'package:birthday_calendar/service/service_locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MainPage extends StatefulWidget {
@@ -46,7 +46,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
   String month = "";
   StorageService storageService;
   NotificationService notificationService;
-  UpdateService _updateService = getIt<UpdateService>();
+  UpdateService _updateService = UpdateServiceImpl();
   late VersionSpecificService versionSpecificService;
 
   void _calculateNextMonthToShow(AxisDirection direction) {
