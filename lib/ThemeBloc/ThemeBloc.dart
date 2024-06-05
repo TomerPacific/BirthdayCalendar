@@ -8,7 +8,7 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeMode> {
 
   ThemeBloc() : super(ThemeMode.light) {
     on<ThemeEvent>((event, emit) {
-      emit(event.name == 'toggleDark' ? ThemeMode.dark : ThemeMode.light);
+      emit(event == ThemeEvent.toggleDark ? ThemeMode.dark : ThemeMode.light);
     });
   }
 }
