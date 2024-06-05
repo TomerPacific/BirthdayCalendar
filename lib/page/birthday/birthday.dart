@@ -13,7 +13,7 @@ class BirthdayWidget extends StatelessWidget {
   final StorageService storageService;
 
   BirthdayWidget(
-      {required Key key ,
+      {required Key key,
       required this.birthdayOfPerson,
       required this.onDeletePressedCallback,
       required this.indexOfBirthday,
@@ -21,52 +21,71 @@ class BirthdayWidget extends StatelessWidget {
       required this.storageService})
       : super(key: key);
 
-
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create:  (context) => BirthdayManager(birthdayOfPerson, storageService, notificationService),
-        builder: (context, provider) {
-          return Container(
-            height: 40,
-            color: Provider.of<BirthdayManager>(context, listen: false).getColorBasedOnPosition(indexOfBirthday, ElementType.background),
-            child: Row(
-              children: [
-                new Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    birthdayOfPerson.name,
-                    textDirection: TextDirection.ltr,
-                    style: new TextStyle(fontSize: 20.0, color: Provider.of<BirthdayManager>(context, listen: false).getColorBasedOnPosition(indexOfBirthday, ElementType.text)),
-                  ),
+      create: (context) => BirthdayManager(
+          birthdayOfPerson, storageService, notificationService),
+      builder: (context, provider) {
+        return Container(
+          height: 40,
+          color: Provider.of<BirthdayManager>(context, listen: false)
+              .getColorBasedOnPosition(indexOfBirthday, ElementType.background),
+          child: Row(
+            children: [
+              new Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  birthdayOfPerson.name,
+                  textDirection: TextDirection.ltr,
+                  style: new TextStyle(
+                      fontSize: 20.0,
+                      color:
+                          Provider.of<BirthdayManager>(context, listen: false)
+                              .getColorBasedOnPosition(
+                                  indexOfBirthday, ElementType.text)),
                 ),
-                new Spacer(),
-                new Consumer<BirthdayManager>(
-                  builder: (context, data, child) =>
-                  new IconButton(
-                      icon: Icon(
-                          !data.userBirthday.hasNotification
-                              ? Icons.notifications_off_outlined
-                              : Icons.notifications_active_outlined,
-                          color:  Provider.of<BirthdayManager>(context, listen: false).getColorBasedOnPosition(indexOfBirthday, ElementType.icon)),
-                      onPressed: () {
-                        Provider.of<BirthdayManager>(context, listen: false).updateNotificationStatusForBirthday();
-                      }),
-                ),
-                if (birthdayOfPerson.phoneNumber.isNotEmpty) ...[
-                  new IconButton(
-                      icon: Icon(Icons.call, color: Provider.of<BirthdayManager>(context, listen: false).getColorBasedOnPosition(indexOfBirthday, ElementType.icon)),
-                      onPressed: () {
-                        Provider.of<BirthdayManager>(context, listen: false).handleCallButtonPressed(birthdayOfPerson.phoneNumber);
-                      })
-                ],
+              ),
+              new Spacer(),
+              new Consumer<BirthdayManager>(
+                builder: (context, data, child) => new IconButton(
+                    icon: Icon(
+                        !data.userBirthday.hasNotification
+                            ? Icons.notifications_off_outlined
+                            : Icons.notifications_active_outlined,
+                        color:
+                            Provider.of<BirthdayManager>(context, listen: false)
+                                .getColorBasedOnPosition(
+                                    indexOfBirthday, ElementType.icon)),
+                    onPressed: () {
+                      Provider.of<BirthdayManager>(context, listen: false)
+                          .updateNotificationStatusForBirthday();
+                    }),
+              ),
+              if (birthdayOfPerson.phoneNumber.isNotEmpty) ...[
                 new IconButton(
-                    icon: Icon(Icons.clear, color: Provider.of<BirthdayManager>(context, listen: false).getColorBasedOnPosition(indexOfBirthday, ElementType.icon)),
-                    onPressed: onDeletePressedCallback),
+                    icon: Icon(Icons.call,
+                        color:
+                            Provider.of<BirthdayManager>(context, listen: false)
+                                .getColorBasedOnPosition(
+                                    indexOfBirthday, ElementType.icon)),
+                    onPressed: () {
+                      Provider.of<BirthdayManager>(context, listen: false)
+                          .handleCallButtonPressed(
+                              birthdayOfPerson.phoneNumber);
+                    })
               ],
-            ),
-          );
-        },
+              new IconButton(
+                  icon: Icon(Icons.clear,
+                      color:
+                          Provider.of<BirthdayManager>(context, listen: false)
+                              .getColorBasedOnPosition(
+                                  indexOfBirthday, ElementType.icon)),
+                  onPressed: onDeletePressedCallback),
+            ],
+          ),
+        );
+      },
     );
   }
 }
