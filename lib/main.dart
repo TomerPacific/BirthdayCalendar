@@ -22,7 +22,8 @@ Future<void> main() async {
   DateService dateService = DateServiceImpl();
   NotificationService notificationService = NotificationServiceImpl();
   PermissionsService permissionsService = PermissionsServiceImpl();
-  StorageService storageService = StorageServiceSharedPreferences(dateService: dateService);
+  StorageService storageService =
+      StorageServiceSharedPreferences(dateService: dateService);
   ContactsService contactsService = ContactsServiceImpl(
       storageService: storageService,
       notificationService: notificationService,
@@ -31,18 +32,15 @@ Future<void> main() async {
       notificationService: notificationService,
       contactsService: contactsService,
       storageService: storageService,
-      dateService: dateService)
-  );
+      dateService: dateService));
 }
 
 class MyApp extends StatelessWidget {
-
-  MyApp({
-    required this.notificationService,
-    required this.contactsService,
-    required this.storageService,
-    required this.dateService
-  });
+  MyApp(
+      {required this.notificationService,
+      required this.contactsService,
+      required this.storageService,
+      required this.dateService});
 
   final NotificationService notificationService;
   final ContactsService contactsService;
@@ -51,31 +49,30 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-      return MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (context) => ThemeBloc()),
-          BlocProvider(create: (context) => ContactsPermissionStatusBloc(contactsService)),
-          BlocProvider(create: (context) => VersionBloc())
-        ],
-        child: BlocBuilder<ThemeBloc, ThemeMode>(
-          builder: (context, state) {
-            return MaterialApp(
-                title: applicationName,
-                theme: ThemeData.light(),
-                themeMode: state,
-                darkTheme: ThemeData.dark(),
-                home: MainPage(
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => ThemeBloc()),
+        BlocProvider(
+            create: (context) => ContactsPermissionStatusBloc(contactsService)),
+        BlocProvider(create: (context) => VersionBloc())
+      ],
+      child: BlocBuilder<ThemeBloc, ThemeMode>(
+        builder: (context, state) {
+          return MaterialApp(
+              title: applicationName,
+              theme: ThemeData.light(),
+              themeMode: state,
+              darkTheme: ThemeData.dark(),
+              home: MainPage(
                   key: Key("BirthdayCalendar"),
                   notificationService: notificationService,
                   contactsService: contactsService,
                   storageService: storageService,
                   dateService: dateService,
                   title: applicationName,
-                  currentMonth: dateService.getCurrentMonthNumber()
-                )
-              );
-          },
-        ),
-      );
-      }
-    }
+                  currentMonth: dateService.getCurrentMonthNumber()));
+        },
+      ),
+    );
+  }
+}
