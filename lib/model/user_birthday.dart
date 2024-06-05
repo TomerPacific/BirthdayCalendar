@@ -6,7 +6,8 @@ class UserBirthday {
   bool hasNotification;
   final String phoneNumber;
 
-  UserBirthday(this.name, this.birthdayDate, this.hasNotification, this.phoneNumber);
+  UserBirthday(
+      this.name, this.birthdayDate, this.hasNotification, this.phoneNumber);
 
   void updateNotificationStatus(bool status) {
     this.hasNotification = status;
@@ -19,7 +20,8 @@ class UserBirthday {
 
   UserBirthday.fromJson(Map<String, dynamic> json)
       : name = json[userBirthdayNameKey],
-        birthdayDate = DateTime.tryParse(json[userBirthdayDateKey]) ?? DateTime.now(),
+        birthdayDate =
+            DateTime.tryParse(json[userBirthdayDateKey]) ?? DateTime.now(),
         hasNotification = json[userBirthdayHasNotificationKey],
         phoneNumber = json[userBirthdayPhoneNumberKey];
 
