@@ -21,6 +21,15 @@ class BirthdayWidget extends StatelessWidget {
       required this.storageService})
       : super(key: key);
 
+
+  Color _getColorBasedOnPosition(int index, ElementType type) {
+    if (type == ElementType.background) {
+      return index % 2 == 0 ? Colors.indigoAccent : Colors.white24;
+    }
+
+    return index % 2 == 0 ? Colors.white : Colors.black;
+  }
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -29,8 +38,7 @@ class BirthdayWidget extends StatelessWidget {
       builder: (context, provider) {
         return Container(
           height: 40,
-          color: Provider.of<BirthdayManager>(context, listen: false)
-              .getColorBasedOnPosition(indexOfBirthday, ElementType.background),
+          color: _getColorBasedOnPosition(indexOfBirthday, ElementType.background),
           child: Row(
             children: [
               new Padding(
@@ -40,10 +48,7 @@ class BirthdayWidget extends StatelessWidget {
                   textDirection: TextDirection.ltr,
                   style: new TextStyle(
                       fontSize: 20.0,
-                      color:
-                          Provider.of<BirthdayManager>(context, listen: false)
-                              .getColorBasedOnPosition(
-                                  indexOfBirthday, ElementType.text)),
+                      color: _getColorBasedOnPosition(indexOfBirthday, ElementType.text)),
                 ),
               ),
               new Spacer(),
@@ -53,10 +58,7 @@ class BirthdayWidget extends StatelessWidget {
                         !data.userBirthday.hasNotification
                             ? Icons.notifications_off_outlined
                             : Icons.notifications_active_outlined,
-                        color:
-                            Provider.of<BirthdayManager>(context, listen: false)
-                                .getColorBasedOnPosition(
-                                    indexOfBirthday, ElementType.icon)),
+                        color: _getColorBasedOnPosition(indexOfBirthday, ElementType.icon)),
                     onPressed: () {
                       Provider.of<BirthdayManager>(context, listen: false)
                           .updateNotificationStatusForBirthday();
@@ -65,10 +67,7 @@ class BirthdayWidget extends StatelessWidget {
               if (birthdayOfPerson.phoneNumber.isNotEmpty) ...[
                 new IconButton(
                     icon: Icon(Icons.call,
-                        color:
-                            Provider.of<BirthdayManager>(context, listen: false)
-                                .getColorBasedOnPosition(
-                                    indexOfBirthday, ElementType.icon)),
+                        color: _getColorBasedOnPosition(indexOfBirthday, ElementType.icon)),
                     onPressed: () {
                       Provider.of<BirthdayManager>(context, listen: false)
                           .handleCallButtonPressed(
@@ -77,10 +76,7 @@ class BirthdayWidget extends StatelessWidget {
               ],
               new IconButton(
                   icon: Icon(Icons.clear,
-                      color:
-                          Provider.of<BirthdayManager>(context, listen: false)
-                              .getColorBasedOnPosition(
-                                  indexOfBirthday, ElementType.icon)),
+                      color: _getColorBasedOnPosition(indexOfBirthday, ElementType.icon)),
                   onPressed: onDeletePressedCallback),
             ],
           ),

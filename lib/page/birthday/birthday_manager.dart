@@ -20,14 +20,6 @@ class BirthdayManager extends ChangeNotifier {
     _userBirthday = birthday;
   }
 
-  Color getColorBasedOnPosition(int index, ElementType type) {
-    if (type == ElementType.background) {
-      return index % 2 == 0 ? Colors.indigoAccent : Colors.white24;
-    }
-
-    return index % 2 == 0 ? Colors.white : Colors.black;
-  }
-
   void handleCallButtonPressed(String phoneNumber) async {
     Uri phoneUri = Uri.parse('tel:$phoneNumber');
     if (await canLaunchUrl(phoneUri)) {
