@@ -4,6 +4,7 @@ import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class BirthdayWidget extends StatelessWidget {
   final UserBirthday birthdayOfPerson;
@@ -28,6 +29,15 @@ class BirthdayWidget extends StatelessWidget {
     }
 
     return index % 2 == 0 ? Colors.white : Colors.black;
+  }
+
+  void _handleCallButtonPressed(String phoneNumber) async {
+    Uri phoneUri = Uri.parse('tel:$phoneNumber');
+    if (await canLaunchUrl(phoneUri)) {
+      launchUrl(phoneUri);
+    } else {
+      
+    }
   }
 
   @override
@@ -69,9 +79,7 @@ class BirthdayWidget extends StatelessWidget {
                     icon: Icon(Icons.call,
                         color: _getColorBasedOnPosition(indexOfBirthday, ElementType.icon)),
                     onPressed: () {
-                      Provider.of<BirthdayManager>(context, listen: false)
-                          .handleCallButtonPressed(
-                              birthdayOfPerson.phoneNumber);
+                      _handleCallButtonPressed(birthdayOfPerson.phoneNumber);
                     })
               ],
               new IconButton(

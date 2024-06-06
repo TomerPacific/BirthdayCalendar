@@ -20,15 +20,6 @@ class BirthdayManager extends ChangeNotifier {
     _userBirthday = birthday;
   }
 
-  void handleCallButtonPressed(String phoneNumber) async {
-    Uri phoneUri = Uri.parse('tel:$phoneNumber');
-    if (await canLaunchUrl(phoneUri)) {
-      launchUrl(phoneUri);
-    } else {
-      print("Cannot call $phoneUri");
-    }
-  }
-
   void updateNotificationStatusForBirthday() {
     bool isNotificationEnabledForPerson = _userBirthday.hasNotification;
     isNotificationEnabledForPerson = !isNotificationEnabledForPerson;
