@@ -80,7 +80,6 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                     ),
                     ignoreBlank: false,
                     autoValidateMode: AutovalidateMode.disabled,
-                    selectorTextStyle: TextStyle(color: Colors.black),
                     initialValue: _phoneNumber,
                     textFieldController: _phoneNumberController,
                     formatInput: false,

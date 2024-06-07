@@ -146,7 +146,6 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
                         IconButton(
                           icon: Icon(
                             Icons.settings,
-                            color: Colors.white,
                           ),
                           onPressed: () {
                             Navigator.push(
