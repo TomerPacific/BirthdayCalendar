@@ -1,6 +1,8 @@
+import 'package:birthday_calendar/BirthdayBloc/BirthdaysBloc.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:collection/collection.dart';
 import 'package:birthday_calendar/constants.dart';
@@ -104,7 +106,14 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                   widget.dateOfDay,
                   true,
                   _phoneNumber.parseNumber());
-              Navigator.pop(context, userBirthday);
+              BlocProvider.of<BirthdaysBloc>(context).add(
+                  new BirthdaysEvent(
+                      eventName: BirthdayEvent.AddBirthday,
+                      birthdays: birthdaysForDate,
+                      birthday: userBirthday,
+                      shouldShowAddBirthdayDialog: false)
+              );
+              Navigator.pop(context);
             } else {
               if (_birthdayNameKey.currentState != null && !_birthdayNameKey.currentState!.isValid) {
                 _birthdayPersonController.clear();
