@@ -1,10 +1,14 @@
+import 'package:birthday_calendar/BirthdayBloc/BirthdaysBloc.dart';
+import 'package:birthday_calendar/BirthdayBloc/BirthdaysState.dart';
 import 'package:birthday_calendar/page/birthdays_for_calendar_day_page/birthdays_for_calendar_day_manager.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
+import 'package:birthday_calendar/widget/add_birthday_form.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/page/birthday/birthday.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/service/date_service/date_service.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 class BirthdaysForCalendarDayWidget extends StatelessWidget {
@@ -25,51 +29,71 @@ class BirthdaysForCalendarDayWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => BirthdaysForCalendarDayManager(
-          this.birthdays, this.dateOfDay, notificationService, storageService),
-      builder: (context, provider) {
-        return Scaffold(
-          appBar: AppBar(
-              title: FittedBox(
-                  fit: BoxFit.fitWidth,
-                  child: Text(
-                      "Birthdays for ${dateService.convertMonthToWord(this.dateOfDay.month)} ${this.dateOfDay.day}"))),
-          body: Center(
-              child: Column(
-            children: [
-              Consumer<BirthdaysForCalendarDayManager>(
-                builder: (context, data, child) => Expanded(
-                  child: ListView.builder(
-                    itemCount: data.birthdays.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return BirthdayWidget(
-                          key: Key(data.birthdays[index].name),
-                          birthdayOfPerson: data.birthdays[index],
-                          onDeletePressedCallback: () {
-                            Provider.of<BirthdaysForCalendarDayManager>(context,
-                                    listen: false)
-                                .removeBirthdayFromList(data.birthdays[index]);
+    return BlocProvider(
+        create: (context) => BirthdaysBloc(notificationService, storageService),
+        child: BlocBuilder<BirthdaysBloc, BirthdaysState>(
+            builder: (context, state) {
+          return Scaffold(
+            appBar: AppBar(
+                title: FittedBox(
+                    fit: BoxFit.fitWidth,
+                    child: Text(
+                        "Birthdays for ${dateService.convertMonthToWord(this.dateOfDay.month)} ${this.dateOfDay.day}"))),
+            body: Center(
+                child: Column(
+              children: [
+                (state.birthdays == null || state.birthdays!.length == 0)
+                    ? Spacer()
+                    : Expanded(
+                        child: ListView.builder(
+                          itemCount: state.birthdays != null
+                              ? state.birthdays!.length
+                              : 0,
+                          itemBuilder: (BuildContext context, int index) {
+                            return BirthdayWidget(
+                                key: Key(state.birthdays![index].name),
+                                birthdayOfPerson: state.birthdays![index],
+                                onDeletePressedCallback: () {
+                                  Provider.of<BirthdaysForCalendarDayManager>(
+                                          context,
+                                          listen: false)
+                                      .removeBirthdayFromList(
+                                          state.birthdays![index]);
+                                },
+                                indexOfBirthday: index,
+                                storageService: storageService,
+                                notificationService: notificationService);
                           },
-                          indexOfBirthday: index,
-                          storageService: storageService,
-                          notificationService: notificationService);
+                        ),
+                      ),
+                BlocListener<BirthdaysBloc, BirthdaysState>(
+                    listener: (context, state) {
+                        if (state.showAddBirthdayDialog) {
+                          showDialog(
+                              context: context,
+                              builder: (_) =>
+                              BlocProvider.value(
+                                  value: BlocProvider.of<BirthdaysBloc>(context),
+                                  child: AddBirthdayForm(
+                                  dateOfDay: dateOfDay,
+                                  storageService: storageService)
+                            )
+                          );
+                        }
                     },
-                  ),
-                ),
-              )
-            ],
-          )),
-          floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                Provider.of<BirthdaysForCalendarDayManager>(context,
-                        listen: false)
-                    .handleAddBirthdayBtnPressed(
-                        context, dateOfDay, storageService);
-              },
-              child: Icon(Icons.add)),
-        );
-      },
-    );
+                  child: Spacer(),
+                )
+              ],
+            )),
+            floatingActionButton: FloatingActionButton(
+                onPressed: () {
+                  BlocProvider.of<BirthdaysBloc>(context).add(BirthdaysEvent(
+                      eventName: BirthdayEvent.ShowAddBirthdayDialog,
+                      shouldShowAddBirthdayDialog: true,
+                      birthdays: birthdays));
+                },
+                child: Icon(Icons.add)),
+          );
+        }));
   }
 }
