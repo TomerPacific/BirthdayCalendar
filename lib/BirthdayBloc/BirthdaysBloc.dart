@@ -23,10 +23,13 @@ class BirthdaysEvent {
 }
 
 class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
-  BirthdaysBloc(NotificationService notificationService, StorageService storageService)
+  BirthdaysBloc(
+      NotificationService notificationService,
+      StorageService storageService,
+      List<UserBirthday> birthdaysForDate)
       : super(BirthdaysState(
             date: DateTime.now(),
-            birthdays: [],
+            birthdays: birthdaysForDate,
             showAddBirthdayDialog: false)) {
     on<BirthdaysEvent>((event, emit) async {
       switch(event.eventName) {
