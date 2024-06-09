@@ -1,6 +1,5 @@
 import 'package:birthday_calendar/BirthdayBloc/BirthdaysBloc.dart';
 import 'package:birthday_calendar/BirthdayBloc/BirthdaysState.dart';
-import 'package:birthday_calendar/page/birthdays_for_calendar_day_page/birthdays_for_calendar_day_manager.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:birthday_calendar/widget/add_birthday_form.dart';
@@ -9,7 +8,6 @@ import 'package:birthday_calendar/page/birthday/birthday.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/service/date_service/date_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 
 class BirthdaysForCalendarDayWidget extends StatelessWidget {
   final DateTime dateOfDay;
@@ -54,11 +52,11 @@ class BirthdaysForCalendarDayWidget extends StatelessWidget {
                                 key: Key(state.birthdays![index].name),
                                 birthdayOfPerson: state.birthdays![index],
                                 onDeletePressedCallback: () {
-                                  Provider.of<BirthdaysForCalendarDayManager>(
-                                          context,
-                                          listen: false)
-                                      .removeBirthdayFromList(
-                                          state.birthdays![index]);
+                                  BlocProvider.of<BirthdaysBloc>(context).add(
+                                      new BirthdaysEvent(
+                                          eventName: BirthdayEvent.RemoveBirthday,
+                                          birthday: state.birthdays![index],
+                                          birthdays: birthdays));
                                 },
                                 indexOfBirthday: index,
                                 storageService: storageService,
