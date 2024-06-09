@@ -4,7 +4,7 @@ import 'package:birthday_calendar/service/notification_service/notification_serv
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-enum BirthdayEvent {Init, AddBirthday, RemoveBirthday, ShowAddBirthdayDialog}
+enum BirthdayEvent {AddBirthday, RemoveBirthday, ShowAddBirthdayDialog}
 
 class BirthdaysEvent {
   final BirthdayEvent eventName;
@@ -33,10 +33,6 @@ class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
             showAddBirthdayDialog: false)) {
     on<BirthdaysEvent>((event, emit) async {
       switch(event.eventName) {
-        case BirthdayEvent.Init:
-          List<UserBirthday> birthdays = await storageService.getBirthdaysForDate(event.date!, false);
-          emit(new BirthdaysState(birthdays: birthdays, showAddBirthdayDialog: false));
-          break;
         case BirthdayEvent.AddBirthday:
           List<UserBirthday> currentBirthdays = event.birthdays;
           currentBirthdays.add(event.birthday!);
