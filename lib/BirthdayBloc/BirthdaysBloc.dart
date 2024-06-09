@@ -41,6 +41,8 @@ class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
               .where((element) => element.birthdayDate == date)
               .toList();
           storageService.saveBirthdaysForDate(date!, birthdaysMatchingDate);
+          notificationService.scheduleNotificationForBirthday(
+              event.birthday!, "${event.birthday?.name} has an upcoming birthday!");
           emit(new BirthdaysState(
               date: date,
               birthdays: currentBirthdays,
