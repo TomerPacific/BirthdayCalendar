@@ -71,18 +71,25 @@ class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
       StorageService storageService,
       NotificationService notificationService) async {
     List<UserBirthday> currentBirthdays = event.birthdays;
-    DateTime? date = event.birthday?.birthdayDate;
+
+    UserBirthday? userBirthday = event.birthday;
+
+    if (userBirthday == null) {
+      return;
+    }
+
+    DateTime birthdayDate = userBirthday.birthdayDate;
     currentBirthdays.remove(event.birthday);
 
     List<UserBirthday> birthdaysForDateDeleted =
-        await storageService.getBirthdaysForDate(date!, false);
+        await storageService.getBirthdaysForDate(birthdayDate, false);
 
-    List<UserBirthday> filtered = birthdaysForDateDeleted
-        .where((element) => !element.equals(event.birthday!))
+    List<UserBirthday> filteredBirthdays = birthdaysForDateDeleted
+        .where((element) => !element.equals(userBirthday))
         .toList();
 
-    storageService.saveBirthdaysForDate(date, filtered);
+    storageService.saveBirthdaysForDate(birthdayDate, filteredBirthdays);
     emit(new BirthdaysState(
-        date: date, birthdays: currentBirthdays, showAddBirthdayDialog: false));
+        date: birthdayDate, birthdays: currentBirthdays, showAddBirthdayDialog: false));
   }
 }
