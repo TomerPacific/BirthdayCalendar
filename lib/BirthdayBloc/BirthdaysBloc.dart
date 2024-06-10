@@ -31,43 +31,13 @@ class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
             date: DateTime.now(),
             birthdays: birthdaysForDate,
             showAddBirthdayDialog: false)) {
-    on<BirthdaysEvent>((event, emit) async {
+    on<BirthdaysEvent>((event, emit) {
       switch(event.eventName) {
         case BirthdayEvent.AddBirthday:
-          List<UserBirthday> currentBirthdays = event.birthdays;
-          currentBirthdays.add(event.birthday!);
-          DateTime? date = event.birthday?.birthdayDate;
-          List<UserBirthday> birthdaysMatchingDate = currentBirthdays
-              .where((element) => element.birthdayDate == date)
-              .toList();
-          storageService.saveBirthdaysForDate(date!, birthdaysMatchingDate);
-          notificationService.scheduleNotificationForBirthday(
-              event.birthday!, "${event.birthday?.name} has an upcoming birthday!");
-          emit(new BirthdaysState(
-              date: date,
-              birthdays: currentBirthdays,
-              showAddBirthdayDialog: false)
-          );
+          _handleAddEvent(event, emit, storageService, notificationService);
           break;
         case BirthdayEvent.RemoveBirthday:
-          List<UserBirthday> currentBirthdays = event.birthdays;
-          DateTime? date = event.birthday?.birthdayDate;
-          currentBirthdays.remove(event.birthday);
-
-          List<UserBirthday> birthdaysForDateDeleted = await storageService
-              .getBirthdaysForDate(date!, false);
-
-          List<UserBirthday> filtered = birthdaysForDateDeleted
-              .where((element) => !element.equals(event.birthday!))
-              .toList();
-
-          storageService.saveBirthdaysForDate(
-              date, filtered);
-          emit(new BirthdaysState(
-              date: date,
-              birthdays: currentBirthdays,
-              showAddBirthdayDialog: false)
-          );
+          _handleRemoveEvent(event, emit, storageService, notificationService);
           break;
         case BirthdayEvent.ShowAddBirthdayDialog:
           emit(new BirthdaysState(
@@ -76,5 +46,49 @@ class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
           break;
       }
     });
+  }
+
+  void _handleAddEvent(BirthdaysEvent event,
+      Emitter emit,
+      StorageService storageService,
+      NotificationService notificationService) {
+    List<UserBirthday> currentBirthdays = event.birthdays;
+    currentBirthdays.add(event.birthday!);
+    DateTime? date = event.birthday?.birthdayDate;
+    List<UserBirthday> birthdaysMatchingDate = currentBirthdays
+        .where((element) => element.birthdayDate == date)
+        .toList();
+    storageService.saveBirthdaysForDate(date!, birthdaysMatchingDate);
+    notificationService.scheduleNotificationForBirthday(
+        event.birthday!, "${event.birthday?.name} has an upcoming birthday!");
+    emit(new BirthdaysState(
+        date: date,
+        birthdays: currentBirthdays,
+        showAddBirthdayDialog: false)
+    );
+  }
+
+  void _handleRemoveEvent(BirthdaysEvent event,
+      Emitter emit,
+      StorageService storageService,
+      NotificationService notificationService) async {
+    List<UserBirthday> currentBirthdays = event.birthdays;
+    DateTime? date = event.birthday?.birthdayDate;
+    currentBirthdays.remove(event.birthday);
+
+    List<UserBirthday> birthdaysForDateDeleted = await storageService
+        .getBirthdaysForDate(date!, false);
+
+    List<UserBirthday> filtered = birthdaysForDateDeleted
+        .where((element) => !element.equals(event.birthday!))
+        .toList();
+
+    storageService.saveBirthdaysForDate(
+        date, filtered);
+    emit(new BirthdaysState(
+        date: date,
+        birthdays: currentBirthdays,
+        showAddBirthdayDialog: false)
+    );
   }
 }
