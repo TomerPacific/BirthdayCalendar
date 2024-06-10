@@ -46,17 +46,23 @@ class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
   void _handleAddEvent(BirthdaysEvent event, Emitter emit,
       StorageService storageService, NotificationService notificationService) {
     List<UserBirthday> currentBirthdays = event.birthdays;
-    currentBirthdays.add(event.birthday!);
+    UserBirthday? userBirthday = event.birthday;
 
-    DateTime? date = event.birthday?.birthdayDate;
+    if (userBirthday == null) {
+      return;
+    }
+
+    currentBirthdays.add(userBirthday);
+
+    DateTime birthdayDate = userBirthday.birthdayDate;
     List<UserBirthday> birthdaysMatchingDate = currentBirthdays
-        .where((element) => element.birthdayDate == date)
+        .where((element) => element.birthdayDate == birthdayDate)
         .toList();
-    storageService.saveBirthdaysForDate(date!, birthdaysMatchingDate);
+    storageService.saveBirthdaysForDate(birthdayDate, birthdaysMatchingDate);
     notificationService.scheduleNotificationForBirthday(
-        event.birthday!, "${event.birthday?.name} has an upcoming birthday!");
+        userBirthday, "${userBirthday.name} has an upcoming birthday!");
     emit(new BirthdaysState(
-        date: date, birthdays: currentBirthdays, showAddBirthdayDialog: false));
+        date: birthdayDate, birthdays: currentBirthdays, showAddBirthdayDialog: false));
   }
 
   void _handleRemoveEvent(
