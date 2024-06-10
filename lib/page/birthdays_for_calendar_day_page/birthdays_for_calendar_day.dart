@@ -28,7 +28,8 @@ class BirthdaysForCalendarDayWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (context) => BirthdaysBloc(notificationService, storageService, birthdays),
+        create: (context) =>
+            BirthdaysBloc(notificationService, storageService, birthdays),
         child: BlocBuilder<BirthdaysBloc, BirthdaysState>(
             builder: (context, state) {
           return Scaffold(
@@ -54,7 +55,8 @@ class BirthdaysForCalendarDayWidget extends StatelessWidget {
                                 onDeletePressedCallback: () {
                                   BlocProvider.of<BirthdaysBloc>(context).add(
                                       new BirthdaysEvent(
-                                          eventName: BirthdayEvent.RemoveBirthday,
+                                          eventName:
+                                              BirthdayEvent.RemoveBirthday,
                                           birthday: state.birthdays![index],
                                           birthdays: birthdays));
                                 },
@@ -65,20 +67,17 @@ class BirthdaysForCalendarDayWidget extends StatelessWidget {
                         ),
                       ),
                 BlocListener<BirthdaysBloc, BirthdaysState>(
-                    listener: (context, state) {
-                        if (state.showAddBirthdayDialog) {
-                          showDialog(
-                              context: context,
-                              builder: (_) =>
-                              BlocProvider.value(
-                                  value: BlocProvider.of<BirthdaysBloc>(context),
-                                  child: AddBirthdayForm(
+                  listener: (context, state) {
+                    if (state.showAddBirthdayDialog) {
+                      showDialog(
+                          context: context,
+                          builder: (_) => BlocProvider.value(
+                              value: BlocProvider.of<BirthdaysBloc>(context),
+                              child: AddBirthdayForm(
                                   dateOfDay: dateOfDay,
-                                  storageService: storageService)
-                            )
-                          );
-                        }
-                    },
+                                  storageService: storageService)));
+                    }
+                  },
                   child: Spacer(),
                 )
               ],
