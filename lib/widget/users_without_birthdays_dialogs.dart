@@ -1,9 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/contact.dart';
 
 class UsersWithoutBirthdaysDialogs {
-
   UsersWithoutBirthdaysDialogs(this.usersWithoutBirthdays);
 
   final List<Contact> usersWithoutBirthdays;
@@ -11,7 +9,8 @@ class UsersWithoutBirthdaysDialogs {
   Future<List<Contact>> showConfirmationDialog(BuildContext context) async {
     AlertDialog alert = AlertDialog(
         title: Text("Add Birthdays To Contacts"),
-        content: Text("Would you like to add birth dates for your imported contacts?"),
+        content: Text(
+            "Would you like to add birth dates for your imported contacts?"),
         actions: [
           TextButton(
             onPressed: () {
@@ -30,9 +29,9 @@ class UsersWithoutBirthdaysDialogs {
             },
             child: const Text("Proceed"),
           ),
-        ]
-    );
-    var result = await showDialog(context: context,
+        ]);
+    var result = await showDialog(
+        context: context,
         builder: (BuildContext context) {
           return alert;
         });
@@ -41,18 +40,20 @@ class UsersWithoutBirthdaysDialogs {
   }
 
   Widget _showUsersDialog(BuildContext context) {
-    List<bool> _usersSelectedToAddBirthdaysFor = List.filled(usersWithoutBirthdays.length, false);
+    List<bool> _usersSelectedToAddBirthdaysFor =
+        List.filled(usersWithoutBirthdays.length, false);
     bool _haveAnyContactsBeenSelected = false;
 
     AlertDialog alert = AlertDialog(
         title: Text('People Without Birthdays'),
-        content: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
+        content: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
           return Container(
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
               child: ListView(
                 children: [
-                    ListView.builder(
+                  ListView.builder(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
                     itemCount: usersWithoutBirthdays.length,
@@ -64,46 +65,45 @@ class UsersWithoutBirthdaysDialogs {
                             if (value != null) {
                               setState(() {
                                 _usersSelectedToAddBirthdaysFor[index] = value;
-                                _haveAnyContactsBeenSelected = _haveUsersBeenSelected(_usersSelectedToAddBirthdaysFor);
+                                _haveAnyContactsBeenSelected =
+                                    _haveUsersBeenSelected(
+                                        _usersSelectedToAddBirthdaysFor);
                               });
                             }
-                          }
-                        );
-                      },
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        TextButton(
-                          child: Text("Cancel"),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                        ),
-                        TextButton(
-                            child: Text("Continue"),
-                            onPressed:
-                            !_haveAnyContactsBeenSelected ?
-                            null : () => _collectUsersToAddBirthdaysTo(context, _usersSelectedToAddBirthdaysFor)
-                        ),
-                      ],
-                    )
+                          });
+                    },
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      TextButton(
+                        child: Text("Cancel"),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                      TextButton(
+                          child: Text("Continue"),
+                          onPressed: !_haveAnyContactsBeenSelected
+                              ? null
+                              : () => _collectUsersToAddBirthdaysTo(
+                                  context, _usersSelectedToAddBirthdaysFor)),
+                    ],
+                  )
                 ],
-              )
-            );
-          }
-        )
-    );
+              ));
+        }));
 
     return alert;
   }
 
   bool _haveUsersBeenSelected(List<bool> usersSelectedToAddBirthdaysFor) {
-    return usersSelectedToAddBirthdaysFor.firstWhere(
-            (element) => element == true, orElse: () => false);
+    return usersSelectedToAddBirthdaysFor
+        .firstWhere((element) => element == true, orElse: () => false);
   }
 
-  void _collectUsersToAddBirthdaysTo(BuildContext context, List<bool> usersSelectedToAddBirthdaysFor) {
+  void _collectUsersToAddBirthdaysTo(
+      BuildContext context, List<bool> usersSelectedToAddBirthdaysFor) {
     List<Contact> usersToSetBirthDatesTo = [];
     usersWithoutBirthdays.asMap().forEach((index, value) {
       if (usersSelectedToAddBirthdaysFor[index]) {

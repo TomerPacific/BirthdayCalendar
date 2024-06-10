@@ -4,30 +4,32 @@ import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class UserNotificationStatusEvent {
-  UserNotificationStatusEvent({
-    required this.userBirthday,
-    required this.hasNotification
-  });
+  UserNotificationStatusEvent(
+      {required this.userBirthday, required this.hasNotification});
 
   final UserBirthday userBirthday;
   final bool hasNotification;
 }
 
-class UserNotificationStatusBloc extends Bloc<UserNotificationStatusEvent, bool> {
-  UserNotificationStatusBloc(StorageService storageService, NotificationService notificationService) : super(false) {
+class UserNotificationStatusBloc
+    extends Bloc<UserNotificationStatusEvent, bool> {
+  UserNotificationStatusBloc(
+      StorageService storageService, NotificationService notificationService)
+      : super(false) {
     on<UserNotificationStatusEvent>((event, emit) async {
-        bool notificationStatus = event.hasNotification;
-        notificationStatus = !notificationStatus;
-        UserBirthday birthday = event.userBirthday;
-        birthday.hasNotification = notificationStatus;
-        storageService.updateNotificationStatusForBirthday(birthday, notificationStatus);
-        if (!notificationStatus) {
-          notificationService.cancelNotificationForBirthday(birthday);
-        } else {
-          notificationService.scheduleNotificationForBirthday(
-              birthday, "${birthday.name} has an upcoming birthday!");
-        }
-        emit(notificationStatus);
+      bool notificationStatus = event.hasNotification;
+      notificationStatus = !notificationStatus;
+      UserBirthday birthday = event.userBirthday;
+      birthday.hasNotification = notificationStatus;
+      storageService.updateNotificationStatusForBirthday(
+          birthday, notificationStatus);
+      if (!notificationStatus) {
+        notificationService.cancelNotificationForBirthday(birthday);
+      } else {
+        notificationService.scheduleNotificationForBirthday(
+            birthday, "${birthday.name} has an upcoming birthday!");
+      }
+      emit(notificationStatus);
     });
   }
 }

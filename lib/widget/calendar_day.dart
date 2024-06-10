@@ -1,4 +1,3 @@
-
 import 'package:birthday_calendar/service/date_service/date_service.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
@@ -13,12 +12,13 @@ class CalendarDayWidget extends StatefulWidget {
   final DateService dateService;
   final NotificationService notificationService;
 
-  const CalendarDayWidget({
-    required Key key,
-    required this.date,
-    required this.storageService,
-    required this.dateService,
-    required this.notificationService}) : super(key: key);
+  const CalendarDayWidget(
+      {required Key key,
+      required this.date,
+      required this.storageService,
+      required this.dateService,
+      required this.notificationService})
+      : super(key: key);
 
   @override
   _CalendarDayState createState() => _CalendarDayState();
@@ -31,19 +31,22 @@ class _CalendarDayState extends State<CalendarDayWidget> {
   @override
   void initState() {
     _fetchBirthdaysFromStorage();
-    Stream<List<UserBirthday>> stream = widget.storageService.getBirthdaysStream();
+    Stream<List<UserBirthday>> stream =
+        widget.storageService.getBirthdaysStream();
     _streamSubscription = stream.listen(_handleEventFromStorageService);
     super.initState();
   }
 
   void _handleEventFromStorageService(List<UserBirthday> event) {
     List<UserBirthday> currentBirthdays = _birthdays;
-    for(UserBirthday birthday in event) {
+    for (UserBirthday birthday in event) {
+      DateTime firstDateWithoutYear =
+          new DateTime(birthday.birthdayDate.month, birthday.birthdayDate.day);
+      DateTime secondDateWithoutYear =
+          new DateTime(widget.date.month, widget.date.day);
 
-      DateTime firstDateWithoutYear = new DateTime(birthday.birthdayDate.month, birthday.birthdayDate.day);
-      DateTime secondDateWithoutYear = new DateTime(widget.date.month, widget.date.day);
-
-      if (firstDateWithoutYear == secondDateWithoutYear && !currentBirthdays.contains(birthday)) {
+      if (firstDateWithoutYear == secondDateWithoutYear &&
+          !currentBirthdays.contains(birthday)) {
         currentBirthdays.add(birthday);
       }
     }
@@ -53,7 +56,6 @@ class _CalendarDayState extends State<CalendarDayWidget> {
         _birthdays = currentBirthdays;
       });
     }
-
   }
 
   @override
@@ -63,7 +65,8 @@ class _CalendarDayState extends State<CalendarDayWidget> {
   }
 
   void _fetchBirthdaysFromStorage() async {
-    List<UserBirthday> storedBirthdays = await widget.storageService.getBirthdaysForDate(widget.date, true);
+    List<UserBirthday> storedBirthdays =
+        await widget.storageService.getBirthdaysForDate(widget.date, true);
     setState(() {
       _birthdays = storedBirthdays;
     });
@@ -85,26 +88,26 @@ class _CalendarDayState extends State<CalendarDayWidget> {
               context,
               MaterialPageRoute(
                 builder: (context) => BirthdaysForCalendarDayWidget(
-                  key: Key(widget.date.toString()),
-                  dateOfDay: widget.date,
-                  birthdays: _birthdays,
-                  dateService: widget.dateService,
-                  storageService: widget.storageService,
-                  notificationService: widget.notificationService),
+                    key: Key(widget.date.toString()),
+                    dateOfDay: widget.date,
+                    birthdays: _birthdays,
+                    dateService: widget.dateService,
+                    storageService: widget.storageService,
+                    notificationService: widget.notificationService),
               )).then((value) => _fetchBirthdaysFromStorage());
         },
         child: FittedBox(
             fit: BoxFit.fitWidth,
             child: Column(children: [
               Text(widget.date.day.toString(),
-                style:  new TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold)
-              ),
-              if (_birthdays.length > 0)
-                _showBirthdayIcon()
+                  style: new TextStyle(
+                      fontSize: 15.0, fontWeight: FontWeight.bold)),
+              if (_birthdays.length > 0) _showBirthdayIcon()
             ])));
   }
 
-  @override void dispose() {
+  @override
+  void dispose() {
     _streamSubscription.cancel();
     super.dispose();
   }

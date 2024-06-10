@@ -10,12 +10,13 @@ class CalendarWidget extends StatefulWidget {
   final StorageService storageService;
   final NotificationService notificationService;
 
-  const CalendarWidget({
-    required Key key,
-    required this.currentMonth,
-    required this.dateService,
-    required this.storageService,
-    required this.notificationService}) : super(key: key);
+  const CalendarWidget(
+      {required Key key,
+      required this.currentMonth,
+      required this.dateService,
+      required this.storageService,
+      required this.notificationService})
+      : super(key: key);
 
   @override
   _CalendarState createState() => _CalendarState();
@@ -56,8 +57,7 @@ class _CalendarState extends State<CalendarWidget> {
                     storageService: widget.storageService,
                     dateService: widget.dateService,
                     notificationService: widget.notificationService);
-              })
-      ),
+              })),
     );
   }
 }
