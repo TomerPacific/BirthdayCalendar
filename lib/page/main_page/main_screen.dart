@@ -1,52 +1,70 @@
+import 'package:birthday_calendar/ClearNotificationsBloc/ClearNotificationsBloc.dart';
+import 'package:birthday_calendar/ContactsPermissionStatusBloc/ContactsPermissionStatusBloc.dart';
+import 'package:birthday_calendar/VersionBloc/VersionBloc.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/page/birthdays_for_calendar_day_page/birthdays_for_calendar_day.dart';
-import 'package:birthday_calendar/page/main_page/main_screen_manager.dart';
-import 'package:birthday_calendar/page/settings_page/settings_screen_manager.dart';
+import 'package:birthday_calendar/service/contacts_service/contacts_service.dart';
+import 'package:birthday_calendar/service/date_service/date_service.dart';
 import 'package:birthday_calendar/service/notification_service/notificationCallbacks.dart';
+import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:birthday_calendar/service/update_service/update_service.dart';
+import 'package:birthday_calendar/service/update_service/update_service_impl.dart';
+import 'package:birthday_calendar/service/version_specific_service/VersionSpecificService.dart';
+import 'package:birthday_calendar/service/version_specific_service/VersionSpecificServiceImpl.dart';
 import 'package:birthday_calendar/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/page/settings_page/settings_screen.dart';
 import 'package:birthday_calendar/widget/calendar.dart';
-import 'package:birthday_calendar/service/notification_service/notification_service.dart';
-import 'package:birthday_calendar/service/date_service/date_service.dart';
-import 'package:birthday_calendar/service/service_locator.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MainPage extends StatefulWidget {
-  MainPage({required Key key, required this.title, required this.currentMonth}) : super(key: key);
+  MainPage(
+      {required Key key,
+      required this.notificationService,
+      required this.contactsService,
+      required this.storageService,
+      required this.dateService,
+      required this.title,
+      required this.currentMonth})
+      : super(key: key);
 
   final String title;
   final int currentMonth;
+  final NotificationService notificationService;
+  final ContactsService contactsService;
+  final StorageService storageService;
+  final DateService dateService;
 
   @override
-  _MainPageState createState() => _MainPageState();
+  _MainPageState createState() =>
+      _MainPageState(storageService, notificationService);
 }
 
 class _MainPageState extends State<MainPage> implements NotificationCallbacks {
+  _MainPageState(this.storageService, this.notificationService);
 
   int monthToPresent = -1;
   String month = "";
-  NotificationService _notificationService = getIt<NotificationService>();
-  DateService _dateService = getIt<DateService>();
-  StorageService _storageService = getIt<StorageService>();
-  UpdateService _updateService = getIt<UpdateService>();
-
-  MainScreenManager _mainScreenManager = MainScreenManager();
+  StorageService storageService;
+  NotificationService notificationService;
+  UpdateService _updateService = UpdateServiceImpl();
+  late VersionSpecificService versionSpecificService;
 
   void _calculateNextMonthToShow(AxisDirection direction) {
     setState(() {
-      monthToPresent = direction == AxisDirection.left ? monthToPresent + 1 : monthToPresent - 1;
-      monthToPresent = _mainScreenManager.correctMonthOverflow(monthToPresent);
-      month = _dateService.convertMonthToWord(monthToPresent);
+      monthToPresent = direction == AxisDirection.left
+          ? monthToPresent + 1
+          : monthToPresent - 1;
+      monthToPresent = Utils.correctMonthOverflow(monthToPresent);
+      month = widget.dateService.convertMonthToWord(monthToPresent);
     });
   }
 
   void _decideOnNextMonthToShow(DragUpdateDetails details) {
-    details.delta.dx > 0 ?
-    _calculateNextMonthToShow(AxisDirection.right) :
-    _calculateNextMonthToShow(AxisDirection.left);
+    details.delta.dx > 0
+        ? _calculateNextMonthToShow(AxisDirection.right)
+        : _calculateNextMonthToShow(AxisDirection.left);
   }
 
   void _onUpdateSuccess() {
@@ -54,29 +72,28 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
         onPressed: () {
           Navigator.pop(context);
         },
-        child: const Text("Ok")
+        child: const Text("Ok"));
+    AlertDialog alertDialog = AlertDialog(
+      title: const Text("Update Successfully Installed"),
+      content:
+          const Text("Birthday Calendar has been updated successfully! 🎂"),
+      actions: [alertDialogOkButton],
     );
-      AlertDialog alertDialog = AlertDialog(
-        title: const Text("Update Successfully Installed"),
-        content: const Text("Birthday Calendar has been updated successfully! 🎂"),
-        actions: [
-          alertDialogOkButton
-        ],
-      );
-      showDialog(context: context,
-          builder: (BuildContext context) {
-        return alertDialog;
-      });
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alertDialog;
+        });
   }
 
   void _onUpdateFailure(String error) {
     Widget alertDialogTryAgainButton = TextButton(
         onPressed: () {
-          _updateService.checkForInAppUpdate(_onUpdateSuccess, _onUpdateFailure);
+          _updateService.checkForInAppUpdate(
+              _onUpdateSuccess, _onUpdateFailure);
           Navigator.pop(context);
         },
-        child: const Text("Try Again?")
-    );
+        child: const Text("Try Again?"));
     Widget alertDialogCancelButton = TextButton(
       onPressed: () {
         Navigator.pop(context);
@@ -85,26 +102,30 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
     );
     AlertDialog alertDialog = AlertDialog(
       title: const Text("Update Failed To Install ❌"),
-      content: Text("Birthday Calendar has failed to update because: \n $error"),
-      actions: [
-        alertDialogTryAgainButton,
-        alertDialogCancelButton
-      ],
+      content:
+          Text("Birthday Calendar has failed to update because: \n $error"),
+      actions: [alertDialogTryAgainButton, alertDialogCancelButton],
     );
-    showDialog(context: context,
+    showDialog(
+        context: context,
         builder: (BuildContext context) {
           return alertDialog;
         });
   }
 
   @override
-  void initState()  {
+  void initState() {
+    versionSpecificService = new VersionSpecificServiceImpl(
+        storageService: storageService,
+        notificationService: notificationService);
     monthToPresent = widget.currentMonth;
-    month = _dateService.convertMonthToWord(monthToPresent);
-    _notificationService.init();
-    _notificationService.addListenerForSelectNotificationStream(this);
-    _mainScreenManager.makeVersionAdjustments();
+    month = widget.dateService.convertMonthToWord(monthToPresent);
+    widget.notificationService.init();
+    widget.notificationService.addListenerForSelectNotificationStream(this);
     _updateService.checkForInAppUpdate(_onUpdateSuccess, _onUpdateFailure);
+    BlocProvider.of<ContactsPermissionStatusBloc>(context)
+        .add(ContactsPermissionStatusEvent.PermissionUnknown);
+    BlocProvider.of<VersionBloc>(context).add(VersionEvent.versionUnknown);
     super.initState();
   }
 
@@ -112,81 +133,94 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
   void didUpdateWidget(covariant MainPage oldWidget) {
     super.didUpdateWidget(oldWidget);
     monthToPresent = widget.currentMonth;
-    month = _dateService.convertMonthToWord(monthToPresent);
+    month = widget.dateService.convertMonthToWord(monthToPresent);
   }
 
   @override
   Widget build(BuildContext context) {
-        return Scaffold(
-            appBar: AppBar(
-              actions: [
-                IconButton(
+    return BlocProvider(
+        create: (context) => ClearNotificationsBloc(widget.storageService),
+        child: BlocBuilder<ClearNotificationsBloc, bool>(
+            builder: (context, state) {
+          return Scaffold(
+              appBar: AppBar(
+                actions: [
+                  IconButton(
                     icon: Icon(
-                         Icons.settings,
-                          color: Colors.white,
-                        ),
-                  onPressed: () {
-                        Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => SettingsScreen()),
-                        ).then((result) {
-                          if (result == true) {
-                            setState(() {});
-                            Provider.of<SettingsScreenManager>(context, listen: false).setOnClearBirthdaysFlag(false);
-                          }
-                        });
-                  },
-               )
-              ],
-          ),
-      body:
-            new GestureDetector(
-                onHorizontalDragUpdate: _decideOnNextMonthToShow,
-                child:
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    new Padding(
-                      padding: const EdgeInsets.only(bottom: 50, top: 50),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          new Text(month, style: new TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold))
-                        ],
-                      ),
+                      Icons.settings,
                     ),
-                    new Expanded(child:
-                    new Row(
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (_) {
+                        return BlocProvider.value(
+                            value: BlocProvider.of<ClearNotificationsBloc>(
+                                context),
+                            child: SettingsScreen(
+                                contactsService: widget.contactsService));
+                      })).then((result) {});
+                    },
+                  )
+                ],
+              ),
+              body: BlocListener<ClearNotificationsBloc, bool>(
+                listener: (context, state) {
+                  if (state) {
+                    setState(() {});
+                  }
+                },
+                child: new GestureDetector(
+                    onHorizontalDragUpdate: _decideOnNextMonthToShow,
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        new IconButton(icon:
-                        new Icon(Icons.chevron_left),
-                            onPressed: () {
-                              _calculateNextMonthToShow(AxisDirection.right);
-                            }),
-                        new Expanded(child:
-                        new CalendarWidget(
-                            key: Key(monthToPresent.toString()),
-                            currentMonth:monthToPresent),
+                        new Padding(
+                          padding: const EdgeInsets.only(bottom: 50, top: 50),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              new Text(month,
+                                  style: new TextStyle(
+                                      fontSize: 25.0,
+                                      fontWeight: FontWeight.bold))
+                            ],
+                          ),
                         ),
-                        new IconButton(icon:
-                        new Icon(Icons.chevron_right),
-                            onPressed: () {
-                              _calculateNextMonthToShow(AxisDirection.left);
-                            }),
+                        new Expanded(
+                            child: new Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            new IconButton(
+                                icon: new Icon(Icons.chevron_left),
+                                onPressed: () {
+                                  _calculateNextMonthToShow(
+                                      AxisDirection.right);
+                                }),
+                            new Expanded(
+                              child: new CalendarWidget(
+                                  key: Key(monthToPresent.toString()),
+                                  currentMonth: monthToPresent,
+                                  dateService: widget.dateService,
+                                  storageService: widget.storageService,
+                                  notificationService:
+                                      widget.notificationService),
+                            ),
+                            new IconButton(
+                                icon: new Icon(Icons.chevron_right),
+                                onPressed: () {
+                                  _calculateNextMonthToShow(AxisDirection.left);
+                                }),
+                          ],
+                        ))
                       ],
-                    )
-                    )
-                  ],
-                )
-            )
-        );
-      }
+                    )),
+              ));
+        }));
+  }
 
-  @override void dispose() {
-    _storageService.dispose();
-    _notificationService.removeListenerForSelectNotificationStream(this);
+  @override
+  void dispose() {
+    widget.storageService.dispose();
+    widget.notificationService.removeListenerForSelectNotificationStream(this);
     super.dispose();
   }
 
@@ -195,14 +229,18 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
     if (payload != null) {
       UserBirthday? birthday = Utils.getUserBirthdayFromPayload(payload);
       if (birthday != null) {
-        List<UserBirthday> birthdays = await _storageService.getBirthdaysForDate(birthday.birthdayDate, true);
+        List<UserBirthday> birthdays = await widget.storageService
+            .getBirthdaysForDate(birthday.birthdayDate, true);
         Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => BirthdaysForCalendarDayWidget(
                   key: Key(birthday.birthdayDate.toString()),
                   dateOfDay: birthday.birthdayDate,
-                  birthdays: birthdays),
+                  birthdays: birthdays,
+                  dateService: widget.dateService,
+                  storageService: widget.storageService,
+                  notificationService: widget.notificationService),
             ));
       }
     }

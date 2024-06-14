@@ -6,11 +6,15 @@ import 'package:intl/intl.dart';
 import 'storage_service.dart';
 import 'package:birthday_calendar/service/date_service/date_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:birthday_calendar/service/service_locator.dart';
 
 class StorageServiceSharedPreferences extends StorageService {
 
-  DateService _dateService = getIt<DateService>();
+  StorageServiceSharedPreferences({
+    required this.dateService
+  });
+
+  final DateService dateService;
+
   StreamController<List<UserBirthday>> streamController = StreamController<List<UserBirthday>>.broadcast();
 
   @override
@@ -50,7 +54,7 @@ class StorageServiceSharedPreferences extends StorageService {
   Future<List<UserBirthday>> _decodeBirthdaysFromDate(DateTime dateTime) async {
     final sharedPreferences = await SharedPreferences.getInstance();
 
-    String formattedDate = _dateService.formatDateForSharedPrefs(dateTime);
+    String formattedDate = dateService.formatDateForSharedPrefs(dateTime);
     String? birthdaysJSON = sharedPreferences.getString(formattedDate);
     if (birthdaysJSON != null) {
       List decodedBirthdaysForDate = jsonDecode(birthdaysJSON);
@@ -70,7 +74,7 @@ class StorageServiceSharedPreferences extends StorageService {
 
     for (String date in dates) {
 
-      if (!_dateService.isADate(date)) {
+      if (!dateService.isADate(date)) {
         continue;
       }
       
@@ -94,7 +98,7 @@ class StorageServiceSharedPreferences extends StorageService {
   Future<void> saveBirthdaysForDate(DateTime dateTime, List<UserBirthday> birthdays) async {
     final sharedPreferences = await SharedPreferences.getInstance();
     String encoded = jsonEncode(birthdays);
-    String formattedDate = _dateService.formatDateForSharedPrefs(dateTime);
+    String formattedDate = dateService.formatDateForSharedPrefs(dateTime);
     sharedPreferences.setString(formattedDate, encoded);
 
     streamController.sink.add(birthdays);
@@ -158,7 +162,7 @@ class StorageServiceSharedPreferences extends StorageService {
     Set<String> dates = sharedPreferences.getKeys();
 
     for (String date in dates) {
-      if (!_dateService.isADate(date)) {
+      if (!dateService.isADate(date)) {
         continue;
       }
 

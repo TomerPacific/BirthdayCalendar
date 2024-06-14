@@ -1,44 +1,85 @@
-
-import 'package:birthday_calendar/service/service_locator.dart';
-import 'package:birthday_calendar/page/settings_page/settings_screen_manager.dart';
+import 'package:birthday_calendar/ContactsPermissionStatusBloc/ContactsPermissionStatusBloc.dart';
+import 'package:birthday_calendar/ThemeBloc/ThemeBloc.dart';
+import 'package:birthday_calendar/VersionBloc/VersionBloc.dart';
+import 'package:birthday_calendar/service/contacts_service/contacts_service.dart';
+import 'package:birthday_calendar/service/contacts_service/contacts_service_impl.dart';
+import 'package:birthday_calendar/service/date_service/date_service_impl.dart';
+import 'package:birthday_calendar/service/notification_service/notification_service.dart';
+import 'package:birthday_calendar/service/notification_service/notification_service_impl.dart';
+import 'package:birthday_calendar/service/permission_service/permissions_service.dart';
+import 'package:birthday_calendar/service/permission_service/permissions_service_impl.dart';
+import 'package:birthday_calendar/service/storage_service/shared_preferences_storage.dart';
+import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import 'constants.dart';
 import 'service/date_service/date_service.dart';
 import 'package:birthday_calendar/page/main_page/main_screen.dart';
-
-final DateService _dateService = getIt<DateService>();
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  setupServiceLocator();
-  runApp(MyApp());
+
+  DateService dateService = DateServiceImpl();
+  NotificationService notificationService = NotificationServiceImpl();
+  PermissionsService permissionsService = PermissionsServiceImpl();
+  StorageService storageService =
+      StorageServiceSharedPreferences(dateService: dateService);
+  ContactsService contactsService = ContactsServiceImpl(
+      storageService: storageService,
+      notificationService: notificationService,
+      permissionsService: permissionsService);
+
+  bool isDarkMode = await storageService.getThemeModeSetting();
+
+  runApp(MyApp(
+      notificationService: notificationService,
+      contactsService: contactsService,
+      storageService: storageService,
+      dateService: dateService,
+      isDarkMode: isDarkMode,
+  ));
 }
 
 class MyApp extends StatelessWidget {
+  MyApp(
+      {required this.notificationService,
+      required this.contactsService,
+      required this.storageService,
+      required this.dateService,
+      required this.isDarkMode});
+
+  final NotificationService notificationService;
+  final ContactsService contactsService;
+  final StorageService storageService;
+  final DateService dateService;
+  final bool isDarkMode;
 
   @override
   Widget build(BuildContext context) {
-        return
-          ChangeNotifierProvider(
-            create: (context) => SettingsScreenManager(),
-              builder: (context, provider) {
-                return Consumer<SettingsScreenManager>(
-                  builder: (context, notifier, child) {
-                    return MaterialApp(
-                      title: applicationName,
-                      theme: ThemeData(),
-                      darkTheme: ThemeData.dark(),
-                      themeMode: notifier.themeMode,
-                      home: MainPage(
-                          key: Key("BirthdayCalendar"),
-                          title: applicationName,
-                          currentMonth: _dateService.getCurrentMonthNumber()
-                      ),
-                    );
-                  }
-                );
-          });
-        }
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => ThemeBloc(storageService, isDarkMode)),
+        BlocProvider(
+            create: (context) => ContactsPermissionStatusBloc(contactsService)),
+        BlocProvider(create: (context) => VersionBloc())
+      ],
+      child: BlocBuilder<ThemeBloc, ThemeMode>(
+        builder: (context, state) {
+          return MaterialApp(
+              title: applicationName,
+              theme: ThemeData.light(),
+              themeMode: state,
+              darkTheme: ThemeData.dark(),
+              home: MainPage(
+                  key: Key("BirthdayCalendar"),
+                  notificationService: notificationService,
+                  contactsService: contactsService,
+                  storageService: storageService,
+                  dateService: dateService,
+                  title: applicationName,
+                  currentMonth: dateService.getCurrentMonthNumber()));
+        },
+      ),
+    );
+  }
 }

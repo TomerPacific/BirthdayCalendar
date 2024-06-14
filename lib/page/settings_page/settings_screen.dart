@@ -1,84 +1,78 @@
-
+import 'package:birthday_calendar/ClearNotificationsBloc/ClearNotificationsBloc.dart';
+import 'package:birthday_calendar/ContactsPermissionStatusBloc/ContactsPermissionStatusBloc.dart';
+import 'package:birthday_calendar/ThemeBloc/ThemeBloc.dart';
+import 'package:birthday_calendar/VersionBloc/VersionBloc.dart';
+import 'package:birthday_calendar/constants.dart';
+import 'package:birthday_calendar/service/contacts_service/contacts_service.dart';
+import 'package:birthday_calendar/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:birthday_calendar/page/settings_page/settings_screen_manager.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
 
 class SettingsScreen extends StatelessWidget {
+  SettingsScreen({
+    required this.contactsService,
+  });
+
+  final ContactsService contactsService;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-              appBar: AppBar(
-                title: new Text("Settings"),
-              ),
-              body:
-                  PopScope(
-                    onPopInvoked: (bool didPop) {
-                      if (didPop) {
-                        return;
-                      }
-
-                      Navigator.pop(context, Provider.of<SettingsScreenManager>(context, listen: false).didClearNotifications);
-                    },
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Consumer<SettingsScreenManager>(
-                            builder: (context, notifier, child) {
-                              return  SwitchListTile(
-                                  title: const Text('Dark Mode'),
-                                  value: notifier.themeMode == ThemeMode.light ? false : true,
-                                  secondary:
-                                  new Icon(
-                                      Icons.dark_mode,
-                                      color: notifier.themeMode == ThemeMode.light ? Color(0xFF642ef3) : Color.fromARGB(200, 243, 231, 106)
-                                  ),
-                                  onChanged:notifier.handleThemeModeSettingChange
-                              );
-                            }
-                        ),
-                       Consumer<SettingsScreenManager>(
-                           builder: (context, notifier, child) {
-                          return ListTile(
-                              title: const Text("Import Contacts"),
-                              leading: Icon(Icons.contacts,
-                                  color: !notifier.isContactsPermissionPermanentlyDenied ? Colors.blue : Colors.grey
-                              ),
-                              onTap: () {
-                                Provider.of<SettingsScreenManager>(context, listen: false).handleImportingContacts(context);
-                              },
-                              enabled: !notifier.isContactsPermissionPermanentlyDenied
-                          );
-                        }),
-                        ListTile(
-                            title: const Text("Clear Notifications"),
-                            leading: const Icon(
-                                Icons.clear,
-                                color: Colors.redAccent),
-                            onTap: () {
-                              _showClearBirthdaysConfirmationDialog(context);
-                            }
-                        ),
-                        Spacer(),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Consumer<SettingsScreenManager>(
-                                builder: (context, notifier, child) {
-                                  return Align(
-                                      alignment: Alignment.bottomRight,
-                                      child: Text(
-                                          "v " + notifier.version
-                                      )
-                                  );
-                                }
-                            )
-                          ],
-                        )
-                      ],
-                    ),
-                  )
-      );
+      appBar: AppBar(
+        title: new Text("Settings"),
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          SwitchListTile(
+              title: const Text('Dark Mode'),
+              value: context.read<ThemeBloc>().state == ThemeMode.dark
+                  ? true
+                  : false,
+              secondary: new Icon(Icons.dark_mode,
+                  color: context.read<ThemeBloc>().state == ThemeMode.dark
+                      ? Color.fromARGB(200, 243, 231, 106)
+                      : Color(0xFF642ef3)),
+              onChanged: (bool newValue) {
+                ThemeEvent event =
+                    context.read<ThemeBloc>().state == ThemeMode.dark
+                        ? ThemeEvent.toggleLight
+                        : ThemeEvent.toggleDark;
+                BlocProvider.of<ThemeBloc>(context).add(event);
+              }),
+          BlocBuilder<ContactsPermissionStatusBloc, PermissionStatus>(
+              builder: (context, state) {
+            return ListTile(
+                title: const Text("Import Contacts"),
+                leading: Icon(Icons.contacts, color: Colors.blue),
+                onTap: () {
+                  _handleImportingContacts(context);
+                },
+                enabled: state.isPermanentlyDenied ? false : true);
+          }),
+          ListTile(
+              title: const Text("Clear Notifications"),
+              leading: const Icon(Icons.clear, color: Colors.redAccent),
+              onTap: () {
+                _showClearBirthdaysConfirmationDialog(context);
+              }),
+          Spacer(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Align(
+                  alignment: Alignment.bottomRight,
+                  child: BlocBuilder<VersionBloc, String>(
+                      builder: (context, state) {
+                    return Text("v $state");
+                  }))
+            ],
+          )
+        ],
+      ),
+    );
   }
 
   void _showClearBirthdaysConfirmationDialog(BuildContext context) {
@@ -94,16 +88,54 @@ class SettingsScreen extends StatelessWidget {
         ),
         TextButton(
           onPressed: () {
-            Provider.of<SettingsScreenManager>(context, listen: false).onClearBirthdaysPressed();
+            BlocProvider.of<ClearNotificationsBloc>(context)
+                .add(ClearNotificationsEvent.ClearedNotifications);
             Navigator.pop(context);
           },
           child: const Text("Yes"),
         )
       ],
     );
-    showDialog(context: context,
+    showDialog(
+        context: context,
         builder: (BuildContext context) {
           return alert;
         });
+  }
+
+  void _handleImportingContacts(BuildContext context) async {
+    PermissionStatus status =
+        await contactsService.getContactsPermissionStatus(context);
+
+    if (status == PermissionStatus.denied) {
+      status = await contactsService.requestContactsPermission(context);
+    }
+
+    if (status == PermissionStatus.permanentlyDenied) {
+      contactsService.setContactsPermissionPermanentlyDenied();
+      BlocProvider.of<ContactsPermissionStatusBloc>(context)
+          .add(ContactsPermissionStatusEvent.PermissionPermanentlyDenied);
+      return;
+    }
+
+    if (status == PermissionStatus.granted) {
+      BlocProvider.of<ContactsPermissionStatusBloc>(context)
+          .add(ContactsPermissionStatusEvent.PermissionGranted);
+      List<Contact> contacts = await contactsService.fetchContacts(false);
+
+      if (contacts.isEmpty) {
+        Utils.showSnackbarWithMessage(context, noContactsFoundMsg);
+        return;
+      }
+
+      contacts = await contactsService.filterAlreadyImportedContacts(contacts);
+
+      if (contacts.isEmpty) {
+        Utils.showSnackbarWithMessage(context, alreadyAddedContactsMsg);
+        return;
+      }
+
+      contactsService.handleAddingBirthdaysToContacts(context, contacts);
+    }
   }
 }
