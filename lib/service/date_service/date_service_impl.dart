@@ -4,20 +4,24 @@ import 'date_service.dart';
 
 class DateServiceImpl extends DateService {
 
+  @override
   int getCurrentMonthNumber() {
     DateTime now = new DateTime.now();
     return now.month;
   }
 
+  @override
   String convertMonthToWord(int month) {
     String? monthName = months[month];
     return monthName != null ? monthName : "";
   }
 
+  @override
   String getCurrentMonthName() {
     return convertMonthToWord(getCurrentMonthNumber());
   }
 
+  @override
   int amountOfDaysInMonth(String month) {
     int days = 0;
     switch (month) {
@@ -50,6 +54,7 @@ class DateServiceImpl extends DateService {
     return days;
   }
 
+  @override
   bool isLeapYear() {
     DateTime now = new DateTime.now();
     int year = now.year;
@@ -61,10 +66,12 @@ class DateServiceImpl extends DateService {
     return false;
   }
 
+  @override
   String getWeekdayNameFromDate(DateTime date) {
     return DateFormat('EEEE').format(date);
   }
 
+  @override
   DateTime constructDateTimeFromDayAndMonth(int day, int month) {
     int year = new DateTime.now().year;
     String paddedMonth = month < 10 ? "0" + month.toString() : month.toString();
@@ -73,11 +80,13 @@ class DateServiceImpl extends DateService {
     return DateTime.parse(wholeDate);
   }
 
+  @override
   String formatDateForSharedPrefs(DateTime date) {
     DateFormat dateFormat = DateFormat("yyyy-MM-dd");
     return dateFormat.format(date);
   }
 
+  @override
   bool isADate(String date) {
     bool isValidDate = true;
     try {
