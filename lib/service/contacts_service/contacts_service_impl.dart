@@ -74,7 +74,7 @@ class ContactsServiceImpl extends ContactsService {
         UserBirthday userBirthday = new UserBirthday(contact.displayName,
             chosenBirthDate,
             true,
-            contact.phones.length > 0 ? contact.phones.first.number : "");
+            contact.phones.isNotEmpty ? contact.phones.first.number : "");
 
         addContactToCalendar(userBirthday);
         amountOfBirthdaysSet++;
