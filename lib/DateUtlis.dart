@@ -6,21 +6,21 @@ import 'package:intl/intl.dart';
 
 class DateUtils {
 
-  int getCurrentMonthNumber() {
+  static int getCurrentMonthNumber() {
     DateTime now = new DateTime.now();
     return now.month;
   }
 
-  String convertMonthToWord(int month) {
+  static String convertMonthToWord(int month) {
     String? monthName = months[month];
     return monthName != null ? monthName : "";
   }
 
-  String getCurrentMonthName() {
+  static String getCurrentMonthName() {
     return convertMonthToWord(getCurrentMonthNumber());
   }
 
-  int amountOfDaysInMonth(String month) {
+  static int amountOfDaysInMonth(String month) {
     int days = 0;
     switch (month) {
       case "January":
@@ -52,7 +52,7 @@ class DateUtils {
     return days;
   }
 
-  bool isLeapYear() {
+  static bool isLeapYear() {
     DateTime now = new DateTime.now();
     int year = now.year;
     if (year % 4 == 0 && year % 100 != 0) {
@@ -64,11 +64,11 @@ class DateUtils {
   }
 
 
-  String getWeekdayNameFromDate(DateTime date) {
+  static String getWeekdayNameFromDate(DateTime date) {
     return DateFormat('EEEE').format(date);
   }
 
-  DateTime constructDateTimeFromDayAndMonth(int day, int month) {
+  static DateTime constructDateTimeFromDayAndMonth(int day, int month) {
     int year = new DateTime.now().year;
     String paddedMonth = month < 10 ? "0" + month.toString() : month.toString();
     String paddedDay = day < 10 ? "0" + day.toString() : day.toString();
@@ -76,12 +76,12 @@ class DateUtils {
     return DateTime.parse(wholeDate);
   }
 
-  String formatDateForSharedPrefs(DateTime date) {
+  static String formatDateForSharedPrefs(DateTime date) {
     DateFormat dateFormat = DateFormat("yyyy-MM-dd");
     return dateFormat.format(date);
   }
 
-  bool isADate(String date) {
+  static bool isADate(String date) {
     bool isValidDate = true;
     try {
       DateTime.parse(date);
