@@ -4,7 +4,7 @@
 import 'package:birthday_calendar/constants.dart';
 import 'package:intl/intl.dart';
 
-class DateUtils {
+class BirthdayCalendarDateUtils {
 
   static int getCurrentMonthNumber() {
     DateTime now = new DateTime.now();
