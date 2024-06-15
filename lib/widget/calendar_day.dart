@@ -1,4 +1,3 @@
-import 'package:birthday_calendar/service/date_service/date_service.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter/material.dart';
@@ -9,14 +8,12 @@ import 'package:birthday_calendar/model/user_birthday.dart';
 class CalendarDayWidget extends StatefulWidget {
   final DateTime date;
   final StorageService storageService;
-  final DateService dateService;
   final NotificationService notificationService;
 
   const CalendarDayWidget(
       {required Key key,
       required this.date,
       required this.storageService,
-      required this.dateService,
       required this.notificationService})
       : super(key: key);
 
@@ -91,7 +88,6 @@ class _CalendarDayState extends State<CalendarDayWidget> {
                     key: Key(widget.date.toString()),
                     dateOfDay: widget.date,
                     birthdays: _birthdays,
-                    dateService: widget.dateService,
                     storageService: widget.storageService,
                     notificationService: widget.notificationService),
               )).then((value) => _fetchBirthdaysFromStorage());

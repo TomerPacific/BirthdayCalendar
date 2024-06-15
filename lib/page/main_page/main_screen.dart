@@ -1,10 +1,10 @@
+import 'package:birthday_calendar/BirthdayCalendarDateUtils.dart';
 import 'package:birthday_calendar/ClearNotificationsBloc/ClearNotificationsBloc.dart';
 import 'package:birthday_calendar/ContactsPermissionStatusBloc/ContactsPermissionStatusBloc.dart';
 import 'package:birthday_calendar/VersionBloc/VersionBloc.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/page/birthdays_for_calendar_day_page/birthdays_for_calendar_day.dart';
 import 'package:birthday_calendar/service/contacts_service/contacts_service.dart';
-import 'package:birthday_calendar/service/date_service/date_service.dart';
 import 'package:birthday_calendar/service/notification_service/notificationCallbacks.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
@@ -24,7 +24,6 @@ class MainPage extends StatefulWidget {
       required this.notificationService,
       required this.contactsService,
       required this.storageService,
-      required this.dateService,
       required this.title,
       required this.currentMonth})
       : super(key: key);
@@ -34,7 +33,6 @@ class MainPage extends StatefulWidget {
   final NotificationService notificationService;
   final ContactsService contactsService;
   final StorageService storageService;
-  final DateService dateService;
 
   @override
   _MainPageState createState() =>
@@ -57,7 +55,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
           ? monthToPresent + 1
           : monthToPresent - 1;
       monthToPresent = Utils.correctMonthOverflow(monthToPresent);
-      month = widget.dateService.convertMonthToWord(monthToPresent);
+      month = BirthdayCalendarDateUtils.convertMonthToWord(monthToPresent);
     });
   }
 
@@ -119,7 +117,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
         storageService: storageService,
         notificationService: notificationService);
     monthToPresent = widget.currentMonth;
-    month = widget.dateService.convertMonthToWord(monthToPresent);
+    month = BirthdayCalendarDateUtils.convertMonthToWord(monthToPresent);
     widget.notificationService.init();
     widget.notificationService.addListenerForSelectNotificationStream(this);
     _updateService.checkForInAppUpdate(_onUpdateSuccess, _onUpdateFailure);
@@ -133,7 +131,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
   void didUpdateWidget(covariant MainPage oldWidget) {
     super.didUpdateWidget(oldWidget);
     monthToPresent = widget.currentMonth;
-    month = widget.dateService.convertMonthToWord(monthToPresent);
+    month = BirthdayCalendarDateUtils.convertMonthToWord(monthToPresent);
   }
 
   @override
@@ -199,7 +197,6 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
                               child: new CalendarWidget(
                                   key: Key(monthToPresent.toString()),
                                   currentMonth: monthToPresent,
-                                  dateService: widget.dateService,
                                   storageService: widget.storageService,
                                   notificationService:
                                       widget.notificationService),
@@ -238,7 +235,6 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
                   key: Key(birthday.birthdayDate.toString()),
                   dateOfDay: birthday.birthdayDate,
                   birthdays: birthdays,
-                  dateService: widget.dateService,
                   storageService: widget.storageService,
                   notificationService: widget.notificationService),
             ));

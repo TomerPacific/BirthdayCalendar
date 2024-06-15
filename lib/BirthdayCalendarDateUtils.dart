@@ -1,28 +1,26 @@
+
+
+
+import 'package:birthday_calendar/constants.dart';
 import 'package:intl/intl.dart';
-import '../../constants.dart';
-import 'date_service.dart';
 
-class DateServiceImpl extends DateService {
+class BirthdayCalendarDateUtils {
 
-  @override
-  int getCurrentMonthNumber() {
+  static int getCurrentMonthNumber() {
     DateTime now = new DateTime.now();
     return now.month;
   }
 
-  @override
-  String convertMonthToWord(int month) {
+  static String convertMonthToWord(int month) {
     String? monthName = months[month];
     return monthName != null ? monthName : "";
   }
 
-  @override
-  String getCurrentMonthName() {
+  static String getCurrentMonthName() {
     return convertMonthToWord(getCurrentMonthNumber());
   }
 
-  @override
-  int amountOfDaysInMonth(String month) {
+  static int amountOfDaysInMonth(String month) {
     int days = 0;
     switch (month) {
       case "January":
@@ -54,8 +52,7 @@ class DateServiceImpl extends DateService {
     return days;
   }
 
-  @override
-  bool isLeapYear() {
+  static bool isLeapYear() {
     DateTime now = new DateTime.now();
     int year = now.year;
     if (year % 4 == 0 && year % 100 != 0) {
@@ -66,13 +63,12 @@ class DateServiceImpl extends DateService {
     return false;
   }
 
-  @override
-  String getWeekdayNameFromDate(DateTime date) {
+
+  static String getWeekdayNameFromDate(DateTime date) {
     return DateFormat('EEEE').format(date);
   }
 
-  @override
-  DateTime constructDateTimeFromDayAndMonth(int day, int month) {
+  static DateTime constructDateTimeFromDayAndMonth(int day, int month) {
     int year = new DateTime.now().year;
     String paddedMonth = month < 10 ? "0" + month.toString() : month.toString();
     String paddedDay = day < 10 ? "0" + day.toString() : day.toString();
@@ -80,17 +76,15 @@ class DateServiceImpl extends DateService {
     return DateTime.parse(wholeDate);
   }
 
-  @override
-  String formatDateForSharedPrefs(DateTime date) {
+  static String formatDateForSharedPrefs(DateTime date) {
     DateFormat dateFormat = DateFormat("yyyy-MM-dd");
     return dateFormat.format(date);
   }
 
-  @override
-  bool isADate(String date) {
+  static bool isADate(String date) {
     bool isValidDate = true;
     try {
-        DateTime.parse(date);
+      DateTime.parse(date);
     } catch(exception) {
       isValidDate = false;
     }
