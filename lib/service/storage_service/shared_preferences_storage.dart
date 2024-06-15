@@ -1,19 +1,14 @@
 import 'dart:convert';
 import 'dart:async';
+import 'package:birthday_calendar/BirthdayCalendarDateUtils.dart';
 import 'package:birthday_calendar/constants.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:intl/intl.dart';
 import 'storage_service.dart';
-import 'package:birthday_calendar/service/date_service/date_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StorageServiceSharedPreferences extends StorageService {
 
-  StorageServiceSharedPreferences({
-    required this.dateService
-  });
-
-  final DateService dateService;
 
   StreamController<List<UserBirthday>> streamController = StreamController<List<UserBirthday>>.broadcast();
 
@@ -54,7 +49,7 @@ class StorageServiceSharedPreferences extends StorageService {
   Future<List<UserBirthday>> _decodeBirthdaysFromDate(DateTime dateTime) async {
     final sharedPreferences = await SharedPreferences.getInstance();
 
-    String formattedDate = dateService.formatDateForSharedPrefs(dateTime);
+    String formattedDate = BirthdayCalendarDateUtils.formatDateForSharedPrefs(dateTime);
     String? birthdaysJSON = sharedPreferences.getString(formattedDate);
     if (birthdaysJSON != null) {
       List decodedBirthdaysForDate = jsonDecode(birthdaysJSON);
@@ -74,7 +69,7 @@ class StorageServiceSharedPreferences extends StorageService {
 
     for (String date in dates) {
 
-      if (!dateService.isADate(date)) {
+      if (!BirthdayCalendarDateUtils.isADate(date)) {
         continue;
       }
       
@@ -98,7 +93,7 @@ class StorageServiceSharedPreferences extends StorageService {
   Future<void> saveBirthdaysForDate(DateTime dateTime, List<UserBirthday> birthdays) async {
     final sharedPreferences = await SharedPreferences.getInstance();
     String encoded = jsonEncode(birthdays);
-    String formattedDate = dateService.formatDateForSharedPrefs(dateTime);
+    String formattedDate = BirthdayCalendarDateUtils.formatDateForSharedPrefs(dateTime);
     sharedPreferences.setString(formattedDate, encoded);
 
     streamController.sink.add(birthdays);
@@ -162,7 +157,7 @@ class StorageServiceSharedPreferences extends StorageService {
     Set<String> dates = sharedPreferences.getKeys();
 
     for (String date in dates) {
-      if (!dateService.isADate(date)) {
+      if (!BirthdayCalendarDateUtils.isADate(date)) {
         continue;
       }
 
