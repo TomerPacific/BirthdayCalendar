@@ -1,6 +1,4 @@
 import 'package:birthday_calendar/model/user_birthday.dart';
-import 'package:birthday_calendar/service/date_service/date_service.dart';
-import 'package:birthday_calendar/service/date_service/date_service_impl.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service_impl.dart';
 import 'package:birthday_calendar/service/storage_service/shared_preferences_storage.dart';
@@ -15,8 +13,7 @@ void print(String s) => printLog.add(s);
 
 void main() {
 
-  DateService dateService = DateServiceImpl();
-  StorageService storageService = StorageServiceSharedPreferences(dateService: dateService);
+  StorageService storageService = StorageServiceSharedPreferences();
   NotificationService notificationService = NotificationServiceImpl();
 
   setUp(() {

@@ -1,6 +1,4 @@
 import 'package:birthday_calendar/model/user_birthday.dart';
-import 'package:birthday_calendar/service/date_service/date_service.dart';
-import 'package:birthday_calendar/service/date_service/date_service_impl.dart';
 import 'package:birthday_calendar/service/storage_service/shared_preferences_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +7,7 @@ import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 
 void main() {
 
-  DateService dateService = DateServiceImpl();
-  StorageService _storageService = StorageServiceSharedPreferences(dateService: dateService);
+  StorageService _storageService = StorageServiceSharedPreferences();
 
   setUp(() {
     return Future(() async {
