@@ -89,7 +89,7 @@ class ContactsServiceImpl extends ContactsService {
 
   @override
   Future<List<Contact>> fetchContacts(bool withThumbnails) async {
-    return await FlutterContacts.getContacts();
+    return await FlutterContacts.getContacts(withProperties: true);
   }
 
   void addContactToCalendar(UserBirthday contact) async {
