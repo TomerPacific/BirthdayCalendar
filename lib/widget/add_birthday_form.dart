@@ -31,6 +31,7 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
   PhoneNumber _phoneNumber = PhoneNumber(isoCode: 'US');
   List<UserBirthday> birthdaysForDate = [];
   bool doesWantToAddPhoneNumber = false;
+  late FocusNode myFocusNode;
 
   bool _isUniqueName(String name) {
     UserBirthday? birthday =
@@ -41,6 +42,7 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
   @override
   void initState() {
     super.initState();
+    myFocusNode = FocusNode();
     _getBirthdaysForDate();
   }
 
@@ -82,9 +84,11 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                       setState(() {
                         doesWantToAddPhoneNumber = value!;
                       });
+                      myFocusNode.requestFocus();
                     }),
                 doesWantToAddPhoneNumber == true ?
                 new InternationalPhoneNumberInput(
+                  focusNode: myFocusNode,
                   key: _phoneNumberKey,
                   onInputChanged: (PhoneNumber number) {
                     _phoneNumber = number;
