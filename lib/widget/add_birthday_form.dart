@@ -123,7 +123,8 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                     _birthdayPersonController.text,
                     widget.dateOfDay,
                     true,
-                    _phoneNumber.parseNumber());
+                    _phoneNumber.phoneNumber != null ?
+                    _phoneNumber.parseNumber() : "");
                 BlocProvider.of<BirthdaysBloc>(context).add(new BirthdaysEvent(
                     eventName: BirthdayEvent.AddBirthday,
                     birthdays: birthdaysForDate,
