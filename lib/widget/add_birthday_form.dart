@@ -30,6 +30,7 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
   TextEditingController _phoneNumberController = new TextEditingController();
   PhoneNumber _phoneNumber = PhoneNumber(isoCode: 'US');
   List<UserBirthday> birthdaysForDate = [];
+  bool doesWantToAddPhoneNumber = false;
 
   bool _isUniqueName(String name) {
     UserBirthday? birthday =
@@ -73,6 +74,16 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                     return null;
                   },
                 ),
+                new CheckboxListTile(
+                    title: Text("Add Phone Number?"),
+                    checkColor: Colors.white,
+                    value: doesWantToAddPhoneNumber,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        doesWantToAddPhoneNumber = value!;
+                      });
+                    }),
+                doesWantToAddPhoneNumber == true ?
                 new InternationalPhoneNumberInput(
                   key: _phoneNumberKey,
                   onInputChanged: (PhoneNumber number) {
@@ -93,7 +104,8 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                   onSaved: (PhoneNumber number) {
                     _phoneNumber = number;
                   },
-                ),
+                ) :
+                    Spacer()
               ])),
       actions: [
         TextButton(
