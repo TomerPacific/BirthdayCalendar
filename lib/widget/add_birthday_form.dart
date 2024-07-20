@@ -64,61 +64,60 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                   children: [
                     Expanded(
                       child: new TextFormField(
-                      autofocus: true,
-                      controller: _birthdayPersonController,
-                      decoration:
-                      InputDecoration(hintText: "Enter the person's name"),
-                      key: _birthdayNameKey,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter a valid name';
-                        }
-                        if (!_isUniqueName(value)) {
-                          return "A birthday with this name already exists";
-                        }
-                        return null;
+                        autofocus: true,
+                        controller: _birthdayPersonController,
+                        decoration: InputDecoration(
+                            hintText: "Enter the person's name"),
+                        key: _birthdayNameKey,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter a valid name';
+                          }
+                          if (!_isUniqueName(value)) {
+                            return "A birthday with this name already exists";
+                          }
+                          return null;
                         },
                       ),
                     ),
                     Expanded(
                         child: IconButton(
-                         icon: Icon(
-                           Icons.phone
-                         ),
-                         onPressed: () {
-                           setState(() {
-                             doesWantToAddPhoneNumber = !doesWantToAddPhoneNumber;
-                           });
-                           myFocusNode.requestFocus();
-                         },
-                       )
-                    )
+                      icon: doesWantToAddPhoneNumber == false
+                          ? Icon(Icons.phone)
+                          : Icon(Icons.phone, color: Colors.blueAccent),
+                      onPressed: () {
+                        setState(() {
+                          doesWantToAddPhoneNumber = !doesWantToAddPhoneNumber;
+                        });
+                        myFocusNode.requestFocus();
+                      },
+                    ))
                   ],
                 ),
-                doesWantToAddPhoneNumber == true ?
-                new InternationalPhoneNumberInput(
-                  focusNode: myFocusNode,
-                  key: _phoneNumberKey,
-                  onInputChanged: (PhoneNumber number) {
-                    _phoneNumber = number;
-                  },
-                  onInputValidated: (bool value) {},
-                  selectorConfig: SelectorConfig(
-                    selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
-                  ),
-                  ignoreBlank: false,
-                  autoValidateMode: AutovalidateMode.disabled,
-                  initialValue: _phoneNumber,
-                  textFieldController: _phoneNumberController,
-                  formatInput: false,
-                  keyboardType: TextInputType.numberWithOptions(
-                      signed: true, decimal: true),
-                  inputBorder: OutlineInputBorder(),
-                  onSaved: (PhoneNumber number) {
-                    _phoneNumber = number;
-                  },
-                ) :
-                    Spacer()
+                doesWantToAddPhoneNumber == true
+                    ? new InternationalPhoneNumberInput(
+                        focusNode: myFocusNode,
+                        key: _phoneNumberKey,
+                        onInputChanged: (PhoneNumber number) {
+                          _phoneNumber = number;
+                        },
+                        onInputValidated: (bool value) {},
+                        selectorConfig: SelectorConfig(
+                          selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                        ),
+                        ignoreBlank: false,
+                        autoValidateMode: AutovalidateMode.disabled,
+                        initialValue: _phoneNumber,
+                        textFieldController: _phoneNumberController,
+                        formatInput: false,
+                        keyboardType: TextInputType.numberWithOptions(
+                            signed: true, decimal: true),
+                        inputBorder: OutlineInputBorder(),
+                        onSaved: (PhoneNumber number) {
+                          _phoneNumber = number;
+                        },
+                      )
+                    : Spacer()
               ])),
       actions: [
         TextButton(
@@ -132,8 +131,9 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                     _birthdayPersonController.text,
                     widget.dateOfDay,
                     true,
-                    _phoneNumber.phoneNumber != null ?
-                    _phoneNumber.parseNumber() : "");
+                    _phoneNumber.phoneNumber != null
+                        ? _phoneNumber.parseNumber()
+                        : "");
                 BlocProvider.of<BirthdaysBloc>(context).add(new BirthdaysEvent(
                     eventName: BirthdayEvent.AddBirthday,
                     birthdays: birthdaysForDate,
