@@ -81,18 +81,17 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                       ),
                     ),
                     Expanded(
-                        child: new CheckboxListTile(
-                            secondary: Icon(
-                                Icons.phone
-                            ),
-                            checkColor: Colors.white,
-                            value: doesWantToAddPhoneNumber,
-                            onChanged: (bool? value) {
-                              setState(() {
-                                doesWantToAddPhoneNumber = value!;
-                              });
-                              myFocusNode.requestFocus();
-                            }),
+                        child: IconButton(
+                         icon: Icon(
+                           Icons.phone
+                         ),
+                         onPressed: () {
+                           setState(() {
+                             doesWantToAddPhoneNumber = !doesWantToAddPhoneNumber;
+                           });
+                           myFocusNode.requestFocus();
+                         },
+                       )
                     )
                   ],
                 ),
