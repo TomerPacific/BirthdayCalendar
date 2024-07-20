@@ -60,32 +60,42 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
           child: new Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                new TextFormField(
-                  autofocus: true,
-                  controller: _birthdayPersonController,
-                  decoration:
+                new Row(
+                  children: [
+                    Expanded(
+                      child: new TextFormField(
+                      autofocus: true,
+                      controller: _birthdayPersonController,
+                      decoration:
                       InputDecoration(hintText: "Enter the person's name"),
-                  key: _birthdayNameKey,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a valid name';
-                    }
-                    if (!_isUniqueName(value)) {
-                      return "A birthday with this name already exists";
-                    }
-                    return null;
-                  },
+                      key: _birthdayNameKey,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a valid name';
+                        }
+                        if (!_isUniqueName(value)) {
+                          return "A birthday with this name already exists";
+                        }
+                        return null;
+                        },
+                      ),
+                    ),
+                    Expanded(
+                        child: new CheckboxListTile(
+                            secondary: Icon(
+                                Icons.phone
+                            ),
+                            checkColor: Colors.white,
+                            value: doesWantToAddPhoneNumber,
+                            onChanged: (bool? value) {
+                              setState(() {
+                                doesWantToAddPhoneNumber = value!;
+                              });
+                              myFocusNode.requestFocus();
+                            }),
+                    )
+                  ],
                 ),
-                new CheckboxListTile(
-                    title: Text("Add Phone Number?"),
-                    checkColor: Colors.white,
-                    value: doesWantToAddPhoneNumber,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        doesWantToAddPhoneNumber = value!;
-                      });
-                      myFocusNode.requestFocus();
-                    }),
                 doesWantToAddPhoneNumber == true ?
                 new InternationalPhoneNumberInput(
                   focusNode: myFocusNode,
