@@ -67,7 +67,7 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                         autofocus: true,
                         controller: _birthdayPersonController,
                         decoration: InputDecoration(
-                            hintText: "Enter the person's name"),
+                            hintText: "Name?"),
                         key: _birthdayNameKey,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
