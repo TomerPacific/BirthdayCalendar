@@ -6,6 +6,7 @@ import 'package:birthday_calendar/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 enum ElementType { background, icon, text }
@@ -42,6 +43,46 @@ class BirthdayWidget extends StatelessWidget {
     } else {
       Utils.showSnackbarWithMessage(context, unableToMakeCallMsg);
     }
+  }
+
+  void _handleAddingPhoneNumber(BuildContext context) async {
+    PhoneNumber _phoneNumber = PhoneNumber(isoCode: 'US');
+    final _phoneNumberKey = GlobalKey<FormFieldState>();
+    TextEditingController _phoneNumberController = new TextEditingController();
+
+    AlertDialog alert = AlertDialog(
+        title: Text("Add Phone Number"),
+    content: InternationalPhoneNumberInput(
+      key: _phoneNumberKey,
+      onInputChanged: (PhoneNumber number) {
+        _phoneNumber = number;
+      },
+      onInputValidated: (bool value) {},
+      selectorConfig: SelectorConfig(
+        selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+      ),
+      ignoreBlank: false,
+      autoValidateMode: AutovalidateMode.disabled,
+      initialValue: _phoneNumber,
+      textFieldController: _phoneNumberController,
+      formatInput: false,
+      keyboardType: TextInputType.numberWithOptions(
+          signed: true, decimal: true),
+      inputBorder: OutlineInputBorder(),
+      onSaved: (PhoneNumber number) {
+        _phoneNumber = number;
+      },
+    ),
+    actions: [
+
+      ]
+    );
+
+    var result = await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        });
   }
 
   @override
@@ -83,7 +124,7 @@ class BirthdayWidget extends StatelessWidget {
                                   birthdayOfPerson.hasNotification));
                     });
               })),
-          if (birthdayOfPerson.phoneNumber.isNotEmpty) ...[
+          birthdayOfPerson.phoneNumber.isNotEmpty ?
             new IconButton(
                 icon: Icon(Icons.call,
                     color: _getColorBasedOnPosition(
@@ -92,7 +133,14 @@ class BirthdayWidget extends StatelessWidget {
                   _handleCallButtonPressed(
                       context, birthdayOfPerson.phoneNumber);
                 })
-          ],
+          :
+          new IconButton(
+              icon: Icon(Icons.add_ic_call_outlined,
+                  color: _getColorBasedOnPosition(
+                      indexOfBirthday, ElementType.icon)),
+              onPressed: () {
+                _handleAddingPhoneNumber(context);
+              }),
           new IconButton(
               icon: Icon(Icons.clear,
                   color: _getColorBasedOnPosition(
