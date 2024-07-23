@@ -74,7 +74,22 @@ class BirthdayWidget extends StatelessWidget {
       },
     ),
     actions: [
-
+      TextButton(
+          style: TextButton.styleFrom(foregroundColor: Colors.green),
+        onPressed: () {
+          String phone = _phoneNumber.parseNumber();
+          birthdayOfPerson.phoneNumber = phone;
+          _phoneNumberController.clear();
+        },
+          child: new Text("Add")
+      ),
+      TextButton(
+          style: TextButton.styleFrom(foregroundColor: Colors.red),
+          onPressed: () {
+            _phoneNumberController.clear();
+          },
+          child: new Text("Cancel")
+      ),
       ]
     );
 
