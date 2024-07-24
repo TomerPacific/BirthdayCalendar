@@ -76,24 +76,28 @@ class BirthdayWidget extends StatelessWidget {
     actions: [
       TextButton(
           style: TextButton.styleFrom(foregroundColor: Colors.green),
-        onPressed: () {
-          String phone = _phoneNumber.parseNumber();
-          birthdayOfPerson.phoneNumber = phone;
-          _phoneNumberController.clear();
-        },
-          child: new Text("Add")
+          onPressed: () {
+            if (_phoneNumber.phoneNumber != null) {
+                String phone = _phoneNumber.parseNumber();
+                birthdayOfPerson.phoneNumber = phone;
+                _phoneNumberController.clear();
+                Navigator.pop(context);
+              };
+          },
+          child: new Text("Add"),
       ),
       TextButton(
           style: TextButton.styleFrom(foregroundColor: Colors.red),
           onPressed: () {
             _phoneNumberController.clear();
+            Navigator.pop(context);
           },
           child: new Text("Cancel")
       ),
       ]
     );
 
-    var result = await showDialog(
+    showDialog(
         context: context,
         builder: (BuildContext context) {
           return alert;
