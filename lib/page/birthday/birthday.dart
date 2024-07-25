@@ -80,6 +80,7 @@ class BirthdayWidget extends StatelessWidget {
             if (_phoneNumber.phoneNumber != null) {
                 String phone = _phoneNumber.parseNumber();
                 birthdayOfPerson.phoneNumber = phone;
+                storageService.updatePhoneNumberForBirthday(birthdayOfPerson);
                 _phoneNumberController.clear();
                 Navigator.pop(context);
               } else {
