@@ -15,5 +15,6 @@ abstract class StorageService {
   void saveDidAlreadyMigrateNotificationStatus(bool status);
   Future<bool> getAlreadyMigrateNotificationStatus();
   Future<List<UserBirthday>> getAllBirthdays();
+  Future<void> updatePhoneNumberForBirthday(UserBirthday birthday);
   void dispose();
 }
