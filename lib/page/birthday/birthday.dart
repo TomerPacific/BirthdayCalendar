@@ -82,7 +82,9 @@ class BirthdayWidget extends StatelessWidget {
                 birthdayOfPerson.phoneNumber = phone;
                 _phoneNumberController.clear();
                 Navigator.pop(context);
-              };
+              } else {
+              return null;
+            }
           },
           child: new Text("Add"),
       ),
