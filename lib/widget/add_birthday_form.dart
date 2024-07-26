@@ -22,7 +22,7 @@ class AddBirthdayForm extends StatefulWidget {
 }
 
 class AddBirthdayFormState extends State<AddBirthdayForm> {
-  final _formKey = GlobalKey<FormState>();
+  final _addBirthdayFormKey = GlobalKey<FormState>();
   final _birthdayNameKey = GlobalKey<FormFieldState>();
   final _phoneNumberKey = GlobalKey<FormFieldState>();
 
@@ -83,7 +83,7 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
     return AlertDialog(
       title: new Text(addBirthday),
       content: Form(
-          key: _formKey,
+          key: _addBirthdayFormKey,
           child: new Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -126,9 +126,9 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
         TextButton(
             style: TextButton.styleFrom(foregroundColor: Colors.green),
             onPressed: () {
-              if (_formKey.currentState != null &&
-                  _formKey.currentState!.validate()) {
-                _formKey.currentState!.save();
+              if (_addBirthdayFormKey.currentState != null &&
+                  _addBirthdayFormKey.currentState!.validate()) {
+                _addBirthdayFormKey.currentState!.save();
 
                 UserBirthday userBirthday = new UserBirthday(
                     _birthdayPersonController.text,
