@@ -51,6 +51,33 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
         await widget.storageService.getBirthdaysForDate(widget.dateOfDay, true);
   }
 
+  Widget _phoneNumberInputField() {
+    return doesWantToAddPhoneNumber == true
+        ? new InternationalPhoneNumberInput(
+            focusNode: addTelephoneButtonFocusNode,
+            key: _phoneNumberKey,
+            onInputChanged: (PhoneNumber number) {
+              _phoneNumber = number;
+            },
+            onInputValidated: (bool value) {},
+            selectorConfig: SelectorConfig(
+              selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+            ),
+            ignoreBlank: false,
+            autoValidateMode: AutovalidateMode.disabled,
+            initialValue: _phoneNumber,
+            textFieldController: _phoneNumberController,
+            formatInput: false,
+            keyboardType:
+                TextInputType.numberWithOptions(signed: true, decimal: true),
+            inputBorder: OutlineInputBorder(),
+            onSaved: (PhoneNumber number) {
+              _phoneNumber = number;
+            },
+          )
+        : Spacer();
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -66,8 +93,7 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                       child: new TextFormField(
                         autofocus: true,
                         controller: _birthdayPersonController,
-                        decoration: InputDecoration(
-                            hintText: "Name?"),
+                        decoration: InputDecoration(hintText: "Name?"),
                         key: _birthdayNameKey,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -94,30 +120,7 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                     ))
                   ],
                 ),
-                doesWantToAddPhoneNumber == true
-                    ? new InternationalPhoneNumberInput(
-                        focusNode: addTelephoneButtonFocusNode,
-                        key: _phoneNumberKey,
-                        onInputChanged: (PhoneNumber number) {
-                          _phoneNumber = number;
-                        },
-                        onInputValidated: (bool value) {},
-                        selectorConfig: SelectorConfig(
-                          selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
-                        ),
-                        ignoreBlank: false,
-                        autoValidateMode: AutovalidateMode.disabled,
-                        initialValue: _phoneNumber,
-                        textFieldController: _phoneNumberController,
-                        formatInput: false,
-                        keyboardType: TextInputType.numberWithOptions(
-                            signed: true, decimal: true),
-                        inputBorder: OutlineInputBorder(),
-                        onSaved: (PhoneNumber number) {
-                          _phoneNumber = number;
-                        },
-                      )
-                    : Spacer()
+                _phoneNumberInputField()
               ])),
       actions: [
         TextButton(
