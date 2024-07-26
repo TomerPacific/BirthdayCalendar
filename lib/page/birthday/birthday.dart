@@ -52,59 +52,75 @@ class BirthdayWidget extends StatelessWidget {
 
     AlertDialog alert = AlertDialog(
         title: Text("Add Phone Number"),
-    content: InternationalPhoneNumberInput(
-      key: _phoneNumberKey,
-      onInputChanged: (PhoneNumber number) {
-        _phoneNumber = number;
-      },
-      onInputValidated: (bool value) {},
-      selectorConfig: SelectorConfig(
-        selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
-      ),
-      ignoreBlank: false,
-      autoValidateMode: AutovalidateMode.disabled,
-      initialValue: _phoneNumber,
-      textFieldController: _phoneNumberController,
-      formatInput: false,
-      keyboardType: TextInputType.numberWithOptions(
-          signed: true, decimal: true),
-      inputBorder: OutlineInputBorder(),
-      onSaved: (PhoneNumber number) {
-        _phoneNumber = number;
-      },
-    ),
-    actions: [
-      TextButton(
-          style: TextButton.styleFrom(foregroundColor: Colors.green),
-          onPressed: () {
-            if (_phoneNumber.phoneNumber != null) {
+        content: InternationalPhoneNumberInput(
+          key: _phoneNumberKey,
+          onInputChanged: (PhoneNumber number) {
+            _phoneNumber = number;
+          },
+          onInputValidated: (bool value) {},
+          selectorConfig: SelectorConfig(
+            selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+          ),
+          ignoreBlank: false,
+          autoValidateMode: AutovalidateMode.disabled,
+          initialValue: _phoneNumber,
+          textFieldController: _phoneNumberController,
+          formatInput: false,
+          keyboardType:
+              TextInputType.numberWithOptions(signed: true, decimal: true),
+          inputBorder: OutlineInputBorder(),
+          onSaved: (PhoneNumber number) {
+            _phoneNumber = number;
+          },
+        ),
+        actions: [
+          TextButton(
+            style: TextButton.styleFrom(foregroundColor: Colors.green),
+            onPressed: () {
+              if (_phoneNumber.phoneNumber != null) {
                 String phone = _phoneNumber.parseNumber();
                 birthdayOfPerson.phoneNumber = phone;
                 storageService.updatePhoneNumberForBirthday(birthdayOfPerson);
                 _phoneNumberController.clear();
                 Navigator.pop(context);
               } else {
-              return null;
-            }
-          },
-          child: new Text("Add"),
-      ),
-      TextButton(
-          style: TextButton.styleFrom(foregroundColor: Colors.red),
-          onPressed: () {
-            _phoneNumberController.clear();
-            Navigator.pop(context);
-          },
-          child: new Text("Cancel")
-      ),
-      ]
-    );
+                return null;
+              }
+            },
+            child: new Text("Add"),
+          ),
+          TextButton(
+              style: TextButton.styleFrom(foregroundColor: Colors.red),
+              onPressed: () {
+                _phoneNumberController.clear();
+                Navigator.pop(context);
+              },
+              child: new Text("Cancel")),
+        ]);
 
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return alert;
         });
+  }
+
+  Widget callIconButton(BuildContext context) {
+    return birthdayOfPerson.phoneNumber.isNotEmpty
+        ? new IconButton(
+            icon: Icon(Icons.call,
+                color: _getColorBasedOnPosition(
+                    indexOfBirthday, ElementType.icon)),
+            onPressed: () {
+              _handleCallButtonPressed(context, birthdayOfPerson.phoneNumber);
+            })
+        : new IconButton(
+            icon: Icon(Icons.add_ic_call_outlined,
+                color: _getColorBasedOnPosition(
+                    indexOfBirthday, ElementType.icon)),
+            onPressed: () {
+              _handleAddingPhoneNumber(context);
+            });
   }
 
   @override
@@ -146,23 +162,7 @@ class BirthdayWidget extends StatelessWidget {
                                   birthdayOfPerson.hasNotification));
                     });
               })),
-          birthdayOfPerson.phoneNumber.isNotEmpty ?
-            new IconButton(
-                icon: Icon(Icons.call,
-                    color: _getColorBasedOnPosition(
-                        indexOfBirthday, ElementType.icon)),
-                onPressed: () {
-                  _handleCallButtonPressed(
-                      context, birthdayOfPerson.phoneNumber);
-                })
-          :
-          new IconButton(
-              icon: Icon(Icons.add_ic_call_outlined,
-                  color: _getColorBasedOnPosition(
-                      indexOfBirthday, ElementType.icon)),
-              onPressed: () {
-                _handleAddingPhoneNumber(context);
-              }),
+          callIconButton(context),
           new IconButton(
               icon: Icon(Icons.clear,
                   color: _getColorBasedOnPosition(
