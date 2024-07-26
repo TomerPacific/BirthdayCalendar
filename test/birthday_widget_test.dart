@@ -9,10 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 var printLog = [];
+
 void print(String s) => printLog.add(s);
 
 void main() {
-
   StorageService storageService = StorageServiceSharedPreferences();
   NotificationService notificationService = NotificationServiceImpl();
 
@@ -23,56 +23,46 @@ void main() {
     });
   });
 
-  testWidgets("BirthdayWidget show birthday for Someone", (WidgetTester tester) async {
-    final String phoneNumber =  '+234 500 500 5005';
-    UserBirthday userBirthday = new UserBirthday("Someone", DateTime.now(), false, phoneNumber);
+  testWidgets("BirthdayWidget show birthday for Someone",
+      (WidgetTester tester) async {
+    final String phoneNumber = '+234 500 500 5005';
+    UserBirthday userBirthday =
+        new UserBirthday("Someone", DateTime.now(), false, phoneNumber);
 
-    await tester.pumpWidget(
-        MaterialApp(
-            home: Material(
-              child:  new SizedBox(
-                      height: 40,
+    await tester.pumpWidget(MaterialApp(
+        home: Material(
+            child: new SizedBox(
+                height: 40,
                 child: BirthdayWidget(
                     key: Key("123"),
                     birthdayOfPerson: userBirthday,
-                    onDeletePressedCallback: () {},
                     indexOfBirthday: 1,
                     storageService: storageService,
-                    notificationService: notificationService)
-              )
-            )
-        )
-    );
+                    notificationService: notificationService)))));
 
     final nameFinder = find.text('Someone');
     expect(nameFinder, findsOneWidget);
   });
 
-  testWidgets("BirthdayWidget click on remove notification icon", (WidgetTester tester) async {
+  testWidgets("BirthdayWidget click on remove notification icon",
+      (WidgetTester tester) async {
+    final String phoneNumber = '+234 500 500 5005';
+    UserBirthday userBirthday =
+        new UserBirthday("Someone", DateTime.now(), false, phoneNumber);
 
-    final String phoneNumber =  '+234 500 500 5005';
-    UserBirthday userBirthday = new UserBirthday("Someone", DateTime.now(), false, phoneNumber);
+    await tester.pumpWidget(MaterialApp(
+        home: Material(
+            child: new SizedBox(
+                height: 40,
+                child: BirthdayWidget(
+                    key: Key("123"),
+                    birthdayOfPerson: userBirthday,
+                    indexOfBirthday: 1,
+                    storageService: storageService,
+                    notificationService: notificationService)))));
 
-    await tester.pumpWidget(
-        MaterialApp(
-            home: Material(
-                child:  new SizedBox(
-                    height: 40,
-                    child: BirthdayWidget(
-                        key: Key("123"),
-                        birthdayOfPerson: userBirthday,
-                        onDeletePressedCallback: () {
-                          print("Deleted");
-                        },
-                        indexOfBirthday: 1,
-                        storageService: storageService,
-                        notificationService: notificationService)
-                )
-            )
-        )
-    );
-
-    await tester.tap(find.descendant(of: find.byType(IconButton), matching: find.byIcon(Icons.clear)));
+    await tester.tap(find.descendant(
+        of: find.byType(IconButton), matching: find.byIcon(Icons.clear)));
 
     await tester.pump();
 
@@ -81,29 +71,25 @@ void main() {
     expect(sawDeletedMessage, true);
   });
 
-  testWidgets("BirthdayWidget press on call button", (WidgetTester tester) async {
+  testWidgets("BirthdayWidget press on call button",
+      (WidgetTester tester) async {
+    final String phoneNumber = '+234 500 500 5005';
+    UserBirthday userBirthday =
+        new UserBirthday("Someone", DateTime.now(), false, phoneNumber);
 
-    final String phoneNumber =  '+234 500 500 5005';
-    UserBirthday userBirthday = new UserBirthday("Someone", DateTime.now(), false, phoneNumber);
+    await tester.pumpWidget(MaterialApp(
+        home: Material(
+            child: new SizedBox(
+                height: 40,
+                child: BirthdayWidget(
+                    key: Key("123"),
+                    birthdayOfPerson: userBirthday,
+                    indexOfBirthday: 1,
+                    storageService: storageService,
+                    notificationService: notificationService)))));
 
-    await tester.pumpWidget(
-        MaterialApp(
-            home: Material(
-                child:  new SizedBox(
-                    height: 40,
-                    child: BirthdayWidget(
-                        key: Key("123"),
-                        birthdayOfPerson: userBirthday,
-                        onDeletePressedCallback: () {},
-                        indexOfBirthday: 1,
-                        storageService: storageService,
-                        notificationService: notificationService)
-                )
-            )
-        )
-    );
-
-    await tester.tap(find.descendant(of: find.byType(IconButton), matching: find.byIcon(Icons.call)));
+    await tester.tap(find.descendant(
+        of: find.byType(IconButton), matching: find.byIcon(Icons.call)));
     await tester.pump();
 
     final callButtonIcon = find.byIcon(Icons.call);
