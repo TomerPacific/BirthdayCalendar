@@ -18,26 +18,25 @@ class BirthdayWidget extends StatefulWidget {
   final NotificationService notificationService;
   final StorageService storageService;
 
-  BirthdayWidget({required Key key,
-    required this.birthdayOfPerson,
-    required this.onDeletePressedCallback,
-    required this.indexOfBirthday,
-    required this.notificationService,
-    required this.storageService})
+  BirthdayWidget(
+      {required Key key,
+      required this.birthdayOfPerson,
+      required this.onDeletePressedCallback,
+      required this.indexOfBirthday,
+      required this.notificationService,
+      required this.storageService})
       : super(key: key);
 
   @override
-  _BirthdayWidgetState createState() =>
-      _BirthdayWidgetState(
-          storageService,
-          notificationService,
-          birthdayOfPerson,
-          indexOfBirthday,
-          onDeletePressedCallback);
+  _BirthdayWidgetState createState() => _BirthdayWidgetState(
+      storageService,
+      notificationService,
+      birthdayOfPerson,
+      indexOfBirthday,
+      onDeletePressedCallback);
 }
 
 class _BirthdayWidgetState extends State<BirthdayWidget> {
-
   _BirthdayWidgetState(
       this.storageService,
       this.notificationService,
