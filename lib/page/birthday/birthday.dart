@@ -11,21 +11,45 @@ import 'package:url_launcher/url_launcher.dart';
 
 enum ElementType { background, icon, text }
 
-class BirthdayWidget extends StatelessWidget {
+class BirthdayWidget extends StatefulWidget {
   final UserBirthday birthdayOfPerson;
   final VoidCallback onDeletePressedCallback;
   final int indexOfBirthday;
   final NotificationService notificationService;
   final StorageService storageService;
 
-  BirthdayWidget(
-      {required Key key,
-      required this.birthdayOfPerson,
-      required this.onDeletePressedCallback,
-      required this.indexOfBirthday,
-      required this.notificationService,
-      required this.storageService})
+  BirthdayWidget({required Key key,
+    required this.birthdayOfPerson,
+    required this.onDeletePressedCallback,
+    required this.indexOfBirthday,
+    required this.notificationService,
+    required this.storageService})
       : super(key: key);
+
+  @override
+  _BirthdayWidgetState createState() =>
+      _BirthdayWidgetState(
+          storageService,
+          notificationService,
+          birthdayOfPerson,
+          indexOfBirthday,
+          onDeletePressedCallback);
+}
+
+class _BirthdayWidgetState extends State<BirthdayWidget> {
+
+  _BirthdayWidgetState(
+      this.storageService,
+      this.notificationService,
+      this.birthdayOfPerson,
+      this.indexOfBirthday,
+      this.onDeletePressedCallback);
+
+  StorageService storageService;
+  NotificationService notificationService;
+  UserBirthday birthdayOfPerson;
+  int indexOfBirthday;
+  VoidCallback onDeletePressedCallback;
 
   Color _getColorBasedOnPosition(int index, ElementType type) {
     if (type == ElementType.background) {
@@ -81,6 +105,7 @@ class BirthdayWidget extends StatelessWidget {
                 String phone = _phoneNumber.parseNumber();
                 birthdayOfPerson.phoneNumber = phone;
                 storageService.updatePhoneNumberForBirthday(birthdayOfPerson);
+                setState(() {});
                 _phoneNumberController.clear();
                 Navigator.pop(context);
               } else {
