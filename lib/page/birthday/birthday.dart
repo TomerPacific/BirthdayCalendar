@@ -1,3 +1,4 @@
+import 'package:birthday_calendar/BirthdayBloc/BirthdaysBloc.dart';
 import 'package:birthday_calendar/UserNotificationStatusBloc/UserNotificationStatusBloc.dart';
 import 'package:birthday_calendar/constants.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
@@ -13,7 +14,6 @@ enum ElementType { background, icon, text }
 
 class BirthdayWidget extends StatefulWidget {
   final UserBirthday birthdayOfPerson;
-  final VoidCallback onDeletePressedCallback;
   final int indexOfBirthday;
   final NotificationService notificationService;
   final StorageService storageService;
@@ -21,7 +21,6 @@ class BirthdayWidget extends StatefulWidget {
   BirthdayWidget(
       {required Key key,
       required this.birthdayOfPerson,
-      required this.onDeletePressedCallback,
       required this.indexOfBirthday,
       required this.notificationService,
       required this.storageService})
@@ -32,8 +31,7 @@ class BirthdayWidget extends StatefulWidget {
       storageService,
       notificationService,
       birthdayOfPerson,
-      indexOfBirthday,
-      onDeletePressedCallback);
+      indexOfBirthday);
 }
 
 class _BirthdayWidgetState extends State<BirthdayWidget> {
@@ -41,14 +39,12 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
       this.storageService,
       this.notificationService,
       this.birthdayOfPerson,
-      this.indexOfBirthday,
-      this.onDeletePressedCallback);
+      this.indexOfBirthday);
 
   StorageService storageService;
   NotificationService notificationService;
   UserBirthday birthdayOfPerson;
   int indexOfBirthday;
-  VoidCallback onDeletePressedCallback;
 
   Color _getColorBasedOnPosition(int index, ElementType type) {
     if (type == ElementType.background) {
@@ -191,7 +187,13 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
               icon: Icon(Icons.clear,
                   color: _getColorBasedOnPosition(
                       indexOfBirthday, ElementType.icon)),
-              onPressed: onDeletePressedCallback),
+              onPressed: () {
+                BlocProvider.of<BirthdaysBloc>(context)
+                    .add(new BirthdaysEvent(
+                    eventName:
+                    BirthdayEvent.RemoveBirthday,
+                    birthday: birthdayOfPerson));
+              }),
         ],
       ),
     );
