@@ -65,7 +65,7 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
   }
 
   void _handleAddingPhoneNumber(BuildContext context) async {
-    PhoneNumber _phoneNumber = PhoneNumber(isoCode: 'US');
+    PhoneNumber _birthdayPhoneNumber = PhoneNumber(isoCode: 'US');
     final _phoneNumberKey = GlobalKey<FormFieldState>();
     TextEditingController _phoneNumberController = new TextEditingController();
 
@@ -74,7 +74,7 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
         content: InternationalPhoneNumberInput(
           key: _phoneNumberKey,
           onInputChanged: (PhoneNumber number) {
-            _phoneNumber = number;
+            _birthdayPhoneNumber = number;
           },
           onInputValidated: (bool value) {},
           selectorConfig: SelectorConfig(
@@ -82,22 +82,22 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
           ),
           ignoreBlank: false,
           autoValidateMode: AutovalidateMode.disabled,
-          initialValue: _phoneNumber,
+          initialValue: _birthdayPhoneNumber,
           textFieldController: _phoneNumberController,
           formatInput: false,
           keyboardType:
               TextInputType.numberWithOptions(signed: true, decimal: true),
           inputBorder: OutlineInputBorder(),
           onSaved: (PhoneNumber number) {
-            _phoneNumber = number;
+            _birthdayPhoneNumber = number;
           },
         ),
         actions: [
           TextButton(
             style: TextButton.styleFrom(foregroundColor: Colors.green),
             onPressed: () {
-              if (_phoneNumber.phoneNumber != null) {
-                String phone = _phoneNumber.parseNumber();
+              if (_birthdayPhoneNumber.phoneNumber != null) {
+                String phone = _birthdayPhoneNumber.parseNumber();
                 birthdayOfPerson.phoneNumber = phone;
                 storageService.updatePhoneNumberForBirthday(birthdayOfPerson);
                 setState(() {});
