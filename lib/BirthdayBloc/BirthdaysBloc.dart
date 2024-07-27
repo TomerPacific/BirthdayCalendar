@@ -28,13 +28,13 @@ class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
             date: DateTime.now(),
             birthdays: birthdaysForDate,
             showAddBirthdayDialog: false)) {
-    on<BirthdaysEvent>((event, emit) {
+    on<BirthdaysEvent>((event, emit) async {
       switch (event.eventName) {
         case BirthdayEvent.AddBirthday:
           _handleAddEvent(event, emit, storageService, notificationService);
           break;
         case BirthdayEvent.RemoveBirthday:
-          _handleRemoveEvent(event, emit, storageService, notificationService);
+          await _handleRemoveEvent(event, emit, storageService, notificationService);
           break;
         case BirthdayEvent.ShowAddBirthdayDialog:
           emit(new BirthdaysState(showAddBirthdayDialog: true));
@@ -67,7 +67,7 @@ class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
         showAddBirthdayDialog: false));
   }
 
-  void _handleRemoveEvent(
+  Future<void> _handleRemoveEvent(
       BirthdaysEvent event,
       Emitter emit,
       StorageService storageService,
@@ -87,7 +87,7 @@ class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
         .where((element) => !element.equals(userBirthday))
         .toList();
 
-    storageService.saveBirthdaysForDate(birthdayDate, filteredBirthdays);
+    await storageService.saveBirthdaysForDate(birthdayDate, filteredBirthdays);
     emit(new BirthdaysState(
         date: birthdayDate,
         birthdays: filteredBirthdays,
