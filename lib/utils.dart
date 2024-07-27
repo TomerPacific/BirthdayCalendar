@@ -52,9 +52,9 @@ class Utils {
 
   static Color getColorBasedOnPosition(int index, ElementType type) {
     if (type == ElementType.background) {
-      return index % 2 == 0 ? Colors.indigoAccent : Colors.white24;
+      return index.isEven ? Colors.indigoAccent : Colors.white24;
     }
 
-    return index % 2 == 0 ? Colors.white : Colors.black;
+    return index.isEven ? Colors.white : Colors.black;
   }
 }
