@@ -49,35 +49,35 @@ void main() {
                             notificationService, storageService, birthdays),
                         child: BlocBuilder<BirthdaysBloc, BirthdaysState>(
                             builder: (context, state) {
-                              return Column(children: [
-                                (state.birthdays == null ||
+                          return Column(children: [
+                            (state.birthdays == null ||
                                     state.birthdays!.length == 0)
-                                    ? Spacer()
-                                    : Expanded(
-                                  child: ListView.builder(
-                                    itemCount: state.birthdays != null
-                                        ? state.birthdays!.length
-                                        : 0,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return BlocProvider.value(
-                                          value: BlocProvider.of<BirthdaysBloc>(
-                                              context),
-                                          child: BirthdayWidget(
-                                              key: Key(
-                                                  state.birthdays![index].name),
-                                              birthdayOfPerson:
-                                              state.birthdays![index],
-                                              indexOfBirthday: index,
-                                              storageService: storageService,
-                                              notificationService:
-                                              notificationService));
-                                    },
+                                ? Spacer()
+                                : Expanded(
+                                    child: ListView.builder(
+                                      itemCount: state.birthdays != null
+                                          ? state.birthdays!.length
+                                          : 0,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return BlocProvider.value(
+                                            value:
+                                                BlocProvider.of<BirthdaysBloc>(
+                                                    context),
+                                            child: BirthdayWidget(
+                                                key: Key(state
+                                                    .birthdays![index].name),
+                                                birthdayOfPerson:
+                                                    state.birthdays![index],
+                                                indexOfBirthday: index,
+                                                storageService: storageService,
+                                                notificationService:
+                                                    notificationService));
+                                      },
+                                    ),
                                   ),
-                                ),
-                              ]);
-                            }))))
-        );
+                          ]);
+                        })))));
       },
     ),
   );

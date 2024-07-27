@@ -34,7 +34,8 @@ class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
           _handleAddEvent(event, emit, storageService, notificationService);
           break;
         case BirthdayEvent.RemoveBirthday:
-          await _handleRemoveEvent(event, emit, storageService, notificationService);
+          await _handleRemoveEvent(
+              event, emit, storageService, notificationService);
           break;
         case BirthdayEvent.ShowAddBirthdayDialog:
           emit(new BirthdaysState(showAddBirthdayDialog: true));
