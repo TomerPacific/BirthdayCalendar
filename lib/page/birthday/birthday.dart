@@ -53,7 +53,7 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
     final _phoneNumberKey = GlobalKey<FormFieldState>();
     TextEditingController _phoneNumberController = new TextEditingController();
 
-    AlertDialog alert = AlertDialog(
+    AlertDialog addPhoneNumberAlert = AlertDialog(
         title: Text("Add Phone Number"),
         content: InternationalPhoneNumberInput(
           key: _phoneNumberKey,
@@ -105,7 +105,7 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return alert;
+          return addPhoneNumberAlert;
         });
   }
 
