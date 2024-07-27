@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/contact.dart';
@@ -27,7 +28,9 @@ class Utils {
     try {
       Map<String, dynamic> json = jsonDecode(payload);
       userBirthday = UserBirthday.fromJson(json);
-    } catch (e) {}
+    } on Exception catch (e) {
+      log("Failed converting payload to UserBirthday object", error: e);
+    }
 
     return userBirthday;
   }
