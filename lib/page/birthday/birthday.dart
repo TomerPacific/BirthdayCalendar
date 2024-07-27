@@ -10,8 +10,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-enum ElementType { background, icon, text }
-
 class BirthdayWidget extends StatefulWidget {
   final UserBirthday birthdayOfPerson;
   final int indexOfBirthday;
@@ -28,31 +26,17 @@ class BirthdayWidget extends StatefulWidget {
 
   @override
   _BirthdayWidgetState createState() => _BirthdayWidgetState(
-      storageService,
-      notificationService,
-      birthdayOfPerson,
-      indexOfBirthday);
+      storageService, notificationService, birthdayOfPerson, indexOfBirthday);
 }
 
 class _BirthdayWidgetState extends State<BirthdayWidget> {
-  _BirthdayWidgetState(
-      this.storageService,
-      this.notificationService,
-      this.birthdayOfPerson,
-      this.indexOfBirthday);
+  _BirthdayWidgetState(this.storageService, this.notificationService,
+      this.birthdayOfPerson, this.indexOfBirthday);
 
   StorageService storageService;
   NotificationService notificationService;
   UserBirthday birthdayOfPerson;
   int indexOfBirthday;
-
-  Color _getColorBasedOnPosition(int index, ElementType type) {
-    if (type == ElementType.background) {
-      return index % 2 == 0 ? Colors.indigoAccent : Colors.white24;
-    }
-
-    return index % 2 == 0 ? Colors.white : Colors.black;
-  }
 
   void _handleCallButtonPressed(
       BuildContext context, String phoneNumber) async {
@@ -129,14 +113,14 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
     return birthdayOfPerson.phoneNumber.isNotEmpty
         ? new IconButton(
             icon: Icon(Icons.call,
-                color: _getColorBasedOnPosition(
+                color: Utils.getColorBasedOnPosition(
                     indexOfBirthday, ElementType.icon)),
             onPressed: () {
               _handleCallButtonPressed(context, birthdayOfPerson.phoneNumber);
             })
         : new IconButton(
             icon: Icon(Icons.add_ic_call_outlined,
-                color: _getColorBasedOnPosition(
+                color: Utils.getColorBasedOnPosition(
                     indexOfBirthday, ElementType.icon)),
             onPressed: () {
               _handleAddingPhoneNumber(context);
@@ -147,7 +131,8 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
   Widget build(BuildContext context) {
     return Container(
       height: 40,
-      color: _getColorBasedOnPosition(indexOfBirthday, ElementType.background),
+      color: Utils.getColorBasedOnPosition(
+          indexOfBirthday, ElementType.background),
       child: Row(
         children: [
           new Padding(
@@ -157,7 +142,7 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
               textDirection: TextDirection.ltr,
               style: new TextStyle(
                   fontSize: 20.0,
-                  color: _getColorBasedOnPosition(
+                  color: Utils.getColorBasedOnPosition(
                       indexOfBirthday, ElementType.text)),
             ),
           ),
@@ -172,7 +157,7 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                         !birthdayOfPerson.hasNotification
                             ? Icons.notifications_off_outlined
                             : Icons.notifications_active_outlined,
-                        color: _getColorBasedOnPosition(
+                        color: Utils.getColorBasedOnPosition(
                             indexOfBirthday, ElementType.icon)),
                     onPressed: () {
                       BlocProvider.of<UserNotificationStatusBloc>(context).add(
@@ -185,13 +170,11 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
           callIconButton(context),
           new IconButton(
               icon: Icon(Icons.clear,
-                  color: _getColorBasedOnPosition(
+                  color: Utils.getColorBasedOnPosition(
                       indexOfBirthday, ElementType.icon)),
               onPressed: () {
-                BlocProvider.of<BirthdaysBloc>(context)
-                    .add(new BirthdaysEvent(
-                    eventName:
-                    BirthdayEvent.RemoveBirthday,
+                BlocProvider.of<BirthdaysBloc>(context).add(new BirthdaysEvent(
+                    eventName: BirthdayEvent.RemoveBirthday,
                     birthday: birthdayOfPerson));
               }),
         ],

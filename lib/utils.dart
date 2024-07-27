@@ -1,25 +1,24 @@
-
 import 'dart:convert';
-
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/contact.dart';
-
 import 'model/user_birthday.dart';
 
-class Utils {
+enum ElementType { background, icon, text }
 
+class Utils {
   static Future<List<Contact>> filterAlreadyImportedContacts(
-      StorageService _storageService,
-      List<Contact> contacts) async {
-    List<UserBirthday> allStoredBirthdays = await _storageService.getAllBirthdays();
+      StorageService _storageService, List<Contact> contacts) async {
+    List<UserBirthday> allStoredBirthdays =
+        await _storageService.getAllBirthdays();
     List<String> names = allStoredBirthdays.map((e) => e.name).toList();
-    List<Contact> filtered = contacts.where((contact) => !names.contains(contact.displayName)).toList();
+    List<Contact> filtered = contacts
+        .where((contact) => !names.contains(contact.displayName))
+        .toList();
     return filtered;
   }
 
   static UserBirthday? getUserBirthdayFromPayload(String? payload) {
-
     if (payload == null || payload.isEmpty) {
       return null;
     }
@@ -28,17 +27,15 @@ class Utils {
     try {
       Map<String, dynamic> json = jsonDecode(payload);
       userBirthday = UserBirthday.fromJson(json);
-    } catch (e) {
-
-    }
+    } catch (e) {}
 
     return userBirthday;
   }
 
   static void showSnackbarWithMessage(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message),
-        ));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(message),
+    ));
   }
 
   static int correctMonthOverflow(int month) {
@@ -50,4 +47,11 @@ class Utils {
     return month;
   }
 
+  static Color getColorBasedOnPosition(int index, ElementType type) {
+    if (type == ElementType.background) {
+      return index % 2 == 0 ? Colors.indigoAccent : Colors.white24;
+    }
+
+    return index % 2 == 0 ? Colors.white : Colors.black;
+  }
 }
