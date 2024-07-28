@@ -4,7 +4,7 @@ class UserBirthday {
   final String name;
   final DateTime birthdayDate;
   bool hasNotification;
-  final String phoneNumber;
+  String phoneNumber;
 
   UserBirthday(
       this.name, this.birthdayDate, this.hasNotification, this.phoneNumber);

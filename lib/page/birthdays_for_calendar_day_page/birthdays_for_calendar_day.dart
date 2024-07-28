@@ -47,20 +47,14 @@ class BirthdaysForCalendarDayWidget extends StatelessWidget {
                               ? state.birthdays!.length
                               : 0,
                           itemBuilder: (BuildContext context, int index) {
-                            return BirthdayWidget(
-                                key: Key(state.birthdays![index].name),
-                                birthdayOfPerson: state.birthdays![index],
-                                onDeletePressedCallback: () {
-                                  BlocProvider.of<BirthdaysBloc>(context).add(
-                                      new BirthdaysEvent(
-                                          eventName:
-                                              BirthdayEvent.RemoveBirthday,
-                                          birthday: state.birthdays![index],
-                                          birthdays: birthdays));
-                                },
-                                indexOfBirthday: index,
-                                storageService: storageService,
-                                notificationService: notificationService);
+                            return BlocProvider.value(
+                                value: BlocProvider.of<BirthdaysBloc>(context),
+                                child: BirthdayWidget(
+                                    key: Key(state.birthdays![index].name),
+                                    birthdayOfPerson: state.birthdays![index],
+                                    indexOfBirthday: index,
+                                    storageService: storageService,
+                                    notificationService: notificationService));
                           },
                         ),
                       ),

@@ -6,6 +6,7 @@ import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:intl/intl.dart';
 import 'storage_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:collection/collection.dart';
 
 class StorageServiceSharedPreferences extends StorageService {
 
@@ -171,6 +172,16 @@ class StorageServiceSharedPreferences extends StorageService {
     }
 
     return birthdays;
+  }
+
+  @override
+  Future<void> updatePhoneNumberForBirthday(UserBirthday birthday) async {
+    List<UserBirthday> birthdays = await getBirthdaysForDate(birthday.birthdayDate, false);
+    UserBirthday? storedBirthday = birthdays.firstWhereOrNull((element) => element.name == birthday.name);
+    if (storedBirthday != null) {
+      storedBirthday.phoneNumber = birthday.phoneNumber;
+      saveBirthdaysForDate(storedBirthday.birthdayDate, birthdays);
+    }
   }
 
   void dispose() {
