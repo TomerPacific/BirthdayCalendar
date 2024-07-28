@@ -28,7 +28,7 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
 
   TextEditingController _birthdayPersonController = new TextEditingController();
   TextEditingController _phoneNumberController = new TextEditingController();
-  PhoneNumber _phoneNumber = PhoneNumber(isoCode: 'US');
+  PhoneNumber _birthdayPhoneNumber = PhoneNumber(isoCode: 'US');
   List<UserBirthday> birthdaysForDate = [];
   bool doesWantToAddPhoneNumber = false;
   late FocusNode addTelephoneButtonFocusNode;
@@ -57,7 +57,7 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
             focusNode: addTelephoneButtonFocusNode,
             key: _phoneNumberKey,
             onInputChanged: (PhoneNumber number) {
-              _phoneNumber = number;
+              _birthdayPhoneNumber = number;
             },
             onInputValidated: (bool value) {},
             selectorConfig: SelectorConfig(
@@ -65,14 +65,14 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
             ),
             ignoreBlank: false,
             autoValidateMode: AutovalidateMode.disabled,
-            initialValue: _phoneNumber,
+            initialValue: _birthdayPhoneNumber,
             textFieldController: _phoneNumberController,
             formatInput: false,
             keyboardType:
                 TextInputType.numberWithOptions(signed: true, decimal: true),
             inputBorder: OutlineInputBorder(),
             onSaved: (PhoneNumber number) {
-              _phoneNumber = number;
+              _birthdayPhoneNumber = number;
             },
           )
         : Spacer();
@@ -134,8 +134,8 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                     _birthdayPersonController.text,
                     widget.dateOfDay,
                     true,
-                    _phoneNumber.phoneNumber != null
-                        ? _phoneNumber.parseNumber()
+                    _birthdayPhoneNumber.phoneNumber != null
+                        ? _birthdayPhoneNumber.parseNumber()
                         : "");
                 BlocProvider.of<BirthdaysBloc>(context).add(new BirthdaysEvent(
                     eventName: BirthdayEvent.AddBirthday,
