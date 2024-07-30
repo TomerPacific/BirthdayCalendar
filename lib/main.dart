@@ -15,14 +15,12 @@ import 'constants.dart';
 import 'package:birthday_calendar/page/main_page/main_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   NotificationService notificationService = NotificationServiceImpl();
   PermissionsService permissionsService = PermissionsServiceImpl();
-  StorageService storageService =
-      StorageServiceSharedPreferences();
+  StorageService storageService = StorageServiceSharedPreferences();
   ContactsService contactsService = ContactsServiceImpl(
       storageService: storageService,
       notificationService: notificationService,
@@ -31,10 +29,10 @@ Future<void> main() async {
   bool isDarkMode = await storageService.getThemeModeSetting();
 
   runApp(MyApp(
-      notificationService: notificationService,
-      contactsService: contactsService,
-      storageService: storageService,
-      isDarkMode: isDarkMode,
+    notificationService: notificationService,
+    contactsService: contactsService,
+    storageService: storageService,
+    isDarkMode: isDarkMode,
   ));
 }
 
@@ -52,29 +50,34 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (context) => ThemeBloc(storageService, isDarkMode)),
-        BlocProvider(
-            create: (context) => ContactsPermissionStatusBloc(contactsService)),
-        BlocProvider(create: (context) => VersionBloc())
-      ],
-      child: BlocBuilder<ThemeBloc, ThemeMode>(
-        builder: (context, state) {
-          return MaterialApp(
-              title: applicationName,
-              theme: ThemeData.light(),
-              themeMode: state,
-              darkTheme: ThemeData.dark(),
-              home: MainPage(
-                  key: Key("BirthdayCalendar"),
-                  notificationService: notificationService,
-                  contactsService: contactsService,
-                  storageService: storageService,
+    return RepositoryProvider(
+        create: (context) => StorageServiceSharedPreferences(),
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider(
+                create: (context) => ThemeBloc(context.read<StorageServiceSharedPreferences>(), isDarkMode)),
+            BlocProvider(
+                create: (context) =>
+                    ContactsPermissionStatusBloc(contactsService)),
+            BlocProvider(create: (context) => VersionBloc())
+          ],
+          child: BlocBuilder<ThemeBloc, ThemeMode>(
+            builder: (context, state) {
+              return MaterialApp(
                   title: applicationName,
-                  currentMonth: BirthdayCalendarDateUtils.getCurrentMonthNumber()));
-        },
-      ),
-    );
+                  theme: ThemeData.light(),
+                  themeMode: state,
+                  darkTheme: ThemeData.dark(),
+                  home: MainPage(
+                      key: Key("BirthdayCalendar"),
+                      notificationService: notificationService,
+                      contactsService: contactsService,
+                      storageService: context.read<StorageServiceSharedPreferences>(),
+                      title: applicationName,
+                      currentMonth:
+                          BirthdayCalendarDateUtils.getCurrentMonthNumber()));
+            },
+          ),
+        ));
   }
 }
