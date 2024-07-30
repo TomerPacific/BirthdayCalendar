@@ -12,7 +12,7 @@ import 'package:birthday_calendar/service/storage_service/shared_preferences_sto
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'constants.dart';
-import 'package:birthday_calendar/page/main_page/main_screen.dart';
+import 'package:birthday_calendar/page/main_page/main_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 
