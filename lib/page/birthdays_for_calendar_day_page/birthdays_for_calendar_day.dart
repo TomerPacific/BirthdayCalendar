@@ -2,7 +2,7 @@ import 'package:birthday_calendar/BirthdayBloc/BirthdaysBloc.dart';
 import 'package:birthday_calendar/BirthdayBloc/BirthdaysState.dart';
 import 'package:birthday_calendar/BirthdayCalendarDateUtils.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
-import 'package:birthday_calendar/service/storage_service/storage_service.dart';
+import 'package:birthday_calendar/service/storage_service/shared_preferences_storage.dart';
 import 'package:birthday_calendar/widget/add_birthday_form.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/page/birthday/birthday.dart';
@@ -12,14 +12,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class BirthdaysForCalendarDayWidget extends StatelessWidget {
   final DateTime dateOfDay;
   final List<UserBirthday> birthdays;
-  final StorageService storageService;
   final NotificationService notificationService;
 
   BirthdaysForCalendarDayWidget(
       {required Key key,
       required this.dateOfDay,
       required this.birthdays,
-      required this.storageService,
       required this.notificationService})
       : super(key: key);
 
@@ -27,7 +25,7 @@ class BirthdaysForCalendarDayWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
         create: (context) =>
-            BirthdaysBloc(notificationService, storageService, birthdays),
+            BirthdaysBloc(notificationService, context.read<StorageServiceSharedPreferences>(), birthdays),
         child: BlocBuilder<BirthdaysBloc, BirthdaysState>(
             builder: (context, state) {
           return Scaffold(
@@ -53,7 +51,6 @@ class BirthdaysForCalendarDayWidget extends StatelessWidget {
                                     key: Key(state.birthdays![index].name),
                                     birthdayOfPerson: state.birthdays![index],
                                     indexOfBirthday: index,
-                                    storageService: storageService,
                                     notificationService: notificationService));
                           },
                         ),
@@ -66,8 +63,7 @@ class BirthdaysForCalendarDayWidget extends StatelessWidget {
                           builder: (_) => BlocProvider.value(
                               value: BlocProvider.of<BirthdaysBloc>(context),
                               child: AddBirthdayForm(
-                                  dateOfDay: dateOfDay,
-                                  storageService: storageService)));
+                                  dateOfDay: dateOfDay)));
                     }
                   },
                   child: Spacer(),
