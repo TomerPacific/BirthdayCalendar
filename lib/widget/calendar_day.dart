@@ -1,19 +1,18 @@
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
-import 'package:birthday_calendar/service/storage_service/storage_service.dart';
+import 'package:birthday_calendar/service/storage_service/shared_preferences_storage.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:birthday_calendar/page/birthdays_for_calendar_day_page/birthdays_for_calendar_day.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
+import 'package:provider/provider.dart';
 
 class CalendarDayWidget extends StatefulWidget {
   final DateTime date;
-  final StorageService storageService;
   final NotificationService notificationService;
 
   const CalendarDayWidget(
       {required Key key,
       required this.date,
-      required this.storageService,
       required this.notificationService})
       : super(key: key);
 
@@ -29,7 +28,7 @@ class _CalendarDayState extends State<CalendarDayWidget> {
   void initState() {
     _fetchBirthdaysFromStorage();
     Stream<List<UserBirthday>> stream =
-        widget.storageService.getBirthdaysStream();
+    context.read<StorageServiceSharedPreferences>().getBirthdaysStream();
     _streamSubscription = stream.listen(_handleEventFromStorageService);
     super.initState();
   }
@@ -63,7 +62,7 @@ class _CalendarDayState extends State<CalendarDayWidget> {
 
   void _fetchBirthdaysFromStorage() async {
     List<UserBirthday> storedBirthdays =
-        await widget.storageService.getBirthdaysForDate(widget.date, true);
+        await context.read<StorageServiceSharedPreferences>().getBirthdaysForDate(widget.date, true);
     setState(() {
       _birthdays = storedBirthdays;
     });
@@ -88,7 +87,6 @@ class _CalendarDayState extends State<CalendarDayWidget> {
                     key: Key(widget.date.toString()),
                     dateOfDay: widget.date,
                     birthdays: _birthdays,
-                    storageService: widget.storageService,
                     notificationService: widget.notificationService),
               )).then((value) => _fetchBirthdaysFromStorage());
         },
