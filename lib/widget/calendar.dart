@@ -1,18 +1,15 @@
 import 'package:birthday_calendar/BirthdayCalendarDateUtils.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
-import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/widget/calendar_day.dart';
 
 class CalendarWidget extends StatefulWidget {
   final int currentMonth;
-  final StorageService storageService;
   final NotificationService notificationService;
 
   const CalendarWidget(
       {required Key key,
       required this.currentMonth,
-      required this.storageService,
       required this.notificationService})
       : super(key: key);
 
@@ -52,7 +49,6 @@ class _CalendarState extends State<CalendarWidget> {
                     key: Key(widget.currentMonth.toString()),
                     date: BirthdayCalendarDateUtils.constructDateTimeFromDayAndMonth(
                         (index + 1), widget.currentMonth),
-                    storageService: widget.storageService,
                     notificationService: widget.notificationService);
               })),
     );
