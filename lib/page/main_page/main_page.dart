@@ -7,7 +7,7 @@ import 'package:birthday_calendar/page/birthdays_for_calendar_day_page/birthdays
 import 'package:birthday_calendar/service/contacts_service/contacts_service.dart';
 import 'package:birthday_calendar/service/notification_service/notificationCallbacks.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
-import 'package:birthday_calendar/service/storage_service/storage_service.dart';
+import 'package:birthday_calendar/service/storage_service/shared_preferences_storage.dart';
 import 'package:birthday_calendar/service/update_service/update_service.dart';
 import 'package:birthday_calendar/service/update_service/update_service_impl.dart';
 import 'package:birthday_calendar/service/version_specific_service/VersionSpecificService.dart';
@@ -23,7 +23,6 @@ class MainPage extends StatefulWidget {
       {required Key key,
       required this.notificationService,
       required this.contactsService,
-      required this.storageService,
       required this.title,
       required this.currentMonth})
       : super(key: key);
@@ -32,19 +31,17 @@ class MainPage extends StatefulWidget {
   final int currentMonth;
   final NotificationService notificationService;
   final ContactsService contactsService;
-  final StorageService storageService;
 
   @override
   _MainPageState createState() =>
-      _MainPageState(storageService, notificationService);
+      _MainPageState(notificationService);
 }
 
 class _MainPageState extends State<MainPage> implements NotificationCallbacks {
-  _MainPageState(this.storageService, this.notificationService);
+  _MainPageState(this.notificationService);
 
   int monthToPresent = -1;
   String month = "";
-  StorageService storageService;
   NotificationService notificationService;
   UpdateService _updateService = UpdateServiceImpl();
   late VersionSpecificService versionSpecificService;
@@ -114,7 +111,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
   @override
   void initState() {
     versionSpecificService = new VersionSpecificServiceImpl(
-        storageService: storageService,
+        storageService: context.read<StorageServiceSharedPreferences>(),
         notificationService: notificationService);
     monthToPresent = widget.currentMonth;
     month = BirthdayCalendarDateUtils.convertMonthToWord(monthToPresent);
@@ -137,7 +134,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (context) => ClearNotificationsBloc(widget.storageService),
+        create: (context) => ClearNotificationsBloc(context.read<StorageServiceSharedPreferences>()),
         child: BlocBuilder<ClearNotificationsBloc, bool>(
             builder: (context, state) {
           return Scaffold(
@@ -197,7 +194,6 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
                               child: new CalendarWidget(
                                   key: Key(monthToPresent.toString()),
                                   currentMonth: monthToPresent,
-                                  storageService: widget.storageService,
                                   notificationService:
                                       widget.notificationService),
                             ),
@@ -216,7 +212,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
 
   @override
   void dispose() {
-    widget.storageService.dispose();
+    context.read<StorageServiceSharedPreferences>().dispose();
     widget.notificationService.removeListenerForSelectNotificationStream(this);
     super.dispose();
   }
@@ -226,7 +222,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
     if (payload != null) {
       UserBirthday? birthday = Utils.getUserBirthdayFromPayload(payload);
       if (birthday != null) {
-        List<UserBirthday> birthdays = await widget.storageService
+        List<UserBirthday> birthdays = await context.read<StorageServiceSharedPreferences>()
             .getBirthdaysForDate(birthday.birthdayDate, true);
         Navigator.push(
             context,
@@ -235,7 +231,6 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
                   key: Key(birthday.birthdayDate.toString()),
                   dateOfDay: birthday.birthdayDate,
                   birthdays: birthdays,
-                  storageService: widget.storageService,
                   notificationService: widget.notificationService),
             ));
       }
