@@ -31,7 +31,6 @@ Future<void> main() async {
   runApp(MyApp(
     notificationService: notificationService,
     contactsService: contactsService,
-    storageService: storageService,
     isDarkMode: isDarkMode,
   ));
 }
@@ -40,12 +39,10 @@ class MyApp extends StatelessWidget {
   MyApp(
       {required this.notificationService,
       required this.contactsService,
-      required this.storageService,
       required this.isDarkMode});
 
   final NotificationService notificationService;
   final ContactsService contactsService;
-  final StorageService storageService;
   final bool isDarkMode;
 
   @override
