@@ -24,8 +24,8 @@ class BirthdaysForCalendarDayWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (context) =>
-            BirthdaysBloc(notificationService, context.read<StorageServiceSharedPreferences>(), birthdays),
+        create: (context) => BirthdaysBloc(notificationService,
+            context.read<StorageServiceSharedPreferences>(), birthdays),
         child: BlocBuilder<BirthdaysBloc, BirthdaysState>(
             builder: (context, state) {
           return Scaffold(
@@ -62,8 +62,7 @@ class BirthdaysForCalendarDayWidget extends StatelessWidget {
                           context: context,
                           builder: (_) => BlocProvider.value(
                               value: BlocProvider.of<BirthdaysBloc>(context),
-                              child: AddBirthdayForm(
-                                  dateOfDay: dateOfDay)));
+                              child: AddBirthdayForm(dateOfDay: dateOfDay)));
                     }
                   },
                   child: Spacer(),

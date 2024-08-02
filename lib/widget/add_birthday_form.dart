@@ -10,9 +10,7 @@ import 'package:birthday_calendar/constants.dart';
 class AddBirthdayForm extends StatefulWidget {
   final DateTime dateOfDay;
 
-  AddBirthdayForm(
-      {Key? key, required this.dateOfDay})
-      : super(key: key);
+  AddBirthdayForm({Key? key, required this.dateOfDay}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -46,8 +44,9 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
   }
 
   void _getBirthdaysForDate() async {
-    birthdaysForDate =
-        await context.read<StorageServiceSharedPreferences>().getBirthdaysForDate(widget.dateOfDay, true);
+    birthdaysForDate = await context
+        .read<StorageServiceSharedPreferences>()
+        .getBirthdaysForDate(widget.dateOfDay, true);
   }
 
   Widget _phoneNumberInputField() {

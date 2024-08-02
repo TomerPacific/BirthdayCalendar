@@ -11,9 +11,7 @@ class CalendarDayWidget extends StatefulWidget {
   final NotificationService notificationService;
 
   const CalendarDayWidget(
-      {required Key key,
-      required this.date,
-      required this.notificationService})
+      {required Key key, required this.date, required this.notificationService})
       : super(key: key);
 
   @override
@@ -28,7 +26,7 @@ class _CalendarDayState extends State<CalendarDayWidget> {
   void initState() {
     _fetchBirthdaysFromStorage();
     Stream<List<UserBirthday>> stream =
-    context.read<StorageServiceSharedPreferences>().getBirthdaysStream();
+        context.read<StorageServiceSharedPreferences>().getBirthdaysStream();
     _streamSubscription = stream.listen(_handleEventFromStorageService);
     super.initState();
   }
@@ -61,8 +59,9 @@ class _CalendarDayState extends State<CalendarDayWidget> {
   }
 
   void _fetchBirthdaysFromStorage() async {
-    List<UserBirthday> storedBirthdays =
-        await context.read<StorageServiceSharedPreferences>().getBirthdaysForDate(widget.date, true);
+    List<UserBirthday> storedBirthdays = await context
+        .read<StorageServiceSharedPreferences>()
+        .getBirthdaysForDate(widget.date, true);
     setState(() {
       _birthdays = storedBirthdays;
     });

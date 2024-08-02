@@ -55,7 +55,9 @@ class MyApp extends StatelessWidget {
         child: MultiBlocProvider(
           providers: [
             BlocProvider(
-                create: (context) => ThemeBloc(context.read<StorageServiceSharedPreferences>(), isDarkMode)),
+                create: (context) => ThemeBloc(
+                    context.read<StorageServiceSharedPreferences>(),
+                    isDarkMode)),
             BlocProvider(
                 create: (context) =>
                     ContactsPermissionStatusBloc(contactsService)),

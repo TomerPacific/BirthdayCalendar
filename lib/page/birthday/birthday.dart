@@ -28,8 +28,8 @@ class BirthdayWidget extends StatefulWidget {
 }
 
 class _BirthdayWidgetState extends State<BirthdayWidget> {
-  _BirthdayWidgetState(this.notificationService,
-      this.birthdayOfPerson, this.indexOfBirthday);
+  _BirthdayWidgetState(
+      this.notificationService, this.birthdayOfPerson, this.indexOfBirthday);
 
   NotificationService notificationService;
   UserBirthday birthdayOfPerson;
@@ -80,7 +80,9 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
               if (_birthdayPhoneNumber.phoneNumber != null) {
                 String phone = _birthdayPhoneNumber.parseNumber();
                 birthdayOfPerson.phoneNumber = phone;
-                context.read<StorageServiceSharedPreferences>().updatePhoneNumberForBirthday(birthdayOfPerson);
+                context
+                    .read<StorageServiceSharedPreferences>()
+                    .updatePhoneNumberForBirthday(birthdayOfPerson);
                 setState(() {});
                 _phoneNumberController.clear();
                 Navigator.pop(context);
@@ -146,7 +148,8 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
           new Spacer(),
           BlocProvider(
               create: (context) => UserNotificationStatusBloc(
-                  context.read<StorageServiceSharedPreferences>(), notificationService),
+                  context.read<StorageServiceSharedPreferences>(),
+                  notificationService),
               child: BlocBuilder<UserNotificationStatusBloc, bool>(
                   builder: (context, state) {
                 return new IconButton(

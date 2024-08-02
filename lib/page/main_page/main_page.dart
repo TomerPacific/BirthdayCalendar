@@ -33,8 +33,7 @@ class MainPage extends StatefulWidget {
   final ContactsService contactsService;
 
   @override
-  _MainPageState createState() =>
-      _MainPageState(notificationService);
+  _MainPageState createState() => _MainPageState(notificationService);
 }
 
 class _MainPageState extends State<MainPage> implements NotificationCallbacks {
@@ -134,7 +133,8 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (context) => ClearNotificationsBloc(context.read<StorageServiceSharedPreferences>()),
+        create: (context) => ClearNotificationsBloc(
+            context.read<StorageServiceSharedPreferences>()),
         child: BlocBuilder<ClearNotificationsBloc, bool>(
             builder: (context, state) {
           return Scaffold(
@@ -222,7 +222,8 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
     if (payload != null) {
       UserBirthday? birthday = Utils.getUserBirthdayFromPayload(payload);
       if (birthday != null) {
-        List<UserBirthday> birthdays = await context.read<StorageServiceSharedPreferences>()
+        List<UserBirthday> birthdays = await context
+            .read<StorageServiceSharedPreferences>()
             .getBirthdaysForDate(birthday.birthdayDate, true);
         Navigator.push(
             context,
