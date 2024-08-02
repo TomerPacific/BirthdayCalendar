@@ -72,7 +72,6 @@ class MyApp extends StatelessWidget {
                       key: Key("BirthdayCalendar"),
                       notificationService: notificationService,
                       contactsService: contactsService,
-                      storageService: context.read<StorageServiceSharedPreferences>(),
                       title: applicationName,
                       currentMonth:
                           BirthdayCalendarDateUtils.getCurrentMonthNumber()));
