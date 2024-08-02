@@ -1,6 +1,6 @@
 import 'package:birthday_calendar/BirthdayBloc/BirthdaysBloc.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
-import 'package:birthday_calendar/service/storage_service/storage_service.dart';
+import 'package:birthday_calendar/service/storage_service/shared_preferences_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
@@ -9,11 +9,8 @@ import 'package:birthday_calendar/constants.dart';
 
 class AddBirthdayForm extends StatefulWidget {
   final DateTime dateOfDay;
-  final StorageService storageService;
 
-  AddBirthdayForm(
-      {Key? key, required this.dateOfDay, required this.storageService})
-      : super(key: key);
+  AddBirthdayForm({Key? key, required this.dateOfDay}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -47,8 +44,9 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
   }
 
   void _getBirthdaysForDate() async {
-    birthdaysForDate =
-        await widget.storageService.getBirthdaysForDate(widget.dateOfDay, true);
+    birthdaysForDate = await context
+        .read<StorageServiceSharedPreferences>()
+        .getBirthdaysForDate(widget.dateOfDay, true);
   }
 
   Widget _phoneNumberInputField() {

@@ -2,7 +2,7 @@ import 'package:birthday_calendar/BirthdayBloc/BirthdaysBloc.dart';
 import 'package:birthday_calendar/UserNotificationStatusBloc/UserNotificationStatusBloc.dart';
 import 'package:birthday_calendar/constants.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
-import 'package:birthday_calendar/service/storage_service/storage_service.dart';
+import 'package:birthday_calendar/service/storage_service/shared_preferences_storage.dart';
 import 'package:birthday_calendar/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
@@ -14,26 +14,23 @@ class BirthdayWidget extends StatefulWidget {
   final UserBirthday birthdayOfPerson;
   final int indexOfBirthday;
   final NotificationService notificationService;
-  final StorageService storageService;
 
   BirthdayWidget(
       {required Key key,
       required this.birthdayOfPerson,
       required this.indexOfBirthday,
-      required this.notificationService,
-      required this.storageService})
+      required this.notificationService})
       : super(key: key);
 
   @override
   _BirthdayWidgetState createState() => _BirthdayWidgetState(
-      storageService, notificationService, birthdayOfPerson, indexOfBirthday);
+      notificationService, birthdayOfPerson, indexOfBirthday);
 }
 
 class _BirthdayWidgetState extends State<BirthdayWidget> {
-  _BirthdayWidgetState(this.storageService, this.notificationService,
-      this.birthdayOfPerson, this.indexOfBirthday);
+  _BirthdayWidgetState(
+      this.notificationService, this.birthdayOfPerson, this.indexOfBirthday);
 
-  StorageService storageService;
   NotificationService notificationService;
   UserBirthday birthdayOfPerson;
   int indexOfBirthday;
@@ -83,7 +80,9 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
               if (_birthdayPhoneNumber.phoneNumber != null) {
                 String phone = _birthdayPhoneNumber.parseNumber();
                 birthdayOfPerson.phoneNumber = phone;
-                storageService.updatePhoneNumberForBirthday(birthdayOfPerson);
+                context
+                    .read<StorageServiceSharedPreferences>()
+                    .updatePhoneNumberForBirthday(birthdayOfPerson);
                 setState(() {});
                 _phoneNumberController.clear();
                 Navigator.pop(context);
@@ -149,7 +148,8 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
           new Spacer(),
           BlocProvider(
               create: (context) => UserNotificationStatusBloc(
-                  storageService, notificationService),
+                  context.read<StorageServiceSharedPreferences>(),
+                  notificationService),
               child: BlocBuilder<UserNotificationStatusBloc, bool>(
                   builder: (context, state) {
                 return new IconButton(
