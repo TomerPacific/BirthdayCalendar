@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'constants.dart';
 import 'package:birthday_calendar/page/main_page/main_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -64,6 +65,15 @@ class MyApp extends StatelessWidget {
             builder: (context, state) {
               return MaterialApp(
                   title: applicationName,
+                  localizationsDelegates: [
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                  ],
+                  supportedLocales: [
+                    Locale('en'), // English
+                    Locale('hi'), // Spanish
+                  ],
                   theme: ThemeData.light(),
                   themeMode: state,
                   darkTheme: ThemeData.dark(),
