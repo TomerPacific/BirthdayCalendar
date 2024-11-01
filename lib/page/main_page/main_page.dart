@@ -40,7 +40,6 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
   _MainPageState(this.notificationService);
 
   int monthToPresent = -1;
-  String month = "";
   NotificationService notificationService;
   UpdateService _updateService = UpdateServiceImpl();
   late VersionSpecificService versionSpecificService;
@@ -51,7 +50,6 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
           ? monthToPresent + 1
           : monthToPresent - 1;
       monthToPresent = Utils.correctMonthOverflow(monthToPresent);
-      month = BirthdayCalendarDateUtils.convertMonthToWord(monthToPresent);
     });
   }
 
@@ -113,7 +111,6 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
         storageService: context.read<StorageServiceSharedPreferences>(),
         notificationService: notificationService);
     monthToPresent = widget.currentMonth;
-    month = BirthdayCalendarDateUtils.convertMonthToWord(monthToPresent);
     widget.notificationService.init();
     widget.notificationService.addListenerForSelectNotificationStream(this);
     _updateService.checkForInAppUpdate(_onUpdateSuccess, _onUpdateFailure);
@@ -127,7 +124,6 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
   void didUpdateWidget(covariant MainPage oldWidget) {
     super.didUpdateWidget(oldWidget);
     monthToPresent = widget.currentMonth;
-    month = BirthdayCalendarDateUtils.convertMonthToWord(monthToPresent);
   }
 
 
