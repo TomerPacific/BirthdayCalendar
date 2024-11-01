@@ -130,6 +130,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
     month = BirthdayCalendarDateUtils.convertMonthToWord(monthToPresent);
   }
 
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -173,7 +174,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              new Text(month,
+                              new Text(BirthdayCalendarDateUtils.translateMonth(monthToPresent, context),
                                   style: new TextStyle(
                                       fontSize: 25.0,
                                       fontWeight: FontWeight.bold))
