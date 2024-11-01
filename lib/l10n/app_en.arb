@@ -1,4 +1,21 @@
     {
         "appTitle": "Birthday Calendar",
-        "settings": "Settings"
+        "settings": "Settings",
+        "addBirthday": "Add Birthday",
+        "contactsImportedSuccessfully": "Contacts Imported Successfully",
+        "noContactsFoundMsg": "There are no contacts on your device",
+        "alreadyAddedContactsMsg": "All of your current contacts have already been added",
+        "unableToMakeCallMsg": "We are unable to make the call",
+        "january": "January",
+        "february": "February",
+        "march": "March",
+        "april": "April",
+        "may": "May",
+        "june": "June",
+        "july": "July",
+        "august": "August",
+        "september": "September",
+        "october": "October",
+        "november": "November",
+        "december": "December"
     }

@@ -1,4 +1,21 @@
     {
         "appTitle": "जन्मदिन कैलेंडर",
-        "settings": "सेटिंग्स"
+        "settings": "सेटिंग्स",
+        "addBirthday": "जन्मदिन जोड़ें",
+        "contactsImportedSuccessfully": "संपर्क सफलतापूर्वक आयात किए गए",
+        "noContactsFoundMsg": "आपके डिवाइस पर कोई संपर्क नहीं मिला",
+        "alreadyAddedContactsMsg": "आपके सभी वर्तमान संपर्क पहले ही जोड़े जा चुके हैं",
+        "unableToMakeCallMsg": "हम कॉल नहीं कर सकते",
+        "january": "जनवरी",
+        "february": "फ़रवरी",
+        "march": "मार्च",
+        "april": "अप्रैल",
+        "may": "मई",
+        "june": "जून",
+        "july": "जुलाई",
+        "august": "अगस्त",
+        "september": "सितंबर",
+        "october": "अक्टूबर",
+        "november": "नवंबर",
+        "december": "दिसंबर"
     }
