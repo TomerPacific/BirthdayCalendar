@@ -18,20 +18,15 @@ class CalendarWidget extends StatefulWidget {
 }
 
 class _CalendarState extends State<CalendarWidget> {
-  int _amountOfDaysToPresent = 0;
 
   @override
   void initState() {
-    _amountOfDaysToPresent = BirthdayCalendarDateUtils.amountOfDaysInMonth(
-        BirthdayCalendarDateUtils.convertMonthToWord(widget.currentMonth));
     super.initState();
   }
 
   @override
   void didUpdateWidget(CalendarWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _amountOfDaysToPresent = BirthdayCalendarDateUtils.amountOfDaysInMonth(
-        BirthdayCalendarDateUtils.convertMonthToWord(widget.currentMonth));
   }
 
   @override
@@ -42,7 +37,7 @@ class _CalendarState extends State<CalendarWidget> {
           child: new GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 5),
-              itemCount: _amountOfDaysToPresent,
+              itemCount: BirthdayCalendarDateUtils.amountOfDaysInMonth(widget.currentMonth),
               shrinkWrap: true,
               itemBuilder: (BuildContext context, int index) {
                 return new CalendarDayWidget(
