@@ -81,7 +81,7 @@ class BirthdayCalendarDateUtils {
     return isValidDate;
   }
 
-  static String translateMonth(int month, BuildContext context) {
+  static String convertAndTranslateMonthNumber(int month, BuildContext context) {
          switch (month) {
             case 1:
               return AppLocalizations.of(context)!.january;

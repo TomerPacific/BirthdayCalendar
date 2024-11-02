@@ -170,7 +170,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              new Text(BirthdayCalendarDateUtils.translateMonth(monthToPresent, context),
+                              new Text(BirthdayCalendarDateUtils.convertAndTranslateMonthNumber(monthToPresent, context),
                                   style: new TextStyle(
                                       fontSize: 25.0,
                                       fontWeight: FontWeight.bold))
