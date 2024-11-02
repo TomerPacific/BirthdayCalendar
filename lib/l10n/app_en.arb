@@ -17,5 +17,26 @@
         "september": "September",
         "october": "October",
         "november": "November",
-        "december": "December"
+        "december": "December",
+        "ok": "Ok",
+        "updateSuccessfullyInstalledTitle": "Update Successfully Installed",
+        "updateSuccessfullyInstalledDescription": ""Birthday Calendar has been updated successfully! 🎂",
+        "tryAgain": "Try Again?",
+        "dismiss": "Dismiss",
+        "updateFailedToInstallTitle": "Update Failed To Install ❌",
+        "updateFailedToInstallDescription: "Birthday Calendar has failed to update because: {error}",
+        "@updateFailedToInstallDescription": {
+            "type": "text",
+            "placeholders": {
+                "error": { "Invalid Error" }
+            }
+        },
+        "darkMode": "Dark Mode",
+        "importContacts": "Import Contacts",
+        "clearNotifications": "Clear Notifications",
+        "clearNotificationsAlertTitle": "Are You Sure?",
+        "clearNotificationsAlertDescription": "Do you want to remove all notifications?",
+        "no": "No",
+        "yes": "Yes",
+
     }
