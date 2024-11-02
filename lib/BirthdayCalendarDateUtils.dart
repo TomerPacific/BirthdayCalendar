@@ -1,4 +1,3 @@
-import 'package:birthday_calendar/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -10,38 +9,29 @@ class BirthdayCalendarDateUtils {
     return now.month;
   }
 
-  static String convertMonthToWord(int month) {
-    String? monthName = months[month];
-    return monthName != null ? monthName : "";
-  }
-
-  static String getCurrentMonthName() {
-    return convertMonthToWord(getCurrentMonthNumber());
-  }
-
-  static int amountOfDaysInMonth(String month) {
+  static int amountOfDaysInMonth(int month) {
     int days = 0;
     switch (month) {
-      case "January":
-      case "March":
-      case "May":
-      case "July":
-      case "August":
-      case "October":
-      case "December":
+      case 1:
+      case 3:
+      case 5:
+      case 7:
+      case 8:
+      case 10:
+      case 12:
         {
           days = 31;
           break;
         }
-      case "April":
-      case "June":
-      case "September":
-      case "November":
+      case 4:
+      case 6:
+      case 9:
+      case 11:
         {
           days = 30;
           break;
         }
-      case "February":
+      case 2:
         {
           days = isLeapYear() ? 29 : 28;
           break;
