@@ -1,3 +1,4 @@
+import 'package:birthday_calendar/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -12,26 +13,26 @@ class BirthdayCalendarDateUtils {
   static int amountOfDaysInMonth(int month) {
     int days = 0;
     switch (month) {
-      case 1:
-      case 3:
-      case 5:
-      case 7:
-      case 8:
-      case 10:
-      case 12:
+      case JANUARY_MONTH_NUMBER:
+      case MARCH_MONTH_NUMBER:
+      case MAY_MONTH_NUMBER:
+      case JULY_MONTH_NUMBER:
+      case AUGUST_MONTH_NUMBER:
+      case OCTOBER_MONTH_NUMBER:
+      case DECEMBER_MONTH_NUMBER:
         {
           days = 31;
           break;
         }
-      case 4:
-      case 6:
-      case 9:
-      case 11:
+      case APRIL_MONTH_NUMBER:
+      case JUNE_MONTH_NUMBER:
+      case SEPTEMBER_MONTH_NUMBER:
+      case NOVEMBER_MONTH_NUMBER:
         {
           days = 30;
           break;
         }
-      case 2:
+      case FEBRUARY_MONTH_NUMBER:
         {
           days = isLeapYear() ? 29 : 28;
           break;
@@ -83,29 +84,29 @@ class BirthdayCalendarDateUtils {
 
   static String convertAndTranslateMonthNumber(int month, BuildContext context) {
          switch (month) {
-            case 1:
+            case JANUARY_MONTH_NUMBER:
               return AppLocalizations.of(context)!.january;
-            case 2:
+            case FEBRUARY_MONTH_NUMBER:
               return AppLocalizations.of(context)!.february;
-            case 3:
+            case MARCH_MONTH_NUMBER:
               return AppLocalizations.of(context)!.march;
-            case 4:
+            case APRIL_MONTH_NUMBER:
               return AppLocalizations.of(context)!.april;
-            case 5:
+            case MAY_MONTH_NUMBER:
               return AppLocalizations.of(context)!.may;
-            case 6:
+            case JUNE_MONTH_NUMBER:
               return AppLocalizations.of(context)!.june;
-            case 7:
+            case JULY_MONTH_NUMBER:
               return AppLocalizations.of(context)!.july;
-            case 8:
+            case AUGUST_MONTH_NUMBER:
               return AppLocalizations.of(context)!.august;
-            case 9:
+            case SEPTEMBER_MONTH_NUMBER:
               return AppLocalizations.of(context)!.september;
-            case 10:
+            case OCTOBER_MONTH_NUMBER:
               return AppLocalizations.of(context)!.october;
-            case 11:
+            case NOVEMBER_MONTH_NUMBER:
               return AppLocalizations.of(context)!.november;
-            case 12:
+            case DECEMBER_MONTH_NUMBER:
               return AppLocalizations.of(context)!.december;
             default:
               return "";
