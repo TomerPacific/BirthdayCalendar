@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:birthday_calendar/page/settings_page/settings_screen.dart';
 import 'package:birthday_calendar/widget/calendar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MainPage extends StatefulWidget {
   MainPage(
@@ -64,11 +65,10 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
         onPressed: () {
           Navigator.pop(context);
         },
-        child: const Text("Ok"));
+        child: Text(AppLocalizations.of(context)!.ok));
     AlertDialog alertDialog = AlertDialog(
-      title: const Text("Update Successfully Installed"),
-      content:
-          const Text("Birthday Calendar has been updated successfully! 🎂"),
+      title: Text(AppLocalizations.of(context)!.updateSuccessfullyInstalledTitle),
+      content: Text(AppLocalizations.of(context)!.updateSuccessfullyInstalledDescription),
       actions: [alertDialogOkButton],
     );
     showDialog(
@@ -85,17 +85,18 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
               _onUpdateSuccess, _onUpdateFailure);
           Navigator.pop(context);
         },
-        child: const Text("Try Again?"));
+        child: Text(AppLocalizations.of(context)!.tryAgain));
     Widget alertDialogCancelButton = TextButton(
       onPressed: () {
         Navigator.pop(context);
       },
-      child: const Text("Dismiss"),
+      child: Text(AppLocalizations.of(context)!.dismiss),
     );
     AlertDialog alertDialog = AlertDialog(
-      title: const Text("Update Failed To Install ❌"),
+      title: Text(AppLocalizations.of(context)!.updateFailedToInstallTitle),
       content:
-          Text("Birthday Calendar has failed to update because: \n $error"),
+          Text(AppLocalizations.of(context)!.updateFailedToInstallDescription(error)),
+            //  "Birthday Calendar has failed to update because: \n $error"),
       actions: [alertDialogTryAgainButton, alertDialogCancelButton],
     );
     showDialog(
