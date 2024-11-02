@@ -20,15 +20,15 @@
         "december": "December",
         "ok": "Ok",
         "updateSuccessfullyInstalledTitle": "Update Successfully Installed",
-        "updateSuccessfullyInstalledDescription": ""Birthday Calendar has been updated successfully! 🎂",
+        "updateSuccessfullyInstalledDescription": "Birthday Calendar has been updated successfully! 🎂",
         "tryAgain": "Try Again?",
         "dismiss": "Dismiss",
         "updateFailedToInstallTitle": "Update Failed To Install ❌",
-        "updateFailedToInstallDescription: "Birthday Calendar has failed to update because: {error}",
+        "updateFailedToInstallDescription": "Birthday Calendar has failed to update because: {error}",
         "@updateFailedToInstallDescription": {
             "type": "text",
             "placeholders": {
-                "error": { "Invalid Error" }
+                "error": { }
             }
         },
         "darkMode": "Dark Mode",
@@ -37,6 +37,5 @@
         "clearNotificationsAlertTitle": "Are You Sure?",
         "clearNotificationsAlertDescription": "Do you want to remove all notifications?",
         "no": "No",
-        "yes": "Yes",
-
+        "yes": "Yes"
     }
