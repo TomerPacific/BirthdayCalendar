@@ -33,7 +33,7 @@ class BirthdaysForCalendarDayWidget extends StatelessWidget {
                 title: FittedBox(
                     fit: BoxFit.fitWidth,
                     child: Text(
-                        "Birthdays for ${BirthdayCalendarDateUtils.convertMonthToWord(this.dateOfDay.month)} ${this.dateOfDay.day}"))),
+                        "Birthdays for ${BirthdayCalendarDateUtils.translateMonth(this.dateOfDay.month, context)} ${this.dateOfDay.day}"))),
             body: Center(
                 child: Column(
               children: [
