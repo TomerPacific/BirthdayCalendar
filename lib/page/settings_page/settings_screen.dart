@@ -28,7 +28,7 @@ class SettingsScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           SwitchListTile(
-              title: const Text('Dark Mode'),
+              title: Text(AppLocalizations.of(context)!.darkMode),
               value: context.read<ThemeBloc>().state == ThemeMode.dark
                   ? true
                   : false,
@@ -46,7 +46,7 @@ class SettingsScreen extends StatelessWidget {
           BlocBuilder<ContactsPermissionStatusBloc, PermissionStatus>(
               builder: (context, state) {
             return ListTile(
-                title: const Text("Import Contacts"),
+                title: Text(AppLocalizations.of(context)!.importContacts),
                 leading: Icon(Icons.contacts, color: Colors.blue),
                 onTap: () {
                   _handleImportingContacts(context);
@@ -54,7 +54,7 @@ class SettingsScreen extends StatelessWidget {
                 enabled: state.isPermanentlyDenied ? false : true);
           }),
           ListTile(
-              title: const Text("Clear Notifications"),
+              title: Text(AppLocalizations.of(context)!.clearNotifications),
               leading: const Icon(Icons.clear, color: Colors.redAccent),
               onTap: () {
                 _showClearBirthdaysConfirmationDialog(context);
@@ -78,14 +78,14 @@ class SettingsScreen extends StatelessWidget {
 
   void _showClearBirthdaysConfirmationDialog(BuildContext context) {
     AlertDialog alert = AlertDialog(
-      title: Text("Are You Sure?"),
-      content: Text("Do you want to remove all notifications?"),
+      title: Text(AppLocalizations.of(context)!.clearNotificationsAlertTitle),
+      content: Text(AppLocalizations.of(context)!.clearNotificationsAlertDescription),
       actions: [
         TextButton(
           onPressed: () {
             Navigator.pop(context);
           },
-          child: const Text("No"),
+          child: Text(AppLocalizations.of(context)!.no),
         ),
         TextButton(
           onPressed: () {
@@ -93,7 +93,7 @@ class SettingsScreen extends StatelessWidget {
                 .add(ClearNotificationsEvent.ClearedNotifications);
             Navigator.pop(context);
           },
-          child: const Text("Yes"),
+          child: Text(AppLocalizations.of(context)!.yes),
         )
       ],
     );
