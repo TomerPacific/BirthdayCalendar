@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:collection/collection.dart';
-import 'package:birthday_calendar/constants.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AddBirthdayForm extends StatefulWidget {
   final DateTime dateOfDay;
@@ -79,7 +79,7 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: new Text(addBirthday),
+      title: Text(AppLocalizations.of(context)!.addBirthday),
       content: Form(
           key: _addBirthdayFormKey,
           child: new Column(
@@ -91,14 +91,14 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                       child: new TextFormField(
                         autofocus: true,
                         controller: _birthdayPersonController,
-                        decoration: InputDecoration(hintText: "Name?"),
+                        decoration: InputDecoration(hintText: AppLocalizations.of(context)!.hintTextForNameInputField),
                         key: _birthdayNameKey,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter a valid name';
+                            return AppLocalizations.of(context)!.notValidName;
                           }
                           if (!_isUniqueName(value)) {
-                            return "A birthday with this name already exists";
+                            return AppLocalizations.of(context)!.nameAlreadyExists;
                           }
                           return null;
                         },
@@ -152,7 +152,7 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                 }
               }
             },
-            child: new Text("OK")),
+            child: Text(AppLocalizations.of(context)!.ok)),
         TextButton(
             style: TextButton.styleFrom(foregroundColor: Colors.red),
             onPressed: () {
@@ -160,7 +160,7 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
               _phoneNumberController.clear();
               Navigator.pop(context);
             },
-            child: new Text("BACK"))
+            child: Text(AppLocalizations.of(context)!.back))
       ],
     );
   }

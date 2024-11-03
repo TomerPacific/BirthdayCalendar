@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:birthday_calendar/page/birthday/birthday.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BirthdaysForCalendarDayWidget extends StatelessWidget {
   final DateTime dateOfDay;
@@ -33,7 +34,12 @@ class BirthdaysForCalendarDayWidget extends StatelessWidget {
                 title: FittedBox(
                     fit: BoxFit.fitWidth,
                     child: Text(
-                        "Birthdays for ${BirthdayCalendarDateUtils.convertAndTranslateMonthNumber(this.dateOfDay.month, context)} ${this.dateOfDay.day}"))),
+                        AppLocalizations.of(context)!.birthdaysForDayAndMonth(
+                            BirthdayCalendarDateUtils.convertAndTranslateMonthNumber(this.dateOfDay.month, context),
+                            this.dateOfDay.day)
+                    )
+                )
+            ),
             body: Center(
                 child: Column(
               children: [
