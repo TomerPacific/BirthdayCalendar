@@ -25,17 +25,19 @@
         "dismiss": "Dismiss",
         "updateFailedToInstallTitle": "Update Failed To Install ❌",
         "updateFailedToInstallDescription": "Birthday Calendar has failed to update because: {error}",
-        "@updateFailedToInstallDescription": {
-            "type": "text",
-            "placeholders": {
-                "error": { }
-            }
-        },
         "darkMode": "Dark Mode",
         "importContacts": "Import Contacts",
         "clearNotifications": "Clear Notifications",
         "clearNotificationsAlertTitle": "Are You Sure?",
         "clearNotificationsAlertDescription": "Do you want to remove all notifications?",
         "no": "No",
-        "yes": "Yes"
+        "yes": "Yes",
+        "addPhoneNumber": "Add Phone Number",
+        "add": "Add",
+        "cancel": "Cancel",
+        "back": "Back",
+        "hintTextForNameInputField": "Name?",
+        "notValidName": "Please enter a valid name",
+        "nameAlreadyExists": "A birthday with this name already exists",
+        "birthdaysForDayAndMonth": "Birthdays for {day} {month}"
     }
