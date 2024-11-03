@@ -13,7 +13,6 @@ const OCTOBER_MONTH_NUMBER = 10;
 const NOVEMBER_MONTH_NUMBER = 11;
 const DECEMBER_MONTH_NUMBER = 12;
 
-const addBirthday = "Add Birthday";
 const userBirthdayNameKey = "name";
 const userBirthdayDateKey = "birthdayDate";
 const userBirthdayHasNotificationKey = "hasNotification";
