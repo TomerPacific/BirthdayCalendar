@@ -25,12 +25,6 @@
         "dismiss": "खारिज करें",
         "updateFailedToInstallTitle": "अपडेट इंस्टॉल करने में विफल ❌",
         "updateFailedToInstallDescription": "बर्थडे कैलेंडर अपडेट करने में विफल रहा क्योंकि: {error}",
-        "@updateFailedToInstallDescription": {
-            "type": "text",
-            "placeholders": {
-                "error": { }
-            }
-        },
         "darkMode": "डार्क मोड",
         "importContacts": "संपर्क आयात करें",
         "clearNotifications": "सूचनाएँ साफ़ करें",
