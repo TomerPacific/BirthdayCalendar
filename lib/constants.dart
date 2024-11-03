@@ -24,9 +24,6 @@ const contactsPermissionKey = "contacts";
 const contactsPermissionStatusKey = "contactsPermissionStatusKey";
 
 const contactsImportedSuccessfullyMsg = "Contacts Imported Successfully";
-const noContactsFoundMsg = "There are no contacts on your device";
-const alreadyAddedContactsMsg =
-    "All of your current contacts have already been added";
 const unableToMakeCallMsg = "We are unable to make the call";
 const versionToMigrateNotificationStatusFrom = "1.2.1";
 const didAlreadyMigrateNotificationStatusFlag = "migrateNotificationStatus";
