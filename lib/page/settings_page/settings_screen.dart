@@ -2,7 +2,6 @@ import 'package:birthday_calendar/ClearNotificationsBloc/ClearNotificationsBloc.
 import 'package:birthday_calendar/ContactsPermissionStatusBloc/ContactsPermissionStatusBloc.dart';
 import 'package:birthday_calendar/ThemeBloc/ThemeBloc.dart';
 import 'package:birthday_calendar/VersionBloc/VersionBloc.dart';
-import 'package:birthday_calendar/constants.dart';
 import 'package:birthday_calendar/service/contacts_service/contacts_service.dart';
 import 'package:birthday_calendar/utils.dart';
 import 'package:flutter/material.dart';
@@ -79,7 +78,8 @@ class SettingsScreen extends StatelessWidget {
   void _showClearBirthdaysConfirmationDialog(BuildContext context) {
     AlertDialog alert = AlertDialog(
       title: Text(AppLocalizations.of(context)!.clearNotificationsAlertTitle),
-      content: Text(AppLocalizations.of(context)!.clearNotificationsAlertDescription),
+      content: Text(
+          AppLocalizations.of(context)!.clearNotificationsAlertDescription),
       actions: [
         TextButton(
           onPressed: () {
@@ -125,7 +125,8 @@ class SettingsScreen extends StatelessWidget {
       List<Contact> contacts = await contactsService.fetchContacts(false);
 
       if (contacts.isEmpty) {
-        Utils.showSnackbarWithMessage(context, AppLocalizations.of(context)!.noContactsFoundMsg);
+        Utils.showSnackbarWithMessage(
+            context, AppLocalizations.of(context)!.noContactsFoundMsg);
         return;
       }
 
@@ -133,8 +134,7 @@ class SettingsScreen extends StatelessWidget {
 
       if (contacts.isEmpty) {
         Utils.showSnackbarWithMessage(
-            context,
-            AppLocalizations.of(context)!.alreadyAddedContactsMsg);
+            context, AppLocalizations.of(context)!.alreadyAddedContactsMsg);
         return;
       }
 
