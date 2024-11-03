@@ -125,14 +125,16 @@ class SettingsScreen extends StatelessWidget {
       List<Contact> contacts = await contactsService.fetchContacts(false);
 
       if (contacts.isEmpty) {
-        Utils.showSnackbarWithMessage(context, noContactsFoundMsg);
+        Utils.showSnackbarWithMessage(context, AppLocalizations.of(context)!.noContactsFoundMsg);
         return;
       }
 
       contacts = await contactsService.filterAlreadyImportedContacts(contacts);
 
       if (contacts.isEmpty) {
-        Utils.showSnackbarWithMessage(context, alreadyAddedContactsMsg);
+        Utils.showSnackbarWithMessage(
+            context,
+            AppLocalizations.of(context)!.alreadyAddedContactsMsg);
         return;
       }
 
