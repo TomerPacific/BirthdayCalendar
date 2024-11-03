@@ -96,7 +96,6 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
       title: Text(AppLocalizations.of(context)!.updateFailedToInstallTitle),
       content:
           Text(AppLocalizations.of(context)!.updateFailedToInstallDescription(error)),
-            //  "Birthday Calendar has failed to update because: \n $error"),
       actions: [alertDialogTryAgainButton, alertDialogCancelButton],
     );
     showDialog(
