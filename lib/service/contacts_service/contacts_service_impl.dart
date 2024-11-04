@@ -10,6 +10,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ContactsServiceImpl extends ContactsService {
 
@@ -66,8 +67,8 @@ class ContactsServiceImpl extends ContactsService {
           firstDate: DateTime(1970, 1, 1),
           lastDate: DateTime.now(),
           initialEntryMode: DatePickerEntryMode.input,
-          helpText: "Choose birth date for ${contact.displayName}",
-          fieldLabelText: "${contact.displayName}'s birth date"
+          helpText: AppLocalizations.of(context)!.helpTextChooseBirthdateForImportedContact(contact.displayName),
+          fieldLabelText: AppLocalizations.of(context)!.fieldLabelTextChooseBirthdateForImportedContact(contact.displayName)
       );
 
       if (chosenBirthDate != null) {
@@ -76,13 +77,13 @@ class ContactsServiceImpl extends ContactsService {
             true,
             contact.phones.isNotEmpty ? contact.phones.first.number : "");
 
-        addContactToCalendar(userBirthday);
+        addContactToCalendar(userBirthday, context);
         amountOfBirthdaysSet++;
       }
     }
 
     if (amountOfBirthdaysSet > 0) {
-      Utils.showSnackbarWithMessage(context, contactsImportedSuccessfullyMsg);
+      Utils.showSnackbarWithMessage(context, AppLocalizations.of(context)!.contactsImportedSuccessfully);
     }
   }
 
@@ -92,7 +93,8 @@ class ContactsServiceImpl extends ContactsService {
     return await FlutterContacts.getContacts(withProperties: true);
   }
 
-  void addContactToCalendar(UserBirthday contact) async {
+  @override
+  void addContactToCalendar(UserBirthday contact, BuildContext context) async {
     List<UserBirthday> birthdays = await storageService.getBirthdaysForDate(contact.birthdayDate, false);
     String contactName = contact.name;
 
@@ -104,7 +106,7 @@ class ContactsServiceImpl extends ContactsService {
     }
 
     notificationService.scheduleNotificationForBirthday(
-        contact, "${contact.name} has an upcoming birthday!");
+        contact, AppLocalizations.of(context)!.notificationForBirthdayMessage(contact.name));
 
     birthdays.add(contact);
 
