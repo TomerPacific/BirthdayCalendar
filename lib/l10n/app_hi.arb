@@ -39,5 +39,9 @@
         "hintTextForNameInputField": "नाम?",
         "notValidName": "कृपया एक मान्य नाम दर्ज करें",
         "nameAlreadyExists": "इस नाम से एक जन्मदिन पहले से मौजूद है",
-        "birthdaysForDayAndMonth": "{day} {month} के लिए जन्मदिन"
+        "birthdaysForDayAndMonth": "{day} {month} के लिए जन्मदिन",
+        "helpTextChooseBirthdateForImportedContact": "{contactName} के लिए जन्मतिथि चुनें",
+        "fieldLabelTextChooseBirthdateForImportedContact": "{contactName} की जन्मतिथि",
+        "contactsImportedSuccessfully": "संपर्क सफलतापूर्वक आयात किए गए",
+        "notificationForBirthdayMessage": "{contactName} का जन्मदिन आने वाला है!"
     }
