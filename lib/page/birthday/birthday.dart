@@ -1,6 +1,5 @@
 import 'package:birthday_calendar/BirthdayBloc/BirthdaysBloc.dart';
 import 'package:birthday_calendar/UserNotificationStatusBloc/UserNotificationStatusBloc.dart';
-import 'package:birthday_calendar/constants.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/storage_service/shared_preferences_storage.dart';
 import 'package:birthday_calendar/utils.dart';
@@ -42,7 +41,7 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
     if (await canLaunchUrl(phoneUri)) {
       launchUrl(phoneUri);
     } else {
-      Utils.showSnackbarWithMessage(context, unableToMakeCallMsg);
+      Utils.showSnackbarWithMessage(context, AppLocalizations.of(context)!.unableToMakeCallMsg);
     }
   }
 

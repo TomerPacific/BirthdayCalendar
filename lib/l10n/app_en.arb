@@ -43,5 +43,6 @@
         "helpTextChooseBirthdateForImportedContact": "Choose birth date for {contactName}",
         "fieldLabelTextChooseBirthdateForImportedContact": "{contactName}'s birth date",
         "contactsImportedSuccessfully": "Contacts Imported Successfully",
-        "notificationForBirthdayMessage": "{contactName} has an upcoming birthday!"
+        "notificationForBirthdayMessage": "{contactName} has an upcoming birthday!",
+        "unableToMakeCallMsg": "We are unable to make the call"
     }
