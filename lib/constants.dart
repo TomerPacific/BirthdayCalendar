@@ -22,6 +22,5 @@ const darkModeKey = "darkMode";
 const contactsPermissionKey = "contacts";
 const contactsPermissionStatusKey = "contactsPermissionStatusKey";
 
-const unableToMakeCallMsg = "We are unable to make the call";
 const versionToMigrateNotificationStatusFrom = "1.2.1";
 const didAlreadyMigrateNotificationStatusFlag = "migrateNotificationStatus";
