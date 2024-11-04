@@ -41,7 +41,7 @@
         "nameAlreadyExists": "A birthday with this name already exists",
         "birthdaysForDayAndMonth": "Birthdays for {day} {month}",
         "helpTextChooseBirthdateForImportedContact": "Choose birth date for {contactName}",
-        "fieldLabelTextChooseBirthdateForImportedContact": "${contactName}'s birth date",
+        "fieldLabelTextChooseBirthdateForImportedContact": "{contactName}'s birth date",
         "contactsImportedSuccessfully": "Contacts Imported Successfully",
-        "notificationForBirthdayMessage": "${contactName} has an upcoming birthday!"
+        "notificationForBirthdayMessage": "{contactName} has an upcoming birthday!"
     }
