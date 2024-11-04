@@ -17,13 +17,11 @@ const userBirthdayNameKey = "name";
 const userBirthdayDateKey = "birthdayDate";
 const userBirthdayHasNotificationKey = "hasNotification";
 const userBirthdayPhoneNumberKey = "phoneNumber";
-const invalidNameErrorMessage = "The name you entered is invalid";
 
 const darkModeKey = "darkMode";
 const contactsPermissionKey = "contacts";
 const contactsPermissionStatusKey = "contactsPermissionStatusKey";
 
-const contactsImportedSuccessfullyMsg = "Contacts Imported Successfully";
 const unableToMakeCallMsg = "We are unable to make the call";
 const versionToMigrateNotificationStatusFrom = "1.2.1";
 const didAlreadyMigrateNotificationStatusFlag = "migrateNotificationStatus";
