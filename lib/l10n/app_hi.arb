@@ -43,5 +43,6 @@
         "helpTextChooseBirthdateForImportedContact": "{contactName} के लिए जन्मतिथि चुनें",
         "fieldLabelTextChooseBirthdateForImportedContact": "{contactName} की जन्मतिथि",
         "contactsImportedSuccessfully": "संपर्क सफलतापूर्वक आयात किए गए",
-        "notificationForBirthdayMessage": "{contactName} का जन्मदिन आने वाला है!"
+        "notificationForBirthdayMessage": "{contactName} का जन्मदिन आने वाला है!",
+        "unableToMakeCallMsg": "हम कॉल करने में असमर्थ हैं"
     }
