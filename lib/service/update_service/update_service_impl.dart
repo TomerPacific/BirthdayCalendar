@@ -1,15 +1,16 @@
-
 import 'package:birthday_calendar/service/update_service/update_service.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:in_app_update/in_app_update.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class UpdateServiceImpl extends UpdateService {
-
   AppUpdateInfo? _appUpdateInfo;
 
-  void checkForInAppUpdate(Function onSuccess, Function onFailure)  {
+  void checkForInAppUpdate(
+      Function onSuccess, Function onFailure, BuildContext context) {
     InAppUpdate.checkForUpdate().then((value) {
       _appUpdateInfo = value;
-      _checkForUpdateAvailability(onSuccess, onFailure);
+      _checkForUpdateAvailability(onSuccess, onFailure, context);
     }).catchError((error) {
       onFailure(error.toString());
     });
@@ -18,9 +19,10 @@ class UpdateServiceImpl extends UpdateService {
   @override
   bool isUpdateAvailable() {
     if (_appUpdateInfo != null) {
-      return _appUpdateInfo!.updateAvailability == UpdateAvailability.updateAvailable;
+      return _appUpdateInfo!.updateAvailability ==
+          UpdateAvailability.updateAvailable;
     }
-     return false;
+    return false;
   }
 
   @override
@@ -42,16 +44,18 @@ class UpdateServiceImpl extends UpdateService {
   }
 
   @override
-  Future<void> applyImmediateUpdate(Function onSuccess, Function onFailure) async {
-    InAppUpdate.performImmediateUpdate().then((appUpdateResult) => {
-    if (appUpdateResult == AppUpdateResult.userDeniedUpdate) {
-         onFailure("User denied update")
-    } else if (appUpdateResult == AppUpdateResult.inAppUpdateFailed) {
-       onFailure("App Update Failed")
-    } else {
-      onSuccess()
-    }
-    }).catchError((onError) {
+  Future<void> applyImmediateUpdate(
+      Function onSuccess, Function onFailure, BuildContext context) async {
+    InAppUpdate.performImmediateUpdate()
+        .then((appUpdateResult) => {
+              if (appUpdateResult == AppUpdateResult.userDeniedUpdate)
+                {onFailure(AppLocalizations.of(context)!.userDeniedUpdate)}
+              else if (appUpdateResult == AppUpdateResult.inAppUpdateFailed)
+                {onFailure(AppLocalizations.of(context)!.appUpdateFailed)}
+              else
+                {onSuccess()}
+            })
+        .catchError((onError) {
       return onFailure(onError);
     });
   }
@@ -64,12 +68,13 @@ class UpdateServiceImpl extends UpdateService {
     }
   }
 
-  void _checkForUpdateAvailability(Function onSuccess, Function onFailure) {
+  void _checkForUpdateAvailability(
+      Function onSuccess, Function onFailure, BuildContext context) {
     bool needToUpdate = isUpdateAvailable();
     if (needToUpdate) {
       bool isImmediateUpdateAvailable = isImmediateUpdatePossible();
       if (isImmediateUpdateAvailable) {
-        applyImmediateUpdate(onSuccess, onFailure);
+        applyImmediateUpdate(onSuccess, onFailure, context);
       } else {
         bool isFlexibleUpdateAvailable = isFlexibleUpdatePossible();
         if (isFlexibleUpdateAvailable) {
@@ -78,5 +83,4 @@ class UpdateServiceImpl extends UpdateService {
       }
     }
   }
-
 }
