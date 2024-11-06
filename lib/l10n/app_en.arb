@@ -25,6 +25,8 @@
         "dismiss": "Dismiss",
         "updateFailedToInstallTitle": "Update Failed To Install ❌",
         "updateFailedToInstallDescription": "Birthday Calendar has failed to update because: {error}",
+        "userDeniedUpdate": "User denied update",
+        "appUpdateFailed": "App Update Failed",
         "darkMode": "Dark Mode",
         "importContacts": "Import Contacts",
         "clearNotifications": "Clear Notifications",
