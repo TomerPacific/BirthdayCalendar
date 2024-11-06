@@ -82,7 +82,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
     Widget alertDialogTryAgainButton = TextButton(
         onPressed: () {
           _updateService.checkForInAppUpdate(
-              _onUpdateSuccess, _onUpdateFailure);
+              _onUpdateSuccess, _onUpdateFailure, context);
           Navigator.pop(context);
         },
         child: Text(AppLocalizations.of(context)!.tryAgain));
@@ -113,7 +113,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
     monthToPresent = widget.currentMonth;
     widget.notificationService.init();
     widget.notificationService.addListenerForSelectNotificationStream(this);
-    _updateService.checkForInAppUpdate(_onUpdateSuccess, _onUpdateFailure);
+    _updateService.checkForInAppUpdate(_onUpdateSuccess, _onUpdateFailure, context);
     BlocProvider.of<ContactsPermissionStatusBloc>(context)
         .add(ContactsPermissionStatusEvent.PermissionUnknown);
     BlocProvider.of<VersionBloc>(context).add(VersionEvent.versionUnknown);
