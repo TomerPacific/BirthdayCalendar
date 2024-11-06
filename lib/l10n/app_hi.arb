@@ -25,6 +25,8 @@
         "dismiss": "खारिज करें",
         "updateFailedToInstallTitle": "अपडेट इंस्टॉल करने में विफल ❌",
         "updateFailedToInstallDescription": "बर्थडे कैलेंडर अपडेट करने में विफल रहा क्योंकि: {error}",
+        "userDeniedUpdate": "उपयोगकर्ता ने अपडेट अस्वीकार कर दिया",
+        "appUpdateFailed": "ऐप अपडेट असफल रहा",
         "darkMode": "डार्क मोड",
         "importContacts": "संपर्क आयात करें",
         "clearNotifications": "सूचनाएँ साफ़ करें",
