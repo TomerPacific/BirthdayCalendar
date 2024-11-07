@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:birthday_calendar/service/notification_service/notificationCallbacks.dart';
 import 'package:birthday_calendar/utils.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'notification_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -9,6 +10,7 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:birthday_calendar/constants.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 const String channel_id = "123";
 const String channel_name = "birthday_notification";
@@ -21,16 +23,16 @@ class NotificationServiceImpl extends NotificationService {
   StreamController<String?>.broadcast();
   List<NotificationCallbacks> selectNotificationStreamListeners = [];
 
-  void init() {
+  void init(BuildContext context) {
     final AndroidInitializationSettings initializationSettingsAndroid =
     AndroidInitializationSettings('app_icon');
 
     final InitializationSettings initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
 
-    initializeLocalNotificationsPlugin(initializationSettings);
+    _initializeLocalNotificationsPlugin(initializationSettings, context);
 
     selectNotificationStream.stream.listen((notificationEvent) {
-      _rescheduleNotificationFromPayload(notificationEvent);
+      _rescheduleNotificationFromPayload(notificationEvent, context);
       selectNotificationStreamListeners.forEach((notificationListener) {
         notificationListener.onNotificationSelected(notificationEvent);
       });
@@ -39,7 +41,7 @@ class NotificationServiceImpl extends NotificationService {
     tz.initializeTimeZones();
   }
 
-  void initializeLocalNotificationsPlugin(InitializationSettings initializationSettings) async {
+  void _initializeLocalNotificationsPlugin(InitializationSettings initializationSettings, BuildContext context) async {
     await flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onDidReceiveNotificationResponse: (NotificationResponse notificationResponse) {
           switch (notificationResponse.notificationResponseType) {
@@ -54,7 +56,7 @@ class NotificationServiceImpl extends NotificationService {
           }
         }
     );
-    _handleApplicationWasLaunchedFromNotification();
+    _handleApplicationWasLaunchedFromNotification(context);
   }
 
   void _showNotification(UserBirthday userBirthday, String notificationMessage) async {
@@ -122,7 +124,7 @@ class NotificationServiceImpl extends NotificationService {
     await flutterLocalNotificationsPlugin.cancelAll();
   }
 
-  void _handleApplicationWasLaunchedFromNotification() async {
+  void _handleApplicationWasLaunchedFromNotification(BuildContext context) async {
     final NotificationAppLaunchDetails? notificationAppLaunchDetails =
     await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
     if (notificationAppLaunchDetails != null && notificationAppLaunchDetails.didNotificationLaunchApp) {
@@ -130,7 +132,7 @@ class NotificationServiceImpl extends NotificationService {
       if (notificationResponse != null) {
         String? payload = notificationResponse.payload;
         selectNotificationStream.add(payload);
-        _rescheduleNotificationFromPayload(payload);
+        _rescheduleNotificationFromPayload(payload, context);
       }
     }
   }
@@ -145,11 +147,13 @@ class NotificationServiceImpl extends NotificationService {
     return false;
   }
 
-  void _rescheduleNotificationFromPayload(String? payload) {
+  void _rescheduleNotificationFromPayload(String? payload, BuildContext context) {
     UserBirthday? userBirthday = Utils.getUserBirthdayFromPayload(payload);
     if (userBirthday != null) {
       cancelNotificationForBirthday(userBirthday);
-      scheduleNotificationForBirthday(userBirthday, "${userBirthday.name} has an upcoming birthday!");
+      scheduleNotificationForBirthday(
+          userBirthday,
+          AppLocalizations.of(context)!.notificationForBirthdayMessage(userBirthday.name));
     }
   }
 
