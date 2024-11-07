@@ -111,7 +111,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
         storageService: context.read<StorageServiceSharedPreferences>(),
         notificationService: notificationService);
     monthToPresent = widget.currentMonth;
-    widget.notificationService.init();
+    widget.notificationService.init(context);
     widget.notificationService.addListenerForSelectNotificationStream(this);
     _updateService.checkForInAppUpdate(_onUpdateSuccess, _onUpdateFailure, context);
     BlocProvider.of<ContactsPermissionStatusBloc>(context)
