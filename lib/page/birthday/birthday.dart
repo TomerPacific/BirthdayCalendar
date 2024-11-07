@@ -163,8 +163,8 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                       BlocProvider.of<UserNotificationStatusBloc>(context).add(
                           new UserNotificationStatusEvent(
                               userBirthday: birthdayOfPerson,
-                              hasNotification:
-                                  birthdayOfPerson.hasNotification));
+                              hasNotification: birthdayOfPerson.hasNotification,
+                              notificationMsg: AppLocalizations.of(context)!.notificationForBirthdayMessage(birthdayOfPerson.name)));
                     });
               })),
           callIconButton(context),

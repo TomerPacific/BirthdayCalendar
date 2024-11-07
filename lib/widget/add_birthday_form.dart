@@ -139,7 +139,9 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                     eventName: BirthdayEvent.AddBirthday,
                     birthdays: birthdaysForDate,
                     birthday: userBirthday,
-                    shouldShowAddBirthdayDialog: false));
+                    shouldShowAddBirthdayDialog: false,
+                notificationMsg: AppLocalizations.of(context)!.notificationForBirthdayMessage(userBirthday.name)));
+
                 Navigator.pop(context);
               } else {
                 if (_birthdayNameKey.currentState != null &&
