@@ -5,10 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class UserNotificationStatusEvent {
   UserNotificationStatusEvent(
-      {required this.userBirthday, required this.hasNotification});
+      {required this.userBirthday, required this.hasNotification, required this.notificationMsg});
 
   final UserBirthday userBirthday;
   final bool hasNotification;
+  final String notificationMsg;
 }
 
 class UserNotificationStatusBloc
@@ -27,7 +28,7 @@ class UserNotificationStatusBloc
         notificationService.cancelNotificationForBirthday(birthday);
       } else {
         notificationService.scheduleNotificationForBirthday(
-            birthday, "${birthday.name} has an upcoming birthday!");
+            birthday, event.notificationMsg);
       }
       emit(notificationStatus);
     });
