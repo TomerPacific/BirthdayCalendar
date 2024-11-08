@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/contact.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class UsersWithoutBirthdaysDialogs {
   UsersWithoutBirthdaysDialogs(this.usersWithoutBirthdays);
@@ -8,15 +9,15 @@ class UsersWithoutBirthdaysDialogs {
 
   Future<List<Contact>> showConfirmationDialog(BuildContext context) async {
     AlertDialog alert = AlertDialog(
-        title: Text("Add Birthdays To Contacts"),
+        title: Text(AppLocalizations.of(context)!.addBirthdaysToContactsAlertDialogTitle),
         content: Text(
-            "Would you like to add birth dates for your imported contacts?"),
+            AppLocalizations.of(context)!.addBirthdaysToContactsAlertDialogDescription),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.pop(context);
             },
-            child: const Text("No"),
+            child: Text(AppLocalizations.of(context)!.no),
           ),
           TextButton(
             onPressed: () async {
@@ -27,7 +28,7 @@ class UsersWithoutBirthdaysDialogs {
                   });
               Navigator.pop(context, result);
             },
-            child: const Text("Proceed"),
+            child: Text(AppLocalizations.of(context)!.proceed),
           ),
         ]);
     var result = await showDialog(
@@ -45,7 +46,7 @@ class UsersWithoutBirthdaysDialogs {
     bool _haveAnyContactsBeenSelected = false;
 
     AlertDialog alert = AlertDialog(
-        title: Text('People Without Birthdays'),
+        title: Text(AppLocalizations.of(context)!.peopleWithoutBirthdaysAlertDialogTitle),
         content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
           return Container(
@@ -77,13 +78,13 @@ class UsersWithoutBirthdaysDialogs {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       TextButton(
-                        child: Text("Cancel"),
+                        child: Text(AppLocalizations.of(context)!.cancel),
                         onPressed: () {
                           Navigator.pop(context);
                         },
                       ),
                       TextButton(
-                          child: Text("Continue"),
+                          child: Text(AppLocalizations.of(context)!.ok),
                           onPressed: !_haveAnyContactsBeenSelected
                               ? null
                               : () => _collectUsersToAddBirthdaysTo(
