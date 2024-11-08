@@ -91,14 +91,17 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                       child: new TextFormField(
                         autofocus: true,
                         controller: _birthdayPersonController,
-                        decoration: InputDecoration(hintText: AppLocalizations.of(context)!.hintTextForNameInputField),
+                        decoration: InputDecoration(
+                            hintText: AppLocalizations.of(context)!
+                                .hintTextForNameInputField),
                         key: _birthdayNameKey,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return AppLocalizations.of(context)!.notValidName;
                           }
                           if (!_isUniqueName(value)) {
-                            return AppLocalizations.of(context)!.nameAlreadyExists;
+                            return AppLocalizations.of(context)!
+                                .nameAlreadyExists;
                           }
                           return null;
                         },
@@ -140,7 +143,8 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                     birthdays: birthdaysForDate,
                     birthday: userBirthday,
                     shouldShowAddBirthdayDialog: false,
-                notificationMsg: AppLocalizations.of(context)!.notificationForBirthdayMessage(userBirthday.name)));
+                    notificationMsg: AppLocalizations.of(context)!
+                        .notificationForBirthdayMessage(userBirthday.name)));
 
                 Navigator.pop(context);
               } else {

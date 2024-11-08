@@ -33,13 +33,12 @@ class BirthdaysForCalendarDayWidget extends StatelessWidget {
             appBar: AppBar(
                 title: FittedBox(
                     fit: BoxFit.fitWidth,
-                    child: Text(
-                        AppLocalizations.of(context)!.birthdaysForDayAndMonth(
-                            BirthdayCalendarDateUtils.convertAndTranslateMonthNumber(this.dateOfDay.month, context),
-                            this.dateOfDay.day)
-                    )
-                )
-            ),
+                    child: Text(AppLocalizations.of(context)!
+                        .birthdaysForDayAndMonth(
+                            BirthdayCalendarDateUtils
+                                .convertAndTranslateMonthNumber(
+                                    this.dateOfDay.month, context),
+                            this.dateOfDay.day)))),
             body: Center(
                 child: Column(
               children: [

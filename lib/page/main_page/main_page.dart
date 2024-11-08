@@ -67,8 +67,10 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
         },
         child: Text(AppLocalizations.of(context)!.ok));
     AlertDialog alertDialog = AlertDialog(
-      title: Text(AppLocalizations.of(context)!.updateSuccessfullyInstalledTitle),
-      content: Text(AppLocalizations.of(context)!.updateSuccessfullyInstalledDescription),
+      title:
+          Text(AppLocalizations.of(context)!.updateSuccessfullyInstalledTitle),
+      content: Text(
+          AppLocalizations.of(context)!.updateSuccessfullyInstalledDescription),
       actions: [alertDialogOkButton],
     );
     showDialog(
@@ -94,8 +96,8 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
     );
     AlertDialog alertDialog = AlertDialog(
       title: Text(AppLocalizations.of(context)!.updateFailedToInstallTitle),
-      content:
-          Text(AppLocalizations.of(context)!.updateFailedToInstallDescription(error)),
+      content: Text(AppLocalizations.of(context)!
+          .updateFailedToInstallDescription(error)),
       actions: [alertDialogTryAgainButton, alertDialogCancelButton],
     );
     showDialog(
@@ -113,7 +115,8 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
     monthToPresent = widget.currentMonth;
     widget.notificationService.init(context);
     widget.notificationService.addListenerForSelectNotificationStream(this);
-    _updateService.checkForInAppUpdate(_onUpdateSuccess, _onUpdateFailure, context);
+    _updateService.checkForInAppUpdate(
+        _onUpdateSuccess, _onUpdateFailure, context);
     BlocProvider.of<ContactsPermissionStatusBloc>(context)
         .add(ContactsPermissionStatusEvent.PermissionUnknown);
     BlocProvider.of<VersionBloc>(context).add(VersionEvent.versionUnknown);
@@ -125,7 +128,6 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
     super.didUpdateWidget(oldWidget);
     monthToPresent = widget.currentMonth;
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -170,7 +172,10 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              new Text(BirthdayCalendarDateUtils.convertAndTranslateMonthNumber(monthToPresent, context),
+                              new Text(
+                                  BirthdayCalendarDateUtils
+                                      .convertAndTranslateMonthNumber(
+                                          monthToPresent, context),
                                   style: new TextStyle(
                                       fontSize: 25.0,
                                       fontWeight: FontWeight.bold))

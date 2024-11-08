@@ -5,7 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class UserNotificationStatusEvent {
   UserNotificationStatusEvent(
-      {required this.userBirthday, required this.hasNotification, required this.notificationMsg});
+      {required this.userBirthday,
+      required this.hasNotification,
+      required this.notificationMsg});
 
   final UserBirthday userBirthday;
   final bool hasNotification;

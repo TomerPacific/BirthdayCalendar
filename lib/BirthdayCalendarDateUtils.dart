@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BirthdayCalendarDateUtils {
-
   static int getCurrentMonthNumber() {
     DateTime now = new DateTime.now();
     return now.month;
@@ -53,7 +52,6 @@ class BirthdayCalendarDateUtils {
     return false;
   }
 
-
   static String getWeekdayNameFromDate(DateTime date) {
     return DateFormat('EEEE').format(date);
   }
@@ -75,41 +73,42 @@ class BirthdayCalendarDateUtils {
     bool isValidDate = true;
     try {
       DateTime.parse(date);
-    } catch(exception) {
+    } catch (exception) {
       isValidDate = false;
     }
 
     return isValidDate;
   }
 
-  static String convertAndTranslateMonthNumber(int month, BuildContext context) {
-         switch (month) {
-            case JANUARY_MONTH_NUMBER:
-              return AppLocalizations.of(context)!.january;
-            case FEBRUARY_MONTH_NUMBER:
-              return AppLocalizations.of(context)!.february;
-            case MARCH_MONTH_NUMBER:
-              return AppLocalizations.of(context)!.march;
-            case APRIL_MONTH_NUMBER:
-              return AppLocalizations.of(context)!.april;
-            case MAY_MONTH_NUMBER:
-              return AppLocalizations.of(context)!.may;
-            case JUNE_MONTH_NUMBER:
-              return AppLocalizations.of(context)!.june;
-            case JULY_MONTH_NUMBER:
-              return AppLocalizations.of(context)!.july;
-            case AUGUST_MONTH_NUMBER:
-              return AppLocalizations.of(context)!.august;
-            case SEPTEMBER_MONTH_NUMBER:
-              return AppLocalizations.of(context)!.september;
-            case OCTOBER_MONTH_NUMBER:
-              return AppLocalizations.of(context)!.october;
-            case NOVEMBER_MONTH_NUMBER:
-              return AppLocalizations.of(context)!.november;
-            case DECEMBER_MONTH_NUMBER:
-              return AppLocalizations.of(context)!.december;
-            default:
-              return "";
-          }
+  static String convertAndTranslateMonthNumber(
+      int month, BuildContext context) {
+    switch (month) {
+      case JANUARY_MONTH_NUMBER:
+        return AppLocalizations.of(context)!.january;
+      case FEBRUARY_MONTH_NUMBER:
+        return AppLocalizations.of(context)!.february;
+      case MARCH_MONTH_NUMBER:
+        return AppLocalizations.of(context)!.march;
+      case APRIL_MONTH_NUMBER:
+        return AppLocalizations.of(context)!.april;
+      case MAY_MONTH_NUMBER:
+        return AppLocalizations.of(context)!.may;
+      case JUNE_MONTH_NUMBER:
+        return AppLocalizations.of(context)!.june;
+      case JULY_MONTH_NUMBER:
+        return AppLocalizations.of(context)!.july;
+      case AUGUST_MONTH_NUMBER:
+        return AppLocalizations.of(context)!.august;
+      case SEPTEMBER_MONTH_NUMBER:
+        return AppLocalizations.of(context)!.september;
+      case OCTOBER_MONTH_NUMBER:
+        return AppLocalizations.of(context)!.october;
+      case NOVEMBER_MONTH_NUMBER:
+        return AppLocalizations.of(context)!.november;
+      case DECEMBER_MONTH_NUMBER:
+        return AppLocalizations.of(context)!.december;
+      default:
+        return "";
     }
+  }
 }

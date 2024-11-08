@@ -13,25 +13,26 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ContactsServiceImpl extends ContactsService {
-
-  ContactsServiceImpl({
-    required this.storageService,
-    required this.notificationService,
-    required this.permissionsService
-  });
+  ContactsServiceImpl(
+      {required this.storageService,
+      required this.notificationService,
+      required this.permissionsService});
 
   final StorageService storageService;
   final NotificationService notificationService;
   final PermissionsService permissionsService;
 
   @override
-  Future<PermissionStatus> getContactsPermissionStatus(BuildContext context) async {
+  Future<PermissionStatus> getContactsPermissionStatus(
+      BuildContext context) async {
     return await permissionsService.getPermissionStatus(contactsPermissionKey);
   }
 
   @override
-  Future<PermissionStatus> requestContactsPermission(BuildContext context) async {
-    return await permissionsService.requestPermissionAndGetStatus(contactsPermissionKey);
+  Future<PermissionStatus> requestContactsPermission(
+      BuildContext context) async {
+    return await permissionsService
+        .requestPermissionAndGetStatus(contactsPermissionKey);
   }
 
   @override
@@ -40,39 +41,47 @@ class ContactsServiceImpl extends ContactsService {
   }
 
   @override
-  Future<bool> isContactsPermissionsPermanentlyDenied() async{
+  Future<bool> isContactsPermissionsPermanentlyDenied() async {
     return storageService.getIsContactPermissionPermanentlyDenied();
   }
 
   @override
-  Future<List<Contact>> filterAlreadyImportedContacts(List<Contact> contacts) async {
+  Future<List<Contact>> filterAlreadyImportedContacts(
+      List<Contact> contacts) async {
     return Utils.filterAlreadyImportedContacts(storageService, contacts);
   }
 
-  void handleAddingBirthdaysToContacts(BuildContext context, List<Contact> contactsWithoutBirthDates) async {
-    UsersWithoutBirthdaysDialogs assignBirthdaysToUsers = UsersWithoutBirthdaysDialogs(contactsWithoutBirthDates);
-    List<Contact> users = await assignBirthdaysToUsers.showConfirmationDialog(context);
+  void handleAddingBirthdaysToContacts(
+      BuildContext context, List<Contact> contactsWithoutBirthDates) async {
+    UsersWithoutBirthdaysDialogs assignBirthdaysToUsers =
+        UsersWithoutBirthdaysDialogs(contactsWithoutBirthDates);
+    List<Contact> users =
+        await assignBirthdaysToUsers.showConfirmationDialog(context);
     if (users.isNotEmpty) {
       _gatherBirthdaysForUsers(context, users);
     }
   }
 
-  void _gatherBirthdaysForUsers(BuildContext context, List<Contact> users) async {
-
+  void _gatherBirthdaysForUsers(
+      BuildContext context, List<Contact> users) async {
     int amountOfBirthdaysSet = 0;
 
     for (Contact contact in users) {
-      DateTime? chosenBirthDate = await showDatePicker(context: context,
+      DateTime? chosenBirthDate = await showDatePicker(
+          context: context,
           initialDate: DateTime(1970, 1, 1),
           firstDate: DateTime(1970, 1, 1),
           lastDate: DateTime.now(),
           initialEntryMode: DatePickerEntryMode.input,
-          helpText: AppLocalizations.of(context)!.helpTextChooseBirthdateForImportedContact(contact.displayName),
-          fieldLabelText: AppLocalizations.of(context)!.fieldLabelTextChooseBirthdateForImportedContact(contact.displayName)
-      );
+          helpText: AppLocalizations.of(context)!
+              .helpTextChooseBirthdateForImportedContact(contact.displayName),
+          fieldLabelText: AppLocalizations.of(context)!
+              .fieldLabelTextChooseBirthdateForImportedContact(
+                  contact.displayName));
 
       if (chosenBirthDate != null) {
-        UserBirthday userBirthday = new UserBirthday(contact.displayName,
+        UserBirthday userBirthday = new UserBirthday(
+            contact.displayName,
             chosenBirthDate,
             true,
             contact.phones.isNotEmpty ? contact.phones.first.number : "");
@@ -83,10 +92,10 @@ class ContactsServiceImpl extends ContactsService {
     }
 
     if (amountOfBirthdaysSet > 0) {
-      Utils.showSnackbarWithMessage(context, AppLocalizations.of(context)!.contactsImportedSuccessfully);
+      Utils.showSnackbarWithMessage(
+          context, AppLocalizations.of(context)!.contactsImportedSuccessfully);
     }
   }
-
 
   @override
   Future<List<Contact>> fetchContacts(bool withThumbnails) async {
@@ -95,22 +104,24 @@ class ContactsServiceImpl extends ContactsService {
 
   @override
   void addContactToCalendar(UserBirthday contact, BuildContext context) async {
-    List<UserBirthday> birthdays = await storageService.getBirthdaysForDate(contact.birthdayDate, false);
+    List<UserBirthday> birthdays =
+        await storageService.getBirthdaysForDate(contact.birthdayDate, false);
     String contactName = contact.name;
 
-    UserBirthday? birthdayWithSameName = birthdays.firstWhereOrNull((element) => element.name == contactName);
-
+    UserBirthday? birthdayWithSameName =
+        birthdays.firstWhereOrNull((element) => element.name == contactName);
 
     if (birthdayWithSameName != null) {
       return;
     }
 
     notificationService.scheduleNotificationForBirthday(
-        contact, AppLocalizations.of(context)!.notificationForBirthdayMessage(contact.name));
+        contact,
+        AppLocalizations.of(context)!
+            .notificationForBirthdayMessage(contact.name));
 
     birthdays.add(contact);
 
     storageService.saveBirthdaysForDate(contact.birthdayDate, birthdays);
   }
-
 }

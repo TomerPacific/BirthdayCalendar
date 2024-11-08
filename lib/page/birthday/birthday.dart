@@ -41,7 +41,8 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
     if (await canLaunchUrl(phoneUri)) {
       launchUrl(phoneUri);
     } else {
-      Utils.showSnackbarWithMessage(context, AppLocalizations.of(context)!.unableToMakeCallMsg);
+      Utils.showSnackbarWithMessage(
+          context, AppLocalizations.of(context)!.unableToMakeCallMsg);
     }
   }
 
@@ -164,7 +165,9 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                           new UserNotificationStatusEvent(
                               userBirthday: birthdayOfPerson,
                               hasNotification: birthdayOfPerson.hasNotification,
-                              notificationMsg: AppLocalizations.of(context)!.notificationForBirthdayMessage(birthdayOfPerson.name)));
+                              notificationMsg: AppLocalizations.of(context)!
+                                  .notificationForBirthdayMessage(
+                                      birthdayOfPerson.name)));
                     });
               })),
           callIconButton(context),

@@ -18,7 +18,6 @@ class CalendarWidget extends StatefulWidget {
 }
 
 class _CalendarState extends State<CalendarWidget> {
-
   @override
   void initState() {
     super.initState();
@@ -37,7 +36,8 @@ class _CalendarState extends State<CalendarWidget> {
           child: new GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 5),
-              itemCount: BirthdayCalendarDateUtils.amountOfDaysInMonth(widget.currentMonth),
+              itemCount: BirthdayCalendarDateUtils.amountOfDaysInMonth(
+                  widget.currentMonth),
               shrinkWrap: true,
               itemBuilder: (BuildContext context, int index) {
                 return new CalendarDayWidget(
