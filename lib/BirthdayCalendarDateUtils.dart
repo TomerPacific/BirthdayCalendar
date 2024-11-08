@@ -1,5 +1,4 @@
 import 'package:birthday_calendar/constants.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -81,32 +80,32 @@ class BirthdayCalendarDateUtils {
   }
 
   static String convertAndTranslateMonthNumber(
-      int month, BuildContext context) {
+      int month, AppLocalizations appLocalizations) {
     switch (month) {
       case JANUARY_MONTH_NUMBER:
-        return AppLocalizations.of(context)!.january;
+        return appLocalizations.january;
       case FEBRUARY_MONTH_NUMBER:
-        return AppLocalizations.of(context)!.february;
+        return appLocalizations.february;
       case MARCH_MONTH_NUMBER:
-        return AppLocalizations.of(context)!.march;
+        return appLocalizations.march;
       case APRIL_MONTH_NUMBER:
-        return AppLocalizations.of(context)!.april;
+        return appLocalizations.april;
       case MAY_MONTH_NUMBER:
-        return AppLocalizations.of(context)!.may;
+        return appLocalizations.may;
       case JUNE_MONTH_NUMBER:
-        return AppLocalizations.of(context)!.june;
+        return appLocalizations.june;
       case JULY_MONTH_NUMBER:
-        return AppLocalizations.of(context)!.july;
+        return appLocalizations.july;
       case AUGUST_MONTH_NUMBER:
-        return AppLocalizations.of(context)!.august;
+        return appLocalizations.august;
       case SEPTEMBER_MONTH_NUMBER:
-        return AppLocalizations.of(context)!.september;
+        return appLocalizations.september;
       case OCTOBER_MONTH_NUMBER:
-        return AppLocalizations.of(context)!.october;
+        return appLocalizations.october;
       case NOVEMBER_MONTH_NUMBER:
-        return AppLocalizations.of(context)!.november;
+        return appLocalizations.november;
       case DECEMBER_MONTH_NUMBER:
-        return AppLocalizations.of(context)!.december;
+        return appLocalizations.december;
       default:
         return "";
     }
