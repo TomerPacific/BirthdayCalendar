@@ -39,7 +39,6 @@
         "cancel": "Cancel",
         "back": "Back",
         "proceed": "Proceed",
-        "continue": "Continue",
         "hintTextForNameInputField": "Name?",
         "notValidName": "Please enter a valid name",
         "nameAlreadyExists": "A birthday with this name already exists",

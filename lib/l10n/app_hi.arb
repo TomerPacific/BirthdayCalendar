@@ -39,7 +39,6 @@
         "cancel": "रद्द करें",
         "back": "वापस",
         "proceed": "आगे बढ़ें",
-        "continue": "जारी रखें",
         "hintTextForNameInputField": "नाम?",
         "notValidName": "कृपया एक मान्य नाम दर्ज करें",
         "nameAlreadyExists": "इस नाम से एक जन्मदिन पहले से मौजूद है",
