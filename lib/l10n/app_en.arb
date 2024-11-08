@@ -38,6 +38,8 @@
         "add": "Add",
         "cancel": "Cancel",
         "back": "Back",
+        "proceed": "Proceed",
+        "continue": "Continue",
         "hintTextForNameInputField": "Name?",
         "notValidName": "Please enter a valid name",
         "nameAlreadyExists": "A birthday with this name already exists",
@@ -46,5 +48,8 @@
         "fieldLabelTextChooseBirthdateForImportedContact": "{contactName}'s birth date",
         "contactsImportedSuccessfully": "Contacts Imported Successfully",
         "notificationForBirthdayMessage": "{contactName} has an upcoming birthday!",
-        "unableToMakeCallMsg": "We are unable to make the call"
+        "unableToMakeCallMsg": "We are unable to make the call",
+        "addBirthdaysToContactsAlertDialogTitle": "Add Birthdays To Contacts",
+        "addBirthdaysToContactsAlertDialogDescription": "Would you like to add birth dates for your imported contacts?",
+        "peopleWithoutBirthdaysAlertDialogTitle": "People Without Birthdays"
     }

@@ -38,6 +38,8 @@
         "add": "जोड़ें",
         "cancel": "रद्द करें",
         "back": "वापस",
+        "proceed": "आगे बढ़ें",
+        "continue": "जारी रखें",
         "hintTextForNameInputField": "नाम?",
         "notValidName": "कृपया एक मान्य नाम दर्ज करें",
         "nameAlreadyExists": "इस नाम से एक जन्मदिन पहले से मौजूद है",
@@ -46,5 +48,8 @@
         "fieldLabelTextChooseBirthdateForImportedContact": "{contactName} की जन्मतिथि",
         "contactsImportedSuccessfully": "संपर्क सफलतापूर्वक आयात किए गए",
         "notificationForBirthdayMessage": "{contactName} का जन्मदिन आने वाला है!",
-        "unableToMakeCallMsg": "हम कॉल करने में असमर्थ हैं"
+        "unableToMakeCallMsg": "हम कॉल करने में असमर्थ हैं",
+        "addBirthdaysToContactsAlertDialogTitle": "Add Birthdays To Contacts",
+        "addBirthdaysToContactsAlertDialogDescription": "Would you like to add birth dates for your imported contacts?",
+        "peopleWithoutBirthdaysAlertDialogTitle": "People Without Birthdays"
     }
