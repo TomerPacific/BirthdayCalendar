@@ -4,40 +4,25 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() {
-  testWidgets('DateService convert month number 8 to August', (tester) async {
-    await tester.pumpWidget(
-      Localizations(
-        locale: const Locale('en'),
-        delegates: AppLocalizations.localizationsDelegates,
-        child: Container(),
-      ),
-    );
 
-    final BuildContext context = tester.element(find.byType(Container));
+  final loc = lookupAppLocalizations(const Locale('en'));
+
+  test("DateService convert month number 8 to August", () {
 
     final int monthNumber = 8;
     final String monthName =
-        BirthdayCalendarDateUtils.convertAndTranslateMonthNumber(
-            monthNumber, context);
+    BirthdayCalendarDateUtils.convertAndTranslateMonthNumber(
+        monthNumber, loc);
     expect(monthName, "August");
   });
 
-  testWidgets('DateService invalid month number returns empty string',
-      (tester) async {
-    await tester.pumpWidget(
-      Localizations(
-        locale: const Locale('en'),
-        delegates: AppLocalizations.localizationsDelegates,
-        child: Container(),
-      ),
-    );
-
-    final BuildContext context = tester.element(find.byType(Container));
-
+  test('DateService invalid month number returns empty string',
+      () {
+    
     final int monthNumber = 14;
     final String monthName =
         BirthdayCalendarDateUtils.convertAndTranslateMonthNumber(
-            monthNumber, context);
+            monthNumber, loc);
     expect(monthName, "");
   });
 
