@@ -37,7 +37,7 @@ class BirthdaysForCalendarDayWidget extends StatelessWidget {
                         .birthdaysForDayAndMonth(
                             BirthdayCalendarDateUtils
                                 .convertAndTranslateMonthNumber(
-                                    this.dateOfDay.month, context),
+                                    this.dateOfDay.month, AppLocalizations.of(context)!),
                             this.dateOfDay.day)))),
             body: Center(
                 child: Column(

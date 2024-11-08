@@ -175,7 +175,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
                               new Text(
                                   BirthdayCalendarDateUtils
                                       .convertAndTranslateMonthNumber(
-                                          monthToPresent, context),
+                                          monthToPresent, AppLocalizations.of(context)!),
                                   style: new TextStyle(
                                       fontSize: 25.0,
                                       fontWeight: FontWeight.bold))
