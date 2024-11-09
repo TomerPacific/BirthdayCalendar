@@ -34,13 +34,6 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
   NotificationService notificationService;
   UserBirthday birthdayOfPerson;
   int indexOfBirthday;
-  AppLocalizations? appLocalizations;
-
-  @override
-  void initState() {
-    super.initState();
-    appLocalizations = AppLocalizations.of(context);
-  }
 
   void _handleCallButtonPressed(
       BuildContext context, String phoneNumber) async {
@@ -49,7 +42,7 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
       launchUrl(phoneUri);
     } else {
       Utils.showSnackbarWithMessage(
-          context, appLocalizations!.unableToMakeCallMsg);
+          context, AppLocalizations.of(context)!.unableToMakeCallMsg);
     }
   }
 
@@ -59,7 +52,7 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
     TextEditingController _phoneNumberController = new TextEditingController();
 
     AlertDialog addPhoneNumberAlert = AlertDialog(
-        title: Text(appLocalizations!.addPhoneNumber),
+        title: Text(AppLocalizations.of(context)!.addPhoneNumber),
         content: InternationalPhoneNumberInput(
           key: _phoneNumberKey,
           onInputChanged: (PhoneNumber number) {
@@ -98,7 +91,7 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                 return null;
               }
             },
-            child: Text(appLocalizations!.add),
+            child: Text(AppLocalizations.of(context)!.add),
           ),
           TextButton(
               style: TextButton.styleFrom(foregroundColor: Colors.red),
@@ -106,7 +99,7 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                 _phoneNumberController.clear();
                 Navigator.pop(context);
               },
-              child: Text(appLocalizations!.cancel)),
+              child: Text(AppLocalizations.of(context)!.cancel)),
         ]);
 
     showDialog(
@@ -172,7 +165,7 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                           new UserNotificationStatusEvent(
                               userBirthday: birthdayOfPerson,
                               hasNotification: birthdayOfPerson.hasNotification,
-                              notificationMsg: appLocalizations!
+                              notificationMsg: AppLocalizations.of(context)!
                                   .notificationForBirthdayMessage(
                                       birthdayOfPerson.name)));
                     });
