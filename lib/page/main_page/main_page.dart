@@ -44,6 +44,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
   NotificationService notificationService;
   UpdateService _updateService = UpdateServiceImpl();
   late VersionSpecificService versionSpecificService;
+  AppLocalizations? appLocalizations;
 
   void _calculateNextMonthToShow(AxisDirection direction) {
     setState(() {
@@ -65,12 +66,10 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
         onPressed: () {
           Navigator.pop(context);
         },
-        child: Text(AppLocalizations.of(context)!.ok));
+        child: Text(appLocalizations!.ok));
     AlertDialog alertDialog = AlertDialog(
-      title:
-          Text(AppLocalizations.of(context)!.updateSuccessfullyInstalledTitle),
-      content: Text(
-          AppLocalizations.of(context)!.updateSuccessfullyInstalledDescription),
+      title: Text(appLocalizations!.updateSuccessfullyInstalledTitle),
+      content: Text(appLocalizations!.updateSuccessfullyInstalledDescription),
       actions: [alertDialogOkButton],
     );
     showDialog(
@@ -87,17 +86,16 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
               _onUpdateSuccess, _onUpdateFailure, context);
           Navigator.pop(context);
         },
-        child: Text(AppLocalizations.of(context)!.tryAgain));
+        child: Text(appLocalizations!.tryAgain));
     Widget alertDialogCancelButton = TextButton(
       onPressed: () {
         Navigator.pop(context);
       },
-      child: Text(AppLocalizations.of(context)!.dismiss),
+      child: Text(appLocalizations!.dismiss),
     );
     AlertDialog alertDialog = AlertDialog(
-      title: Text(AppLocalizations.of(context)!.updateFailedToInstallTitle),
-      content: Text(AppLocalizations.of(context)!
-          .updateFailedToInstallDescription(error)),
+      title: Text(appLocalizations!.updateFailedToInstallTitle),
+      content: Text(appLocalizations!.updateFailedToInstallDescription(error)),
       actions: [alertDialogTryAgainButton, alertDialogCancelButton],
     );
     showDialog(
@@ -109,6 +107,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
 
   @override
   void initState() {
+    super.initState();
     versionSpecificService = new VersionSpecificServiceImpl(
         storageService: context.read<StorageServiceSharedPreferences>(),
         notificationService: notificationService);
@@ -120,7 +119,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
     BlocProvider.of<ContactsPermissionStatusBloc>(context)
         .add(ContactsPermissionStatusEvent.PermissionUnknown);
     BlocProvider.of<VersionBloc>(context).add(VersionEvent.versionUnknown);
-    super.initState();
+    appLocalizations = AppLocalizations.of(context);
   }
 
   @override
@@ -175,7 +174,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
                               new Text(
                                   BirthdayCalendarDateUtils
                                       .convertAndTranslateMonthNumber(
-                                          monthToPresent, AppLocalizations.of(context)!),
+                                          monthToPresent, appLocalizations!),
                                   style: new TextStyle(
                                       fontSize: 25.0,
                                       fontWeight: FontWeight.bold))
