@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:birthday_calendar/page/settings_page/settings_screen.dart';
 import 'package:birthday_calendar/widget/calendar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MainPage extends StatefulWidget {
   MainPage(
@@ -40,7 +41,6 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
   _MainPageState(this.notificationService);
 
   int monthToPresent = -1;
-  String month = "";
   NotificationService notificationService;
   UpdateService _updateService = UpdateServiceImpl();
   late VersionSpecificService versionSpecificService;
@@ -51,7 +51,6 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
           ? monthToPresent + 1
           : monthToPresent - 1;
       monthToPresent = Utils.correctMonthOverflow(monthToPresent);
-      month = BirthdayCalendarDateUtils.convertMonthToWord(monthToPresent);
     });
   }
 
@@ -66,11 +65,12 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
         onPressed: () {
           Navigator.pop(context);
         },
-        child: const Text("Ok"));
+        child: Text(AppLocalizations.of(context)!.ok));
     AlertDialog alertDialog = AlertDialog(
-      title: const Text("Update Successfully Installed"),
-      content:
-          const Text("Birthday Calendar has been updated successfully! 🎂"),
+      title:
+          Text(AppLocalizations.of(context)!.updateSuccessfullyInstalledTitle),
+      content: Text(
+          AppLocalizations.of(context)!.updateSuccessfullyInstalledDescription),
       actions: [alertDialogOkButton],
     );
     showDialog(
@@ -84,20 +84,20 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
     Widget alertDialogTryAgainButton = TextButton(
         onPressed: () {
           _updateService.checkForInAppUpdate(
-              _onUpdateSuccess, _onUpdateFailure);
+              _onUpdateSuccess, _onUpdateFailure, context);
           Navigator.pop(context);
         },
-        child: const Text("Try Again?"));
+        child: Text(AppLocalizations.of(context)!.tryAgain));
     Widget alertDialogCancelButton = TextButton(
       onPressed: () {
         Navigator.pop(context);
       },
-      child: const Text("Dismiss"),
+      child: Text(AppLocalizations.of(context)!.dismiss),
     );
     AlertDialog alertDialog = AlertDialog(
-      title: const Text("Update Failed To Install ❌"),
-      content:
-          Text("Birthday Calendar has failed to update because: \n $error"),
+      title: Text(AppLocalizations.of(context)!.updateFailedToInstallTitle),
+      content: Text(AppLocalizations.of(context)!
+          .updateFailedToInstallDescription(error)),
       actions: [alertDialogTryAgainButton, alertDialogCancelButton],
     );
     showDialog(
@@ -109,25 +109,24 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
 
   @override
   void initState() {
+    super.initState();
     versionSpecificService = new VersionSpecificServiceImpl(
         storageService: context.read<StorageServiceSharedPreferences>(),
         notificationService: notificationService);
     monthToPresent = widget.currentMonth;
-    month = BirthdayCalendarDateUtils.convertMonthToWord(monthToPresent);
-    widget.notificationService.init();
+    widget.notificationService.init(context);
     widget.notificationService.addListenerForSelectNotificationStream(this);
-    _updateService.checkForInAppUpdate(_onUpdateSuccess, _onUpdateFailure);
+    _updateService.checkForInAppUpdate(
+        _onUpdateSuccess, _onUpdateFailure, context);
     BlocProvider.of<ContactsPermissionStatusBloc>(context)
         .add(ContactsPermissionStatusEvent.PermissionUnknown);
     BlocProvider.of<VersionBloc>(context).add(VersionEvent.versionUnknown);
-    super.initState();
   }
 
   @override
   void didUpdateWidget(covariant MainPage oldWidget) {
     super.didUpdateWidget(oldWidget);
     monthToPresent = widget.currentMonth;
-    month = BirthdayCalendarDateUtils.convertMonthToWord(monthToPresent);
   }
 
   @override
@@ -173,7 +172,11 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              new Text(month,
+                              new Text(
+                                  BirthdayCalendarDateUtils
+                                      .convertAndTranslateMonthNumber(
+                                          monthToPresent,
+                                          AppLocalizations.of(context)!),
                                   style: new TextStyle(
                                       fontSize: 25.0,
                                       fontWeight: FontWeight.bold))

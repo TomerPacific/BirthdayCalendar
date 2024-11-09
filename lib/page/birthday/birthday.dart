@@ -1,6 +1,5 @@
 import 'package:birthday_calendar/BirthdayBloc/BirthdaysBloc.dart';
 import 'package:birthday_calendar/UserNotificationStatusBloc/UserNotificationStatusBloc.dart';
-import 'package:birthday_calendar/constants.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/storage_service/shared_preferences_storage.dart';
 import 'package:birthday_calendar/utils.dart';
@@ -9,6 +8,7 @@ import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BirthdayWidget extends StatefulWidget {
   final UserBirthday birthdayOfPerson;
@@ -41,7 +41,8 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
     if (await canLaunchUrl(phoneUri)) {
       launchUrl(phoneUri);
     } else {
-      Utils.showSnackbarWithMessage(context, unableToMakeCallMsg);
+      Utils.showSnackbarWithMessage(
+          context, AppLocalizations.of(context)!.unableToMakeCallMsg);
     }
   }
 
@@ -51,7 +52,7 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
     TextEditingController _phoneNumberController = new TextEditingController();
 
     AlertDialog addPhoneNumberAlert = AlertDialog(
-        title: Text("Add Phone Number"),
+        title: Text(AppLocalizations.of(context)!.addPhoneNumber),
         content: InternationalPhoneNumberInput(
           key: _phoneNumberKey,
           onInputChanged: (PhoneNumber number) {
@@ -90,7 +91,7 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                 return null;
               }
             },
-            child: new Text("Add"),
+            child: Text(AppLocalizations.of(context)!.add),
           ),
           TextButton(
               style: TextButton.styleFrom(foregroundColor: Colors.red),
@@ -98,7 +99,7 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                 _phoneNumberController.clear();
                 Navigator.pop(context);
               },
-              child: new Text("Cancel")),
+              child: Text(AppLocalizations.of(context)!.cancel)),
         ]);
 
     showDialog(
@@ -163,8 +164,10 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                       BlocProvider.of<UserNotificationStatusBloc>(context).add(
                           new UserNotificationStatusEvent(
                               userBirthday: birthdayOfPerson,
-                              hasNotification:
-                                  birthdayOfPerson.hasNotification));
+                              hasNotification: birthdayOfPerson.hasNotification,
+                              notificationMsg: AppLocalizations.of(context)!
+                                  .notificationForBirthdayMessage(
+                                      birthdayOfPerson.name)));
                     });
               })),
           callIconButton(context),

@@ -2,13 +2,13 @@ import 'package:birthday_calendar/ClearNotificationsBloc/ClearNotificationsBloc.
 import 'package:birthday_calendar/ContactsPermissionStatusBloc/ContactsPermissionStatusBloc.dart';
 import 'package:birthday_calendar/ThemeBloc/ThemeBloc.dart';
 import 'package:birthday_calendar/VersionBloc/VersionBloc.dart';
-import 'package:birthday_calendar/constants.dart';
 import 'package:birthday_calendar/service/contacts_service/contacts_service.dart';
 import 'package:birthday_calendar/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SettingsScreen extends StatelessWidget {
   SettingsScreen({
@@ -21,13 +21,13 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: new Text("Settings"),
+        title: new Text(AppLocalizations.of(context)!.settings),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           SwitchListTile(
-              title: const Text('Dark Mode'),
+              title: Text(AppLocalizations.of(context)!.darkMode),
               value: context.read<ThemeBloc>().state == ThemeMode.dark
                   ? true
                   : false,
@@ -45,7 +45,7 @@ class SettingsScreen extends StatelessWidget {
           BlocBuilder<ContactsPermissionStatusBloc, PermissionStatus>(
               builder: (context, state) {
             return ListTile(
-                title: const Text("Import Contacts"),
+                title: Text(AppLocalizations.of(context)!.importContacts),
                 leading: Icon(Icons.contacts, color: Colors.blue),
                 onTap: () {
                   _handleImportingContacts(context);
@@ -53,7 +53,7 @@ class SettingsScreen extends StatelessWidget {
                 enabled: state.isPermanentlyDenied ? false : true);
           }),
           ListTile(
-              title: const Text("Clear Notifications"),
+              title: Text(AppLocalizations.of(context)!.clearNotifications),
               leading: const Icon(Icons.clear, color: Colors.redAccent),
               onTap: () {
                 _showClearBirthdaysConfirmationDialog(context);
@@ -77,14 +77,15 @@ class SettingsScreen extends StatelessWidget {
 
   void _showClearBirthdaysConfirmationDialog(BuildContext context) {
     AlertDialog alert = AlertDialog(
-      title: Text("Are You Sure?"),
-      content: Text("Do you want to remove all notifications?"),
+      title: Text(AppLocalizations.of(context)!.clearNotificationsAlertTitle),
+      content: Text(
+          AppLocalizations.of(context)!.clearNotificationsAlertDescription),
       actions: [
         TextButton(
           onPressed: () {
             Navigator.pop(context);
           },
-          child: const Text("No"),
+          child: Text(AppLocalizations.of(context)!.no),
         ),
         TextButton(
           onPressed: () {
@@ -92,7 +93,7 @@ class SettingsScreen extends StatelessWidget {
                 .add(ClearNotificationsEvent.ClearedNotifications);
             Navigator.pop(context);
           },
-          child: const Text("Yes"),
+          child: Text(AppLocalizations.of(context)!.yes),
         )
       ],
     );
@@ -124,14 +125,16 @@ class SettingsScreen extends StatelessWidget {
       List<Contact> contacts = await contactsService.fetchContacts(false);
 
       if (contacts.isEmpty) {
-        Utils.showSnackbarWithMessage(context, noContactsFoundMsg);
+        Utils.showSnackbarWithMessage(
+            context, AppLocalizations.of(context)!.noContactsFoundMsg);
         return;
       }
 
       contacts = await contactsService.filterAlreadyImportedContacts(contacts);
 
       if (contacts.isEmpty) {
-        Utils.showSnackbarWithMessage(context, alreadyAddedContactsMsg);
+        Utils.showSnackbarWithMessage(
+            context, AppLocalizations.of(context)!.alreadyAddedContactsMsg);
         return;
       }
 

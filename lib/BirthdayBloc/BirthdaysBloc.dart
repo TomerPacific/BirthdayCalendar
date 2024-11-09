@@ -12,13 +12,15 @@ class BirthdaysEvent {
   final bool? shouldShowAddBirthdayDialog;
   final List<UserBirthday>? birthdays;
   final DateTime? date;
+  final String? notificationMsg;
 
   BirthdaysEvent(
       {required this.eventName,
       this.birthday,
       this.shouldShowAddBirthdayDialog,
       this.birthdays,
-      this.date});
+      this.date,
+      this.notificationMsg});
 }
 
 class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
@@ -60,8 +62,11 @@ class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
         .getBirthdaysForDate(userBirthday.birthdayDate, false);
     birthdaysMatchingDate.add(userBirthday);
     storageService.saveBirthdaysForDate(birthdayDate, birthdaysMatchingDate);
+
+    String notificationMsg = event.notificationMsg ?? "";
     notificationService.scheduleNotificationForBirthday(
-        userBirthday, "${userBirthday.name} has an upcoming birthday!");
+        userBirthday, notificationMsg);
+
     emit(new BirthdaysState(
         date: birthdayDate,
         birthdays: birthdaysMatchingDate,
