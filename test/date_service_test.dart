@@ -4,21 +4,17 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() {
-
   final appLocalizations = lookupAppLocalizations(const Locale('en'));
 
   test("DateService convert month number 8 to August", () {
-
     final int monthNumber = 8;
     final String monthName =
-    BirthdayCalendarDateUtils.convertAndTranslateMonthNumber(
-        monthNumber, appLocalizations);
+        BirthdayCalendarDateUtils.convertAndTranslateMonthNumber(
+            monthNumber, appLocalizations);
     expect(monthName, "August");
   });
 
-  test('DateService invalid month number returns empty string',
-      () {
-    
+  test('DateService invalid month number returns empty string', () {
     final int monthNumber = 14;
     final String monthName =
         BirthdayCalendarDateUtils.convertAndTranslateMonthNumber(
