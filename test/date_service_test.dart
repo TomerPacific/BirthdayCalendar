@@ -60,4 +60,10 @@ void main() {
     final bool isAValidDate = BirthdayCalendarDateUtils.isADate(date);
     expect(isAValidDate, false);
   });
+
+  test("DateService check current month number", () {
+    final int currentMonthNumber = DateTime.now().month;
+    final int monthNumber = BirthdayCalendarDateUtils.getCurrentMonthNumber();
+    expect(monthNumber, currentMonthNumber);
+  });
 }
