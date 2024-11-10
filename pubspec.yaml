@@ -37,7 +37,7 @@ dependencies:
   permission_handler: 10.2.0
   flutter_contacts: 1.1.7+1
   provider: 6.0.2
-  in_app_update: 4.1.0
+  in_app_update: 4.2.3
   flutter_bloc: 8.1.5
 
 
