@@ -10,7 +10,7 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:birthday_calendar/constants.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:birthday_calendar/l10n/app_localizations.dart';
 
 const String channel_id = "123";
 const String channel_name = "birthday_notification";

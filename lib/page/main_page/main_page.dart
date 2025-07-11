@@ -17,7 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:birthday_calendar/page/settings_page/settings_screen.dart';
 import 'package:birthday_calendar/widget/calendar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:birthday_calendar/l10n/app_localizations.dart';
 
 class MainPage extends StatefulWidget {
   MainPage(
