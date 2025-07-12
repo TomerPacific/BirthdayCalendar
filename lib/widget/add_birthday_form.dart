@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:birthday_calendar/l10n/app_localizations.dart';
 
 class AddBirthdayForm extends StatefulWidget {
   final DateTime dateOfDay;

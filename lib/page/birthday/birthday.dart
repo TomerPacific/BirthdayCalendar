@@ -1,5 +1,6 @@
 import 'package:birthday_calendar/BirthdayBloc/BirthdaysBloc.dart';
 import 'package:birthday_calendar/UserNotificationStatusBloc/UserNotificationStatusBloc.dart';
+import 'package:birthday_calendar/l10n/app_localizations.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/storage_service/shared_preferences_storage.dart';
 import 'package:birthday_calendar/utils.dart';
@@ -8,7 +9,6 @@ import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BirthdayWidget extends StatefulWidget {
   final UserBirthday birthdayOfPerson;

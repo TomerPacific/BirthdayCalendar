@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:birthday_calendar/l10n/app_localizations.dart';
 
 class SettingsScreen extends StatelessWidget {
   SettingsScreen({

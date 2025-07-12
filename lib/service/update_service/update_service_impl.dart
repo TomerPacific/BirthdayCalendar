@@ -1,7 +1,7 @@
 import 'package:birthday_calendar/service/update_service/update_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:in_app_update/in_app_update.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:birthday_calendar/l10n/app_localizations.dart';
 
 class UpdateServiceImpl extends UpdateService {
   AppUpdateInfo? _appUpdateInfo;
