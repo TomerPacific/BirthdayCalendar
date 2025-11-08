@@ -20,6 +20,7 @@ const userBirthdayPhoneNumberKey = "phoneNumber";
 
 const darkModeKey = "darkMode";
 const contactsPermissionKey = "contacts";
+const notificationsPermissionKey = "notifications";
 const contactsPermissionStatusKey = "contactsPermissionStatusKey";
 
 const versionToMigrateNotificationStatusFrom = "1.2.1";
