@@ -399,6 +399,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'People Without Birthdays'**
   String get peopleWithoutBirthdaysAlertDialogTitle;
+
+  /// No description provided for @notificationPermissionPermanentlyDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'In order to use this application, you will need to authorize it to send you notifications'**
+  String get notificationPermissionPermanentlyDenied;
 }
 
 class _AppLocalizationsDelegate

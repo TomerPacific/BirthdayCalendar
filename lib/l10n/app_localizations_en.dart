@@ -174,4 +174,8 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get peopleWithoutBirthdaysAlertDialogTitle =>
       'People Without Birthdays';
+
+  @override
+  String get notificationPermissionPermanentlyDenied =>
+      'In order to use this application, you will need to authorize it to send you notifications';
 }

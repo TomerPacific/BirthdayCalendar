@@ -50,5 +50,6 @@
     "unableToMakeCallMsg": "We are unable to make the call",
     "addBirthdaysToContactsAlertDialogTitle": "Add Birthdays To Contacts",
     "addBirthdaysToContactsAlertDialogDescription": "Would you like to add birth dates for your imported contacts?",
-    "peopleWithoutBirthdaysAlertDialogTitle": "People Without Birthdays"
+    "peopleWithoutBirthdaysAlertDialogTitle": "People Without Birthdays",
+    "notificationPermissionPermanentlyDenied": "In order to use this application, you will need to authorize it to send you notifications"
 }

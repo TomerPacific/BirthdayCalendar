@@ -50,5 +50,6 @@
     "unableToMakeCallMsg": "हम कॉल करने में असमर्थ हैं",
     "addBirthdaysToContactsAlertDialogTitle": "Add Birthdays To Contacts",
     "addBirthdaysToContactsAlertDialogDescription": "Would you like to add birth dates for your imported contacts?",
-    "peopleWithoutBirthdaysAlertDialogTitle": "People Without Birthdays"
+    "peopleWithoutBirthdaysAlertDialogTitle": "People Without Birthdays",
+    "notificationPermissionPermanentlyDenied": "इस ऐप का उपयोग करने के लिए, आपको इसे आपको सूचनाएँ भेजने की अनुमति देनी होगी।"
 }
