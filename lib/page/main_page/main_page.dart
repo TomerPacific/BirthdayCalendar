@@ -63,7 +63,6 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
   void _onUpdateSuccess() {
     Widget alertDialogOkButton = TextButton(
         onPressed: () {
-          notificationService.requestNotificationPermission(context);
           Navigator.pop(context);
         },
         child: Text(AppLocalizations.of(context)!.ok));
@@ -91,7 +90,6 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
         child: Text(AppLocalizations.of(context)!.tryAgain));
     Widget alertDialogCancelButton = TextButton(
       onPressed: () {
-        notificationService.requestNotificationPermission(context);
         Navigator.pop(context);
       },
       child: Text(AppLocalizations.of(context)!.dismiss),
