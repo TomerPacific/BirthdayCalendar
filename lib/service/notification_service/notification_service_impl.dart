@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:birthday_calendar/service/notification_service/notificationCallbacks.dart';
+import 'package:birthday_calendar/service/permission_service/permissions_service.dart';
 import 'package:birthday_calendar/utils.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'notification_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -15,15 +17,28 @@ import 'package:birthday_calendar/l10n/app_localizations.dart';
 const String channel_id = "123";
 const String channel_name = "birthday_notification";
 const String navigationActionId = 'id_1';
+bool _initialized = false;
+StreamSubscription<String?>? _selectSubscription;
 
 class NotificationServiceImpl extends NotificationService {
+  NotificationServiceImpl({required this.permissionsService});
+
+  final PermissionsService permissionsService;
+
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
   final StreamController<String?> selectNotificationStream =
       StreamController<String?>.broadcast();
   List<NotificationCallbacks> selectNotificationStreamListeners = [];
 
-  void init(BuildContext context) {
+  Future<void> init(BuildContext context) async {
+    if (_initialized) {
+      return;
+    }
+
+    _initialized = true;
+    tz.initializeTimeZones();
+
     final AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('app_icon');
 
@@ -32,15 +47,59 @@ class NotificationServiceImpl extends NotificationService {
 
     _initializeLocalNotificationsPlugin(initializationSettings, context);
 
-    selectNotificationStream.stream.listen((notificationEvent) {
-      _rescheduleNotificationFromPayload(notificationEvent, context);
-      selectNotificationStreamListeners.forEach((notificationListener) {
-        notificationListener.onNotificationSelected(notificationEvent);
-      });
-    });
+    AndroidFlutterLocalNotificationsPlugin?
+        androidFlutterLocalNotificationsPlugin =
+        flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
 
-    tz.initializeTimeZones();
+    final channel = AndroidNotificationChannel(
+      channel_id,
+      channel_name,
+      description: 'To remind you about upcoming birthdays',
+      importance: Importance.max,
+    );
+    await androidFlutterLocalNotificationsPlugin
+        ?.createNotificationChannel(channel);
   }
+
+  void requestNotificationPermission(BuildContext context) async {
+    PermissionStatus notificationPermissionStatus = await permissionsService
+        .getPermissionStatus(notificationsPermissionKey);
+
+    if (notificationPermissionStatus == PermissionStatus.denied) {
+      notificationPermissionStatus = await permissionsService
+          .requestPermissionAndGetStatus(notificationsPermissionKey);
+    }
+
+    if (notificationPermissionStatus == PermissionStatus.granted) {
+      _selectSubscription = selectNotificationStream.stream.listen((payload) {
+        _rescheduleNotificationFromPayload(payload, context);
+        for (var listener in selectNotificationStreamListeners) {
+          listener.onNotificationSelected(payload);
+        }
+      });
+      return;
+    }
+  }
+
+  // bool shouldShowNotificationPermissionRequest() {
+  //   final shouldRequest = await _showPermissionRationale(context);
+  //   if (!shouldRequest) {
+  //     return;
+  //   }
+  //
+  //   final bool? androidGranted = await androidFlutterLocalNotificationsPlugin
+  //       ?.requestNotificationsPermission();
+  //
+  //   if (androidGranted == true) {
+  //     _selectSubscription = selectNotificationStream.stream.listen((payload) {
+  //       _rescheduleNotificationFromPayload(payload, context);
+  //       for (var listener in selectNotificationStreamListeners) {
+  //         listener.onNotificationSelected(payload);
+  //       }
+  //     });
+  //   }
+  // }
 
   void _initializeLocalNotificationsPlugin(
       InitializationSettings initializationSettings,
@@ -180,6 +239,7 @@ class NotificationServiceImpl extends NotificationService {
 
   @override
   void dispose() {
+    _selectSubscription?.cancel();
     selectNotificationStream.close();
     selectNotificationStreamListeners.clear();
   }
