@@ -142,7 +142,7 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                 UserBirthday userBirthday = new UserBirthday(
                     _birthdayPersonController.text,
                     widget.dateOfDay,
-                    hasUserGrantedNotificationPermission ? true : false,
+                    hasUserGrantedNotificationPermission,
                     _birthdayPhoneNumber.phoneNumber != null
                         ? _birthdayPhoneNumber.parseNumber()
                         : "");
