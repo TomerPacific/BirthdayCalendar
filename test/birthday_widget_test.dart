@@ -5,6 +5,8 @@ import 'package:birthday_calendar/VersionBloc/VersionBloc.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service_impl.dart';
+import 'package:birthday_calendar/service/permission_service/permissions_service.dart';
+import 'package:birthday_calendar/service/permission_service/permissions_service_impl.dart';
 import 'package:birthday_calendar/service/storage_service/shared_preferences_storage.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,7 +21,8 @@ void print(String s) => printLog.add(s);
 
 void main() {
   StorageService storageService = StorageServiceSharedPreferences();
-  NotificationService notificationService = NotificationServiceImpl();
+  PermissionsService permissionsService = PermissionsServiceImpl();
+  NotificationService notificationService = NotificationServiceImpl(permissionsService: permissionsService);
   List<UserBirthday> birthdays = [];
 
   setUp(() {
