@@ -160,7 +160,18 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                             : Icons.notifications_active_outlined,
                         color: Utils.getColorBasedOnPosition(
                             indexOfBirthday, ElementType.icon)),
-                    onPressed: () {
+                    onPressed: () async {
+                      bool isNotificationPermissionGranted =
+                          await notificationService
+                              .requestNotificationPermission(context);
+
+                      if (!isNotificationPermissionGranted) {
+                        Utils.showSnackbarWithMessage(
+                            context,
+                            AppLocalizations.of(context)!
+                                .notificationPermissionPermanentlyDenied);
+                        return;
+                      }
                       BlocProvider.of<UserNotificationStatusBloc>(context).add(
                           new UserNotificationStatusEvent(
                               userBirthday: birthdayOfPerson,
