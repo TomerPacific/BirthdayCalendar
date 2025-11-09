@@ -1,5 +1,6 @@
 import 'package:birthday_calendar/BirthdayBloc/BirthdaysBloc.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
+import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/storage_service/shared_preferences_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,8 +10,11 @@ import 'package:birthday_calendar/l10n/app_localizations.dart';
 
 class AddBirthdayForm extends StatefulWidget {
   final DateTime dateOfDay;
+  final NotificationService notificationService;
 
-  AddBirthdayForm({Key? key, required this.dateOfDay}) : super(key: key);
+  AddBirthdayForm(
+      {Key? key, required this.dateOfDay, required this.notificationService})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -126,15 +130,19 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
       actions: [
         TextButton(
             style: TextButton.styleFrom(foregroundColor: Colors.green),
-            onPressed: () {
+            onPressed: () async {
               if (_addBirthdayFormKey.currentState != null &&
                   _addBirthdayFormKey.currentState!.validate()) {
                 _addBirthdayFormKey.currentState!.save();
 
+                bool hasUserGrantedNotificationPermission = await widget
+                    .notificationService
+                    .isNotificationPermissionGranted();
+
                 UserBirthday userBirthday = new UserBirthday(
                     _birthdayPersonController.text,
                     widget.dateOfDay,
-                    true,
+                    hasUserGrantedNotificationPermission ? true : false,
                     _birthdayPhoneNumber.phoneNumber != null
                         ? _birthdayPhoneNumber.parseNumber()
                         : "");
