@@ -62,9 +62,20 @@ class NotificationServiceImpl extends NotificationService {
         ?.createNotificationChannel(channel);
   }
 
-  void requestNotificationPermission(BuildContext context) async {
+  Future<bool> isNotificationPermissionGranted() async {
+    return await permissionsService
+            .getPermissionStatus(notificationsPermissionKey) ==
+        PermissionStatus.granted;
+  }
+
+  Future<bool> requestNotificationPermission(BuildContext context) async {
     PermissionStatus notificationPermissionStatus = await permissionsService
         .getPermissionStatus(notificationsPermissionKey);
+
+    if (notificationPermissionStatus == PermissionStatus.permanentlyDenied) {
+      openAppSettings();
+      return false;
+    }
 
     if (notificationPermissionStatus == PermissionStatus.denied) {
       notificationPermissionStatus = await permissionsService
@@ -78,28 +89,11 @@ class NotificationServiceImpl extends NotificationService {
           listener.onNotificationSelected(payload);
         }
       });
-      return;
+      return true;
     }
-  }
 
-  // bool shouldShowNotificationPermissionRequest() {
-  //   final shouldRequest = await _showPermissionRationale(context);
-  //   if (!shouldRequest) {
-  //     return;
-  //   }
-  //
-  //   final bool? androidGranted = await androidFlutterLocalNotificationsPlugin
-  //       ?.requestNotificationsPermission();
-  //
-  //   if (androidGranted == true) {
-  //     _selectSubscription = selectNotificationStream.stream.listen((payload) {
-  //       _rescheduleNotificationFromPayload(payload, context);
-  //       for (var listener in selectNotificationStreamListeners) {
-  //         listener.onNotificationSelected(payload);
-  //       }
-  //     });
-  //   }
-  // }
+    return false;
+  }
 
   void _initializeLocalNotificationsPlugin(
       InitializationSettings initializationSettings,

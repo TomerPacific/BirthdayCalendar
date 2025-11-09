@@ -8,7 +8,9 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 abstract class NotificationService {
   void init(BuildContext context);
 
-  void requestNotificationPermission(BuildContext context);
+  Future<bool> isNotificationPermissionGranted();
+
+  Future<bool> requestNotificationPermission(BuildContext context);
 
   void scheduleNotificationForBirthday(
       UserBirthday userBirthday, String notificationMessage);
