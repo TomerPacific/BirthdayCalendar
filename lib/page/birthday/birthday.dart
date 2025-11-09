@@ -163,8 +163,23 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                     onPressed: () async {
                       bool isNotificationPermissionGranted =
                           await notificationService
-                              .requestNotificationPermission(context);
+                              .isNotificationPermissionGranted();
 
+                      if (isNotificationPermissionGranted) {
+                        BlocProvider.of<UserNotificationStatusBloc>(context)
+                            .add(new UserNotificationStatusEvent(
+                                userBirthday: birthdayOfPerson,
+                                hasNotification:
+                                    birthdayOfPerson.hasNotification,
+                                notificationMsg: AppLocalizations.of(context)!
+                                    .notificationForBirthdayMessage(
+                                        birthdayOfPerson.name)));
+                        return;
+                      }
+
+                      isNotificationPermissionGranted =
+                          await notificationService
+                              .requestNotificationPermission(context);
                       if (!isNotificationPermissionGranted) {
                         Utils.showSnackbarWithMessage(
                             context,
@@ -172,6 +187,7 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                                 .notificationPermissionPermanentlyDenied);
                         return;
                       }
+
                       BlocProvider.of<UserNotificationStatusBloc>(context).add(
                           new UserNotificationStatusEvent(
                               userBirthday: birthdayOfPerson,
