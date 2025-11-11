@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:birthday_calendar/BirthdayCalendarDateUtils.dart';
 import 'package:birthday_calendar/constants.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
+import 'package:birthday_calendar/service/notification_service/notification_service_impl.dart';
 import 'package:intl/intl.dart';
 import 'storage_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -183,6 +184,22 @@ class StorageServiceSharedPreferences extends StorageService {
       saveBirthdaysForDate(storedBirthday.birthdayDate, birthdays);
     }
   }
+
+  Future<void> setNotificationPermissionState(NotificationPermissionState state) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(kNotifPermissionStateKey, state.toString());
+  }
+
+  Future<NotificationPermissionState> getNotificationPermissionState() async {
+    final prefs = await SharedPreferences.getInstance();
+    final s = prefs.getString(kNotifPermissionStateKey);
+    if (s == null) return NotificationPermissionState.unknown;
+    return NotificationPermissionState.values.firstWhere(
+          (e) => e.toString() == s,
+      orElse: () => NotificationPermissionState.unknown,
+    );
+  }
+
 
   void dispose() {
     streamController.close();
