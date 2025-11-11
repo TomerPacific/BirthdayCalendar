@@ -22,7 +22,8 @@ void print(String s) => printLog.add(s);
 void main() {
   StorageService storageService = StorageServiceSharedPreferences();
   PermissionsService permissionsService = PermissionsServiceImpl();
-  NotificationService notificationService = NotificationServiceImpl(permissionsService: permissionsService);
+  NotificationService notificationService = NotificationServiceImpl(
+      permissionsService: permissionsService, storageService: storageService);
   List<UserBirthday> birthdays = [];
 
   setUp(() {
