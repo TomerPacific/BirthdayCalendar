@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BirthdayWidget extends StatefulWidget {
@@ -161,40 +162,32 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                         color: Utils.getColorBasedOnPosition(
                             indexOfBirthday, ElementType.icon)),
                     onPressed: () async {
-                      bool isNotificationPermissionGranted =
-                          await notificationService
-                              .isNotificationPermissionGranted();
+                      PermissionStatus status = await notificationService.requestNotificationPermission(context);
 
-                      if (isNotificationPermissionGranted) {
+                      if (status.isGranted) {
                         BlocProvider.of<UserNotificationStatusBloc>(context)
-                            .add(new UserNotificationStatusEvent(
-                                userBirthday: birthdayOfPerson,
-                                hasNotification:
-                                    birthdayOfPerson.hasNotification,
-                                notificationMsg: AppLocalizations.of(context)!
-                                    .notificationForBirthdayMessage(
-                                        birthdayOfPerson.name)));
+                            .add(UserNotificationStatusEvent(
+                          userBirthday: birthdayOfPerson,
+                          hasNotification: birthdayOfPerson.hasNotification,
+                          notificationMsg: AppLocalizations.of(context)!
+                              .notificationForBirthdayMessage(birthdayOfPerson.name),
+                        ));
                         return;
                       }
 
-                      isNotificationPermissionGranted =
-                          await notificationService
-                              .requestNotificationPermission(context);
-                      if (!isNotificationPermissionGranted) {
+                      if (status.isPermanentlyDenied) {
                         Utils.showSnackbarWithMessage(
                             context,
                             AppLocalizations.of(context)!
                                 .notificationPermissionPermanentlyDenied);
+                        openAppSettings();
                         return;
                       }
 
-                      BlocProvider.of<UserNotificationStatusBloc>(context).add(
-                          new UserNotificationStatusEvent(
-                              userBirthday: birthdayOfPerson,
-                              hasNotification: birthdayOfPerson.hasNotification,
-                              notificationMsg: AppLocalizations.of(context)!
-                                  .notificationForBirthdayMessage(
-                                      birthdayOfPerson.name)));
+                      Utils.showSnackbarWithMessage(
+                          context,
+                          AppLocalizations.of(context)!
+                              .notificationPermissionPermanentlyDenied);
                     });
               })),
           callIconButton(context),
