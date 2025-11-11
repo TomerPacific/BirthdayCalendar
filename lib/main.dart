@@ -21,9 +21,10 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   PermissionsService permissionsService = PermissionsServiceImpl();
-  NotificationService notificationService =
-      NotificationServiceImpl(permissionsService: permissionsService);
   StorageService storageService = StorageServiceSharedPreferences();
+
+  NotificationService notificationService =
+      NotificationServiceImpl(permissionsService: permissionsService, storageService: storageService);
   ContactsService contactsService = ContactsServiceImpl(
       storageService: storageService,
       notificationService: notificationService,
