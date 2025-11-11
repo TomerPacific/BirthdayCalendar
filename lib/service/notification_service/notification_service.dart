@@ -6,7 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 abstract class NotificationService {
-  void init(BuildContext context);
+  Future<void> init(BuildContext context);
 
   Future<bool> isNotificationPermissionGranted();
 
