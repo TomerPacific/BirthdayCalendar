@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:birthday_calendar/service/notification_service/notificationCallbacks.dart';
 import 'package:birthday_calendar/service/permission_service/permissions_service.dart';
+import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:birthday_calendar/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -17,13 +18,26 @@ import 'package:birthday_calendar/l10n/app_localizations.dart';
 const String channel_id = "123";
 const String channel_name = "birthday_notification";
 const String navigationActionId = 'id_1';
-bool _initialized = false;
+bool _hasNotificationPermissionBeenGranted = false;
 StreamSubscription<String?>? _selectSubscription;
 
+enum NotificationPermissionState {
+  unknown,
+  granted,
+  deniedTemporary,
+  deniedPermanently,
+}
+
+const String kNotifPermissionStateKey = 'notif_permission_state';
+
 class NotificationServiceImpl extends NotificationService {
-  NotificationServiceImpl({required this.permissionsService});
+  NotificationServiceImpl({
+    required this.permissionsService,
+    required this.storageService,
+  });
 
   final PermissionsService permissionsService;
+  final StorageService storageService;
 
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
@@ -32,11 +46,6 @@ class NotificationServiceImpl extends NotificationService {
   List<NotificationCallbacks> selectNotificationStreamListeners = [];
 
   Future<void> init(BuildContext context) async {
-    if (_initialized) {
-      return;
-    }
-
-    _initialized = true;
     tz.initializeTimeZones();
 
     final AndroidInitializationSettings initializationSettingsAndroid =
@@ -60,39 +69,57 @@ class NotificationServiceImpl extends NotificationService {
     );
     await androidFlutterLocalNotificationsPlugin
         ?.createNotificationChannel(channel);
-  }
 
-  Future<bool> isNotificationPermissionGranted() async {
-    return await permissionsService
-            .getPermissionStatus(notificationsPermissionKey) ==
-        PermissionStatus.granted;
-  }
-
-  Future<bool> requestNotificationPermission(BuildContext context) async {
-    PermissionStatus notificationPermissionStatus = await permissionsService
-        .getPermissionStatus(notificationsPermissionKey);
-
-    if (notificationPermissionStatus == PermissionStatus.permanentlyDenied) {
-      openAppSettings();
-      return false;
-    }
-
-    if (notificationPermissionStatus == PermissionStatus.denied) {
-      notificationPermissionStatus = await permissionsService
-          .requestPermissionAndGetStatus(notificationsPermissionKey);
-    }
-
-    if (notificationPermissionStatus == PermissionStatus.granted) {
+    _hasNotificationPermissionBeenGranted =
+        await isNotificationPermissionGranted();
+    if (_hasNotificationPermissionBeenGranted) {
       _selectSubscription = selectNotificationStream.stream.listen((payload) {
         _rescheduleNotificationFromPayload(payload, context);
         for (var listener in selectNotificationStreamListeners) {
           listener.onNotificationSelected(payload);
         }
       });
+    }
+  }
+
+  Future<bool> isNotificationPermissionGranted() async {
+    PermissionStatus status = await permissionsService
+        .getPermissionStatus(notificationsPermissionKey);
+
+    if (status.isGranted) {
+      await storageService
+          .setNotificationPermissionState(NotificationPermissionState.granted);
       return true;
     }
 
+    if (status.isPermanentlyDenied) {
+      await storageService.setNotificationPermissionState(
+          NotificationPermissionState.deniedPermanently);
+      return false;
+    }
+
+    await storageService.setNotificationPermissionState(
+        NotificationPermissionState.deniedTemporary);
     return false;
+  }
+
+  Future<PermissionStatus> requestNotificationPermission(
+      BuildContext context) async {
+    PermissionStatus notificationPermissionStatus = await permissionsService
+        .requestPermissionAndGetStatus(notificationsPermissionKey);
+
+    if (notificationPermissionStatus.isGranted) {
+      await storageService
+          .setNotificationPermissionState(NotificationPermissionState.granted);
+    } else if (notificationPermissionStatus.isPermanentlyDenied) {
+      await storageService.setNotificationPermissionState(
+          NotificationPermissionState.deniedPermanently);
+    } else {
+      await storageService.setNotificationPermissionState(
+          NotificationPermissionState.deniedTemporary);
+    }
+
+    return notificationPermissionStatus;
   }
 
   void _initializeLocalNotificationsPlugin(
