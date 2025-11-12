@@ -25,3 +25,10 @@ const contactsPermissionStatusKey = "contactsPermissionStatusKey";
 
 const versionToMigrateNotificationStatusFrom = "1.2.1";
 const didAlreadyMigrateNotificationStatusFlag = "migrateNotificationStatus";
+
+enum NotificationPermissionState {
+  unknown,
+  granted,
+  deniedTemporary,
+  deniedPermanently,
+}

@@ -21,15 +21,6 @@ const String navigationActionId = 'id_1';
 bool _hasNotificationPermissionBeenGranted = false;
 StreamSubscription<String?>? _selectSubscription;
 
-enum NotificationPermissionState {
-  unknown,
-  granted,
-  deniedTemporary,
-  deniedPermanently,
-}
-
-const String kNotifPermissionStateKey = 'notif_permission_state';
-
 class NotificationServiceImpl extends NotificationService {
   NotificationServiceImpl({
     required this.permissionsService,

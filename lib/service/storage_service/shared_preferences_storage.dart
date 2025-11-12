@@ -3,11 +3,12 @@ import 'dart:async';
 import 'package:birthday_calendar/BirthdayCalendarDateUtils.dart';
 import 'package:birthday_calendar/constants.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
-import 'package:birthday_calendar/service/notification_service/notification_service_impl.dart';
 import 'package:intl/intl.dart';
 import 'storage_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:collection/collection.dart';
+
+const String kNotifPermissionStateKey = 'notif_permission_state';
 
 class StorageServiceSharedPreferences extends StorageService {
 
