@@ -9,7 +9,7 @@ import 'package:permission_handler/permission_handler.dart';
 abstract class NotificationService {
   Future<void> init(BuildContext context);
 
-  Future<bool> isNotificationPermissionGranted();
+  Future<bool> isNotificationPermissionGranted(BuildContext context);
 
   Future<PermissionStatus> requestNotificationPermission(BuildContext context);
 

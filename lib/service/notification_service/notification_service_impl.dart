@@ -18,14 +18,14 @@ import 'package:birthday_calendar/l10n/app_localizations.dart';
 const String channel_id = "123";
 const String channel_name = "birthday_notification";
 const String navigationActionId = 'id_1';
-bool _hasNotificationPermissionBeenGranted = false;
-StreamSubscription<String?>? _selectSubscription;
 
 class NotificationServiceImpl extends NotificationService {
   NotificationServiceImpl({
     required this.permissionsService,
     required this.storageService,
   });
+
+  StreamSubscription<String?>? _selectSubscription;
 
   final PermissionsService permissionsService;
   final StorageService storageService;
@@ -61,29 +61,27 @@ class NotificationServiceImpl extends NotificationService {
     await androidFlutterLocalNotificationsPlugin
         ?.createNotificationChannel(channel);
 
-    _hasNotificationPermissionBeenGranted =
-        await isNotificationPermissionGranted();
-    if (_hasNotificationPermissionBeenGranted) {
-      _selectSubscription = selectNotificationStream.stream.listen((payload) {
-        _rescheduleNotificationFromPayload(payload, context);
-        for (var listener in selectNotificationStreamListeners) {
-          listener.onNotificationSelected(payload);
-        }
-      });
-    }
+    await isNotificationPermissionGranted(context);
   }
 
-  Future<bool> isNotificationPermissionGranted() async {
-    PermissionStatus status = await permissionsService
+  Future<bool> isNotificationPermissionGranted(BuildContext context) async {
+    PermissionStatus permissionStatus = await permissionsService
         .getPermissionStatus(notificationsPermissionKey);
 
-    if (status.isGranted) {
+    NotificationPermissionState storedPermissionStatus =
+        await storageService.getNotificationPermissionState();
+
+    if (permissionStatus.isGranted ||
+        storedPermissionStatus == NotificationPermissionState.granted) {
       await storageService
           .setNotificationPermissionState(NotificationPermissionState.granted);
+      if (_selectSubscription == null) {
+        _setupSubscription(context);
+      }
       return true;
     }
 
-    if (status.isPermanentlyDenied) {
+    if (permissionStatus.isPermanentlyDenied) {
       await storageService.setNotificationPermissionState(
           NotificationPermissionState.deniedPermanently);
       return false;
@@ -96,6 +94,13 @@ class NotificationServiceImpl extends NotificationService {
 
   Future<PermissionStatus> requestNotificationPermission(
       BuildContext context) async {
+    NotificationPermissionState storedPermissionStatus =
+        await storageService.getNotificationPermissionState();
+
+    if (storedPermissionStatus == NotificationPermissionState.granted) {
+      return PermissionStatus.granted;
+    }
+
     PermissionStatus notificationPermissionStatus = await permissionsService
         .requestPermissionAndGetStatus(notificationsPermissionKey);
 
@@ -275,5 +280,14 @@ class NotificationServiceImpl extends NotificationService {
         importance: Importance.max,
         priority: Priority.high,
         ticker: "ticker");
+  }
+
+  void _setupSubscription(BuildContext context) {
+    _selectSubscription = selectNotificationStream.stream.listen((payload) {
+      _rescheduleNotificationFromPayload(payload, context);
+      for (var listener in selectNotificationStreamListeners) {
+        listener.onNotificationSelected(payload);
+      }
+    });
   }
 }
