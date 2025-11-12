@@ -1,5 +1,5 @@
+import 'package:birthday_calendar/constants.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
-import 'package:birthday_calendar/service/notification_service/notification_service_impl.dart';
 
 abstract class StorageService {
   Future<List<UserBirthday>> getBirthdaysForDate(
