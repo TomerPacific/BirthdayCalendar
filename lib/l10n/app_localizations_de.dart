@@ -178,6 +178,10 @@ class AppLocalizationsDe extends AppLocalizations {
       'Personen ohne Geburtstage';
 
   @override
-  String get notificationPermissionPermanentlyDenied =>
+  String get notificationPermissionDenied =>
       'Um diese Anwendung zu verwenden, müssen Sie ihr erlauben, Ihnen Benachrichtigungen zu senden';
+
+  @override
+  String get notificationPermissionPermanentlyDenied =>
+      'Sie müssen in den Einstellungen der Anwendung die Benachrichtigungsberechtigung aktivieren';
 }

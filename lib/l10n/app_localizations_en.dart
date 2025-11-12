@@ -176,6 +176,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'People Without Birthdays';
 
   @override
-  String get notificationPermissionPermanentlyDenied =>
+  String get notificationPermissionDenied =>
       'In order to use this application, you will need to authorize it to send you notifications';
+
+  @override
+  String get notificationPermissionPermanentlyDenied =>
+      'You will need to turn on the notification permission in the application\'s settings';
 }

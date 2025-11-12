@@ -51,5 +51,6 @@
     "addBirthdaysToContactsAlertDialogTitle": "Add Birthdays To Contacts",
     "addBirthdaysToContactsAlertDialogDescription": "Would you like to add birth dates for your imported contacts?",
     "peopleWithoutBirthdaysAlertDialogTitle": "People Without Birthdays",
-    "notificationPermissionPermanentlyDenied": "इस ऐप का उपयोग करने के लिए, आपको इसे आपको सूचनाएँ भेजने की अनुमति देनी होगी।"
+    "notificationPermissionDenied": "इस ऐप का उपयोग करने के लिए, आपको इसे आपको सूचनाएँ भेजने की अनुमति देनी होगी।",
+    "notificationPermissionPermanentlyDenied": "आपको एप्लिकेशन की सेटिंग्स में नोटिफ़िकेशन की अनुमति चालू करनी होगी।"
 }

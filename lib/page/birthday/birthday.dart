@@ -162,7 +162,8 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                         color: Utils.getColorBasedOnPosition(
                             indexOfBirthday, ElementType.icon)),
                     onPressed: () async {
-                      PermissionStatus status = await notificationService.requestNotificationPermission(context);
+                      PermissionStatus status = await notificationService
+                          .requestNotificationPermission(context);
 
                       if (status.isGranted) {
                         BlocProvider.of<UserNotificationStatusBloc>(context)
@@ -170,7 +171,8 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                           userBirthday: birthdayOfPerson,
                           hasNotification: birthdayOfPerson.hasNotification,
                           notificationMsg: AppLocalizations.of(context)!
-                              .notificationForBirthdayMessage(birthdayOfPerson.name),
+                              .notificationForBirthdayMessage(
+                                  birthdayOfPerson.name),
                         ));
                         return;
                       }
@@ -187,7 +189,7 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                       Utils.showSnackbarWithMessage(
                           context,
                           AppLocalizations.of(context)!
-                              .notificationPermissionPermanentlyDenied);
+                              .notificationPermissionDenied);
                     });
               })),
           callIconButton(context),

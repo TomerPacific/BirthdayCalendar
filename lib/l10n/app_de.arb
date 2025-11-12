@@ -49,5 +49,6 @@
   "addBirthdaysToContactsAlertDialogTitle": "Geburtstage zu Kontakten hinzufügen",
   "addBirthdaysToContactsAlertDialogDescription": "Möchten Sie Geburtsdaten für Ihre importierten Kontakte hinzufügen?",
   "peopleWithoutBirthdaysAlertDialogTitle": "Personen ohne Geburtstage",
-  "notificationPermissionPermanentlyDenied": "Um diese Anwendung zu verwenden, müssen Sie ihr erlauben, Ihnen Benachrichtigungen zu senden"
+  "notificationPermissionDenied": "Um diese Anwendung zu verwenden, müssen Sie ihr erlauben, Ihnen Benachrichtigungen zu senden",
+  "notificationPermissionPermanentlyDenied": "Sie müssen in den Einstellungen der Anwendung die Benachrichtigungsberechtigung aktivieren"
 }
