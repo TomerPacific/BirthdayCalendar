@@ -179,9 +179,13 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get notificationPermissionDenied =>
-      'Um diese Anwendung zu verwenden, müssen Sie ihr erlauben, Ihnen Benachrichtigungen zu senden';
+      'In order to use this application, you will need to authorize it to send you notifications';
 
   @override
   String get notificationPermissionPermanentlyDenied =>
-      'Sie müssen in den Einstellungen der Anwendung die Benachrichtigungsberechtigung aktivieren';
+      'Sie müssen die Benachrichtigungsberechtigung in den App-Einstellungen aktivieren, um Benachrichtigungen planen zu können.';
+
+  @override
+  String get notificationPermissionDialogTitle =>
+      'Anfrage für Benachrichtigungsberechtigung';
 }

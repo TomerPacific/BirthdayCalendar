@@ -181,5 +181,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notificationPermissionPermanentlyDenied =>
-      'You will need to turn on the notification permission in the application\'s settings';
+      'You will need to turn on the notification permission in the application\'s settings in order to schedule notifications';
+
+  @override
+  String get notificationPermissionDialogTitle =>
+      'Notification Permission Request';
 }

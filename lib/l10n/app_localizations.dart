@@ -409,8 +409,14 @@ abstract class AppLocalizations {
   /// No description provided for @notificationPermissionPermanentlyDenied.
   ///
   /// In en, this message translates to:
-  /// **'You will need to turn on the notification permission in the application\'s settings'**
+  /// **'You will need to turn on the notification permission in the application\'s settings in order to schedule notifications'**
   String get notificationPermissionPermanentlyDenied;
+
+  /// No description provided for @notificationPermissionDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification Permission Request'**
+  String get notificationPermissionDialogTitle;
 }
 
 class _AppLocalizationsDelegate

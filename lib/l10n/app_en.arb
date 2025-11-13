@@ -52,5 +52,6 @@
     "addBirthdaysToContactsAlertDialogDescription": "Would you like to add birth dates for your imported contacts?",
     "peopleWithoutBirthdaysAlertDialogTitle": "People Without Birthdays",
     "notificationPermissionDenied": "In order to use this application, you will need to authorize it to send you notifications",
-    "notificationPermissionPermanentlyDenied": "You will need to turn on the notification permission in the application's settings"
+    "notificationPermissionPermanentlyDenied": "You will need to turn on the notification permission in the application's settings in order to schedule notifications",
+    "notificationPermissionDialogTitle": "Notification Permission Request"
 }

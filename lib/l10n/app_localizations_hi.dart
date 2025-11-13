@@ -177,9 +177,12 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get notificationPermissionDenied =>
-      'इस ऐप का उपयोग करने के लिए, आपको इसे आपको सूचनाएँ भेजने की अनुमति देनी होगी।';
+      'In order to use this application, you will need to authorize it to send you notifications';
 
   @override
   String get notificationPermissionPermanentlyDenied =>
-      'आपको एप्लिकेशन की सेटिंग्स में नोटिफ़िकेशन की अनुमति चालू करनी होगी।';
+      'सूचनाएँ निर्धारित करने के लिए आपको ऐप की सेटिंग्स में अधिसूचना अनुमति चालू करनी होगी।';
+
+  @override
+  String get notificationPermissionDialogTitle => 'अधिसूचना अनुमति अनुरोध';
 }
