@@ -11,9 +11,8 @@ import 'package:collection/collection.dart';
 const String kNotifPermissionStateKey = 'notif_permission_state';
 
 class StorageServiceSharedPreferences extends StorageService {
-
-
-  StreamController<List<UserBirthday>> streamController = StreamController<List<UserBirthday>>.broadcast();
+  StreamController<List<UserBirthday>> streamController =
+      StreamController<List<UserBirthday>>.broadcast();
 
   @override
   void clearAllBirthdays() async {
@@ -21,38 +20,39 @@ class StorageServiceSharedPreferences extends StorageService {
     Set<String> keys = sharedPreferences.getKeys();
     DateFormat format = DateFormat('yyyy-MM-dd');
     for (String key in keys) {
-        try {
-          format.parse(key);
-          sharedPreferences.remove(key);
-        } catch (error) {
-
-        }
+      try {
+        format.parse(key);
+        sharedPreferences.remove(key);
+      } catch (error) {}
     }
   }
 
   @override
-  Future<List<UserBirthday>> getBirthdaysForDate(DateTime dateTime, bool shouldGetBirthdaysFromSimilarDate) async {
-
+  Future<List<UserBirthday>> getBirthdaysForDate(
+      DateTime dateTime, bool shouldGetBirthdaysFromSimilarDate) async {
     if (shouldGetBirthdaysFromSimilarDate) {
       List<UserBirthday> birthdays = [];
-      List<DateTime> birthdaysWithSimilarDates = await _getBirthdaysWithSimilarDate(dateTime);
+      List<DateTime> birthdaysWithSimilarDates =
+          await _getBirthdaysWithSimilarDate(dateTime);
       for (DateTime dateTime in birthdaysWithSimilarDates) {
-          List<UserBirthday> decodedBirthdays = await _decodeBirthdaysFromDate(dateTime);
-          birthdays.addAll(decodedBirthdays);
+        List<UserBirthday> decodedBirthdays =
+            await _decodeBirthdaysFromDate(dateTime);
+        birthdays.addAll(decodedBirthdays);
       }
 
       return birthdays;
     }
 
-    List<UserBirthday> decodedBirthdays = await _decodeBirthdaysFromDate(dateTime);
+    List<UserBirthday> decodedBirthdays =
+        await _decodeBirthdaysFromDate(dateTime);
     return decodedBirthdays;
-
   }
 
   Future<List<UserBirthday>> _decodeBirthdaysFromDate(DateTime dateTime) async {
     final sharedPreferences = await SharedPreferences.getInstance();
 
-    String formattedDate = BirthdayCalendarDateUtils.formatDateForSharedPrefs(dateTime);
+    String formattedDate =
+        BirthdayCalendarDateUtils.formatDateForSharedPrefs(dateTime);
     String? birthdaysJSON = sharedPreferences.getString(formattedDate);
     if (birthdaysJSON != null) {
       List decodedBirthdaysForDate = jsonDecode(birthdaysJSON);
@@ -71,11 +71,10 @@ class StorageServiceSharedPreferences extends StorageService {
     Set<String> dates = sharedPreferences.getKeys();
 
     for (String date in dates) {
-
       if (!BirthdayCalendarDateUtils.isADate(date)) {
         continue;
       }
-      
+
       DateTime converted = DateTime.parse(date);
       if (dateTime.month == converted.month && dateTime.day == converted.day) {
         matchingBirthdays.add(converted);
@@ -93,10 +92,12 @@ class StorageServiceSharedPreferences extends StorageService {
   }
 
   @override
-  Future<void> saveBirthdaysForDate(DateTime dateTime, List<UserBirthday> birthdays) async {
+  Future<void> saveBirthdaysForDate(
+      DateTime dateTime, List<UserBirthday> birthdays) async {
     final sharedPreferences = await SharedPreferences.getInstance();
     String encoded = jsonEncode(birthdays);
-    String formattedDate = BirthdayCalendarDateUtils.formatDateForSharedPrefs(dateTime);
+    String formattedDate =
+        BirthdayCalendarDateUtils.formatDateForSharedPrefs(dateTime);
     sharedPreferences.setString(formattedDate, encoded);
 
     streamController.sink.add(birthdays);
@@ -109,8 +110,10 @@ class StorageServiceSharedPreferences extends StorageService {
   }
 
   @override
-  Future<void> updateNotificationStatusForBirthday(UserBirthday userBirthday, bool updatedStatus) async {
-    List<UserBirthday> birthdays = await getBirthdaysForDate(userBirthday.birthdayDate, false);
+  Future<void> updateNotificationStatusForBirthday(
+      UserBirthday userBirthday, bool updatedStatus) async {
+    List<UserBirthday> birthdays =
+        await getBirthdaysForDate(userBirthday.birthdayDate, false);
     for (int i = 0; i < birthdays.length; i++) {
       UserBirthday savedBirthday = birthdays[i];
       if (savedBirthday.equals(userBirthday)) {
@@ -127,7 +130,8 @@ class StorageServiceSharedPreferences extends StorageService {
   }
 
   @override
-  void saveIsContactsPermissionPermanentlyDenied(bool isPermanentlyDenied) async {
+  void saveIsContactsPermissionPermanentlyDenied(
+      bool isPermanentlyDenied) async {
     final sharedPreferences = await SharedPreferences.getInstance();
     sharedPreferences.setBool(contactsPermissionStatusKey, isPermanentlyDenied);
   }
@@ -135,7 +139,8 @@ class StorageServiceSharedPreferences extends StorageService {
   @override
   Future<bool> getIsContactPermissionPermanentlyDenied() async {
     final sharedPreferences = await SharedPreferences.getInstance();
-    bool? isPermanentlyDenied = sharedPreferences.getBool(contactsPermissionStatusKey);
+    bool? isPermanentlyDenied =
+        sharedPreferences.getBool(contactsPermissionStatusKey);
     return isPermanentlyDenied != null ? isPermanentlyDenied : false;
   }
 
@@ -145,12 +150,14 @@ class StorageServiceSharedPreferences extends StorageService {
     sharedPreferences.setBool(didAlreadyMigrateNotificationStatusFlag, status);
   }
 
-
   @override
   Future<bool> getAlreadyMigrateNotificationStatus() async {
     final sharedPreferences = await SharedPreferences.getInstance();
-    bool? hasAlreadyMigratedNotificationStatus = sharedPreferences.getBool(didAlreadyMigrateNotificationStatusFlag);
-    return hasAlreadyMigratedNotificationStatus != null ? hasAlreadyMigratedNotificationStatus : false;
+    bool? hasAlreadyMigratedNotificationStatus =
+        sharedPreferences.getBool(didAlreadyMigrateNotificationStatusFlag);
+    return hasAlreadyMigratedNotificationStatus != null
+        ? hasAlreadyMigratedNotificationStatus
+        : false;
   }
 
   @override
@@ -168,7 +175,8 @@ class StorageServiceSharedPreferences extends StorageService {
       if (birthdaysJSON != null) {
         List decodedBirthdaysForDate = jsonDecode(birthdaysJSON);
         List<UserBirthday> userBirthdays = decodedBirthdaysForDate
-            .map((decodedBirthday) => UserBirthday.fromJson(decodedBirthday)).toList();
+            .map((decodedBirthday) => UserBirthday.fromJson(decodedBirthday))
+            .toList();
         birthdays = birthdays + userBirthdays;
       }
     }
@@ -178,29 +186,28 @@ class StorageServiceSharedPreferences extends StorageService {
 
   @override
   Future<void> updatePhoneNumberForBirthday(UserBirthday birthday) async {
-    List<UserBirthday> birthdays = await getBirthdaysForDate(birthday.birthdayDate, false);
-    UserBirthday? storedBirthday = birthdays.firstWhereOrNull((element) => element.name == birthday.name);
+    List<UserBirthday> birthdays =
+        await getBirthdaysForDate(birthday.birthdayDate, false);
+    UserBirthday? storedBirthday =
+        birthdays.firstWhereOrNull((element) => element.name == birthday.name);
     if (storedBirthday != null) {
       storedBirthday.phoneNumber = birthday.phoneNumber;
       saveBirthdaysForDate(storedBirthday.birthdayDate, birthdays);
     }
   }
 
-  Future<void> setNotificationPermissionState(NotificationPermissionState state) async {
+  Future<void> setNotificationPermissionState(
+      NotificationPermissionState state) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(kNotifPermissionStateKey, state.toString());
+    await prefs.setInt(kNotifPermissionStateKey, state.index);
   }
 
   Future<NotificationPermissionState> getNotificationPermissionState() async {
     final prefs = await SharedPreferences.getInstance();
-    final s = prefs.getString(kNotifPermissionStateKey);
-    if (s == null) return NotificationPermissionState.unknown;
-    return NotificationPermissionState.values.firstWhere(
-          (e) => e.toString() == s,
-      orElse: () => NotificationPermissionState.unknown,
-    );
+    final index = prefs.getInt(kNotifPermissionStateKey);
+    if (index == null) return NotificationPermissionState.unknown;
+    return NotificationPermissionState.values[index];
   }
-
 
   void dispose() {
     streamController.close();
