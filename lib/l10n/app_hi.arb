@@ -53,5 +53,6 @@
     "peopleWithoutBirthdaysAlertDialogTitle": "People Without Birthdays",
     "notificationPermissionDenied": "जन्मदिन की सूचनाएँ प्राप्त करने के लिए, आपको BirthdayCalendar को आपको सूचनाएँ भेजने की अनुमति देनी होगी",
     "notificationPermissionPermanentlyDenied": "सूचनाएँ निर्धारित करने के लिए आपको ऐप की सेटिंग्स में अधिसूचना अनुमति चालू करनी होगी।",
-    "notificationPermissionDialogTitle": "अधिसूचना अनुमति अनुरोध"
+    "notificationPermissionDialogTitle": "अधिसूचना अनुमति अनुरोध",
+    "openSettings": "सेटिंग्स खोलें"
 }

@@ -185,4 +185,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get notificationPermissionDialogTitle => 'अधिसूचना अनुमति अनुरोध';
+
+  @override
+  String get openSettings => 'सेटिंग्स खोलें';
 }

@@ -53,5 +53,6 @@
     "peopleWithoutBirthdaysAlertDialogTitle": "People Without Birthdays",
     "notificationPermissionDenied": "In order to get notifications for birthdays, you will need to authorize BirthdayCalendar to send you notifications",
     "notificationPermissionPermanentlyDenied": "You will need to turn on the notification permission in the application's settings in order to schedule notifications",
-    "notificationPermissionDialogTitle": "Notification Permission Request"
+    "notificationPermissionDialogTitle": "Notification Permission Request",
+    "openSettings": "Open Settings"
 }

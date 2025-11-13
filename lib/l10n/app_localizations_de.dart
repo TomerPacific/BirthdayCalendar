@@ -188,4 +188,7 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get notificationPermissionDialogTitle =>
       'Anfrage für Benachrichtigungsberechtigung';
+
+  @override
+  String get openSettings => 'Einstellungen öffnen';
 }

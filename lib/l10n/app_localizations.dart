@@ -417,6 +417,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Notification Permission Request'**
   String get notificationPermissionDialogTitle;
+
+  /// No description provided for @openSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Settings'**
+  String get openSettings;
 }
 
 class _AppLocalizationsDelegate

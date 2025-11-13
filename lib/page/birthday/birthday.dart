@@ -183,7 +183,8 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                             AppLocalizations.of(context)!
                                 .notificationPermissionPermanentlyDenied,
                             SnackBarAction(
-                                label: "Open Settings",
+                                label:
+                                    AppLocalizations.of(context)!.openSettings,
                                 onPressed: openAppSettings));
                         return;
                       }
