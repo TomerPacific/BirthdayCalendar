@@ -403,7 +403,7 @@ abstract class AppLocalizations {
   /// No description provided for @notificationPermissionDenied.
   ///
   /// In en, this message translates to:
-  /// **'In order to use this application, you will need to authorize it to send you notifications'**
+  /// **'In order to get notifications for birthdays, you will need to authorize BirthdayCalendar to send you notifications'**
   String get notificationPermissionDenied;
 
   /// No description provided for @notificationPermissionPermanentlyDenied.

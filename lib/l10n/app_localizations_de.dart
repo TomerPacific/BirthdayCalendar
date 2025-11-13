@@ -179,7 +179,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get notificationPermissionDenied =>
-      'In order to use this application, you will need to authorize it to send you notifications';
+      'Um Benachrichtigungen zu Geburtstagen zu erhalten, müssen Sie BirthdayCalendar die Berechtigung erteilen, Ihnen Benachrichtigungen zu senden';
 
   @override
   String get notificationPermissionPermanentlyDenied =>

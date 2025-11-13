@@ -49,6 +49,7 @@
   "addBirthdaysToContactsAlertDialogTitle": "Geburtstage zu Kontakten hinzufügen",
   "addBirthdaysToContactsAlertDialogDescription": "Möchten Sie Geburtsdaten für Ihre importierten Kontakte hinzufügen?",
   "peopleWithoutBirthdaysAlertDialogTitle": "Personen ohne Geburtstage",
+  "notificationPermissionDenied": "Um Benachrichtigungen zu Geburtstagen zu erhalten, müssen Sie BirthdayCalendar die Berechtigung erteilen, Ihnen Benachrichtigungen zu senden",
   "notificationPermissionPermanentlyDenied": "Sie müssen die Benachrichtigungsberechtigung in den App-Einstellungen aktivieren, um Benachrichtigungen planen zu können.",
   "notificationPermissionDialogTitle": "Anfrage für Benachrichtigungsberechtigung"
  }
