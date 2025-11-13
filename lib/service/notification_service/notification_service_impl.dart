@@ -75,9 +75,8 @@ class NotificationServiceImpl extends NotificationService {
         storedPermissionStatus == NotificationPermissionState.granted) {
       await storageService
           .setNotificationPermissionState(NotificationPermissionState.granted);
-      if (_selectSubscription == null) {
-        _setupSubscription(context);
-      }
+      await _selectSubscription?.cancel();
+      _setupSubscription(context);
       return true;
     }
 
