@@ -178,11 +178,7 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                       }
 
                       if (status.isPermanentlyDenied) {
-                        Utils.showSnackbarWithMessage(
-                            context,
-                            AppLocalizations.of(context)!
-                                .notificationPermissionPermanentlyDenied);
-                        openAppSettings();
+                        _showEnableNotificationPermissionFromAppSettingsDialog();
                         return;
                       }
 
@@ -205,5 +201,35 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
         ],
       ),
     );
+  }
+
+  void _showEnableNotificationPermissionFromAppSettingsDialog() {
+    AlertDialog alertDialog = AlertDialog(
+        title: Text(AppLocalizations.of(context)!
+            .notificationPermissionDialogTitle),
+        content: Text(AppLocalizations.of(context)!
+            .notificationPermissionPermanentlyDenied),
+        actions: [
+          TextButton(
+            style: TextButton.styleFrom(foregroundColor: Colors.green),
+            onPressed: () {
+              openAppSettings();
+              Navigator.pop(context);
+            },
+            child: Text(AppLocalizations.of(context)!.ok),
+          ),
+          TextButton(
+              style: TextButton.styleFrom(foregroundColor: Colors.red),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(AppLocalizations.of(context)!.cancel)),
+        ]);
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alertDialog;
+        });
   }
 }
