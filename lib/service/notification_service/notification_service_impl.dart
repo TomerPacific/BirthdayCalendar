@@ -94,14 +94,16 @@ class NotificationServiceImpl extends NotificationService {
 
   Future<PermissionStatus> requestNotificationPermission(
       BuildContext context) async {
-    NotificationPermissionState storedPermissionStatus =
-        await storageService.getNotificationPermissionState();
+    PermissionStatus notificationPermissionStatus = await permissionsService
+        .getPermissionStatus(notificationsPermissionKey);
 
-    if (storedPermissionStatus == NotificationPermissionState.granted) {
+    if (notificationPermissionStatus.isGranted) {
+      await storageService
+          .setNotificationPermissionState(NotificationPermissionState.granted);
       return PermissionStatus.granted;
     }
 
-    PermissionStatus notificationPermissionStatus = await permissionsService
+    notificationPermissionStatus = await permissionsService
         .requestPermissionAndGetStatus(notificationsPermissionKey);
 
     if (notificationPermissionStatus.isGranted) {
