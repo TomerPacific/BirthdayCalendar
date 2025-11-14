@@ -61,7 +61,11 @@ class NotificationServiceImpl extends NotificationService {
     await androidFlutterLocalNotificationsPlugin
         ?.createNotificationChannel(channel);
 
-    await isNotificationPermissionGranted(context);
+    bool permissionGranted = await isNotificationPermissionGranted(context);
+    if (permissionGranted) {
+      await _selectSubscription?.cancel();
+      _setupSubscription(context);
+    }
   }
 
   Future<bool> isNotificationPermissionGranted(BuildContext context) async {
@@ -71,8 +75,6 @@ class NotificationServiceImpl extends NotificationService {
     if (permissionStatus.isGranted) {
       await storageService
           .setNotificationPermissionState(NotificationPermissionState.granted);
-      await _selectSubscription?.cancel();
-      _setupSubscription(context);
       return true;
     }
 
