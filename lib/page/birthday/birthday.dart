@@ -162,10 +162,39 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                         color: Utils.getColorBasedOnPosition(
                             indexOfBirthday, ElementType.icon)),
                     onPressed: () async {
-                      PermissionStatus status = await notificationService
-                          .requestNotificationPermission(context);
+                      if (!birthdayOfPerson.hasNotification) {
+                        PermissionStatus status = await notificationService
+                            .requestNotificationPermission(context);
 
-                      if (status.isGranted) {
+                        if (status.isGranted) {
+                          BlocProvider.of<UserNotificationStatusBloc>(context)
+                              .add(UserNotificationStatusEvent(
+                            userBirthday: birthdayOfPerson,
+                            hasNotification: birthdayOfPerson.hasNotification,
+                            notificationMsg: AppLocalizations.of(context)!
+                                .notificationForBirthdayMessage(
+                                    birthdayOfPerson.name),
+                          ));
+                          return;
+                        }
+
+                        if (status.isPermanentlyDenied) {
+                          Utils.showSnackbarWithMessageAndAction(
+                              context,
+                              AppLocalizations.of(context)!
+                                  .notificationPermissionPermanentlyDenied,
+                              SnackBarAction(
+                                  label: AppLocalizations.of(context)!
+                                      .openSettings,
+                                  onPressed: openAppSettings));
+                          return;
+                        }
+
+                        Utils.showSnackbarWithMessage(
+                            context,
+                            AppLocalizations.of(context)!
+                                .notificationPermissionDenied);
+                      } else {
                         BlocProvider.of<UserNotificationStatusBloc>(context)
                             .add(UserNotificationStatusEvent(
                           userBirthday: birthdayOfPerson,
@@ -174,25 +203,7 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                               .notificationForBirthdayMessage(
                                   birthdayOfPerson.name),
                         ));
-                        return;
                       }
-
-                      if (status.isPermanentlyDenied) {
-                        Utils.showSnackbarWithMessageAndAction(
-                            context,
-                            AppLocalizations.of(context)!
-                                .notificationPermissionPermanentlyDenied,
-                            SnackBarAction(
-                                label:
-                                    AppLocalizations.of(context)!.openSettings,
-                                onPressed: openAppSettings));
-                        return;
-                      }
-
-                      Utils.showSnackbarWithMessage(
-                          context,
-                          AppLocalizations.of(context)!
-                              .notificationPermissionDenied);
                     });
               })),
           callIconButton(context),
