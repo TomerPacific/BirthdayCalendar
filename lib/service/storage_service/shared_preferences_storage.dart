@@ -196,12 +196,14 @@ class StorageServiceSharedPreferences extends StorageService {
     }
   }
 
+  @override
   Future<void> setNotificationPermissionState(
       NotificationPermissionState state) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(kNotifPermissionStateKey, state.index);
   }
 
+  @override
   Future<NotificationPermissionState> getNotificationPermissionState() async {
     final prefs = await SharedPreferences.getInstance();
     final index = prefs.getInt(kNotifPermissionStateKey);
