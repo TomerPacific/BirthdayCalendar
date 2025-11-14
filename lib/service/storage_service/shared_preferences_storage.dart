@@ -8,8 +8,6 @@ import 'storage_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:collection/collection.dart';
 
-const String kNotifPermissionStateKey = 'notif_permission_state';
-
 class StorageServiceSharedPreferences extends StorageService {
   StreamController<List<UserBirthday>> streamController =
       StreamController<List<UserBirthday>>.broadcast();
@@ -200,13 +198,13 @@ class StorageServiceSharedPreferences extends StorageService {
   Future<void> setNotificationPermissionState(
       NotificationPermissionState state) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(kNotifPermissionStateKey, state.index);
+    await prefs.setInt(notificationsPermissionStatusKey, state.index);
   }
 
   @override
   Future<NotificationPermissionState> getNotificationPermissionState() async {
     final prefs = await SharedPreferences.getInstance();
-    final index = prefs.getInt(kNotifPermissionStateKey);
+    final index = prefs.getInt(notificationsPermissionStatusKey);
     if (index == null) return NotificationPermissionState.unknown;
     return NotificationPermissionState.values[index];
   }

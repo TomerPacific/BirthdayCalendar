@@ -22,6 +22,7 @@ const darkModeKey = "darkMode";
 const contactsPermissionKey = "contacts";
 const notificationsPermissionKey = "notifications";
 const contactsPermissionStatusKey = "contactsPermissionStatusKey";
+const notificationsPermissionStatusKey = "notificationsPermissionStatusKey";
 
 const versionToMigrateNotificationStatusFrom = "1.2.1";
 const didAlreadyMigrateNotificationStatusFlag = "migrateNotificationStatus";
