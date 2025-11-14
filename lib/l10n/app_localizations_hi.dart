@@ -184,8 +184,5 @@ class AppLocalizationsHi extends AppLocalizations {
       'सूचनाएँ निर्धारित करने के लिए आपको ऐप की सेटिंग्स में अधिसूचना अनुमति चालू करनी होगी।';
 
   @override
-  String get notificationPermissionDialogTitle => 'अधिसूचना अनुमति अनुरोध';
-
-  @override
   String get openSettings => 'सेटिंग्स खोलें';
 }

@@ -184,9 +184,5 @@ class AppLocalizationsEn extends AppLocalizations {
       'You will need to turn on the notification permission in the application\'s settings in order to schedule notifications';
 
   @override
-  String get notificationPermissionDialogTitle =>
-      'Notification Permission Request';
-
-  @override
   String get openSettings => 'Open Settings';
 }

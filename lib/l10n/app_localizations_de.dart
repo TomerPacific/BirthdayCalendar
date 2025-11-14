@@ -186,9 +186,5 @@ class AppLocalizationsDe extends AppLocalizations {
       'Sie müssen die Benachrichtigungsberechtigung in den App-Einstellungen aktivieren, um Benachrichtigungen planen zu können.';
 
   @override
-  String get notificationPermissionDialogTitle =>
-      'Anfrage für Benachrichtigungsberechtigung';
-
-  @override
   String get openSettings => 'Einstellungen öffnen';
 }
