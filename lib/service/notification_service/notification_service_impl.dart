@@ -63,7 +63,7 @@ class NotificationServiceImpl extends NotificationService {
 
     bool permissionGranted = await isNotificationPermissionGranted(context);
     if (permissionGranted) {
-      _setupSubscription(context);
+      await _setupSubscription(context);
     }
   }
 
@@ -105,7 +105,7 @@ class NotificationServiceImpl extends NotificationService {
     if (notificationPermissionStatus.isGranted) {
       await storageService
           .setNotificationPermissionState(NotificationPermissionState.granted);
-      _setupSubscription(context);
+      await _setupSubscription(context);
     } else if (notificationPermissionStatus.isPermanentlyDenied) {
       await storageService.setNotificationPermissionState(
           NotificationPermissionState.deniedPermanently);
@@ -281,7 +281,7 @@ class NotificationServiceImpl extends NotificationService {
         ticker: "ticker");
   }
 
-  void _setupSubscription(BuildContext context) async {
+  Future<void> _setupSubscription(BuildContext context) async {
     await _selectSubscription?.cancel();
     _selectSubscription = selectNotificationStream.stream.listen((payload) {
       _rescheduleNotificationFromPayload(payload, context);
