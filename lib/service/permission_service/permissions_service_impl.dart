@@ -11,6 +11,9 @@ class PermissionsServiceImpl extends PermissionsService {
       case contactsPermissionKey:
         status = await Permission.contacts.status;
         break;
+      case notificationsPermissionKey:
+        status = await Permission.notification.status;
+        break;
     }
 
     return status;
@@ -23,6 +26,10 @@ class PermissionsServiceImpl extends PermissionsService {
       case contactsPermissionKey:
         await Permission.contacts.shouldShowRequestRationale;
         status = await Permission.contacts.request();
+        break;
+      case notificationsPermissionKey:
+        await Permission.notification.shouldShowRequestRationale;
+        status = await Permission.notification.request();
         break;
     }
 

@@ -20,9 +20,11 @@ import 'package:birthday_calendar/l10n/app_localizations.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  NotificationService notificationService = NotificationServiceImpl();
   PermissionsService permissionsService = PermissionsServiceImpl();
   StorageService storageService = StorageServiceSharedPreferences();
+
+  NotificationService notificationService =
+      NotificationServiceImpl(permissionsService: permissionsService, storageService: storageService);
   ContactsService contactsService = ContactsServiceImpl(
       storageService: storageService,
       notificationService: notificationService,

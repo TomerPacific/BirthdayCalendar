@@ -37,7 +37,8 @@ class BirthdaysForCalendarDayWidget extends StatelessWidget {
                         .birthdaysForDayAndMonth(
                             BirthdayCalendarDateUtils
                                 .convertAndTranslateMonthNumber(
-                                    this.dateOfDay.month, AppLocalizations.of(context)!),
+                                    this.dateOfDay.month,
+                                    AppLocalizations.of(context)!),
                             this.dateOfDay.day)))),
             body: Center(
                 child: Column(
@@ -67,7 +68,9 @@ class BirthdaysForCalendarDayWidget extends StatelessWidget {
                           context: context,
                           builder: (_) => BlocProvider.value(
                               value: BlocProvider.of<BirthdaysBloc>(context),
-                              child: AddBirthdayForm(dateOfDay: dateOfDay)));
+                              child: AddBirthdayForm(
+                                  dateOfDay: dateOfDay,
+                                  notificationService: notificationService)));
                     }
                   },
                   child: Spacer(),

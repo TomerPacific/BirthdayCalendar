@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:birthday_calendar/service/notification_service/notificationCallbacks.dart';
+import 'package:birthday_calendar/service/permission_service/permissions_service.dart';
+import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:birthday_calendar/utils.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'notification_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -17,13 +20,25 @@ const String channel_name = "birthday_notification";
 const String navigationActionId = 'id_1';
 
 class NotificationServiceImpl extends NotificationService {
+  NotificationServiceImpl({
+    required this.permissionsService,
+    required this.storageService,
+  });
+
+  StreamSubscription<String?>? _selectSubscription;
+
+  final PermissionsService permissionsService;
+  final StorageService storageService;
+
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
   final StreamController<String?> selectNotificationStream =
       StreamController<String?>.broadcast();
   List<NotificationCallbacks> selectNotificationStreamListeners = [];
 
-  void init(BuildContext context) {
+  Future<void> init(BuildContext context) async {
+    tz.initializeTimeZones();
+
     final AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('app_icon');
 
@@ -32,14 +47,74 @@ class NotificationServiceImpl extends NotificationService {
 
     _initializeLocalNotificationsPlugin(initializationSettings, context);
 
-    selectNotificationStream.stream.listen((notificationEvent) {
-      _rescheduleNotificationFromPayload(notificationEvent, context);
-      selectNotificationStreamListeners.forEach((notificationListener) {
-        notificationListener.onNotificationSelected(notificationEvent);
-      });
-    });
+    AndroidFlutterLocalNotificationsPlugin?
+        androidFlutterLocalNotificationsPlugin =
+        flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
 
-    tz.initializeTimeZones();
+    final channel = AndroidNotificationChannel(
+      channel_id,
+      channel_name,
+      description: 'To remind you about upcoming birthdays',
+      importance: Importance.max,
+    );
+    await androidFlutterLocalNotificationsPlugin
+        ?.createNotificationChannel(channel);
+
+    bool permissionGranted = await isNotificationPermissionGranted(context);
+    if (permissionGranted) {
+      await _setupSubscription(context);
+    }
+  }
+
+  Future<bool> isNotificationPermissionGranted(BuildContext context) async {
+    PermissionStatus permissionStatus = await permissionsService
+        .getPermissionStatus(notificationsPermissionKey);
+
+    if (permissionStatus.isGranted) {
+      await storageService
+          .setNotificationPermissionState(NotificationPermissionState.granted);
+      return true;
+    }
+
+    if (permissionStatus.isPermanentlyDenied) {
+      await storageService.setNotificationPermissionState(
+          NotificationPermissionState.deniedPermanently);
+      return false;
+    }
+
+    await storageService.setNotificationPermissionState(
+        NotificationPermissionState.deniedTemporary);
+    return false;
+  }
+
+  Future<PermissionStatus> requestNotificationPermission(
+      BuildContext context) async {
+    PermissionStatus notificationPermissionStatus = await permissionsService
+        .getPermissionStatus(notificationsPermissionKey);
+
+    if (notificationPermissionStatus.isGranted) {
+      await storageService
+          .setNotificationPermissionState(NotificationPermissionState.granted);
+      return PermissionStatus.granted;
+    }
+
+    notificationPermissionStatus = await permissionsService
+        .requestPermissionAndGetStatus(notificationsPermissionKey);
+
+    if (notificationPermissionStatus.isGranted) {
+      await storageService
+          .setNotificationPermissionState(NotificationPermissionState.granted);
+      await _setupSubscription(context);
+    } else if (notificationPermissionStatus.isPermanentlyDenied) {
+      await storageService.setNotificationPermissionState(
+          NotificationPermissionState.deniedPermanently);
+    } else {
+      await storageService.setNotificationPermissionState(
+          NotificationPermissionState.deniedTemporary);
+    }
+
+    return notificationPermissionStatus;
   }
 
   void _initializeLocalNotificationsPlugin(
@@ -180,6 +255,7 @@ class NotificationServiceImpl extends NotificationService {
 
   @override
   void dispose() {
+    _selectSubscription?.cancel();
     selectNotificationStream.close();
     selectNotificationStreamListeners.clear();
   }
@@ -203,5 +279,15 @@ class NotificationServiceImpl extends NotificationService {
         importance: Importance.max,
         priority: Priority.high,
         ticker: "ticker");
+  }
+
+  Future<void> _setupSubscription(BuildContext context) async {
+    await _selectSubscription?.cancel();
+    _selectSubscription = selectNotificationStream.stream.listen((payload) {
+      _rescheduleNotificationFromPayload(payload, context);
+      for (var listener in selectNotificationStreamListeners) {
+        listener.onNotificationSelected(payload);
+      }
+    });
   }
 }

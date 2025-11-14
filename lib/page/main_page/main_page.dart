@@ -115,6 +115,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
         notificationService: notificationService);
     monthToPresent = widget.currentMonth;
     widget.notificationService.init(context);
+
     widget.notificationService.addListenerForSelectNotificationStream(this);
     _updateService.checkForInAppUpdate(
         _onUpdateSuccess, _onUpdateFailure, context);

@@ -35,6 +35,14 @@ class Utils {
     return userBirthday;
   }
 
+  static void showSnackbarWithMessageAndAction(
+      BuildContext context, String message, SnackBarAction action) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(message),
+      action: action,
+    ));
+  }
+
   static void showSnackbarWithMessage(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(message),

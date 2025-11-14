@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BirthdayWidget extends StatefulWidget {
@@ -160,14 +161,49 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                             : Icons.notifications_active_outlined,
                         color: Utils.getColorBasedOnPosition(
                             indexOfBirthday, ElementType.icon)),
-                    onPressed: () {
-                      BlocProvider.of<UserNotificationStatusBloc>(context).add(
-                          new UserNotificationStatusEvent(
-                              userBirthday: birthdayOfPerson,
-                              hasNotification: birthdayOfPerson.hasNotification,
-                              notificationMsg: AppLocalizations.of(context)!
-                                  .notificationForBirthdayMessage(
-                                      birthdayOfPerson.name)));
+                    onPressed: () async {
+                      if (!birthdayOfPerson.hasNotification) {
+                        PermissionStatus status = await notificationService
+                            .requestNotificationPermission(context);
+
+                        if (status.isGranted) {
+                          BlocProvider.of<UserNotificationStatusBloc>(context)
+                              .add(UserNotificationStatusEvent(
+                            userBirthday: birthdayOfPerson,
+                            hasNotification: birthdayOfPerson.hasNotification,
+                            notificationMsg: AppLocalizations.of(context)!
+                                .notificationForBirthdayMessage(
+                                    birthdayOfPerson.name),
+                          ));
+                          return;
+                        }
+
+                        if (status.isPermanentlyDenied) {
+                          Utils.showSnackbarWithMessageAndAction(
+                              context,
+                              AppLocalizations.of(context)!
+                                  .notificationPermissionPermanentlyDenied,
+                              SnackBarAction(
+                                  label: AppLocalizations.of(context)!
+                                      .openSettings,
+                                  onPressed: openAppSettings));
+                          return;
+                        }
+
+                        Utils.showSnackbarWithMessage(
+                            context,
+                            AppLocalizations.of(context)!
+                                .notificationPermissionDenied);
+                      } else {
+                        BlocProvider.of<UserNotificationStatusBloc>(context)
+                            .add(UserNotificationStatusEvent(
+                          userBirthday: birthdayOfPerson,
+                          hasNotification: birthdayOfPerson.hasNotification,
+                          notificationMsg: AppLocalizations.of(context)!
+                              .notificationForBirthdayMessage(
+                                  birthdayOfPerson.name),
+                        ));
+                      }
                     });
               })),
           callIconButton(context),
