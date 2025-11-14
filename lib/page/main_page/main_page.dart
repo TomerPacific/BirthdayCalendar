@@ -108,13 +108,13 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
   }
 
   @override
-  void initState() async {
+  void initState() {
     super.initState();
     versionSpecificService = new VersionSpecificServiceImpl(
         storageService: context.read<StorageServiceSharedPreferences>(),
         notificationService: notificationService);
     monthToPresent = widget.currentMonth;
-    await widget.notificationService.init(context);
+    widget.notificationService.init(context);
 
     widget.notificationService.addListenerForSelectNotificationStream(this);
     _updateService.checkForInAppUpdate(
