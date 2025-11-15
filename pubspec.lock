@@ -582,10 +582,10 @@ packages:
     dependency: "direct main"
     description:
       name: url_launcher
-      sha256: "2d9de5efddbd134ee68d73d0735e7477c00bcbf1ee91afa37514d6c876d38587"
+      sha256: f6a7e5c4835bb4e3026a04793a4199ca2d14c739ec378fdfe23fc8075d0439f8
       url: "https://pub.dev"
     source: hosted
-    version: "6.1.0"
+    version: "6.3.2"
   url_launcher_android:
     dependency: transitive
     description:
@@ -700,4 +700,4 @@ packages:
     version: "3.1.2"
 sdks:
   dart: ">=3.8.0-0 <4.0.0"
-  flutter: ">=3.24.0"
+  flutter: ">=3.27.0"
