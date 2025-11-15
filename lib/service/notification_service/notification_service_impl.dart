@@ -180,9 +180,7 @@ class NotificationServiceImpl extends NotificationService {
         tz.TZDateTime.now(tz.local).add(difference),
         NotificationDetails(android: _createAndroidNotificationDetails()),
         payload: jsonEncode(userBirthday),
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime);
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle);
   }
 
   void _scheduleNotificationForNextYear(
@@ -194,9 +192,7 @@ class NotificationServiceImpl extends NotificationService {
         tz.TZDateTime.now(tz.local).add(new Duration(days: 365)),
         NotificationDetails(android: _createAndroidNotificationDetails()),
         payload: jsonEncode(userBirthday),
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime);
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle);
   }
 
   void cancelNotificationForBirthday(UserBirthday birthday) async {
