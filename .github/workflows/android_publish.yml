@@ -1,0 +1,60 @@
+name: Android Publish
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: [Flutter build]
+    types: [completed]
+    branches: ['release/**']
+
+jobs:
+  on-success:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '12.x'
+
+      - name: Set Up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.27.0'
+          channel: stable
+          cache: true
+
+      - name: Get Flutter dependencies
+        run: flutter pub get
+
+      - name: Build Release AAB
+        run: flutter build appbundle --release
+
+      - name: Sign AAB
+        uses: r0adkll/sign-android-release@v1
+        with:
+            releaseDirectory: build/app/outputs/bundle/release/*.aab
+            signingKeyBase64: ${{ secrets.SIGN_KEY }}
+            alias: ${{ secrets.ALIAS }}
+            keyStorePassword: ${{ secrets.STORE_KEY_PASSWORD }}
+            keyPassword: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Deploy to Play Store
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{secrets.SERVICE_ACCOUNT}}
+          packageName: com.tomerpacific.birthday_calendar
+          releaseFiles: build/app/outputs/bundle/release/*.aab
+          track: production
+          status: completed
+
+  on-failure:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    steps:
+      - run: echo 'Publish workflow failed due to Build workflow failing'
