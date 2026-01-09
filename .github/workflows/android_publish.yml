@@ -16,17 +16,20 @@ jobs:
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
 
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '12.x'
+
       - name: Set Up Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.27.0'
           cache: true
 
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: '12.x'
+      - name: Get Flutter dependencies
+        run: flutter pub get
 
       - name: Build Release AAB
         run: flutter build appbundle --release
