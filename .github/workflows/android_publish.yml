@@ -3,7 +3,7 @@ name: Android Publish
 on:
   workflow_dispatch:
   workflow_run:
-    workflows: [Android Build]
+    workflows: [flutter build]
     types: [completed]
     branches: ['release/**']
 
@@ -22,8 +22,23 @@ jobs:
           flutter-version: '3.27.0'
           cache: true
 
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
       - name: Build Release AAB
-        run: flutter build appbundle
+        run: flutter build appbundle --release
+
+      - name: Sign AAB
+        uses: r0adkll/sign-android-release@v1
+        with:
+            releaseDirectory: app/build/outputs/bundle/release
+            signingKeyBase64: ${{ secrets.SIGN_KEY }}
+            alias: ${{ secrets.ALIAS }}
+            keyStorePassword: ${{ secrets.STORE_KEY_PASSWORD }}
+            keyPassword: ${{ secrets.KEY_PASSWORD }}
 
       - name: Deploy to Play Store
         uses: r0adkll/upload-google-play@v1
