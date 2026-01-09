@@ -3,7 +3,7 @@ name: Android Publish
 on:
   workflow_dispatch:
   workflow_run:
-    workflows: [flutter build]
+    workflows: [Flutter build]
     types: [completed]
     branches: ['release/**']
 
