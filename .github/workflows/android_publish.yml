@@ -45,7 +45,7 @@ jobs:
         with:
           serviceAccountJsonPlainText: ${{secrets.SERVICE_ACCOUNT}}
           packageName: com.tomerpacific.birthday_calendar
-          releaseFiles: build/app/outputs/bundle/release/app-release.aab
+          releaseFiles: build/app/outputs/bundle/release/*.aab
           track: production
           status: completed
 
