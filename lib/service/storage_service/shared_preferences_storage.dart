@@ -20,7 +20,7 @@ class StorageServiceSharedPreferences extends StorageService {
     for (String key in keys) {
       try {
         format.parse(key);
-        sharedPreferences.remove(key);
+        await sharedPreferences.remove(key);
       } catch (error) {}
     }
   }
@@ -96,7 +96,7 @@ class StorageServiceSharedPreferences extends StorageService {
     String encoded = jsonEncode(birthdays);
     String formattedDate =
         BirthdayCalendarDateUtils.formatDateForSharedPrefs(dateTime);
-    sharedPreferences.setString(formattedDate, encoded);
+    await sharedPreferences.setString(formattedDate, encoded);
 
     streamController.sink.add(birthdays);
   }
@@ -104,7 +104,7 @@ class StorageServiceSharedPreferences extends StorageService {
   @override
   Future<void> saveThemeModeSetting(bool isDarkModeEnabled) async {
     final sharedPreferences = await SharedPreferences.getInstance();
-    sharedPreferences.setBool(darkModeKey, isDarkModeEnabled);
+    await sharedPreferences.setBool(darkModeKey, isDarkModeEnabled);
   }
 
   @override
@@ -131,7 +131,7 @@ class StorageServiceSharedPreferences extends StorageService {
   Future<void> saveIsContactsPermissionPermanentlyDenied(
       bool isPermanentlyDenied) async {
     final sharedPreferences = await SharedPreferences.getInstance();
-    sharedPreferences.setBool(contactsPermissionStatusKey, isPermanentlyDenied);
+    await sharedPreferences.setBool(contactsPermissionStatusKey, isPermanentlyDenied);
   }
 
   @override
@@ -145,7 +145,7 @@ class StorageServiceSharedPreferences extends StorageService {
   @override
   Future<void> saveDidAlreadyMigrateNotificationStatus(bool status) async {
     final sharedPreferences = await SharedPreferences.getInstance();
-    sharedPreferences.setBool(didAlreadyMigrateNotificationStatusFlag, status);
+    await sharedPreferences.setBool(didAlreadyMigrateNotificationStatusFlag, status);
   }
 
   @override
