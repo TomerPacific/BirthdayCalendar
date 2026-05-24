@@ -13,7 +13,7 @@ class StorageServiceSharedPreferences extends StorageService {
       StreamController<List<UserBirthday>>.broadcast();
 
   @override
-  void clearAllBirthdays() async {
+  Future<void> clearAllBirthdays() async {
     final sharedPreferences = await SharedPreferences.getInstance();
     Set<String> keys = sharedPreferences.getKeys();
     DateFormat format = DateFormat('yyyy-MM-dd');
@@ -119,7 +119,7 @@ class StorageServiceSharedPreferences extends StorageService {
       }
     }
 
-    saveBirthdaysForDate(userBirthday.birthdayDate, birthdays);
+    await saveBirthdaysForDate(userBirthday.birthdayDate, birthdays);
   }
 
   @override
@@ -128,7 +128,7 @@ class StorageServiceSharedPreferences extends StorageService {
   }
 
   @override
-  void saveIsContactsPermissionPermanentlyDenied(
+  Future<void> saveIsContactsPermissionPermanentlyDenied(
       bool isPermanentlyDenied) async {
     final sharedPreferences = await SharedPreferences.getInstance();
     sharedPreferences.setBool(contactsPermissionStatusKey, isPermanentlyDenied);
@@ -143,7 +143,7 @@ class StorageServiceSharedPreferences extends StorageService {
   }
 
   @override
-  void saveDidAlreadyMigrateNotificationStatus(bool status) async {
+  Future<void> saveDidAlreadyMigrateNotificationStatus(bool status) async {
     final sharedPreferences = await SharedPreferences.getInstance();
     sharedPreferences.setBool(didAlreadyMigrateNotificationStatusFlag, status);
   }
@@ -190,7 +190,7 @@ class StorageServiceSharedPreferences extends StorageService {
         birthdays.firstWhereOrNull((element) => element.name == birthday.name);
     if (storedBirthday != null) {
       storedBirthday.phoneNumber = birthday.phoneNumber;
-      saveBirthdaysForDate(storedBirthday.birthdayDate, birthdays);
+      await saveBirthdaysForDate(storedBirthday.birthdayDate, birthdays);
     }
   }
 

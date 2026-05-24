@@ -33,7 +33,7 @@ class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
     on<BirthdaysEvent>((event, emit) async {
       switch (event.eventName) {
         case BirthdayEvent.AddBirthday:
-          _handleAddEvent(event, emit, storageService, notificationService);
+          await _handleAddEvent(event, emit, storageService, notificationService);
           break;
         case BirthdayEvent.RemoveBirthday:
           await _handleRemoveEvent(
@@ -46,7 +46,7 @@ class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
     });
   }
 
-  void _handleAddEvent(
+  Future<void> _handleAddEvent(
       BirthdaysEvent event,
       Emitter emit,
       StorageService storageService,
@@ -61,7 +61,7 @@ class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
     List<UserBirthday> birthdaysMatchingDate = await storageService
         .getBirthdaysForDate(userBirthday.birthdayDate, false);
     birthdaysMatchingDate.add(userBirthday);
-    storageService.saveBirthdaysForDate(birthdayDate, birthdaysMatchingDate);
+    await storageService.saveBirthdaysForDate(birthdayDate, birthdaysMatchingDate);
 
     String notificationMsg = event.notificationMsg ?? "";
     notificationService.scheduleNotificationForBirthday(

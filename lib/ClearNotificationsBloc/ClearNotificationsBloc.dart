@@ -7,7 +7,7 @@ class ClearNotificationsBloc extends Bloc<ClearNotificationsEvent, bool> {
   ClearNotificationsBloc(StorageService storageService) : super(false) {
     on<ClearNotificationsEvent>((event, emit) async {
       if (event == ClearNotificationsEvent.ClearedNotifications) {
-        storageService.clearAllBirthdays();
+        await storageService.clearAllBirthdays();
         emit(true);
       }
     });

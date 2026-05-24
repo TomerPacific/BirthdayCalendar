@@ -23,7 +23,7 @@ class VersionSpecificServiceImpl extends VersionSpecificService {
 
 
   @override
-  void migrateNotificationStatus() async {
+  Future<void> migrateNotificationStatus() async {
 
     bool didAlreadyMigrateNotificationStatus = await storageService.getAlreadyMigrateNotificationStatus();
     if (didAlreadyMigrateNotificationStatus) {
@@ -44,12 +44,12 @@ class VersionSpecificServiceImpl extends VersionSpecificService {
               birthdays.remove(found);
               userBirthday.updateNotificationStatus(true);
               birthdays.add(userBirthday);
-              storageService.saveBirthdaysForDate(userBirthday.birthdayDate, birthdays);
+              await storageService.saveBirthdaysForDate(userBirthday.birthdayDate, birthdays);
             }
           }
         }
       }
-      storageService.saveDidAlreadyMigrateNotificationStatus(true);
+      await storageService.saveDidAlreadyMigrateNotificationStatus(true);
     }
   }
 

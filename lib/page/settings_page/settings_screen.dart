@@ -113,7 +113,7 @@ class SettingsScreen extends StatelessWidget {
     }
 
     if (status == PermissionStatus.permanentlyDenied) {
-      contactsService.setContactsPermissionPermanentlyDenied();
+      await contactsService.setContactsPermissionPermanentlyDenied();
       BlocProvider.of<ContactsPermissionStatusBloc>(context)
           .add(ContactsPermissionStatusEvent.PermissionPermanentlyDenied);
       return;
@@ -138,7 +138,7 @@ class SettingsScreen extends StatelessWidget {
         return;
       }
 
-      contactsService.handleAddingBirthdaysToContacts(context, contacts);
+      await contactsService.handleAddingBirthdaysToContacts(context, contacts);
     }
   }
 }
