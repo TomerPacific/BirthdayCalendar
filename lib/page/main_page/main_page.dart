@@ -113,15 +113,30 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
     versionSpecificService = new VersionSpecificServiceImpl(
         storageService: context.read<StorageServiceSharedPreferences>(),
         notificationService: notificationService);
-    monthToPresent = widget.currentMonth;
-    widget.notificationService.init(context);
+    
+    _initializeServices();
 
+    monthToPresent = widget.currentMonth;
     widget.notificationService.addListenerForSelectNotificationStream(this);
     _updateService.checkForInAppUpdate(
         _onUpdateSuccess, _onUpdateFailure, context);
     BlocProvider.of<ContactsPermissionStatusBloc>(context)
         .add(ContactsPermissionStatusEvent.PermissionUnknown);
     BlocProvider.of<VersionBloc>(context).add(VersionEvent.versionUnknown);
+  }
+
+  void _initializeServices() async {
+    try {
+      await versionSpecificService.migrateNotificationStatus();
+    } catch (e) {
+      debugPrint("Failed to migrate notification status: $e");
+    }
+
+    try {
+      await widget.notificationService.init(context);
+    } catch (e) {
+      debugPrint("Failed to initialize notification service: $e");
+    }
   }
 
   @override

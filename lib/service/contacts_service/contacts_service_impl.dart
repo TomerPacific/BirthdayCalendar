@@ -59,11 +59,11 @@ class ContactsServiceImpl extends ContactsService {
     List<Contact> users =
         await assignBirthdaysToUsers.showConfirmationDialog(context);
     if (users.isNotEmpty) {
-      _gatherBirthdaysForUsers(context, users);
+      await _gatherBirthdaysForUsers(context, users);
     }
   }
 
-  void _gatherBirthdaysForUsers(
+  Future<void> _gatherBirthdaysForUsers(
       BuildContext context, List<Contact> users) async {
     int amountOfBirthdaysSet = 0;
 

@@ -14,9 +14,7 @@ class VersionSpecificServiceImpl extends VersionSpecificService {
   VersionSpecificServiceImpl({
     required this.storageService,
     required this.notificationService
-  }) {
-    migrateNotificationStatus();
-  }
+  });
 
   final StorageService storageService;
   final NotificationService notificationService;
