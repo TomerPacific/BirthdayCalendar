@@ -108,12 +108,17 @@ class SettingsScreen extends StatelessWidget {
     PermissionStatus status =
         await contactsService.getContactsPermissionStatus(context);
 
+    if (!context.mounted) return;
+
     if (status == PermissionStatus.denied) {
       status = await contactsService.requestContactsPermission(context);
     }
 
+    if (!context.mounted) return;
+
     if (status == PermissionStatus.permanentlyDenied) {
       await contactsService.setContactsPermissionPermanentlyDenied();
+      if (!context.mounted) return;
       BlocProvider.of<ContactsPermissionStatusBloc>(context)
           .add(ContactsPermissionStatusEvent.PermissionPermanentlyDenied);
       return;
@@ -124,6 +129,8 @@ class SettingsScreen extends StatelessWidget {
           .add(ContactsPermissionStatusEvent.PermissionGranted);
       List<Contact> contacts = await contactsService.fetchContacts(false);
 
+      if (!context.mounted) return;
+
       if (contacts.isEmpty) {
         Utils.showSnackbarWithMessage(
             context, AppLocalizations.of(context)!.noContactsFoundMsg);
@@ -131,6 +138,8 @@ class SettingsScreen extends StatelessWidget {
       }
 
       contacts = await contactsService.filterAlreadyImportedContacts(contacts);
+
+      if (!context.mounted) return;
 
       if (contacts.isEmpty) {
         Utils.showSnackbarWithMessage(

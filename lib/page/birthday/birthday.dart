@@ -43,6 +43,7 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
     if (await canLaunchUrl(phoneUri)) {
       await launchUrl(phoneUri);
     } else {
+      if (!mounted) return;
       Utils.showSnackbarWithMessage(
           context, AppLocalizations.of(context)!.unableToMakeCallMsg);
     }
@@ -86,6 +87,7 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                 await context
                     .read<StorageServiceSharedPreferences>()
                     .updatePhoneNumberForBirthday(birthdayOfPerson);
+                if (!context.mounted) return;
                 setState(() {});
                 _phoneNumberController.clear();
                 Navigator.pop(context);
@@ -166,6 +168,8 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                       if (!birthdayOfPerson.hasNotification) {
                         PermissionStatus status = await notificationService
                             .requestNotificationPermission(context);
+
+                        if (!mounted) return;
 
                         if (status.isGranted) {
                           BlocProvider.of<UserNotificationStatusBloc>(context)

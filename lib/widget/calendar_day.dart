@@ -55,16 +55,23 @@ class _CalendarDayState extends State<CalendarDayWidget> {
   @override
   void didUpdateWidget(CalendarDayWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _fetchBirthdaysFromStorage();
+    unawaited(_fetchBirthdaysFromStorage());
   }
 
   Future<void> _fetchBirthdaysFromStorage() async {
-    List<UserBirthday> storedBirthdays = await context
-        .read<StorageServiceSharedPreferences>()
-        .getBirthdaysForDate(widget.date, true);
-    setState(() {
-      _birthdays = storedBirthdays;
-    });
+    try {
+      List<UserBirthday> storedBirthdays = await context
+          .read<StorageServiceSharedPreferences>()
+          .getBirthdaysForDate(widget.date, true);
+
+      if (!mounted) return;
+
+      setState(() {
+        _birthdays = storedBirthdays;
+      });
+    } catch (e) {
+      debugPrint("Failed to fetch birthdays from storage: $e");
+    }
   }
 
   Widget _showBirthdayIcon() {
@@ -79,7 +86,7 @@ class _CalendarDayState extends State<CalendarDayWidget> {
   Widget build(BuildContext context) {
     return TextButton(
         onPressed: () {
-          Navigator.push(
+          unawaited(Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => BirthdaysForCalendarDayWidget(
@@ -87,7 +94,7 @@ class _CalendarDayState extends State<CalendarDayWidget> {
                     dateOfDay: widget.date,
                     birthdays: _birthdays,
                     notificationService: widget.notificationService),
-              )).then((value) => _fetchBirthdaysFromStorage());
+              )).then((value) => _fetchBirthdaysFromStorage()));
         },
         child: FittedBox(
             fit: BoxFit.fitWidth,

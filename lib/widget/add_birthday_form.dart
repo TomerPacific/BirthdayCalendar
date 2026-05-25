@@ -49,9 +49,13 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
   }
 
   Future<void> _getBirthdaysForDate() async {
-    birthdaysForDate = await context
-        .read<StorageServiceSharedPreferences>()
-        .getBirthdaysForDate(widget.dateOfDay, true);
+    try {
+      birthdaysForDate = await context
+          .read<StorageServiceSharedPreferences>()
+          .getBirthdaysForDate(widget.dateOfDay, true);
+    } catch (e) {
+      debugPrint("Failed to fetch birthdays for date: $e");
+    }
   }
 
   Widget _phoneNumberInputField() {
@@ -139,6 +143,8 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                 bool hasUserGrantedNotificationPermission = await widget
                     .notificationService
                     .isNotificationPermissionGranted(context);
+
+                if (!mounted) return;
 
                 UserBirthday userBirthday = new UserBirthday(
                     _birthdayPersonController.text,

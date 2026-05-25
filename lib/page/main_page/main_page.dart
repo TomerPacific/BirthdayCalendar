@@ -133,6 +133,8 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
       debugPrint("Failed to migrate notification status: $e");
     }
 
+    if (!mounted) return;
+
     try {
       await widget.notificationService.init(context);
     } catch (e) {
@@ -161,13 +163,13 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
                       Icons.settings,
                     ),
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (_) {
+                      unawaited(Navigator.push(context, MaterialPageRoute(builder: (_) {
                         return BlocProvider.value(
                             value: BlocProvider.of<ClearNotificationsBloc>(
                                 context),
                             child: SettingsScreen(
                                 contactsService: widget.contactsService));
-                      })).then((result) {});
+                      })).then((result) {}));
                     },
                   )
                 ],
@@ -245,6 +247,9 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
         List<UserBirthday> birthdays = await context
             .read<StorageServiceSharedPreferences>()
             .getBirthdaysForDate(birthday.birthdayDate, true);
+        
+        if (!mounted) return;
+
         Navigator.push(
             context,
             MaterialPageRoute(
