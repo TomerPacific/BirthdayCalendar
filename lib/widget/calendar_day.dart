@@ -24,7 +24,7 @@ class _CalendarDayState extends State<CalendarDayWidget> {
 
   @override
   void initState() {
-    _fetchBirthdaysFromStorage();
+    unawaited(_fetchBirthdaysFromStorage());
     Stream<List<UserBirthday>> stream =
         context.read<StorageServiceSharedPreferences>().getBirthdaysStream();
     _streamSubscription = stream.listen(_handleEventFromStorageService);
@@ -58,7 +58,7 @@ class _CalendarDayState extends State<CalendarDayWidget> {
     _fetchBirthdaysFromStorage();
   }
 
-  void _fetchBirthdaysFromStorage() async {
+  Future<void> _fetchBirthdaysFromStorage() async {
     List<UserBirthday> storedBirthdays = await context
         .read<StorageServiceSharedPreferences>()
         .getBirthdaysForDate(widget.date, true);

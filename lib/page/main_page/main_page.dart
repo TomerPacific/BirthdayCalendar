@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:birthday_calendar/BirthdayCalendarDateUtils.dart';
 import 'package:birthday_calendar/ClearNotificationsBloc/ClearNotificationsBloc.dart';
 import 'package:birthday_calendar/ContactsPermissionStatusBloc/ContactsPermissionStatusBloc.dart';
@@ -114,7 +115,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
         storageService: context.read<StorageServiceSharedPreferences>(),
         notificationService: notificationService);
     
-    _initializeServices();
+    unawaited(_initializeServices());
 
     monthToPresent = widget.currentMonth;
     widget.notificationService.addListenerForSelectNotificationStream(this);
@@ -125,7 +126,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
     BlocProvider.of<VersionBloc>(context).add(VersionEvent.versionUnknown);
   }
 
-  void _initializeServices() async {
+  Future<void> _initializeServices() async {
     try {
       await versionSpecificService.migrateNotificationStatus();
     } catch (e) {

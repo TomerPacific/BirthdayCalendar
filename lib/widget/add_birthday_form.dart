@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:birthday_calendar/BirthdayBloc/BirthdaysBloc.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
@@ -44,10 +45,10 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
   void initState() {
     super.initState();
     addTelephoneButtonFocusNode = FocusNode();
-    _getBirthdaysForDate();
+    unawaited(_getBirthdaysForDate());
   }
 
-  void _getBirthdaysForDate() async {
+  Future<void> _getBirthdaysForDate() async {
     birthdaysForDate = await context
         .read<StorageServiceSharedPreferences>()
         .getBirthdaysForDate(widget.dateOfDay, true);
