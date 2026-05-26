@@ -87,7 +87,7 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                 await context
                     .read<StorageServiceSharedPreferences>()
                     .updatePhoneNumberForBirthday(birthdayOfPerson);
-                if (!context.mounted) return;
+                if (!mounted || !context.mounted) return;
                 setState(() {});
                 _phoneNumberController.clear();
                 Navigator.pop(context);
