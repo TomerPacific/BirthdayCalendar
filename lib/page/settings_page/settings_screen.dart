@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:birthday_calendar/ClearNotificationsBloc/ClearNotificationsBloc.dart';
 import 'package:birthday_calendar/ContactsPermissionStatusBloc/ContactsPermissionStatusBloc.dart';
 import 'package:birthday_calendar/ThemeBloc/ThemeBloc.dart';
@@ -48,7 +49,7 @@ class SettingsScreen extends StatelessWidget {
                 title: Text(AppLocalizations.of(context)!.importContacts),
                 leading: Icon(Icons.contacts, color: Colors.blue),
                 onTap: () {
-                  _handleImportingContacts(context);
+                  unawaited(_handleImportingContacts(context));
                 },
                 enabled: state.isPermanentlyDenied ? false : true);
           }),
@@ -97,23 +98,28 @@ class SettingsScreen extends StatelessWidget {
         )
       ],
     );
-    showDialog(
+    unawaited(showDialog(
         context: context,
         builder: (BuildContext context) {
           return alert;
-        });
+        }));
   }
 
-  void _handleImportingContacts(BuildContext context) async {
+  Future<void> _handleImportingContacts(BuildContext context) async {
     PermissionStatus status =
         await contactsService.getContactsPermissionStatus(context);
+
+    if (!context.mounted) return;
 
     if (status == PermissionStatus.denied) {
       status = await contactsService.requestContactsPermission(context);
     }
 
+    if (!context.mounted) return;
+
     if (status == PermissionStatus.permanentlyDenied) {
-      contactsService.setContactsPermissionPermanentlyDenied();
+      await contactsService.setContactsPermissionPermanentlyDenied();
+      if (!context.mounted) return;
       BlocProvider.of<ContactsPermissionStatusBloc>(context)
           .add(ContactsPermissionStatusEvent.PermissionPermanentlyDenied);
       return;
@@ -124,6 +130,8 @@ class SettingsScreen extends StatelessWidget {
           .add(ContactsPermissionStatusEvent.PermissionGranted);
       List<Contact> contacts = await contactsService.fetchContacts(false);
 
+      if (!context.mounted) return;
+
       if (contacts.isEmpty) {
         Utils.showSnackbarWithMessage(
             context, AppLocalizations.of(context)!.noContactsFoundMsg);
@@ -132,13 +140,15 @@ class SettingsScreen extends StatelessWidget {
 
       contacts = await contactsService.filterAlreadyImportedContacts(contacts);
 
+      if (!context.mounted) return;
+
       if (contacts.isEmpty) {
         Utils.showSnackbarWithMessage(
             context, AppLocalizations.of(context)!.alreadyAddedContactsMsg);
         return;
       }
 
-      contactsService.handleAddingBirthdaysToContacts(context, contacts);
+      await contactsService.handleAddingBirthdaysToContacts(context, contacts);
     }
   }
 }

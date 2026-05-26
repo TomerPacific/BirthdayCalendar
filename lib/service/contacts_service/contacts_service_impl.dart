@@ -36,8 +36,8 @@ class ContactsServiceImpl extends ContactsService {
   }
 
   @override
-  void setContactsPermissionPermanentlyDenied() {
-    storageService.saveIsContactsPermissionPermanentlyDenied(true);
+  Future<void> setContactsPermissionPermanentlyDenied() async {
+    await storageService.saveIsContactsPermissionPermanentlyDenied(true);
   }
 
   @override
@@ -51,18 +51,19 @@ class ContactsServiceImpl extends ContactsService {
     return Utils.filterAlreadyImportedContacts(storageService, contacts);
   }
 
-  void handleAddingBirthdaysToContacts(
+  @override
+  Future<void> handleAddingBirthdaysToContacts(
       BuildContext context, List<Contact> contactsWithoutBirthDates) async {
     UsersWithoutBirthdaysDialogs assignBirthdaysToUsers =
         UsersWithoutBirthdaysDialogs(contactsWithoutBirthDates);
     List<Contact> users =
         await assignBirthdaysToUsers.showConfirmationDialog(context);
     if (users.isNotEmpty) {
-      _gatherBirthdaysForUsers(context, users);
+      await _gatherBirthdaysForUsers(context, users);
     }
   }
 
-  void _gatherBirthdaysForUsers(
+  Future<void> _gatherBirthdaysForUsers(
       BuildContext context, List<Contact> users) async {
     int amountOfBirthdaysSet = 0;
 
@@ -86,7 +87,7 @@ class ContactsServiceImpl extends ContactsService {
             true,
             contact.phones.isNotEmpty ? contact.phones.first.number : "");
 
-        addContactToCalendar(userBirthday, context);
+        await addContactToCalendar(userBirthday, context);
         amountOfBirthdaysSet++;
       }
     }
@@ -103,7 +104,7 @@ class ContactsServiceImpl extends ContactsService {
   }
 
   @override
-  void addContactToCalendar(UserBirthday contact, BuildContext context) async {
+  Future<void> addContactToCalendar(UserBirthday contact, BuildContext context) async {
     List<UserBirthday> birthdays =
         await storageService.getBirthdaysForDate(contact.birthdayDate, false);
     String contactName = contact.name;
@@ -122,6 +123,6 @@ class ContactsServiceImpl extends ContactsService {
 
     birthdays.add(contact);
 
-    storageService.saveBirthdaysForDate(contact.birthdayDate, birthdays);
+    await storageService.saveBirthdaysForDate(contact.birthdayDate, birthdays);
   }
 }

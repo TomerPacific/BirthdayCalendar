@@ -8,7 +8,7 @@ abstract class StorageService {
   Future<void> saveBirthdaysForDate(
       DateTime dateTime, List<UserBirthday> birthdays);
 
-  void clearAllBirthdays();
+  Future<void> clearAllBirthdays();
 
   Future<void> updateNotificationStatusForBirthday(
       UserBirthday userBirthday, bool updatedStatus);
@@ -19,11 +19,11 @@ abstract class StorageService {
 
   Stream<List<UserBirthday>> getBirthdaysStream();
 
-  void saveIsContactsPermissionPermanentlyDenied(bool isPermanentlyDenied);
+  Future<void> saveIsContactsPermissionPermanentlyDenied(bool isPermanentlyDenied);
 
   Future<bool> getIsContactPermissionPermanentlyDenied();
 
-  void saveDidAlreadyMigrateNotificationStatus(bool status);
+  Future<void> saveDidAlreadyMigrateNotificationStatus(bool status);
 
   Future<bool> getAlreadyMigrateNotificationStatus();
 

@@ -32,6 +32,7 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
   PhoneNumber _birthdayPhoneNumber = PhoneNumber(isoCode: 'US');
   List<UserBirthday> birthdaysForDate = [];
   bool doesWantToAddPhoneNumber = false;
+  bool _isLoading = true;
   late FocusNode addTelephoneButtonFocusNode;
 
   bool _isUniqueName(String name) {
@@ -44,13 +45,26 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
   void initState() {
     super.initState();
     addTelephoneButtonFocusNode = FocusNode();
-    _getBirthdaysForDate();
+    _initializeData();
   }
 
-  void _getBirthdaysForDate() async {
-    birthdaysForDate = await context
-        .read<StorageServiceSharedPreferences>()
-        .getBirthdaysForDate(widget.dateOfDay, true);
+  Future<void> _initializeData() async {
+    await _getBirthdaysForDate();
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _getBirthdaysForDate() async {
+    try {
+      birthdaysForDate = await context
+          .read<StorageServiceSharedPreferences>()
+          .getBirthdaysForDate(widget.dateOfDay, true);
+    } catch (e) {
+      debugPrint("Failed to fetch birthdays for date: $e");
+    }
   }
 
   Widget _phoneNumberInputField() {
@@ -130,14 +144,18 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
       actions: [
         TextButton(
             style: TextButton.styleFrom(foregroundColor: Colors.green),
-            onPressed: () async {
-              if (_addBirthdayFormKey.currentState != null &&
-                  _addBirthdayFormKey.currentState!.validate()) {
+            onPressed: _isLoading
+                ? null
+                : () async {
+                    if (_addBirthdayFormKey.currentState != null &&
+                        _addBirthdayFormKey.currentState!.validate()) {
                 _addBirthdayFormKey.currentState!.save();
 
                 bool hasUserGrantedNotificationPermission = await widget
                     .notificationService
                     .isNotificationPermissionGranted(context);
+
+                if (!mounted) return;
 
                 UserBirthday userBirthday = new UserBirthday(
                     _birthdayPersonController.text,

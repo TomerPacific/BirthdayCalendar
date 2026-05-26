@@ -24,7 +24,7 @@ class UserNotificationStatusBloc
       notificationStatus = !notificationStatus;
       UserBirthday birthday = event.userBirthday;
       birthday.hasNotification = notificationStatus;
-      storageService.updateNotificationStatusForBirthday(
+      await storageService.updateNotificationStatusForBirthday(
           birthday, notificationStatus);
       if (!notificationStatus) {
         notificationService.cancelNotificationForBirthday(birthday);

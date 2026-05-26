@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:birthday_calendar/BirthdayCalendarDateUtils.dart';
 import 'package:birthday_calendar/ClearNotificationsBloc/ClearNotificationsBloc.dart';
 import 'package:birthday_calendar/ContactsPermissionStatusBloc/ContactsPermissionStatusBloc.dart';
@@ -113,15 +114,32 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
     versionSpecificService = new VersionSpecificServiceImpl(
         storageService: context.read<StorageServiceSharedPreferences>(),
         notificationService: notificationService);
-    monthToPresent = widget.currentMonth;
-    widget.notificationService.init(context);
+    
+    unawaited(_initializeServices());
 
+    monthToPresent = widget.currentMonth;
     widget.notificationService.addListenerForSelectNotificationStream(this);
     _updateService.checkForInAppUpdate(
         _onUpdateSuccess, _onUpdateFailure, context);
     BlocProvider.of<ContactsPermissionStatusBloc>(context)
         .add(ContactsPermissionStatusEvent.PermissionUnknown);
     BlocProvider.of<VersionBloc>(context).add(VersionEvent.versionUnknown);
+  }
+
+  Future<void> _initializeServices() async {
+    try {
+      await versionSpecificService.migrateNotificationStatus();
+    } catch (e) {
+      debugPrint("Failed to migrate notification status: $e");
+    }
+
+    if (!mounted) return;
+
+    try {
+      await widget.notificationService.init(context);
+    } catch (e) {
+      debugPrint("Failed to initialize notification service: $e");
+    }
   }
 
   @override
@@ -145,13 +163,13 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
                       Icons.settings,
                     ),
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (_) {
+                      unawaited(Navigator.push(context, MaterialPageRoute(builder: (_) {
                         return BlocProvider.value(
                             value: BlocProvider.of<ClearNotificationsBloc>(
                                 context),
                             child: SettingsScreen(
                                 contactsService: widget.contactsService));
-                      })).then((result) {});
+                      })).then((result) {}));
                     },
                   )
                 ],
@@ -229,6 +247,9 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
         List<UserBirthday> birthdays = await context
             .read<StorageServiceSharedPreferences>()
             .getBirthdaysForDate(birthday.birthdayDate, true);
+        
+        if (!mounted) return;
+
         Navigator.push(
             context,
             MaterialPageRoute(

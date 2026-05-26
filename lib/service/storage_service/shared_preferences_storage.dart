@@ -13,14 +13,14 @@ class StorageServiceSharedPreferences extends StorageService {
       StreamController<List<UserBirthday>>.broadcast();
 
   @override
-  void clearAllBirthdays() async {
+  Future<void> clearAllBirthdays() async {
     final sharedPreferences = await SharedPreferences.getInstance();
     Set<String> keys = sharedPreferences.getKeys();
     DateFormat format = DateFormat('yyyy-MM-dd');
     for (String key in keys) {
       try {
         format.parse(key);
-        sharedPreferences.remove(key);
+        await sharedPreferences.remove(key);
       } catch (error) {}
     }
   }
@@ -96,7 +96,7 @@ class StorageServiceSharedPreferences extends StorageService {
     String encoded = jsonEncode(birthdays);
     String formattedDate =
         BirthdayCalendarDateUtils.formatDateForSharedPrefs(dateTime);
-    sharedPreferences.setString(formattedDate, encoded);
+    await sharedPreferences.setString(formattedDate, encoded);
 
     streamController.sink.add(birthdays);
   }
@@ -104,7 +104,7 @@ class StorageServiceSharedPreferences extends StorageService {
   @override
   Future<void> saveThemeModeSetting(bool isDarkModeEnabled) async {
     final sharedPreferences = await SharedPreferences.getInstance();
-    sharedPreferences.setBool(darkModeKey, isDarkModeEnabled);
+    await sharedPreferences.setBool(darkModeKey, isDarkModeEnabled);
   }
 
   @override
@@ -119,7 +119,7 @@ class StorageServiceSharedPreferences extends StorageService {
       }
     }
 
-    saveBirthdaysForDate(userBirthday.birthdayDate, birthdays);
+    await saveBirthdaysForDate(userBirthday.birthdayDate, birthdays);
   }
 
   @override
@@ -128,10 +128,10 @@ class StorageServiceSharedPreferences extends StorageService {
   }
 
   @override
-  void saveIsContactsPermissionPermanentlyDenied(
+  Future<void> saveIsContactsPermissionPermanentlyDenied(
       bool isPermanentlyDenied) async {
     final sharedPreferences = await SharedPreferences.getInstance();
-    sharedPreferences.setBool(contactsPermissionStatusKey, isPermanentlyDenied);
+    await sharedPreferences.setBool(contactsPermissionStatusKey, isPermanentlyDenied);
   }
 
   @override
@@ -143,9 +143,9 @@ class StorageServiceSharedPreferences extends StorageService {
   }
 
   @override
-  void saveDidAlreadyMigrateNotificationStatus(bool status) async {
+  Future<void> saveDidAlreadyMigrateNotificationStatus(bool status) async {
     final sharedPreferences = await SharedPreferences.getInstance();
-    sharedPreferences.setBool(didAlreadyMigrateNotificationStatusFlag, status);
+    await sharedPreferences.setBool(didAlreadyMigrateNotificationStatusFlag, status);
   }
 
   @override
@@ -190,7 +190,7 @@ class StorageServiceSharedPreferences extends StorageService {
         birthdays.firstWhereOrNull((element) => element.name == birthday.name);
     if (storedBirthday != null) {
       storedBirthday.phoneNumber = birthday.phoneNumber;
-      saveBirthdaysForDate(storedBirthday.birthdayDate, birthdays);
+      await saveBirthdaysForDate(storedBirthday.birthdayDate, birthdays);
     }
   }
 

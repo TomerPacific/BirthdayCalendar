@@ -1,4 +1,4 @@
 
 abstract class VersionSpecificService {
-  void migrateNotificationStatus();
+  Future<void> migrateNotificationStatus();
 }

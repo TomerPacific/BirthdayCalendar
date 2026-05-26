@@ -13,7 +13,7 @@ void main() {
     return Future(() async {
       WidgetsFlutterBinding.ensureInitialized();
       SharedPreferences.setMockInitialValues({});
-      _storageService.clearAllBirthdays();
+      await _storageService.clearAllBirthdays();
     });
   });
 
@@ -29,7 +29,7 @@ void main() {
     final UserBirthday userBirthday = new UserBirthday("Someone", DateTime.now(), false, phoneNumber);
     List<UserBirthday> birthdays = [];
     birthdays.add(userBirthday);
-    _storageService.saveBirthdaysForDate(dateTime, birthdays);
+    await _storageService.saveBirthdaysForDate(dateTime, birthdays);
 
     final storedBirthdays = await _storageService.getBirthdaysForDate(dateTime, false);
     expect(storedBirthdays.length, 1);
@@ -46,12 +46,12 @@ void main() {
     final UserBirthday userBirthday = new UserBirthday("Someone", DateTime.now(), false, phoneNumber);
     List<UserBirthday> birthdays = [];
     birthdays.add(userBirthday);
-   _storageService.saveBirthdaysForDate(dateTime, birthdays);
+    await _storageService.saveBirthdaysForDate(dateTime, birthdays);
 
     List<UserBirthday> storedBirthdays = await _storageService.getBirthdaysForDate(dateTime, false);
     expect(storedBirthdays.length, 1);
 
-    _storageService.clearAllBirthdays();
+    await _storageService.clearAllBirthdays();
 
     storedBirthdays = await _storageService.getBirthdaysForDate(dateTime, false);
 
