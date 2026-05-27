@@ -147,7 +147,7 @@ class NotificationServiceImpl extends NotificationService {
         payload: jsonEncode(userBirthday));
   }
 
-  void scheduleNotificationForBirthday(
+  Future<void> scheduleNotificationForBirthday(
       UserBirthday userBirthday, String notificationMessage) async {
     DateTime now = DateTime.now();
     DateTime birthdayDate = userBirthday.birthdayDate;
@@ -195,11 +195,11 @@ class NotificationServiceImpl extends NotificationService {
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle);
   }
 
-  void cancelNotificationForBirthday(UserBirthday birthday) async {
+  Future<void> cancelNotificationForBirthday(UserBirthday birthday) async {
     await flutterLocalNotificationsPlugin.cancel(birthday.hashCode);
   }
 
-  void cancelAllNotifications() async {
+  Future<void> cancelAllNotifications() async {
     await flutterLocalNotificationsPlugin.cancelAll();
   }
 

@@ -13,12 +13,12 @@ abstract class NotificationService {
 
   Future<PermissionStatus> requestNotificationPermission(BuildContext context);
 
-  void scheduleNotificationForBirthday(
+  Future<void> scheduleNotificationForBirthday(
       UserBirthday userBirthday, String notificationMessage);
 
-  void cancelNotificationForBirthday(UserBirthday birthday);
+  Future<void> cancelNotificationForBirthday(UserBirthday birthday);
 
-  void cancelAllNotifications();
+  Future<void> cancelAllNotifications();
 
   Future<List<PendingNotificationRequest>> getAllScheduledNotifications();
 
