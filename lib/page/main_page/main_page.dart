@@ -152,7 +152,8 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
   Widget build(BuildContext context) {
     return BlocProvider(
         create: (context) => ClearNotificationsBloc(
-            context.read<StorageServiceSharedPreferences>()),
+            context.read<StorageServiceSharedPreferences>(),
+            widget.notificationService),
         child: BlocBuilder<ClearNotificationsBloc, bool>(
             builder: (context, state) {
           return Scaffold(
