@@ -116,7 +116,7 @@ class ContactsServiceImpl extends ContactsService {
       return;
     }
 
-    notificationService.scheduleNotificationForBirthday(
+    await notificationService.scheduleNotificationForBirthday(
         contact,
         AppLocalizations.of(context)!
             .notificationForBirthdayMessage(contact.name));

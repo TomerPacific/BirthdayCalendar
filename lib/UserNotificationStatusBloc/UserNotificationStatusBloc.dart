@@ -27,9 +27,9 @@ class UserNotificationStatusBloc
       await storageService.updateNotificationStatusForBirthday(
           birthday, notificationStatus);
       if (!notificationStatus) {
-        notificationService.cancelNotificationForBirthday(birthday);
+        await notificationService.cancelNotificationForBirthday(birthday);
       } else {
-        notificationService.scheduleNotificationForBirthday(
+        await notificationService.scheduleNotificationForBirthday(
             birthday, event.notificationMsg);
       }
       emit(notificationStatus);
