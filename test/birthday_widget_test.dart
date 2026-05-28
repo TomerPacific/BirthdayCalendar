@@ -4,16 +4,48 @@ import 'package:birthday_calendar/ThemeBloc/ThemeBloc.dart';
 import 'package:birthday_calendar/VersionBloc/VersionBloc.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
-import 'package:birthday_calendar/service/notification_service/notification_service_impl.dart';
-import 'package:birthday_calendar/service/permission_service/permissions_service.dart';
-import 'package:birthday_calendar/service/permission_service/permissions_service_impl.dart';
 import 'package:birthday_calendar/service/storage_service/shared_preferences_storage.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:birthday_calendar/page/birthday/birthday.dart';
 import 'package:flutter/material.dart';
+import 'package:birthday_calendar/service/notification_service/notificationCallbacks.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+class MockNotificationService implements NotificationService {
+  @override
+  Future<void> init(BuildContext context) async {}
+
+  @override
+  Future<bool> isNotificationPermissionGranted(BuildContext context) async => true;
+
+  @override
+  Future<PermissionStatus> requestNotificationPermission(BuildContext context) async => PermissionStatus.granted;
+
+  @override
+  Future<void> scheduleNotificationForBirthday(UserBirthday userBirthday, String notificationMessage) async {}
+
+  @override
+  Future<void> cancelNotificationForBirthday(UserBirthday birthday) async {}
+
+  @override
+  Future<void> cancelAllNotifications() async {}
+
+  @override
+  Future<List<PendingNotificationRequest>> getAllScheduledNotifications() async => [];
+
+  @override
+  void dispose() {}
+
+  @override
+  void addListenerForSelectNotificationStream(NotificationCallbacks listener) {}
+
+  @override
+  void removeListenerForSelectNotificationStream(NotificationCallbacks listener) {}
+}
 
 var printLog = [];
 
@@ -21,9 +53,7 @@ void print(String s) => printLog.add(s);
 
 void main() {
   StorageService storageService = StorageServiceSharedPreferences();
-  PermissionsService permissionsService = PermissionsServiceImpl();
-  NotificationService notificationService = NotificationServiceImpl(
-      permissionsService: permissionsService, storageService: storageService);
+  NotificationService notificationService = MockNotificationService();
   List<UserBirthday> birthdays = [];
 
   setUp(() {

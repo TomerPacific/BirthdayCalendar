@@ -64,7 +64,7 @@ class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
     await storageService.saveBirthdaysForDate(birthdayDate, birthdaysMatchingDate);
 
     String notificationMsg = event.notificationMsg ?? "";
-    notificationService.scheduleNotificationForBirthday(
+    await notificationService.scheduleNotificationForBirthday(
         userBirthday, notificationMsg);
 
     emit(new BirthdaysState(
@@ -94,6 +94,7 @@ class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
         .toList();
 
     await storageService.saveBirthdaysForDate(birthdayDate, filteredBirthdays);
+    await notificationService.cancelNotificationForBirthday(userBirthday);
     emit(new BirthdaysState(
         date: birthdayDate,
         birthdays: filteredBirthdays,

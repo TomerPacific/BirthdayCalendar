@@ -45,7 +45,7 @@ class NotificationServiceImpl extends NotificationService {
     final InitializationSettings initializationSettings =
         InitializationSettings(android: initializationSettingsAndroid);
 
-    _initializeLocalNotificationsPlugin(initializationSettings, context);
+    await _initializeLocalNotificationsPlugin(initializationSettings, context);
 
     AndroidFlutterLocalNotificationsPlugin?
         androidFlutterLocalNotificationsPlugin =
@@ -117,7 +117,7 @@ class NotificationServiceImpl extends NotificationService {
     return notificationPermissionStatus;
   }
 
-  void _initializeLocalNotificationsPlugin(
+  Future<void> _initializeLocalNotificationsPlugin(
       InitializationSettings initializationSettings,
       BuildContext context) async {
     await flutterLocalNotificationsPlugin.initialize(initializationSettings,
@@ -134,10 +134,10 @@ class NotificationServiceImpl extends NotificationService {
           break;
       }
     });
-    _handleApplicationWasLaunchedFromNotification(context);
+    await _handleApplicationWasLaunchedFromNotification(context);
   }
 
-  void _showNotification(
+  Future<void> _showNotification(
       UserBirthday userBirthday, String notificationMessage) async {
     await flutterLocalNotificationsPlugin.show(
         userBirthday.hashCode,
@@ -147,7 +147,7 @@ class NotificationServiceImpl extends NotificationService {
         payload: jsonEncode(userBirthday));
   }
 
-  void scheduleNotificationForBirthday(
+  Future<void> scheduleNotificationForBirthday(
       UserBirthday userBirthday, String notificationMessage) async {
     DateTime now = DateTime.now();
     DateTime birthdayDate = userBirthday.birthdayDate;
@@ -165,11 +165,11 @@ class NotificationServiceImpl extends NotificationService {
     bool didApplicationLaunchFromNotification =
         await _wasApplicationLaunchedFromNotification();
     if (didApplicationLaunchFromNotification && difference.inDays == 0) {
-      _scheduleNotificationForNextYear(userBirthday, notificationMessage);
+      await _scheduleNotificationForNextYear(userBirthday, notificationMessage);
       return;
     } else if (!didApplicationLaunchFromNotification &&
         difference.inDays == 0) {
-      _showNotification(userBirthday, notificationMessage);
+      await _showNotification(userBirthday, notificationMessage);
       return;
     }
 
@@ -183,7 +183,7 @@ class NotificationServiceImpl extends NotificationService {
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle);
   }
 
-  void _scheduleNotificationForNextYear(
+  Future<void> _scheduleNotificationForNextYear(
       UserBirthday userBirthday, String notificationMessage) async {
     await flutterLocalNotificationsPlugin.zonedSchedule(
         userBirthday.hashCode,
@@ -195,15 +195,15 @@ class NotificationServiceImpl extends NotificationService {
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle);
   }
 
-  void cancelNotificationForBirthday(UserBirthday birthday) async {
+  Future<void> cancelNotificationForBirthday(UserBirthday birthday) async {
     await flutterLocalNotificationsPlugin.cancel(birthday.hashCode);
   }
 
-  void cancelAllNotifications() async {
+  Future<void> cancelAllNotifications() async {
     await flutterLocalNotificationsPlugin.cancelAll();
   }
 
-  void _handleApplicationWasLaunchedFromNotification(
+  Future<void> _handleApplicationWasLaunchedFromNotification(
       BuildContext context) async {
     final NotificationAppLaunchDetails? notificationAppLaunchDetails =
         await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
@@ -214,7 +214,7 @@ class NotificationServiceImpl extends NotificationService {
       if (notificationResponse != null) {
         String? payload = notificationResponse.payload;
         selectNotificationStream.add(payload);
-        _rescheduleNotificationFromPayload(payload, context);
+        await _rescheduleNotificationFromPayload(payload, context);
       }
     }
   }
@@ -230,12 +230,12 @@ class NotificationServiceImpl extends NotificationService {
     return false;
   }
 
-  void _rescheduleNotificationFromPayload(
-      String? payload, BuildContext context) {
+  Future<void> _rescheduleNotificationFromPayload(
+      String? payload, BuildContext context) async {
     UserBirthday? userBirthday = Utils.getUserBirthdayFromPayload(payload);
     if (userBirthday != null) {
-      cancelNotificationForBirthday(userBirthday);
-      scheduleNotificationForBirthday(
+      await cancelNotificationForBirthday(userBirthday);
+      await scheduleNotificationForBirthday(
           userBirthday,
           AppLocalizations.of(context)!
               .notificationForBirthdayMessage(userBirthday.name));
@@ -279,8 +279,8 @@ class NotificationServiceImpl extends NotificationService {
 
   Future<void> _setupSubscription(BuildContext context) async {
     await _selectSubscription?.cancel();
-    _selectSubscription = selectNotificationStream.stream.listen((payload) {
-      _rescheduleNotificationFromPayload(payload, context);
+    _selectSubscription = selectNotificationStream.stream.listen((payload) async {
+      await _rescheduleNotificationFromPayload(payload, context);
       for (var listener in selectNotificationStreamListeners) {
         listener.onNotificationSelected(payload);
       }
