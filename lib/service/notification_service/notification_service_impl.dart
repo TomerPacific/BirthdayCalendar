@@ -140,7 +140,7 @@ class NotificationServiceImpl extends NotificationService {
   Future<void> _showNotification(
       UserBirthday userBirthday, String notificationMessage) async {
     await flutterLocalNotificationsPlugin.show(
-        userBirthday.hashCode,
+        userBirthday.notificationId,
         applicationName,
         notificationMessage,
         NotificationDetails(android: _createAndroidNotificationDetails()),
@@ -174,7 +174,7 @@ class NotificationServiceImpl extends NotificationService {
     }
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
-        userBirthday.hashCode,
+        userBirthday.notificationId,
         applicationName,
         notificationMessage,
         tz.TZDateTime.now(tz.local).add(difference),
@@ -186,7 +186,7 @@ class NotificationServiceImpl extends NotificationService {
   Future<void> _scheduleNotificationForNextYear(
       UserBirthday userBirthday, String notificationMessage) async {
     await flutterLocalNotificationsPlugin.zonedSchedule(
-        userBirthday.hashCode,
+        userBirthday.notificationId,
         applicationName,
         notificationMessage,
         tz.TZDateTime.now(tz.local).add(new Duration(days: 365)),
@@ -196,7 +196,7 @@ class NotificationServiceImpl extends NotificationService {
   }
 
   Future<void> cancelNotificationForBirthday(UserBirthday birthday) async {
-    await flutterLocalNotificationsPlugin.cancel(birthday.hashCode);
+    await flutterLocalNotificationsPlugin.cancel(birthday.notificationId);
   }
 
   Future<void> cancelAllNotifications() async {

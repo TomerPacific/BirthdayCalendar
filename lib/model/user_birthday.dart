@@ -5,13 +5,28 @@ class UserBirthday {
   final DateTime birthdayDate;
   bool hasNotification;
   String phoneNumber;
+  final int notificationId;
 
   UserBirthday(
-      this.name, this.birthdayDate, this.hasNotification, this.phoneNumber);
+      this.name, this.birthdayDate, this.hasNotification, this.phoneNumber,
+      {int? notificationId})
+      : this.notificationId = notificationId ??
+            (name.hashCode ^ birthdayDate.hashCode).toUnsigned(31);
 
   void updateNotificationStatus(bool status) {
     this.hasNotification = status;
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is UserBirthday &&
+          runtimeType == other.runtimeType &&
+          name == other.name &&
+          birthdayDate == other.birthdayDate;
+
+  @override
+  int get hashCode => name.hashCode ^ birthdayDate.hashCode;
 
   bool equals(UserBirthday otherBirthday) {
     return (this.name == otherBirthday.name &&
@@ -23,12 +38,19 @@ class UserBirthday {
         birthdayDate =
             DateTime.tryParse(json[userBirthdayDateKey]) ?? DateTime.now(),
         hasNotification = json[userBirthdayHasNotificationKey],
-        phoneNumber = json[userBirthdayPhoneNumberKey];
+        phoneNumber = json[userBirthdayPhoneNumberKey],
+        notificationId = json[userBirthdayNotificationIdKey] ??
+            (json[userBirthdayNameKey].hashCode ^
+                    (DateTime.tryParse(json[userBirthdayDateKey]) ??
+                            DateTime.now())
+                        .hashCode)
+                .toUnsigned(31);
 
   Map<String, dynamic> toJson() => {
         userBirthdayNameKey: name,
         userBirthdayDateKey: birthdayDate.toIso8601String(),
         userBirthdayHasNotificationKey: hasNotification,
-        userBirthdayPhoneNumberKey: phoneNumber
+        userBirthdayPhoneNumberKey: phoneNumber,
+        userBirthdayNotificationIdKey: notificationId
       };
 }
