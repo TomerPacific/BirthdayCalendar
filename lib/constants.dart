@@ -17,6 +17,7 @@ const userBirthdayNameKey = "name";
 const userBirthdayDateKey = "birthdayDate";
 const userBirthdayHasNotificationKey = "hasNotification";
 const userBirthdayPhoneNumberKey = "phoneNumber";
+const userBirthdayNotificationIdKey = "notificationId";
 
 const darkModeKey = "darkMode";
 const contactsPermissionKey = "contacts";
