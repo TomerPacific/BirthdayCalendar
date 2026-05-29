@@ -90,7 +90,7 @@ class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
         await storageService.getBirthdaysForDate(birthdayDate, false);
 
     List<UserBirthday> filteredBirthdays = birthdaysForDateDeleted
-        .where((element) => !element.equals(userBirthday))
+        .where((element) => element != userBirthday)
         .toList();
 
     await storageService.saveBirthdaysForDate(birthdayDate, filteredBirthdays);
