@@ -13,6 +13,17 @@ class UserBirthday {
     this.hasNotification = status;
   }
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is UserBirthday &&
+          runtimeType == other.runtimeType &&
+          name == other.name &&
+          birthdayDate == other.birthdayDate;
+
+  @override
+  int get hashCode => name.hashCode ^ birthdayDate.hashCode;
+
   bool equals(UserBirthday otherBirthday) {
     return (this.name == otherBirthday.name &&
         this.birthdayDate == otherBirthday.birthdayDate);
