@@ -150,13 +150,9 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-        create: (context) => ClearNotificationsBloc(
-            context.read<StorageServiceSharedPreferences>(),
-            widget.notificationService),
-        child: BlocBuilder<ClearNotificationsBloc, bool>(
-            builder: (context, state) {
-          return Scaffold(
+    return BlocBuilder<ClearNotificationsBloc, bool>(
+        builder: (context, state) {
+      return Scaffold(
               appBar: AppBar(
                 actions: [
                   IconButton(
@@ -164,12 +160,10 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
                       Icons.settings,
                     ),
                     onPressed: () {
-                      unawaited(Navigator.push(context, MaterialPageRoute(builder: (_) {
-                        return BlocProvider.value(
-                            value: BlocProvider.of<ClearNotificationsBloc>(
-                                context),
-                            child: SettingsScreen(
-                                contactsService: widget.contactsService));
+                      unawaited(Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return SettingsScreen(
+                            contactsService: widget.contactsService);
                       })).then((result) {}));
                     },
                   )
@@ -230,7 +224,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
                       ],
                     )),
               ));
-        }));
+    });
   }
 
   @override

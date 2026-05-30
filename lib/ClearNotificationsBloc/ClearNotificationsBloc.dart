@@ -5,8 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 enum ClearNotificationsEvent { ClearedNotifications }
 
 class ClearNotificationsBloc extends Bloc<ClearNotificationsEvent, bool> {
-  ClearNotificationsBloc(
-      StorageService storageService, NotificationService notificationService)
+
+  final StorageService storageService;
+  final NotificationService notificationService;
+
+  ClearNotificationsBloc(this.storageService, this.notificationService)
       : super(false) {
     on<ClearNotificationsEvent>((event, emit) async {
       if (event == ClearNotificationsEvent.ClearedNotifications) {

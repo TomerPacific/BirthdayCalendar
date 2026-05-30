@@ -1,3 +1,4 @@
+import 'package:birthday_calendar/ClearNotificationsBloc/ClearNotificationsBloc.dart';
 import 'package:birthday_calendar/ContactsPermissionStatusBloc/ContactsPermissionStatusBloc.dart';
 import 'package:birthday_calendar/BirthdayCalendarDateUtils.dart';
 import 'package:birthday_calendar/ThemeBloc/ThemeBloc.dart';
@@ -62,6 +63,10 @@ class MyApp extends StatelessWidget {
             BlocProvider(
                 create: (context) =>
                     ContactsPermissionStatusBloc(contactsService)),
+            BlocProvider(
+                create: (context) => ClearNotificationsBloc(
+                    context.read<StorageServiceSharedPreferences>(),
+                    notificationService)),
             BlocProvider(create: (context) => VersionBloc())
           ],
           child: BlocBuilder<ThemeBloc, ThemeMode>(
