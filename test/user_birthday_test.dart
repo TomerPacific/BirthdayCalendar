@@ -52,6 +52,33 @@ void main() {
       expect(ub2.birthdayDate, ub1.birthdayDate);
     });
 
+    test('notificationId should be different for ambiguous concatenations', () {
+      // These would collide if there were no delimiters:
+      // "a1" + month 1 + day 11 -> "a1111"
+      // "a11" + month 1 + day 1 -> "a1111"
+      final ub1 = UserBirthday("a1", DateTime(2000, 1, 11), false, "");
+      final ub2 = UserBirthday("a11", DateTime(2000, 1, 1), false, "");
+
+      expect(ub1.notificationId, isNot(ub2.notificationId),
+          reason: 'Ambiguous concatenations should be resolved by delimiters');
+
+      // Another case:
+      // "a" + month 11 + day 1 -> "a111"
+      // "a1" + month 1 + day 1 -> "a111"
+      final ub3 = UserBirthday("a", DateTime(2000, 11, 1), false, "");
+      final ub4 = UserBirthday("a1", DateTime(2000, 1, 1), false, "");
+
+      expect(ub3.notificationId, isNot(ub4.notificationId),
+          reason: 'Ambiguous concatenations should be resolved by delimiters');
+    });
+
+    test('hashCode should avoid the same ambiguity', () {
+      final ub1 = UserBirthday("a1", DateTime(2000, 1, 11), false, "");
+      final ub2 = UserBirthday("a11", DateTime(2000, 1, 1), false, "");
+
+      expect(ub1.hashCode, isNot(ub2.hashCode));
+    });
+
     test('hashCode should be stable', () {
         final date = DateTime(1990, 5, 15);
         final ub1 = UserBirthday("John Doe", date, false, "");
