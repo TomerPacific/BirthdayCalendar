@@ -11,7 +11,7 @@ class UserBirthday {
       this.name, this.birthdayDate, this.hasNotification, this.phoneNumber,
       {int? notificationId})
       : this.notificationId = notificationId ??
-            (name + birthdayDate.month.toString() + birthdayDate.day.toString())
+            "$name|${birthdayDate.month}|${birthdayDate.day}"
                 .hashCode
                 .toUnsigned(31);
 
@@ -28,33 +28,21 @@ class UserBirthday {
           birthdayDate == other.birthdayDate;
 
   @override
-  int get hashCode =>
-      (name + birthdayDate.month.toString() + birthdayDate.day.toString())
-          .hashCode;
+  int get hashCode => "$name|${birthdayDate.month}|${birthdayDate.day}".hashCode;
 
   bool equals(UserBirthday otherBirthday) {
     return (this.name == otherBirthday.name &&
         this.birthdayDate == otherBirthday.birthdayDate);
   }
 
-  UserBirthday.fromJson(Map<String, dynamic> json)
-      : name = json[userBirthdayNameKey],
-        birthdayDate =
-            DateTime.tryParse(json[userBirthdayDateKey]) ?? DateTime.now(),
-        hasNotification = json[userBirthdayHasNotificationKey],
-        phoneNumber = json[userBirthdayPhoneNumberKey],
-        notificationId = json[userBirthdayNotificationIdKey] ??
-            (json[userBirthdayNameKey] +
-                    (DateTime.tryParse(json[userBirthdayDateKey]) ??
-                            DateTime.now())
-                        .month
-                        .toString() +
-                    (DateTime.tryParse(json[userBirthdayDateKey]) ??
-                            DateTime.now())
-                        .day
-                        .toString())
-                .hashCode
-                .toUnsigned(31);
+  factory UserBirthday.fromJson(Map<String, dynamic> json) {
+    return UserBirthday(
+        json[userBirthdayNameKey],
+        DateTime.tryParse(json[userBirthdayDateKey]) ?? DateTime.now(),
+        json[userBirthdayHasNotificationKey],
+        json[userBirthdayPhoneNumberKey],
+        notificationId: json[userBirthdayNotificationIdKey]);
+  }
 
   Map<String, dynamic> toJson() => {
         userBirthdayNameKey: name,
