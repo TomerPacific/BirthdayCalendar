@@ -11,7 +11,9 @@ class UserBirthday {
       this.name, this.birthdayDate, this.hasNotification, this.phoneNumber,
       {int? notificationId})
       : this.notificationId = notificationId ??
-            (name.hashCode ^ birthdayDate.hashCode).toUnsigned(31);
+            (name + birthdayDate.month.toString() + birthdayDate.day.toString())
+                .hashCode
+                .toUnsigned(31);
 
   void updateNotificationStatus(bool status) {
     this.hasNotification = status;
@@ -26,7 +28,9 @@ class UserBirthday {
           birthdayDate == other.birthdayDate;
 
   @override
-  int get hashCode => name.hashCode ^ birthdayDate.hashCode;
+  int get hashCode =>
+      (name + birthdayDate.month.toString() + birthdayDate.day.toString())
+          .hashCode;
 
   bool equals(UserBirthday otherBirthday) {
     return (this.name == otherBirthday.name &&
@@ -40,10 +44,16 @@ class UserBirthday {
         hasNotification = json[userBirthdayHasNotificationKey],
         phoneNumber = json[userBirthdayPhoneNumberKey],
         notificationId = json[userBirthdayNotificationIdKey] ??
-            (json[userBirthdayNameKey].hashCode ^
+            (json[userBirthdayNameKey] +
                     (DateTime.tryParse(json[userBirthdayDateKey]) ??
                             DateTime.now())
-                        .hashCode)
+                        .month
+                        .toString() +
+                    (DateTime.tryParse(json[userBirthdayDateKey]) ??
+                            DateTime.now())
+                        .day
+                        .toString())
+                .hashCode
                 .toUnsigned(31);
 
   Map<String, dynamic> toJson() => {
