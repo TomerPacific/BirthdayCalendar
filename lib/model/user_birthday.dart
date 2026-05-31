@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:birthday_calendar/constants.dart';
 
 class UserBirthday {
@@ -11,9 +12,7 @@ class UserBirthday {
       this.name, this.birthdayDate, this.hasNotification, this.phoneNumber,
       {int? notificationId})
       : this.notificationId = notificationId ??
-            "$name|${birthdayDate.month}|${birthdayDate.day}"
-                .hashCode
-                .toUnsigned(31);
+            _generateStableHash(_createNotificationKey(name, birthdayDate));
 
   void updateNotificationStatus(bool status) {
     this.hasNotification = status;
@@ -28,12 +27,19 @@ class UserBirthday {
           birthdayDate == other.birthdayDate;
 
   @override
-  int get hashCode => "$name|${birthdayDate.month}|${birthdayDate.day}".hashCode;
+  int get hashCode => _generateStableHash(_createNotificationKey(name, birthdayDate));
 
   bool equals(UserBirthday otherBirthday) {
     return (this.name == otherBirthday.name &&
         this.birthdayDate == otherBirthday.birthdayDate);
   }
+
+  /// Returns the unique key used for identifying this birthday for notifications.
+  /// The key is composed of name, month, and day to ensure it's stable across years.
+  String get notificationKey => _createNotificationKey(name, birthdayDate);
+
+  static String _createNotificationKey(String name, DateTime date) =>
+      "$name|${date.month}|${date.day}";
 
   factory UserBirthday.fromJson(Map<String, dynamic> json) {
     return UserBirthday(
@@ -51,4 +57,16 @@ class UserBirthday {
         userBirthdayPhoneNumberKey: phoneNumber,
         userBirthdayNotificationIdKey: notificationId
       };
+}
+
+/// Generates a deterministic 31-bit hash for a string.
+/// This is used instead of [Object.hashCode] because Dart's [String.hashCode]
+/// is not guaranteed to be stable across app restarts, platforms, or SDK versions.
+/// Stable IDs are required for reliably scheduling and cancelling notifications.
+int _generateStableHash(String string) {
+  int hash = 0;
+  for (int byte in utf8.encode(string)) {
+    hash = (31 * hash + byte) & 0xFFFFFFFF;
+  }
+  return hash.toUnsigned(31);
 }
