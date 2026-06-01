@@ -7,12 +7,18 @@ class UserBirthday {
   bool hasNotification;
   String phoneNumber;
   final int notificationId;
+  final int _cachedHashCode;
 
-  UserBirthday(
-      this.name, this.birthdayDate, this.hasNotification, this.phoneNumber,
-      {int? notificationId})
-      : this.notificationId = notificationId ??
-            _generateStableHash(_createNotificationKey(name, birthdayDate));
+  UserBirthday._internal(this.name, this.birthdayDate, this.hasNotification,
+      this.phoneNumber, this.notificationId, this._cachedHashCode);
+
+  factory UserBirthday(String name, DateTime birthdayDate, bool hasNotification,
+      String phoneNumber,
+      {int? notificationId}) {
+    final hash = _generateStableHash(_createNotificationKey(name, birthdayDate));
+    return UserBirthday._internal(name, birthdayDate, hasNotification,
+        phoneNumber, notificationId ?? hash, hash);
+  }
 
   void updateNotificationStatus(bool status) {
     this.hasNotification = status;
@@ -27,7 +33,7 @@ class UserBirthday {
           birthdayDate == other.birthdayDate;
 
   @override
-  int get hashCode => _generateStableHash(_createNotificationKey(name, birthdayDate));
+  int get hashCode => _cachedHashCode;
 
   bool equals(UserBirthday otherBirthday) {
     return (this.name == otherBirthday.name &&
@@ -35,11 +41,12 @@ class UserBirthday {
   }
 
   /// Returns the unique key used for identifying this birthday for notifications.
-  /// The key is composed of name, month, and day to ensure it's stable across years.
+  /// The key is composed of name, year, month, and day to ensure it's stable across years
+  /// while remaining unique even if multiple entries share the same name and birthday but different years.
   String get notificationKey => _createNotificationKey(name, birthdayDate);
 
   static String _createNotificationKey(String name, DateTime date) =>
-      "$name|${date.month}|${date.day}";
+      "$name|${date.year}|${date.month}|${date.day}";
 
   factory UserBirthday.fromJson(Map<String, dynamic> json) {
     return UserBirthday(
