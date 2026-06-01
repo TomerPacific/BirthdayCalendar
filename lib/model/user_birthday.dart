@@ -40,13 +40,15 @@ class UserBirthday {
         this.birthdayDate == otherBirthday.birthdayDate);
   }
 
-  /// Returns the unique key used for identifying this birthday for notifications.
-  /// The key is composed of name, year, month, and day to ensure it's stable across years
-  /// while remaining unique even if multiple entries share the same name and birthday but different years.
+  /// Returns a deterministic key used to identify this birthday for notifications.
+  /// The key is composed of name, month, and day to ensure it remains stable
+  /// across app restarts, platforms, and years. Including only month and day
+  /// (and excluding the birth year) ensures that notifications for the same
+  /// person on the same date remain consistent even if the birth year varies.
   String get notificationKey => _createNotificationKey(name, birthdayDate);
 
   static String _createNotificationKey(String name, DateTime date) =>
-      "$name|${date.year}|${date.month}|${date.day}";
+      "$name|${date.month}|${date.day}";
 
   factory UserBirthday.fromJson(Map<String, dynamic> json) {
     return UserBirthday(
