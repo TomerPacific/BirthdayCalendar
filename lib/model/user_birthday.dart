@@ -15,9 +15,10 @@ class UserBirthday {
   factory UserBirthday(String name, DateTime birthdayDate, bool hasNotification,
       String phoneNumber,
       {int? notificationId}) {
-    final hash = _generateStableHash(_createNotificationKey(name, birthdayDate));
+    final id = notificationId ??
+        _generateStableHash(_createNotificationKey(name, birthdayDate));
     return UserBirthday._internal(name, birthdayDate, hasNotification,
-        phoneNumber, notificationId ?? hash, hash);
+        phoneNumber, id, id);
   }
 
   void updateNotificationStatus(bool status) {
@@ -30,7 +31,8 @@ class UserBirthday {
       other is UserBirthday &&
           runtimeType == other.runtimeType &&
           name == other.name &&
-          birthdayDate == other.birthdayDate;
+          birthdayDate == other.birthdayDate &&
+          notificationId == other.notificationId;
 
   @override
   int get hashCode => _cachedHashCode;
@@ -42,9 +44,9 @@ class UserBirthday {
 
   /// Returns a deterministic key used to identify this birthday for notifications.
   /// The key is composed of name, month, and day to ensure it remains stable
-  /// across app restarts, platforms, and years. Including only month and day
-  /// (and excluding the birth year) ensures that notifications for the same
-  /// person on the same date remain consistent even if the birth year varies.
+  /// across app restarts and platforms. It is year-invariant (excluding the year)
+  /// to ensure that notifications for the same person on the same date remain
+  /// consistent even if the recorded birth year varies.
   String get notificationKey => _createNotificationKey(name, birthdayDate);
 
   static String _createNotificationKey(String name, DateTime date) =>
