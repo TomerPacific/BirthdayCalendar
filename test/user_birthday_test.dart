@@ -3,60 +3,61 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('UserBirthday identification and hash tests', () {
-    test('notificationKey should be deterministic and delimited including year', () {
-      final date = DateTime(1990, 5, 15);
-      final ub = UserBirthday("John Doe", date, false, "");
-      expect(ub.notificationKey, "John Doe|1990|5|15");
+    test('notificationKey should be deterministic and delimited (year-invariant)', () {
+      final birthdayDate = DateTime(1990, 5, 15);
+      final userBirthday = UserBirthday("John Doe", birthdayDate, false, "");
+      expect(userBirthday.notificationKey, "John Doe|5|15");
     });
 
-    test('notificationKey should be unique for same name/day but different year', () {
-      final ub1 = UserBirthday("John Doe", DateTime(1990, 5, 15), false, "");
-      final ub2 = UserBirthday("John Doe", DateTime(1995, 5, 15), false, "");
-      expect(ub1.notificationKey, "John Doe|1990|5|15");
-      expect(ub2.notificationKey, "John Doe|1995|5|15");
-      expect(ub1.notificationId, isNot(ub2.notificationId));
+    test('notificationKey should be year-invariant', () {
+      final firstBirthday = UserBirthday("John Doe", DateTime(1990, 5, 15), false, "");
+      final sameBirthdayDifferentYear = UserBirthday("John Doe", DateTime(2023, 5, 15), false, "");
+      
+      expect(firstBirthday.notificationKey, "John Doe|5|15");
+      expect(sameBirthdayDifferentYear.notificationKey, "John Doe|5|15");
+      expect(firstBirthday.notificationId, sameBirthdayDifferentYear.notificationId);
     });
 
     test('notificationKey and hashes should resolve potential ambiguities', () {
-      // name="a1", year=2000, month=1, day=11 -> "a1|2000|1|11"
-      final ub1 = UserBirthday("a1", DateTime(2000, 1, 11), false, "");
-      // name="a11", year=2000, month=1, day=1 -> "a11|2000|1|1"
-      final ub2 = UserBirthday("a11", DateTime(2000, 1, 1), false, "");
+      // name="a1", month=1, day=11 -> "a1|1|11"
+      final firstBirthday = UserBirthday("a1", DateTime(2000, 1, 11), false, "");
+      // name="a11", month=1, day=1 -> "a11|1|1"
+      final secondBirthday = UserBirthday("a11", DateTime(2000, 1, 1), false, "");
 
-      expect(ub1.notificationKey, "a1|2000|1|11");
-      expect(ub2.notificationKey, "a11|2000|1|1");
+      expect(firstBirthday.notificationKey, "a1|1|11");
+      expect(secondBirthday.notificationKey, "a11|1|1");
       
-      expect(ub1.notificationId, 1899887933);
-      expect(ub2.notificationId, 121001539);
+      expect(firstBirthday.notificationId, 1707436631);
+      expect(secondBirthday.notificationId, 1640337131);
     });
 
     test('notificationId and hashCode should match stable hash of notificationKey', () {
-      final date = DateTime(1990, 5, 15);
-      final ub = UserBirthday("John Doe", date, false, "");
-      // Hash of "John Doe|1990|5|15" using the stable algorithm
-      const expectedHash = 739031889;
+      final birthdayDate = DateTime(1990, 5, 15);
+      final userBirthday = UserBirthday("John Doe", birthdayDate, false, "");
+      // Hash of "John Doe|5|15" using the stable algorithm
+      const expectedHash = 2144736322;
       
-      expect(ub.notificationId, expectedHash);
-      expect(ub.hashCode, expectedHash);
+      expect(userBirthday.notificationId, expectedHash);
+      expect(userBirthday.hashCode, expectedHash);
     });
 
     test('fromJson should reconstruct fields and notificationId correctly', () {
-      final date = DateTime(1990, 5, 15);
-      final ub1 = UserBirthday("John Doe", date, true, "123");
-      final json = ub1.toJson();
+      final birthdayDate = DateTime(1990, 5, 15);
+      final originalBirthday = UserBirthday("John Doe", birthdayDate, true, "123");
+      final json = originalBirthday.toJson();
       
-      final ub2 = UserBirthday.fromJson(json);
+      final reconstructedBirthday = UserBirthday.fromJson(json);
       
-      expect(ub2.name, "John Doe");
-      expect(ub2.birthdayDate, date);
-      expect(ub2.notificationId, ub1.notificationId);
-      expect(ub2.notificationKey, ub1.notificationKey);
+      expect(reconstructedBirthday.name, "John Doe");
+      expect(reconstructedBirthday.birthdayDate, birthdayDate);
+      expect(reconstructedBirthday.notificationId, originalBirthday.notificationId);
+      expect(reconstructedBirthday.notificationKey, originalBirthday.notificationKey);
     });
 
     test('stable hash algorithm matches reference for simple input', () {
-      // Hash of "a|2000|1|1" -> 1793436707
-      final ub = UserBirthday("a", DateTime(2000, 1, 1), false, "");
-      expect(ub.notificationId, 1793436707);
+      // Hash of "a|1|1" -> 93326603
+      final userBirthday = UserBirthday("a", DateTime(2000, 1, 1), false, "");
+      expect(userBirthday.notificationId, 93326603);
     });
   });
 }
