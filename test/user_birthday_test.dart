@@ -43,14 +43,15 @@ void main() {
 
     test('fromJson should reconstruct fields and notificationId correctly', () {
       final birthdayDate = DateTime(1990, 5, 15);
-      final originalBirthday = UserBirthday("John Doe", birthdayDate, true, "123");
+      final originalBirthday = UserBirthday("John Doe", birthdayDate, true, "123", notificationId: 12345);
       final json = originalBirthday.toJson();
       
       final reconstructedBirthday = UserBirthday.fromJson(json);
       
       expect(reconstructedBirthday.name, "John Doe");
       expect(reconstructedBirthday.birthdayDate, birthdayDate);
-      expect(reconstructedBirthday.notificationId, originalBirthday.notificationId);
+      expect(reconstructedBirthday.notificationId, 12345);
+      expect(reconstructedBirthday.hashCode, reconstructedBirthday.notificationId);
       expect(reconstructedBirthday.notificationKey, originalBirthday.notificationKey);
     });
 
