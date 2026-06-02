@@ -114,7 +114,7 @@ class StorageServiceSharedPreferences extends StorageService {
         await getBirthdaysForDate(userBirthday.birthdayDate, false);
     for (int i = 0; i < birthdays.length; i++) {
       UserBirthday savedBirthday = birthdays[i];
-      if (savedBirthday.equals(userBirthday)) {
+      if (savedBirthday == userBirthday) {
         savedBirthday.updateNotificationStatus(updatedStatus);
       }
     }

@@ -37,7 +37,7 @@ class VersionSpecificServiceImpl extends VersionSpecificService {
           UserBirthday userBirthday = UserBirthday.fromJson(jsonDecode(payload));
           if (!userBirthday.hasNotification) {
             List<UserBirthday> birthdays = await storageService.getBirthdaysForDate(userBirthday.birthdayDate, false);
-            UserBirthday? found = birthdays.firstWhereOrNull((element) => element.equals(userBirthday));
+            UserBirthday? found = birthdays.firstWhereOrNull((element) => element == userBirthday);
             if (found != null) {
               birthdays.remove(found);
               userBirthday.updateNotificationStatus(true);

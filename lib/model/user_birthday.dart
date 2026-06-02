@@ -37,11 +37,6 @@ class UserBirthday {
   @override
   int get hashCode => _cachedHashCode;
 
-  bool equals(UserBirthday otherBirthday) {
-    return (this.name == otherBirthday.name &&
-        this.birthdayDate == otherBirthday.birthdayDate);
-  }
-
   /// Returns a deterministic key used to identify this birthday for notifications.
   /// The key is composed of name, month, and day to ensure it remains stable
   /// across app restarts and platforms. It is year-invariant (excluding the year)
@@ -54,11 +49,14 @@ class UserBirthday {
 
   factory UserBirthday.fromJson(Map<String, dynamic> json) {
     return UserBirthday(
-        json[userBirthdayNameKey],
-        DateTime.tryParse(json[userBirthdayDateKey]) ?? DateTime.now(),
-        json[userBirthdayHasNotificationKey],
-        json[userBirthdayPhoneNumberKey],
-        notificationId: json[userBirthdayNotificationIdKey]);
+        json[userBirthdayNameKey]?.toString() ?? "",
+        DateTime.tryParse(json[userBirthdayDateKey]?.toString() ?? "") ??
+            DateTime(1970),
+        json[userBirthdayHasNotificationKey] == true,
+        json[userBirthdayPhoneNumberKey]?.toString() ?? "",
+        notificationId: json[userBirthdayNotificationIdKey] is int
+            ? json[userBirthdayNotificationIdKey]
+            : null);
   }
 
   Map<String, dynamic> toJson() => {
