@@ -16,9 +16,9 @@ class UserNotificationStatusEvent {
 
 class UserNotificationStatusBloc
     extends Bloc<UserNotificationStatusEvent, bool> {
-  UserNotificationStatusBloc(
-      StorageService storageService, NotificationService notificationService)
-      : super(false) {
+  UserNotificationStatusBloc(StorageService storageService,
+      NotificationService notificationService, bool initialNotificationStatus)
+      : super(initialNotificationStatus) {
     on<UserNotificationStatusEvent>((event, emit) async {
       bool notificationStatus = event.hasNotification;
       notificationStatus = !notificationStatus;
