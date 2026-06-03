@@ -40,7 +40,10 @@ class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
               event, emit, storageService, notificationService);
           break;
         case BirthdayEvent.ShowAddBirthdayDialog:
-          emit(new BirthdaysState(showAddBirthdayDialog: true));
+          emit(new BirthdaysState(
+              date: state.date,
+              birthdays: state.birthdays,
+              showAddBirthdayDialog: true));
           break;
       }
     });
