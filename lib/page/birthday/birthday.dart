@@ -25,17 +25,10 @@ class BirthdayWidget extends StatefulWidget {
       : super(key: key);
 
   @override
-  _BirthdayWidgetState createState() => _BirthdayWidgetState(
-      notificationService, birthdayOfPerson, indexOfBirthday);
+  _BirthdayWidgetState createState() => _BirthdayWidgetState();
 }
 
 class _BirthdayWidgetState extends State<BirthdayWidget> {
-  _BirthdayWidgetState(
-      this.notificationService, this.birthdayOfPerson, this.indexOfBirthday);
-
-  NotificationService notificationService;
-  UserBirthday birthdayOfPerson;
-  int indexOfBirthday;
 
   Future<void> _handleCallButtonPressed(
       BuildContext context, String phoneNumber) async {
@@ -83,10 +76,10 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
             onPressed: () async {
               if (_birthdayPhoneNumber.phoneNumber != null) {
                 String phone = _birthdayPhoneNumber.parseNumber();
-                birthdayOfPerson.phoneNumber = phone;
+                widget.birthdayOfPerson.phoneNumber = phone;
                 await context
                     .read<StorageServiceSharedPreferences>()
-                    .updatePhoneNumberForBirthday(birthdayOfPerson);
+                    .updatePhoneNumberForBirthday(widget.birthdayOfPerson);
                 if (!mounted || !context.mounted) return;
                 setState(() {});
                 _phoneNumberController.clear();
@@ -114,18 +107,18 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
   }
 
   Widget callIconButton(BuildContext context) {
-    return birthdayOfPerson.phoneNumber.isNotEmpty
+    return widget.birthdayOfPerson.phoneNumber.isNotEmpty
         ? new IconButton(
             icon: Icon(Icons.call,
                 color: Utils.getColorBasedOnPosition(
-                    indexOfBirthday, ElementType.icon)),
+                    widget.indexOfBirthday, ElementType.icon)),
             onPressed: () {
-              unawaited(_handleCallButtonPressed(context, birthdayOfPerson.phoneNumber));
+              unawaited(_handleCallButtonPressed(context, widget.birthdayOfPerson.phoneNumber));
             })
         : new IconButton(
             icon: Icon(Icons.add_ic_call_outlined,
                 color: Utils.getColorBasedOnPosition(
-                    indexOfBirthday, ElementType.icon)),
+                    widget.indexOfBirthday, ElementType.icon)),
             onPressed: () {
               unawaited(_handleAddingPhoneNumber(context));
             });
@@ -136,37 +129,38 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
     return Container(
       height: 40,
       color: Utils.getColorBasedOnPosition(
-          indexOfBirthday, ElementType.background),
+          widget.indexOfBirthday, ElementType.background),
       child: Row(
         children: [
           new Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              birthdayOfPerson.name,
+              widget.birthdayOfPerson.name,
               textDirection: TextDirection.ltr,
               style: new TextStyle(
                   fontSize: 20.0,
                   color: Utils.getColorBasedOnPosition(
-                      indexOfBirthday, ElementType.text)),
+                      widget.indexOfBirthday, ElementType.text)),
             ),
           ),
           new Spacer(),
           BlocProvider(
               create: (context) => UserNotificationStatusBloc(
                   context.read<StorageServiceSharedPreferences>(),
-                  notificationService),
+                  widget.notificationService,
+                  widget.birthdayOfPerson.hasNotification),
               child: BlocBuilder<UserNotificationStatusBloc, bool>(
                   builder: (context, state) {
                 return new IconButton(
                     icon: Icon(
-                        !birthdayOfPerson.hasNotification
+                        !state
                             ? Icons.notifications_off_outlined
                             : Icons.notifications_active_outlined,
                         color: Utils.getColorBasedOnPosition(
-                            indexOfBirthday, ElementType.icon)),
+                            widget.indexOfBirthday, ElementType.icon)),
                     onPressed: () async {
-                      if (!birthdayOfPerson.hasNotification) {
-                        PermissionStatus status = await notificationService
+                      if (!state) {
+                        PermissionStatus status = await widget.notificationService
                             .requestNotificationPermission(context);
 
                         if (!mounted) return;
@@ -174,11 +168,11 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                         if (status.isGranted) {
                           BlocProvider.of<UserNotificationStatusBloc>(context)
                               .add(UserNotificationStatusEvent(
-                            userBirthday: birthdayOfPerson,
-                            hasNotification: birthdayOfPerson.hasNotification,
+                            userBirthday: widget.birthdayOfPerson,
+                            hasNotification: state,
                             notificationMsg: AppLocalizations.of(context)!
                                 .notificationForBirthdayMessage(
-                                    birthdayOfPerson.name),
+                                    widget.birthdayOfPerson.name),
                           ));
                           return;
                         }
@@ -202,11 +196,11 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                       } else {
                         BlocProvider.of<UserNotificationStatusBloc>(context)
                             .add(UserNotificationStatusEvent(
-                          userBirthday: birthdayOfPerson,
-                          hasNotification: birthdayOfPerson.hasNotification,
+                          userBirthday: widget.birthdayOfPerson,
+                          hasNotification: state,
                           notificationMsg: AppLocalizations.of(context)!
                               .notificationForBirthdayMessage(
-                                  birthdayOfPerson.name),
+                                  widget.birthdayOfPerson.name),
                         ));
                       }
                     });
@@ -215,11 +209,11 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
           new IconButton(
               icon: Icon(Icons.clear,
                   color: Utils.getColorBasedOnPosition(
-                      indexOfBirthday, ElementType.icon)),
+                      widget.indexOfBirthday, ElementType.icon)),
               onPressed: () {
                 BlocProvider.of<BirthdaysBloc>(context).add(new BirthdaysEvent(
                     eventName: BirthdayEvent.RemoveBirthday,
-                    birthday: birthdayOfPerson));
+                    birthday: widget.birthdayOfPerson));
               }),
         ],
       ),
