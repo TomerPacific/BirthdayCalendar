@@ -32,23 +32,10 @@ class _CalendarDayState extends State<CalendarDayWidget> {
   }
 
   void _handleEventFromStorageService(List<UserBirthday> event) {
-    List<UserBirthday> currentBirthdays = _birthdays;
-    for (UserBirthday birthday in event) {
-      DateTime firstDateWithoutYear =
-          new DateTime(birthday.birthdayDate.month, birthday.birthdayDate.day);
-      DateTime secondDateWithoutYear =
-          new DateTime(widget.date.month, widget.date.day);
-
-      if (firstDateWithoutYear == secondDateWithoutYear &&
-          !currentBirthdays.contains(birthday)) {
-        currentBirthdays.add(birthday);
-      }
-    }
-
-    if (currentBirthdays.length > 0) {
-      setState(() {
-        _birthdays = currentBirthdays;
-      });
+    if (event.isNotEmpty &&
+        event.first.birthdayDate.month == widget.date.month &&
+        event.first.birthdayDate.day == widget.date.day) {
+      unawaited(_fetchBirthdaysFromStorage());
     }
   }
 
