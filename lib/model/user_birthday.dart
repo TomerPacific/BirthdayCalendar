@@ -38,14 +38,13 @@ class UserBirthday {
   int get hashCode => _cachedHashCode;
 
   /// Returns a deterministic key used to identify this birthday for notifications.
-  /// The key is composed of name, month, and day to ensure it remains stable
-  /// across app restarts and platforms. It is year-invariant (excluding the year)
-  /// to ensure that notifications for the same person on the same date remain
-  /// consistent even if the recorded birth year varies.
+  /// The key is composed of name, year, month, and day to ensure it remains stable
+  /// across app restarts and platforms. Including the birth year ensures that multiple
+  /// entries with the same name and birthday but different years remain unique.
   String get notificationKey => _createNotificationKey(name, birthdayDate);
 
   static String _createNotificationKey(String name, DateTime date) =>
-      "$name|${date.month}|${date.day}";
+      "$name|${date.year}|${date.month}|${date.day}";
 
   factory UserBirthday.fromJson(Map<String, dynamic> json) {
     return UserBirthday(
