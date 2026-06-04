@@ -82,7 +82,7 @@ void main() {
                         height: 40,
                         child: BlocProvider(
                             create: (context) => BirthdaysBloc(
-                                notificationService, storageService, birthdays),
+                                notificationService, storageService, DateTime.now(), birthdays),
                             child: BlocBuilder<BirthdaysBloc, BirthdaysState>(
                                 builder: (context, state) {
                               return Column(children: [
