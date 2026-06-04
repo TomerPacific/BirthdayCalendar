@@ -106,7 +106,7 @@ class ContactsServiceImpl extends ContactsService {
   @override
   Future<void> addContactToCalendar(UserBirthday contact, BuildContext context) async {
     List<UserBirthday> birthdays =
-        await storageService.getBirthdaysForDate(contact.birthdayDate, false);
+        await storageService.getBirthdaysForDate(contact.birthdayDate, true);
     String contactName = contact.name;
 
     UserBirthday? birthdayWithSameName =
@@ -116,13 +116,17 @@ class ContactsServiceImpl extends ContactsService {
       return;
     }
 
+    // We must fetch the EXACT list for the contact's date to append to it
+    List<UserBirthday> birthdaysForSpecificDate =
+        await storageService.getBirthdaysForDate(contact.birthdayDate, false);
+
     await notificationService.scheduleNotificationForBirthday(
         contact,
         AppLocalizations.of(context)!
             .notificationForBirthdayMessage(contact.name));
 
-    birthdays.add(contact);
+    birthdaysForSpecificDate.add(contact);
 
-    await storageService.saveBirthdaysForDate(contact.birthdayDate, birthdays);
+    await storageService.saveBirthdaysForDate(contact.birthdayDate, birthdaysForSpecificDate);
   }
 }
