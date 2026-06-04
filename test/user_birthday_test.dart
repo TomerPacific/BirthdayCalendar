@@ -3,39 +3,39 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('UserBirthday identification and hash tests', () {
-    test('notificationKey should be deterministic and delimited (year-invariant)', () {
+    test('notificationKey should be deterministic and delimited including year', () {
       final birthdayDate = DateTime(1990, 5, 15);
       final userBirthday = UserBirthday("John Doe", birthdayDate, false, "");
-      expect(userBirthday.notificationKey, "John Doe|5|15");
+      expect(userBirthday.notificationKey, "John Doe|1990|5|15");
     });
 
-    test('notificationKey should be year-invariant', () {
+    test('notificationKey should be unique for same name/day but different year', () {
       final firstBirthday = UserBirthday("John Doe", DateTime(1990, 5, 15), false, "");
-      final sameBirthdayDifferentYear = UserBirthday("John Doe", DateTime(2023, 5, 15), false, "");
+      final sameBirthdayDifferentYear = UserBirthday("John Doe", DateTime(1995, 5, 15), false, "");
       
-      expect(firstBirthday.notificationKey, "John Doe|5|15");
-      expect(sameBirthdayDifferentYear.notificationKey, "John Doe|5|15");
-      expect(firstBirthday.notificationId, sameBirthdayDifferentYear.notificationId);
+      expect(firstBirthday.notificationKey, "John Doe|1990|5|15");
+      expect(sameBirthdayDifferentYear.notificationKey, "John Doe|1995|5|15");
+      expect(firstBirthday.notificationId, isNot(sameBirthdayDifferentYear.notificationId));
     });
 
     test('notificationKey and hashes should resolve potential ambiguities', () {
-      // name="a1", month=1, day=11 -> "a1|1|11"
+      // name="a1", month=1, day=11 -> "a1|2000|1|11"
       final firstBirthday = UserBirthday("a1", DateTime(2000, 1, 11), false, "");
-      // name="a11", month=1, day=1 -> "a11|1|1"
+      // name="a11", month=1, day=1 -> "a11|2000|1|1"
       final secondBirthday = UserBirthday("a11", DateTime(2000, 1, 1), false, "");
 
-      expect(firstBirthday.notificationKey, "a1|1|11");
-      expect(secondBirthday.notificationKey, "a11|1|1");
+      expect(firstBirthday.notificationKey, "a1|2000|1|11");
+      expect(secondBirthday.notificationKey, "a11|2000|1|1");
       
-      expect(firstBirthday.notificationId, 1707436631);
-      expect(secondBirthday.notificationId, 1640337131);
+      expect(firstBirthday.notificationId, 1899887933);
+      expect(secondBirthday.notificationId, 121001539);
     });
 
     test('notificationId and hashCode should match stable hash of notificationKey', () {
       final birthdayDate = DateTime(1990, 5, 15);
       final userBirthday = UserBirthday("John Doe", birthdayDate, false, "");
-      // Hash of "John Doe|5|15" using the stable algorithm
-      const expectedHash = 2144736322;
+      // Hash of "John Doe|1990|5|15" using the stable algorithm
+      const expectedHash = 739031889;
       
       expect(userBirthday.notificationId, expectedHash);
       expect(userBirthday.hashCode, expectedHash);
@@ -51,8 +51,29 @@ void main() {
       expect(reconstructedBirthday.name, "John Doe");
       expect(reconstructedBirthday.birthdayDate, birthdayDate);
       expect(reconstructedBirthday.notificationId, 12345);
-      expect(reconstructedBirthday.hashCode, reconstructedBirthday.notificationId);
+      expect(reconstructedBirthday.hashCode, 12345);
       expect(reconstructedBirthday.notificationKey, originalBirthday.notificationKey);
+    });
+
+    test('fromJson should use deterministic fallback for invalid dates', () {
+      final json = {
+        'name': 'Fallback Test',
+        'birthdayDate': 'invalid-date',
+        'hasNotification': false,
+        'phoneNumber': ''
+      };
+      
+      final birthday = UserBirthday.fromJson(json);
+      
+      expect(birthday.birthdayDate, DateTime(1970));
+      // "Fallback Test|1970|1|1" -> 470640407
+      expect(birthday.notificationId, 470640407);
+    });
+
+    test('stable hash algorithm matches reference for simple input', () {
+      // Hash of "a|2000|1|1" -> 1793436707
+      final userBirthday = UserBirthday("a", DateTime(2000, 1, 1), false, "");
+      expect(userBirthday.notificationId, 1793436707);
     });
 
     test('operator == should identify same birthday correctly', () {
@@ -69,27 +90,6 @@ void main() {
       final userBirthday2 = UserBirthday("John Doe", birthdayDate, false, "", notificationId: 2);
       
       expect(userBirthday1 == userBirthday2, isFalse);
-    });
-
-    test('fromJson should use deterministic fallback for invalid dates', () {
-      final json = {
-        'name': 'Fallback Test',
-        'birthdayDate': 'invalid-date',
-        'hasNotification': false,
-        'phoneNumber': ''
-      };
-      
-      final birthday = UserBirthday.fromJson(json);
-      
-      expect(birthday.birthdayDate, DateTime(1970));
-      // "Fallback Test|1|1" -> 1754549306
-      expect(birthday.notificationId, 1754549306);
-    });
-
-    test('stable hash algorithm matches reference for simple input', () {
-      // Hash of "a|1|1" -> 93326603
-      final userBirthday = UserBirthday("a", DateTime(2000, 1, 1), false, "");
-      expect(userBirthday.notificationId, 93326603);
     });
   });
 }
