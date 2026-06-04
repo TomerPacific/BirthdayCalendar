@@ -180,7 +180,7 @@ class NotificationServiceImpl extends NotificationService {
         tz.TZDateTime.now(tz.local).add(difference),
         NotificationDetails(android: _createAndroidNotificationDetails()),
         payload: jsonEncode(userBirthday),
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle);
+        androidScheduleMode: await _getSafeScheduleMode());
   }
 
   Future<void> _scheduleNotificationForNextYear(
@@ -192,7 +192,16 @@ class NotificationServiceImpl extends NotificationService {
         tz.TZDateTime.now(tz.local).add(new Duration(days: 365)),
         NotificationDetails(android: _createAndroidNotificationDetails()),
         payload: jsonEncode(userBirthday),
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle);
+        androidScheduleMode: await _getSafeScheduleMode());
+  }
+
+  Future<AndroidScheduleMode> _getSafeScheduleMode() async {
+    PermissionStatus status = await Permission.scheduleExactAlarm.status;
+    if (status.isGranted) {
+      return AndroidScheduleMode.exactAllowWhileIdle;
+    }
+
+    return AndroidScheduleMode.inexactAllowWhileIdle;
   }
 
   Future<void> cancelNotificationForBirthday(UserBirthday birthday) async {
