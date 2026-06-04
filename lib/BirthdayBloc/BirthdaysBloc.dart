@@ -2,6 +2,7 @@ import 'package:birthday_calendar/BirthdayBloc/BirthdaysState.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 enum BirthdayEvent { AddBirthday, RemoveBirthday, ShowAddBirthdayDialog }
@@ -24,10 +25,13 @@ class BirthdaysEvent {
 }
 
 class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
-  BirthdaysBloc(NotificationService notificationService,
-      StorageService storageService, List<UserBirthday> birthdaysForDate)
+  BirthdaysBloc(
+      NotificationService notificationService,
+      StorageService storageService,
+      DateTime date,
+      List<UserBirthday> birthdaysForDate)
       : super(BirthdaysState(
-            date: DateTime.now(),
+            date: date,
             birthdays: birthdaysForDate,
             showAddBirthdayDialog: false)) {
     on<BirthdaysEvent>((event, emit) async {
@@ -67,8 +71,12 @@ class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
     await storageService.saveBirthdaysForDate(birthdayDate, birthdaysMatchingDate);
 
     String notificationMsg = event.notificationMsg ?? "";
-    await notificationService.scheduleNotificationForBirthday(
-        userBirthday, notificationMsg);
+    try {
+      await notificationService.scheduleNotificationForBirthday(
+          userBirthday, notificationMsg);
+    } catch (e) {
+      debugPrint("Failed to schedule notification: $e");
+    }
 
     emit(new BirthdaysState(
         date: birthdayDate,

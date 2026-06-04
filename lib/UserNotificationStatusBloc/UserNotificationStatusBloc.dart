@@ -1,6 +1,7 @@
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class UserNotificationStatusEvent {
@@ -29,8 +30,12 @@ class UserNotificationStatusBloc
       if (!notificationStatus) {
         await notificationService.cancelNotificationForBirthday(birthday);
       } else {
-        await notificationService.scheduleNotificationForBirthday(
-            birthday, event.notificationMsg);
+        try {
+          await notificationService.scheduleNotificationForBirthday(
+              birthday, event.notificationMsg);
+        } catch (e) {
+          debugPrint("Failed to schedule notification: $e");
+        }
       }
       emit(notificationStatus);
     });
