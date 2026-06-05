@@ -64,19 +64,23 @@ class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
       return;
     }
 
+    String notificationMsg = event.notificationMsg ?? "";
+    if (userBirthday.hasNotification) {
+      try {
+        await notificationService.scheduleNotificationForBirthday(
+            userBirthday, notificationMsg);
+      } catch (e) {
+        debugPrint("Failed to schedule notification: $e");
+        userBirthday.hasNotification = false;
+      }
+    }
+
     DateTime birthdayDate = userBirthday.birthdayDate;
     List<UserBirthday> birthdaysMatchingDate = await storageService
         .getBirthdaysForDate(userBirthday.birthdayDate, false);
     birthdaysMatchingDate.add(userBirthday);
-    await storageService.saveBirthdaysForDate(birthdayDate, birthdaysMatchingDate);
-
-    String notificationMsg = event.notificationMsg ?? "";
-    try {
-      await notificationService.scheduleNotificationForBirthday(
-          userBirthday, notificationMsg);
-    } catch (e) {
-      debugPrint("Failed to schedule notification: $e");
-    }
+    await storageService.saveBirthdaysForDate(
+        birthdayDate, birthdaysMatchingDate);
 
     emit(new BirthdaysState(
         date: birthdayDate,
