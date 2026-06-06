@@ -21,7 +21,7 @@ class CalendarDayWidget extends StatefulWidget {
 
 class _CalendarDayState extends State<CalendarDayWidget> {
   List<UserBirthday> _birthdays = [];
-  late StreamSubscription<List<UserBirthday>> _streamSubscription;
+  late StreamSubscription<BirthdaysUpdate> _streamSubscription;
 
   @override
   void initState() {
