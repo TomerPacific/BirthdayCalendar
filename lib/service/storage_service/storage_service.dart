@@ -1,5 +1,6 @@
 import 'package:birthday_calendar/constants.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
+import 'package:birthday_calendar/model/birthdays_update.dart';
 
 abstract class StorageService {
   Future<List<UserBirthday>> getBirthdaysForDate(
@@ -17,7 +18,7 @@ abstract class StorageService {
 
   Future<void> saveThemeModeSetting(bool isDarkModeEnabled);
 
-  Stream<List<UserBirthday>> getBirthdaysStream();
+  Stream<BirthdaysUpdate> getBirthdaysStream();
 
   Future<void> saveIsContactsPermissionPermanentlyDenied(bool isPermanentlyDenied);
 

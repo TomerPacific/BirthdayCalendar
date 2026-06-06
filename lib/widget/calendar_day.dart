@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:birthday_calendar/page/birthdays_for_calendar_day_page/birthdays_for_calendar_day.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
+import 'package:birthday_calendar/model/birthdays_update.dart';
 import 'package:provider/provider.dart';
 
 class CalendarDayWidget extends StatefulWidget {
@@ -25,16 +26,15 @@ class _CalendarDayState extends State<CalendarDayWidget> {
   @override
   void initState() {
     unawaited(_fetchBirthdaysFromStorage());
-    Stream<List<UserBirthday>> stream =
+    Stream<BirthdaysUpdate> stream =
         context.read<StorageServiceSharedPreferences>().getBirthdaysStream();
     _streamSubscription = stream.listen(_handleEventFromStorageService);
     super.initState();
   }
 
-  void _handleEventFromStorageService(List<UserBirthday> event) {
-    if (event.isNotEmpty &&
-        event.first.birthdayDate.month == widget.date.month &&
-        event.first.birthdayDate.day == widget.date.day) {
+  void _handleEventFromStorageService(BirthdaysUpdate event) {
+    if (event.date.month == widget.date.month &&
+        event.date.day == widget.date.day) {
       unawaited(_fetchBirthdaysFromStorage());
     }
   }
