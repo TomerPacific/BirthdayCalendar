@@ -7,7 +7,6 @@ import 'package:birthday_calendar/model/birthdays_update.dart';
 import 'package:intl/intl.dart';
 import 'storage_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:collection/collection.dart';
 
 class StorageServiceSharedPreferences extends StorageService {
   StreamController<BirthdaysUpdate> streamController =
