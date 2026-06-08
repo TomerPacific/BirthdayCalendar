@@ -113,14 +113,13 @@ class StorageServiceSharedPreferences extends StorageService {
       UserBirthday userBirthday, bool updatedStatus) async {
     List<UserBirthday> birthdays =
         await getBirthdaysForDate(userBirthday.birthdayDate, false);
-    for (int i = 0; i < birthdays.length; i++) {
-      UserBirthday savedBirthday = birthdays[i];
-      if (savedBirthday == userBirthday) {
-        savedBirthday.updateNotificationStatus(updatedStatus);
-      }
-    }
+    List<UserBirthday> updatedBirthdays = birthdays.map((birthday) {
+      return birthday == userBirthday
+          ? birthday.copyWith(hasNotification: updatedStatus)
+          : birthday;
+    }).toList();
 
-    await saveBirthdaysForDate(userBirthday.birthdayDate, birthdays);
+    await saveBirthdaysForDate(userBirthday.birthdayDate, updatedBirthdays);
   }
 
   @override
@@ -187,11 +186,11 @@ class StorageServiceSharedPreferences extends StorageService {
   Future<void> updatePhoneNumberForBirthday(UserBirthday birthday) async {
     List<UserBirthday> birthdays =
         await getBirthdaysForDate(birthday.birthdayDate, false);
-    UserBirthday? storedBirthday =
-        birthdays.firstWhereOrNull((element) => element.name == birthday.name);
-    if (storedBirthday != null) {
-      storedBirthday.phoneNumber = birthday.phoneNumber;
-      await saveBirthdaysForDate(storedBirthday.birthdayDate, birthdays);
+    int index =
+        birthdays.indexWhere((element) => element.name == birthday.name);
+    if (index != -1) {
+      birthdays[index] = birthdays[index].copyWith(phoneNumber: birthday.phoneNumber);
+      await saveBirthdaysForDate(birthday.birthdayDate, birthdays);
     }
   }
 

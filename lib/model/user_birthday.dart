@@ -4,8 +4,8 @@ import 'package:birthday_calendar/constants.dart';
 class UserBirthday {
   final String name;
   final DateTime birthdayDate;
-  bool hasNotification;
-  String phoneNumber;
+  final bool hasNotification;
+  final String phoneNumber;
   final int notificationId;
   final int _cachedHashCode;
 
@@ -21,8 +21,20 @@ class UserBirthday {
         phoneNumber, id, id);
   }
 
-  void updateNotificationStatus(bool status) {
-    this.hasNotification = status;
+  UserBirthday copyWith({
+    String? name,
+    DateTime? birthdayDate,
+    bool? hasNotification,
+    String? phoneNumber,
+    int? notificationId,
+  }) {
+    return UserBirthday(
+      name ?? this.name,
+      birthdayDate ?? this.birthdayDate,
+      hasNotification ?? this.hasNotification,
+      phoneNumber ?? this.phoneNumber,
+      notificationId: notificationId ?? this.notificationId,
+    );
   }
 
   @override

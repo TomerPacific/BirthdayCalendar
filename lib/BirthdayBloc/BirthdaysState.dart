@@ -6,5 +6,6 @@ class BirthdaysState {
   final bool showAddBirthdayDialog;
 
   BirthdaysState(
-      {this.date, this.birthdays, required this.showAddBirthdayDialog});
+      {this.date, List<UserBirthday>? birthdays, required this.showAddBirthdayDialog})
+      : this.birthdays = birthdays != null ? List.unmodifiable(birthdays) : null;
 }

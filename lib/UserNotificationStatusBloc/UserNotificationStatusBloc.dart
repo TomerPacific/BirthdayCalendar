@@ -22,11 +22,11 @@ class UserNotificationStatusBloc
       : super(initialNotificationStatus) {
     on<UserNotificationStatusEvent>((event, emit) async {
       final bool targetNotificationStatus = !event.hasNotification;
-      final UserBirthday birthday = event.userBirthday;
+      UserBirthday birthday = event.userBirthday;
 
       if (targetNotificationStatus) {
         // Persist initial 'true' status first
-        birthday.hasNotification = true;
+        birthday = birthday.copyWith(hasNotification: true);
         await storageService.updateNotificationStatusForBirthday(
             birthday, true);
 
@@ -37,18 +37,28 @@ class UserNotificationStatusBloc
         } catch (e) {
           debugPrint("Failed to schedule notification: $e");
           // Revert and persist if scheduling failed
-          birthday.hasNotification = false;
+          birthday = birthday.copyWith(hasNotification: false);
           await storageService.updateNotificationStatusForBirthday(
               birthday, false);
           emit(false);
         }
       } else {
         // Turning off: persist first, then cancel
-        birthday.hasNotification = false;
+        birthday = birthday.copyWith(hasNotification: false);
         await storageService.updateNotificationStatusForBirthday(
             birthday, false);
-        await notificationService.cancelNotificationForBirthday(birthday);
-        emit(false);
+
+        try {
+          await notificationService.cancelNotificationForBirthday(birthday);
+          emit(false);
+        } catch (e) {
+          debugPrint("Failed to cancel notification: $e");
+          // Revert and persist if cancellation failed
+          birthday = birthday.copyWith(hasNotification: true);
+          await storageService.updateNotificationStatusForBirthday(
+              birthday, true);
+          emit(true);
+        }
       }
     });
   }

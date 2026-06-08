@@ -76,10 +76,10 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
             onPressed: () async {
               if (_birthdayPhoneNumber.phoneNumber != null) {
                 String phone = _birthdayPhoneNumber.parseNumber();
-                widget.birthdayOfPerson.phoneNumber = phone;
+                UserBirthday updatedBirthday = widget.birthdayOfPerson.copyWith(phoneNumber: phone);
                 await context
                     .read<StorageServiceSharedPreferences>()
-                    .updatePhoneNumberForBirthday(widget.birthdayOfPerson);
+                    .updatePhoneNumberForBirthday(updatedBirthday);
                 if (!mounted || !context.mounted) return;
                 setState(() {});
                 _phoneNumberController.clear();

@@ -39,10 +39,11 @@ class VersionSpecificServiceImpl extends VersionSpecificService {
             List<UserBirthday> birthdays = await storageService.getBirthdaysForDate(userBirthday.birthdayDate, false);
             UserBirthday? found = birthdays.firstWhereOrNull((element) => element == userBirthday);
             if (found != null) {
-              birthdays.remove(found);
-              userBirthday.updateNotificationStatus(true);
-              birthdays.add(userBirthday);
-              await storageService.saveBirthdaysForDate(userBirthday.birthdayDate, birthdays);
+              int index = birthdays.indexOf(found);
+              if (index != -1) {
+                birthdays[index] = found.copyWith(hasNotification: true);
+                await storageService.saveBirthdaysForDate(userBirthday.birthdayDate, birthdays);
+              }
             }
           }
         }

@@ -78,9 +78,15 @@ class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
             userBirthday, notificationMsg);
       } catch (e) {
         debugPrint("Failed to schedule notification: $e");
-        userBirthday.hasNotification = false;
+        UserBirthday updatedBirthday =
+            userBirthday.copyWith(hasNotification: false);
+        int index = birthdaysMatchingDate.indexOf(userBirthday);
+        if (index != -1) {
+          birthdaysMatchingDate[index] = updatedBirthday;
+        }
         await storageService.saveBirthdaysForDate(
             birthdayDate, birthdaysMatchingDate);
+        userBirthday = updatedBirthday;
       }
     }
 

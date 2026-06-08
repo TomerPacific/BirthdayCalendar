@@ -155,15 +155,16 @@ class NotificationServiceImpl extends NotificationService {
     DateTime nextBirthdayOccurrence =
         _getNextOccurrence(birthdayDate.month, birthdayDate.day, now);
 
-    Duration difference = nextBirthdayOccurrence.difference(now);
+    bool isToday = nextBirthdayOccurrence.year == now.year &&
+        nextBirthdayOccurrence.month == now.month &&
+        nextBirthdayOccurrence.day == now.day;
 
     bool didApplicationLaunchFromNotification =
         await _wasApplicationLaunchedFromNotification();
-    if (didApplicationLaunchFromNotification && difference.inDays == 0) {
+    if (didApplicationLaunchFromNotification && isToday) {
       await _scheduleNotificationForNextYear(userBirthday, notificationMessage);
       return;
-    } else if (!didApplicationLaunchFromNotification &&
-        difference.inDays == 0) {
+    } else if (!didApplicationLaunchFromNotification && isToday) {
       await _showNotification(userBirthday, notificationMessage);
       return;
     }
@@ -192,8 +193,11 @@ class NotificationServiceImpl extends NotificationService {
 
     DateTime occurrence = DateTime(year, month, day);
 
-    // If it already happened today or earlier this year, move to next year
-    if (occurrence.isBefore(now)) {
+    // If it already happened earlier this year, move to next year.
+    // We compare against the start of today to ensure birthdays occurring today
+    // are not skipped.
+    DateTime todayStart = DateTime(now.year, now.month, now.day);
+    if (occurrence.isBefore(todayStart)) {
       year++;
       if (month == 2 && day == 29 && !_isLeapYear(year)) {
         month = 3;
@@ -222,9 +226,13 @@ class NotificationServiceImpl extends NotificationService {
   }
 
   Future<AndroidScheduleMode> _getSafeScheduleMode() async {
-    PermissionStatus status = await Permission.scheduleExactAlarm.status;
-    if (status.isGranted) {
-      return AndroidScheduleMode.exactAllowWhileIdle;
+    try {
+      PermissionStatus status = await Permission.scheduleExactAlarm.status;
+      if (status.isGranted) {
+        return AndroidScheduleMode.exactAllowWhileIdle;
+      }
+    } catch (e) {
+      debugPrint("Failed to check scheduleExactAlarm permission: $e");
     }
 
     return AndroidScheduleMode.inexactAllowWhileIdle;

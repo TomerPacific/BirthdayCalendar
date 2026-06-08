@@ -4,5 +4,6 @@ class BirthdaysUpdate {
   final DateTime date;
   final List<UserBirthday> birthdays;
 
-  BirthdaysUpdate(this.date, this.birthdays);
+  BirthdaysUpdate(this.date, List<UserBirthday> birthdays)
+      : this.birthdays = List.unmodifiable(birthdays);
 }
