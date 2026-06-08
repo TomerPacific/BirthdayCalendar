@@ -151,16 +151,11 @@ class NotificationServiceImpl extends NotificationService {
       UserBirthday userBirthday, String notificationMessage) async {
     DateTime now = DateTime.now();
     DateTime birthdayDate = userBirthday.birthdayDate;
-    DateTime correctedBirthdayDate = birthdayDate;
 
-    if (birthdayDate.year < now.year) {
-      correctedBirthdayDate =
-          new DateTime(now.year, birthdayDate.month, birthdayDate.day);
-    }
+    DateTime nextBirthdayOccurrence =
+        _getNextOccurrence(birthdayDate.month, birthdayDate.day, now);
 
-    Duration difference = now.isAfter(correctedBirthdayDate)
-        ? now.difference(correctedBirthdayDate)
-        : correctedBirthdayDate.difference(now);
+    Duration difference = nextBirthdayOccurrence.difference(now);
 
     bool didApplicationLaunchFromNotification =
         await _wasApplicationLaunchedFromNotification();
@@ -177,10 +172,41 @@ class NotificationServiceImpl extends NotificationService {
         userBirthday.notificationId,
         applicationName,
         notificationMessage,
-        tz.TZDateTime.now(tz.local).add(difference),
+        tz.TZDateTime.from(nextBirthdayOccurrence, tz.local),
         NotificationDetails(android: _createAndroidNotificationDetails()),
         payload: jsonEncode(userBirthday),
         androidScheduleMode: await _getSafeScheduleMode());
+  }
+
+  DateTime _getNextOccurrence(int month, int day, DateTime now) {
+    // Start with the birthday in the current year
+    int year = now.year;
+
+    // Handle Feb 29
+    if (month == 2 && day == 29 && !_isLeapYear(year)) {
+      // If not a leap year, reminders for Feb 29 usually fall on Feb 28 or March 1.
+      // Here we shift to March 1st.
+      month = 3;
+      day = 1;
+    }
+
+    DateTime occurrence = DateTime(year, month, day);
+
+    // If it already happened today or earlier this year, move to next year
+    if (occurrence.isBefore(now)) {
+      year++;
+      if (month == 2 && day == 29 && !_isLeapYear(year)) {
+        month = 3;
+        day = 1;
+      }
+      occurrence = DateTime(year, month, day);
+    }
+
+    return occurrence;
+  }
+
+  bool _isLeapYear(int year) {
+    return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
   }
 
   Future<void> _scheduleNotificationForNextYear(
