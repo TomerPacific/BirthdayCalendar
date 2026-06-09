@@ -36,5 +36,9 @@ abstract class StorageService {
 
   Future<NotificationPermissionState> getNotificationPermissionState();
 
+  Future<void> saveDidAlreadyMigrateNotificationIds(bool status);
+
+  Future<bool> getAlreadyMigratedNotificationIds();
+
   void dispose();
 }

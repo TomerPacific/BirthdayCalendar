@@ -51,6 +51,32 @@ class VersionSpecificServiceImpl extends VersionSpecificService {
     }
   }
 
+  @override
+  Future<void> migrateNotificationIds() async {
+    bool didAlreadyMigrate = await storageService.getAlreadyMigratedNotificationIds();
+    if (didAlreadyMigrate) {
+      return;
+    }
+
+    // Cancel all notifications — they were scheduled under unstable hashCode-based
+    // IDs and can no longer be reliably cancelled or matched.
+    await notificationService.cancelAllNotifications();
+
+    // Reschedule notifications for every birthday that had one enabled,
+    // now using the deterministic ID computed by UserBirthday._deterministicId.
+    List<UserBirthday> allBirthdays = await storageService.getAllBirthdays();
+    for (UserBirthday birthday in allBirthdays) {
+      if (birthday.hasNotification) {
+        await notificationService.scheduleNotificationForBirthday(
+          birthday,
+          birthday.name,
+        );
+      }
+    }
+
+    await storageService.saveDidAlreadyMigrateNotificationIds(true);
+  }
+
   bool _isVersionGreaterThan(String newVersion, String currentVersion){
     List<String> currentVersionSplit = currentVersion.split(".");
     List<String> newVersionSplit = newVersion.split(".");
