@@ -113,7 +113,7 @@ class StorageServiceSharedPreferences extends StorageService {
     List<UserBirthday> birthdays =
         await getBirthdaysForDate(userBirthday.birthdayDate, false);
     List<UserBirthday> updatedBirthdays = birthdays.map((birthday) {
-      return birthday == userBirthday
+      return birthday.name == userBirthday.name
           ? birthday.copyWith(hasNotification: updatedStatus)
           : birthday;
     }).toList();

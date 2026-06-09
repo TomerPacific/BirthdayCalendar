@@ -28,12 +28,17 @@ class UserBirthday {
     String? phoneNumber,
     int? notificationId,
   }) {
+    // If name or birthdayDate changes, we should recalculate the notificationId
+    // unless a specific one is provided.
+    final bool identityChanged = (name != null && name != this.name) ||
+        (birthdayDate != null && birthdayDate != this.birthdayDate);
+
     return UserBirthday(
       name ?? this.name,
       birthdayDate ?? this.birthdayDate,
       hasNotification ?? this.hasNotification,
       phoneNumber ?? this.phoneNumber,
-      notificationId: notificationId ?? this.notificationId,
+      notificationId: notificationId ?? (identityChanged ? null : this.notificationId),
     );
   }
 
@@ -44,10 +49,18 @@ class UserBirthday {
           runtimeType == other.runtimeType &&
           name == other.name &&
           birthdayDate == other.birthdayDate &&
-          notificationId == other.notificationId;
+          notificationId == other.notificationId &&
+          hasNotification == other.hasNotification &&
+          phoneNumber == other.phoneNumber;
 
   @override
-  int get hashCode => _cachedHashCode;
+  int get hashCode => Object.hash(
+        name,
+        birthdayDate,
+        hasNotification,
+        phoneNumber,
+        notificationId,
+      );
 
   /// Returns a deterministic key used to identify this birthday for notifications.
   /// The key is composed of name, year, month, and day to ensure it remains stable

@@ -1,11 +1,13 @@
 import 'package:birthday_calendar/BirthdayBloc/BirthdaysState.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
+import 'package:birthday_calendar/model/birthdays_update.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'dart:async';
 
-enum BirthdayEvent { AddBirthday, RemoveBirthday, ShowAddBirthdayDialog }
+enum BirthdayEvent { AddBirthday, RemoveBirthday, ShowAddBirthdayDialog, BirthdaysUpdated }
 
 class BirthdaysEvent {
   final BirthdayEvent eventName;
@@ -25,6 +27,8 @@ class BirthdaysEvent {
 }
 
 class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
+  StreamSubscription<BirthdaysUpdate>? _storageSubscription;
+
   BirthdaysBloc(
       NotificationService notificationService,
       StorageService storageService,
@@ -34,6 +38,15 @@ class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
             date: date,
             birthdays: birthdaysForDate,
             showAddBirthdayDialog: false)) {
+    
+    _storageSubscription = storageService.getBirthdaysStream().listen((update) {
+      if (update.date.month == date.month && update.date.day == date.day) {
+        add(BirthdaysEvent(
+            eventName: BirthdayEvent.BirthdaysUpdated,
+            birthdays: update.birthdays));
+      }
+    });
+
     on<BirthdaysEvent>((event, emit) async {
       switch (event.eventName) {
         case BirthdayEvent.AddBirthday:
@@ -49,8 +62,20 @@ class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
               birthdays: state.birthdays,
               showAddBirthdayDialog: true));
           break;
+        case BirthdayEvent.BirthdaysUpdated:
+          emit(new BirthdaysState(
+              date: state.date,
+              birthdays: event.birthdays,
+              showAddBirthdayDialog: false));
+          break;
       }
     });
+  }
+
+  @override
+  Future<void> close() {
+    _storageSubscription?.cancel();
+    return super.close();
   }
 
   Future<void> _handleAddEvent(

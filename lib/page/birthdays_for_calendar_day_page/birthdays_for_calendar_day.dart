@@ -65,6 +65,9 @@ class BirthdaysForCalendarDayWidget extends StatelessWidget {
                         ),
                       ),
                 BlocListener<BirthdaysBloc, BirthdaysState>(
+                  listenWhen: (previous, current) =>
+                      !previous.showAddBirthdayDialog &&
+                      current.showAddBirthdayDialog,
                   listener: (context, state) {
                     if (state.showAddBirthdayDialog) {
                       showDialog(

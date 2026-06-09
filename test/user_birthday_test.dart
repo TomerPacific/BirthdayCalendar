@@ -1,5 +1,6 @@
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'dart:convert';
 
 void main() {
   group('UserBirthday identification and hash tests', () {
@@ -31,14 +32,13 @@ void main() {
       expect(secondBirthday.notificationId, 121001539);
     });
 
-    test('notificationId and hashCode should match stable hash of notificationKey', () {
+    test('notificationId should match stable hash of notificationKey', () {
       final birthdayDate = DateTime(1990, 5, 15);
       final userBirthday = UserBirthday("John Doe", birthdayDate, false, "");
       // Hash of "John Doe|1990|5|15" using the stable algorithm
       const expectedHash = 739031889;
       
       expect(userBirthday.notificationId, expectedHash);
-      expect(userBirthday.hashCode, expectedHash);
     });
 
     test('fromJson should reconstruct fields and notificationId correctly', () {
@@ -51,7 +51,6 @@ void main() {
       expect(reconstructedBirthday.name, "John Doe");
       expect(reconstructedBirthday.birthdayDate, birthdayDate);
       expect(reconstructedBirthday.notificationId, 12345);
-      expect(reconstructedBirthday.hashCode, 12345);
       expect(reconstructedBirthday.notificationKey, originalBirthday.notificationKey);
     });
 
@@ -91,5 +90,54 @@ void main() {
       
       expect(userBirthday1 == userBirthday2, isFalse);
     });
+
+    test('copyWith should preserve notificationId if identity is unchanged', () {
+      final birthdayDate = DateTime(1990, 5, 15);
+      final original = UserBirthday("John Doe", birthdayDate, false, "");
+      final updated = original.copyWith(hasNotification: true);
+      
+      expect(updated.name, original.name);
+      expect(updated.birthdayDate, original.birthdayDate);
+      expect(updated.hasNotification, true);
+      expect(updated.notificationId, original.notificationId);
+    });
+
+    test('copyWith should recalculate notificationId if name changes', () {
+      final birthdayDate = DateTime(1990, 5, 15);
+      final original = UserBirthday("John Doe", birthdayDate, false, "");
+      final updated = original.copyWith(name: "Jane Doe");
+      
+      expect(updated.name, "Jane Doe");
+      expect(updated.notificationId, isNot(original.notificationId));
+      expect(updated.notificationId, _generateStableHash("Jane Doe|1990|5|15"));
+    });
+
+    test('copyWith should recalculate notificationId if date changes', () {
+      final originalDate = DateTime(1990, 5, 15);
+      final newDate = DateTime(1995, 5, 15);
+      final original = UserBirthday("John Doe", originalDate, false, "");
+      final updated = original.copyWith(birthdayDate: newDate);
+      
+      expect(updated.birthdayDate, newDate);
+      expect(updated.notificationId, isNot(original.notificationId));
+      expect(updated.notificationId, _generateStableHash("John Doe|1995|5|15"));
+    });
+
+    test('copyWith should respect explicitly provided notificationId even if identity changes', () {
+      final birthdayDate = DateTime(1990, 5, 15);
+      final original = UserBirthday("John Doe", birthdayDate, false, "");
+      final updated = original.copyWith(name: "Jane Doe", notificationId: 999);
+      
+      expect(updated.name, "Jane Doe");
+      expect(updated.notificationId, 999);
+    });
   });
+}
+
+int _generateStableHash(String string) {
+  int hash = 0;
+  for (int byte in utf8.encode(string)) {
+    hash = (31 * hash + byte) & 0xFFFFFFFF;
+  }
+  return hash.toUnsigned(31);
 }

@@ -29,6 +29,35 @@ class BirthdayWidget extends StatefulWidget {
 }
 
 class _BirthdayWidgetState extends State<BirthdayWidget> {
+  late UserBirthdayBloc _userBirthdayBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _userBirthdayBloc = UserBirthdayBloc(
+        context.read<StorageServiceSharedPreferences>(),
+        widget.notificationService,
+        widget.birthdayOfPerson);
+  }
+
+  @override
+  void didUpdateWidget(BirthdayWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.birthdayOfPerson != widget.birthdayOfPerson) {
+      // The identity or state of the birthday changed from the parent (BirthdaysBloc).
+      // We don't necessarily need to recreate the bloc because it's already 
+      // listening to the storage stream, but we might want to ensure it's 
+      // in sync if the parent has more recent data than what the stream 
+      // has processed.
+      // However, since both listen to the same stream, they should be in sync.
+    }
+  }
+
+  @override
+  void dispose() {
+    _userBirthdayBloc.close();
+    super.dispose();
+  }
 
   Future<void> _handleCallButtonPressed(
       BuildContext context, String phoneNumber) async {
@@ -42,7 +71,7 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
     }
   }
 
-  Future<void> _handleAddingPhoneNumber(BuildContext context) async {
+  Future<void> _handleAddingPhoneNumber(BuildContext context, UserBirthday birthday) async {
     PhoneNumber _birthdayPhoneNumber = PhoneNumber(isoCode: 'US');
     final _phoneNumberKey = GlobalKey<FormFieldState>();
     TextEditingController _phoneNumberController = new TextEditingController();
@@ -76,12 +105,11 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
             onPressed: () async {
               if (_birthdayPhoneNumber.phoneNumber != null) {
                 String phone = _birthdayPhoneNumber.parseNumber();
-                UserBirthday updatedBirthday = widget.birthdayOfPerson.copyWith(phoneNumber: phone);
+                UserBirthday updatedBirthday = birthday.copyWith(phoneNumber: phone);
                 await context
                     .read<StorageServiceSharedPreferences>()
                     .updatePhoneNumberForBirthday(updatedBirthday);
                 if (!mounted || !context.mounted) return;
-                setState(() {});
                 _phoneNumberController.clear();
                 Navigator.pop(context);
               } else {
@@ -106,73 +134,70 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
         });
   }
 
-  Widget callIconButton(BuildContext context) {
-    return widget.birthdayOfPerson.phoneNumber.isNotEmpty
+  Widget callIconButton(BuildContext context, UserBirthday birthday) {
+    return birthday.phoneNumber.isNotEmpty
         ? new IconButton(
             icon: Icon(Icons.call,
                 color: Utils.getColorBasedOnPosition(
                     widget.indexOfBirthday, ElementType.icon)),
             onPressed: () {
-              unawaited(_handleCallButtonPressed(context, widget.birthdayOfPerson.phoneNumber));
+              unawaited(_handleCallButtonPressed(context, birthday.phoneNumber));
             })
         : new IconButton(
             icon: Icon(Icons.add_ic_call_outlined,
                 color: Utils.getColorBasedOnPosition(
                     widget.indexOfBirthday, ElementType.icon)),
             onPressed: () {
-              unawaited(_handleAddingPhoneNumber(context));
+              unawaited(_handleAddingPhoneNumber(context, birthday));
             });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 40,
-      color: Utils.getColorBasedOnPosition(
-          widget.indexOfBirthday, ElementType.background),
-      child: Row(
-        children: [
-          new Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              widget.birthdayOfPerson.name,
-              textDirection: TextDirection.ltr,
-              style: new TextStyle(
-                  fontSize: 20.0,
-                  color: Utils.getColorBasedOnPosition(
-                      widget.indexOfBirthday, ElementType.text)),
-            ),
-          ),
-          new Spacer(),
-          BlocProvider(
-              create: (context) => UserNotificationStatusBloc(
-                  context.read<StorageServiceSharedPreferences>(),
-                  widget.notificationService,
-                  widget.birthdayOfPerson.hasNotification),
-              child: BlocBuilder<UserNotificationStatusBloc, bool>(
-                  builder: (context, state) {
-                return new IconButton(
+    return BlocProvider.value(
+        value: _userBirthdayBloc,
+        child: BlocBuilder<UserBirthdayBloc, UserBirthday>(
+            builder: (context, state) {
+          return Container(
+            height: 40,
+            color: Utils.getColorBasedOnPosition(
+                widget.indexOfBirthday, ElementType.background),
+            child: Row(
+              children: [
+                new Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    state.name,
+                    textDirection: TextDirection.ltr,
+                    style: new TextStyle(
+                        fontSize: 20.0,
+                        color: Utils.getColorBasedOnPosition(
+                            widget.indexOfBirthday, ElementType.text)),
+                  ),
+                ),
+                new Spacer(),
+                new IconButton(
                     icon: Icon(
-                        !state
+                        !state.hasNotification
                             ? Icons.notifications_off_outlined
                             : Icons.notifications_active_outlined,
                         color: Utils.getColorBasedOnPosition(
                             widget.indexOfBirthday, ElementType.icon)),
                     onPressed: () async {
-                      if (!state) {
-                        PermissionStatus status = await widget.notificationService
+                      if (!state.hasNotification) {
+                        PermissionStatus status = await widget
+                            .notificationService
                             .requestNotificationPermission(context);
 
                         if (!mounted) return;
 
                         if (status.isGranted) {
-                          BlocProvider.of<UserNotificationStatusBloc>(context)
+                          BlocProvider.of<UserBirthdayBloc>(context)
                               .add(UserNotificationStatusEvent(
-                            userBirthday: widget.birthdayOfPerson,
-                            hasNotification: state,
+                            userBirthday: state,
+                            hasNotification: state.hasNotification,
                             notificationMsg: AppLocalizations.of(context)!
-                                .notificationForBirthdayMessage(
-                                    widget.birthdayOfPerson.name),
+                                .notificationForBirthdayMessage(state.name),
                           ));
                           return;
                         }
@@ -194,29 +219,29 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                             AppLocalizations.of(context)!
                                 .notificationPermissionDenied);
                       } else {
-                        BlocProvider.of<UserNotificationStatusBloc>(context)
+                        BlocProvider.of<UserBirthdayBloc>(context)
                             .add(UserNotificationStatusEvent(
-                          userBirthday: widget.birthdayOfPerson,
-                          hasNotification: state,
+                          userBirthday: state,
+                          hasNotification: state.hasNotification,
                           notificationMsg: AppLocalizations.of(context)!
-                              .notificationForBirthdayMessage(
-                                  widget.birthdayOfPerson.name),
+                              .notificationForBirthdayMessage(state.name),
                         ));
                       }
-                    });
-              })),
-          callIconButton(context),
-          new IconButton(
-              icon: Icon(Icons.clear,
-                  color: Utils.getColorBasedOnPosition(
-                      widget.indexOfBirthday, ElementType.icon)),
-              onPressed: () {
-                BlocProvider.of<BirthdaysBloc>(context).add(new BirthdaysEvent(
-                    eventName: BirthdayEvent.RemoveBirthday,
-                    birthday: widget.birthdayOfPerson));
-              }),
-        ],
-      ),
-    );
+                    }),
+                callIconButton(context, state),
+                new IconButton(
+                    icon: Icon(Icons.clear,
+                        color: Utils.getColorBasedOnPosition(
+                            widget.indexOfBirthday, ElementType.icon)),
+                    onPressed: () {
+                      BlocProvider.of<BirthdaysBloc>(context).add(
+                          new BirthdaysEvent(
+                              eventName: BirthdayEvent.RemoveBirthday,
+                              birthday: state));
+                    }),
+              ],
+            ),
+          );
+        }));
   }
 }

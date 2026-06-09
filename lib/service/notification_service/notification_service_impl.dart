@@ -183,15 +183,16 @@ class NotificationServiceImpl extends NotificationService {
     // Start with the birthday in the current year
     int year = now.year;
 
-    // Handle Feb 29
-    if (month == 2 && day == 29 && !_isLeapYear(year)) {
-      // If not a leap year, reminders for Feb 29 usually fall on Feb 28 or March 1.
-      // Here we shift to March 1st.
-      month = 3;
-      day = 1;
+    DateTime _calculateOccurrence(int y, int m, int d) {
+      if (m == 2 && d == 29 && !_isLeapYear(y)) {
+        // If not a leap year, reminders for Feb 29 usually fall on Feb 28 or March 1.
+        // Here we shift to March 1st.
+        return DateTime(y, 3, 1);
+      }
+      return DateTime(y, m, d);
     }
 
-    DateTime occurrence = DateTime(year, month, day);
+    DateTime occurrence = _calculateOccurrence(year, month, day);
 
     // If it already happened earlier this year, move to next year.
     // We compare against the start of today to ensure birthdays occurring today
@@ -199,11 +200,7 @@ class NotificationServiceImpl extends NotificationService {
     DateTime todayStart = DateTime(now.year, now.month, now.day);
     if (occurrence.isBefore(todayStart)) {
       year++;
-      if (month == 2 && day == 29 && !_isLeapYear(year)) {
-        month = 3;
-        day = 1;
-      }
-      occurrence = DateTime(year, month, day);
+      occurrence = _calculateOccurrence(year, month, day);
     }
 
     return occurrence;
