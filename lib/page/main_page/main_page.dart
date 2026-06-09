@@ -23,10 +23,10 @@ import 'package:birthday_calendar/l10n/app_localizations.dart';
 class MainPage extends StatefulWidget {
   MainPage(
       {required Key key,
-      required this.notificationService,
-      required this.contactsService,
-      required this.title,
-      required this.currentMonth})
+        required this.notificationService,
+        required this.contactsService,
+        required this.title,
+        required this.currentMonth})
       : super(key: key);
 
   final String title;
@@ -69,7 +69,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
         child: Text(AppLocalizations.of(context)!.ok));
     AlertDialog alertDialog = AlertDialog(
       title:
-          Text(AppLocalizations.of(context)!.updateSuccessfullyInstalledTitle),
+      Text(AppLocalizations.of(context)!.updateSuccessfullyInstalledTitle),
       content: Text(
           AppLocalizations.of(context)!.updateSuccessfullyInstalledDescription),
       actions: [alertDialogOkButton],
@@ -114,7 +114,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
     versionSpecificService = new VersionSpecificServiceImpl(
         storageService: context.read<StorageServiceSharedPreferences>(),
         notificationService: notificationService);
-    
+
     unawaited(_initializeServices());
 
     monthToPresent = widget.currentMonth;
@@ -131,6 +131,12 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
       await versionSpecificService.migrateNotificationStatus();
     } catch (e) {
       debugPrint("Failed to migrate notification status: $e");
+    }
+
+    try {
+      await versionSpecificService.migrateNotificationIds();
+    } catch (e) {
+      debugPrint("Failed to migrate notification IDs: $e");
     }
 
     if (!mounted) return;
@@ -152,7 +158,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
   Widget build(BuildContext context) {
     return BlocBuilder<ClearNotificationsBloc, bool>(
         builder: (context, state) {
-      return Scaffold(
+          return Scaffold(
               appBar: AppBar(
                 actions: [
                   IconButton(
@@ -162,9 +168,9 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
                     onPressed: () {
                       unawaited(Navigator.push(context,
                           MaterialPageRoute(builder: (context) {
-                        return SettingsScreen(
-                            contactsService: widget.contactsService);
-                      })).then((result) {}));
+                            return SettingsScreen(
+                                contactsService: widget.contactsService);
+                          })).then((result) {}));
                     },
                   )
                 ],
@@ -189,8 +195,8 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
                               new Text(
                                   BirthdayCalendarDateUtils
                                       .convertAndTranslateMonthNumber(
-                                          monthToPresent,
-                                          AppLocalizations.of(context)!),
+                                      monthToPresent,
+                                      AppLocalizations.of(context)!),
                                   style: new TextStyle(
                                       fontSize: 25.0,
                                       fontWeight: FontWeight.bold))
@@ -199,32 +205,32 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
                         ),
                         new Expanded(
                             child: new Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            new IconButton(
-                                icon: new Icon(Icons.chevron_left),
-                                onPressed: () {
-                                  _calculateNextMonthToShow(
-                                      AxisDirection.right);
-                                }),
-                            new Expanded(
-                              child: new CalendarWidget(
-                                  key: Key(monthToPresent.toString()),
-                                  currentMonth: monthToPresent,
-                                  notificationService:
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                new IconButton(
+                                    icon: new Icon(Icons.chevron_left),
+                                    onPressed: () {
+                                      _calculateNextMonthToShow(
+                                          AxisDirection.right);
+                                    }),
+                                new Expanded(
+                                  child: new CalendarWidget(
+                                      key: Key(monthToPresent.toString()),
+                                      currentMonth: monthToPresent,
+                                      notificationService:
                                       widget.notificationService),
-                            ),
-                            new IconButton(
-                                icon: new Icon(Icons.chevron_right),
-                                onPressed: () {
-                                  _calculateNextMonthToShow(AxisDirection.left);
-                                }),
-                          ],
-                        ))
+                                ),
+                                new IconButton(
+                                    icon: new Icon(Icons.chevron_right),
+                                    onPressed: () {
+                                      _calculateNextMonthToShow(AxisDirection.left);
+                                    }),
+                              ],
+                            ))
                       ],
                     )),
               ));
-    });
+        });
   }
 
   @override
@@ -242,7 +248,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
         List<UserBirthday> birthdays = await context
             .read<StorageServiceSharedPreferences>()
             .getBirthdaysForDate(birthday.birthdayDate, true);
-        
+
         if (!mounted) return;
 
         Navigator.push(
