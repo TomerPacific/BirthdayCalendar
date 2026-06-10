@@ -173,48 +173,57 @@ class NotificationServiceImpl extends NotificationService {
     }
   }
 
+  /// Returns a TZDateTime for the birthday's month/day in [year].
+  tz.TZDateTime _birthdayInYear(UserBirthday userBirthday, int year) {
+    return tz.TZDateTime(
+      tz.local,
+      year,
+      userBirthday.birthdayDate.month,
+      userBirthday.birthdayDate.day,
+    );
+  }
+
   Future<void> scheduleNotificationForBirthday(
       UserBirthday userBirthday, String notificationMessage) async {
-    DateTime now = DateTime.now();
-    DateTime birthdayDate = userBirthday.birthdayDate;
-    DateTime correctedBirthdayDate = birthdayDate;
+    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+    tz.TZDateTime nextOccurrence = _birthdayInYear(userBirthday, now.year);
 
-    if (birthdayDate.year < now.year) {
-      correctedBirthdayDate =
-      new DateTime(now.year, birthdayDate.month, birthdayDate.day);
-    }
+    // If today is the birthday, handle immediately; otherwise if this year's
+    // date has already passed, advance to next year.
+    final bool isToday = nextOccurrence.year == now.year &&
+        nextOccurrence.month == now.month &&
+        nextOccurrence.day == now.day;
 
-    Duration difference = now.isAfter(correctedBirthdayDate)
-        ? now.difference(correctedBirthdayDate)
-        : correctedBirthdayDate.difference(now);
-
-    bool didApplicationLaunchFromNotification =
-    await _wasApplicationLaunchedFromNotification();
-    if (didApplicationLaunchFromNotification && difference.inDays == 0) {
-      await _scheduleNotificationForNextYear(userBirthday, notificationMessage);
-      return;
-    } else if (!didApplicationLaunchFromNotification &&
-        difference.inDays == 0) {
-      await _showNotification(userBirthday, notificationMessage);
-      return;
+    if (isToday) {
+      bool didApplicationLaunchFromNotification =
+      await _wasApplicationLaunchedFromNotification();
+      if (didApplicationLaunchFromNotification) {
+        nextOccurrence = _birthdayInYear(userBirthday, now.year + 1);
+      } else {
+        await _showNotification(userBirthday, notificationMessage);
+        return;
+      }
+    } else if (now.isAfter(nextOccurrence)) {
+      nextOccurrence = _birthdayInYear(userBirthday, now.year + 1);
     }
 
     await _zonedScheduleWithFallback(
         id: userBirthday.notificationId,
         title: applicationName,
         body: notificationMessage,
-        scheduledDate: tz.TZDateTime.now(tz.local).add(difference),
+        scheduledDate: nextOccurrence,
         details: NotificationDetails(android: _createAndroidNotificationDetails()),
         payload: jsonEncode(userBirthday));
   }
 
   Future<void> _scheduleNotificationForNextYear(
       UserBirthday userBirthday, String notificationMessage) async {
+    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
     await _zonedScheduleWithFallback(
         id: userBirthday.notificationId,
         title: applicationName,
         body: notificationMessage,
-        scheduledDate: tz.TZDateTime.now(tz.local).add(new Duration(days: 365)),
+        scheduledDate: _birthdayInYear(userBirthday, now.year + 1),
         details: NotificationDetails(android: _createAndroidNotificationDetails()),
         payload: jsonEncode(userBirthday));
   }

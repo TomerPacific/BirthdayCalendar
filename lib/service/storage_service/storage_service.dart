@@ -31,6 +31,8 @@ abstract class StorageService {
 
   Future<void> updatePhoneNumberForBirthday(UserBirthday birthday);
 
+  Future<void> updateNotificationIdForBirthday(UserBirthday birthday);
+
   Future<void> setNotificationPermissionState(
       NotificationPermissionState state);
 

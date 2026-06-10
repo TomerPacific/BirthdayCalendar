@@ -209,6 +209,20 @@ class StorageServiceSharedPreferences extends StorageService {
   }
 
   @override
+  Future<void> updateNotificationIdForBirthday(UserBirthday birthday) async {
+    // Replace the stored entry with one that carries the new notificationId.
+    // Matched by name+day so the deterministic ID from the caller is persisted.
+    List<UserBirthday> birthdays =
+    await getBirthdaysForDate(birthday.birthdayDate, false);
+    final int index =
+    birthdays.indexWhere((element) => element.equals(birthday));
+    if (index != -1) {
+      birthdays[index] = birthday;
+      await saveBirthdaysForDate(birthday.birthdayDate, birthdays);
+    }
+  }
+
+  @override
   Future<void> setNotificationPermissionState(
       NotificationPermissionState state) async {
     final prefs = await SharedPreferences.getInstance();

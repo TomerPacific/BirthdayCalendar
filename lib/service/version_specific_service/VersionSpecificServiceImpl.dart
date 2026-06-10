@@ -67,24 +67,37 @@ class VersionSpecificServiceImpl extends VersionSpecificService {
     // now using the deterministic ID computed by UserBirthday._deterministicId.
     // Errors are caught per-item so a single failure doesn't leave all other
     // birthdays without notifications.
+    // Rebuild each birthday without its stored notificationId so _deterministicId
+    // is used, then re-save to storage so the new stable ID is persisted.
     bool allSucceeded = true;
     List<UserBirthday> allBirthdays = await storageService.getAllBirthdays();
     for (UserBirthday birthday in allBirthdays) {
-      if (birthday.hasNotification) {
-        try {
+      final migratedBirthday = UserBirthday(
+        birthday.name,
+        birthday.birthdayDate,
+        birthday.hasNotification,
+        birthday.phoneNumber,
+        // notificationId omitted — forces recomputation via _deterministicId
+      );
+
+      try {
+        // Re-save so the persisted JSON carries the new deterministic ID.
+        await storageService.updateNotificationIdForBirthday(migratedBirthday);
+
+        if (migratedBirthday.hasNotification) {
           await notificationService.scheduleNotificationForBirthday(
-            birthday,
-            messageBuilder(birthday.name),
+            migratedBirthday,
+            messageBuilder(migratedBirthday.name),
           );
-        } catch (e) {
-          allSucceeded = false;
-          debugPrint('Failed to reschedule notification for ${birthday.name}: $e');
         }
+      } catch (e) {
+        allSucceeded = false;
+        debugPrint('Failed to migrate birthday ${birthday.name}: $e');
       }
     }
 
-    // Only mark migration complete if every notification was rescheduled
-    // successfully, so a partial failure retries on the next launch.
+    // Only mark migration complete if every birthday was migrated successfully,
+    // so a partial failure retries on the next launch.
     if (allSucceeded) {
       await storageService.saveDidAlreadyMigrateNotificationIds(true);
     }
