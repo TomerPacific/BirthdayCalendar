@@ -5,6 +5,7 @@ import 'package:birthday_calendar/service/permission_service/permissions_service
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:birthday_calendar/utils.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'notification_service.dart';
@@ -31,26 +32,26 @@ class NotificationServiceImpl extends NotificationService {
   final StorageService storageService;
 
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
+  FlutterLocalNotificationsPlugin();
   final StreamController<String?> selectNotificationStream =
-      StreamController<String?>.broadcast();
+  StreamController<String?>.broadcast();
   List<NotificationCallbacks> selectNotificationStreamListeners = [];
 
   Future<void> init(BuildContext context) async {
     tz.initializeTimeZones();
 
     final AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('app_icon');
+    AndroidInitializationSettings('app_icon');
 
     final InitializationSettings initializationSettings =
-        InitializationSettings(android: initializationSettingsAndroid);
+    InitializationSettings(android: initializationSettingsAndroid);
 
     await _initializeLocalNotificationsPlugin(initializationSettings, context);
 
     AndroidFlutterLocalNotificationsPlugin?
-        androidFlutterLocalNotificationsPlugin =
-        flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>();
+    androidFlutterLocalNotificationsPlugin =
+    flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>();
 
     final channel = AndroidNotificationChannel(
       channel_id,
@@ -123,17 +124,17 @@ class NotificationServiceImpl extends NotificationService {
     await flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onDidReceiveNotificationResponse:
             (NotificationResponse notificationResponse) {
-      switch (notificationResponse.notificationResponseType) {
-        case NotificationResponseType.selectedNotification:
-          selectNotificationStream.add(notificationResponse.payload);
-          break;
-        case NotificationResponseType.selectedNotificationAction:
-          if (notificationResponse.actionId == navigationActionId) {
-            selectNotificationStream.add(notificationResponse.payload);
+          switch (notificationResponse.notificationResponseType) {
+            case NotificationResponseType.selectedNotification:
+              selectNotificationStream.add(notificationResponse.payload);
+              break;
+            case NotificationResponseType.selectedNotificationAction:
+              if (notificationResponse.actionId == navigationActionId) {
+                selectNotificationStream.add(notificationResponse.payload);
+              }
+              break;
           }
-          break;
-      }
-    });
+        });
     await _handleApplicationWasLaunchedFromNotification(context);
   }
 
@@ -147,6 +148,31 @@ class NotificationServiceImpl extends NotificationService {
         payload: jsonEncode(userBirthday));
   }
 
+  Future<void> _zonedScheduleWithFallback({
+    required int id,
+    required String title,
+    required String body,
+    required tz.TZDateTime scheduledDate,
+    required NotificationDetails details,
+    required String payload,
+  }) async {
+    try {
+      await flutterLocalNotificationsPlugin.zonedSchedule(
+          id, title, body, scheduledDate, details,
+          payload: payload,
+          androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle);
+    } on PlatformException catch (e) {
+      if (e.code == 'exact_alarms_not_permitted') {
+        await flutterLocalNotificationsPlugin.zonedSchedule(
+            id, title, body, scheduledDate, details,
+            payload: payload,
+            androidScheduleMode: AndroidScheduleMode.inexact);
+      } else {
+        rethrow;
+      }
+    }
+  }
+
   Future<void> scheduleNotificationForBirthday(
       UserBirthday userBirthday, String notificationMessage) async {
     DateTime now = DateTime.now();
@@ -155,7 +181,7 @@ class NotificationServiceImpl extends NotificationService {
 
     if (birthdayDate.year < now.year) {
       correctedBirthdayDate =
-          new DateTime(now.year, birthdayDate.month, birthdayDate.day);
+      new DateTime(now.year, birthdayDate.month, birthdayDate.day);
     }
 
     Duration difference = now.isAfter(correctedBirthdayDate)
@@ -163,7 +189,7 @@ class NotificationServiceImpl extends NotificationService {
         : correctedBirthdayDate.difference(now);
 
     bool didApplicationLaunchFromNotification =
-        await _wasApplicationLaunchedFromNotification();
+    await _wasApplicationLaunchedFromNotification();
     if (didApplicationLaunchFromNotification && difference.inDays == 0) {
       await _scheduleNotificationForNextYear(userBirthday, notificationMessage);
       return;
@@ -173,26 +199,24 @@ class NotificationServiceImpl extends NotificationService {
       return;
     }
 
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-        userBirthday.notificationId,
-        applicationName,
-        notificationMessage,
-        tz.TZDateTime.now(tz.local).add(difference),
-        NotificationDetails(android: _createAndroidNotificationDetails()),
-        payload: jsonEncode(userBirthday),
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle);
+    await _zonedScheduleWithFallback(
+        id: userBirthday.notificationId,
+        title: applicationName,
+        body: notificationMessage,
+        scheduledDate: tz.TZDateTime.now(tz.local).add(difference),
+        details: NotificationDetails(android: _createAndroidNotificationDetails()),
+        payload: jsonEncode(userBirthday));
   }
 
   Future<void> _scheduleNotificationForNextYear(
       UserBirthday userBirthday, String notificationMessage) async {
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-        userBirthday.notificationId,
-        applicationName,
-        notificationMessage,
-        tz.TZDateTime.now(tz.local).add(new Duration(days: 365)),
-        NotificationDetails(android: _createAndroidNotificationDetails()),
-        payload: jsonEncode(userBirthday),
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle);
+    await _zonedScheduleWithFallback(
+        id: userBirthday.notificationId,
+        title: applicationName,
+        body: notificationMessage,
+        scheduledDate: tz.TZDateTime.now(tz.local).add(new Duration(days: 365)),
+        details: NotificationDetails(android: _createAndroidNotificationDetails()),
+        payload: jsonEncode(userBirthday));
   }
 
   Future<void> cancelNotificationForBirthday(UserBirthday birthday) async {
@@ -206,7 +230,7 @@ class NotificationServiceImpl extends NotificationService {
   Future<void> _handleApplicationWasLaunchedFromNotification(
       BuildContext context) async {
     final NotificationAppLaunchDetails? notificationAppLaunchDetails =
-        await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+    await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
     if (notificationAppLaunchDetails != null &&
         notificationAppLaunchDetails.didNotificationLaunchApp) {
       NotificationResponse? notificationResponse =
@@ -221,7 +245,7 @@ class NotificationServiceImpl extends NotificationService {
 
   Future<bool> _wasApplicationLaunchedFromNotification() async {
     NotificationAppLaunchDetails? notificationAppLaunchDetails =
-        await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+    await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
 
     if (notificationAppLaunchDetails != null) {
       return notificationAppLaunchDetails.didNotificationLaunchApp;
@@ -243,9 +267,9 @@ class NotificationServiceImpl extends NotificationService {
   }
 
   Future<List<PendingNotificationRequest>>
-      getAllScheduledNotifications() async {
+  getAllScheduledNotifications() async {
     List<PendingNotificationRequest> pendingNotifications =
-        await flutterLocalNotificationsPlugin.pendingNotificationRequests();
+    await flutterLocalNotificationsPlugin.pendingNotificationRequests();
     return pendingNotifications;
   }
 

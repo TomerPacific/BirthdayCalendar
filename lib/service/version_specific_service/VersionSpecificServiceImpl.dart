@@ -6,6 +6,7 @@ import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:birthday_calendar/constants.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter/foundation.dart';
 import 'dart:convert';
 import 'package:collection/collection.dart';
 
@@ -52,7 +53,7 @@ class VersionSpecificServiceImpl extends VersionSpecificService {
   }
 
   @override
-  Future<void> migrateNotificationIds() async {
+  Future<void> migrateNotificationIds(String Function(String name) messageBuilder) async {
     bool didAlreadyMigrate = await storageService.getAlreadyMigratedNotificationIds();
     if (didAlreadyMigrate) {
       return;
@@ -64,17 +65,29 @@ class VersionSpecificServiceImpl extends VersionSpecificService {
 
     // Reschedule notifications for every birthday that had one enabled,
     // now using the deterministic ID computed by UserBirthday._deterministicId.
+    // Errors are caught per-item so a single failure doesn't leave all other
+    // birthdays without notifications.
+    bool allSucceeded = true;
     List<UserBirthday> allBirthdays = await storageService.getAllBirthdays();
     for (UserBirthday birthday in allBirthdays) {
       if (birthday.hasNotification) {
-        await notificationService.scheduleNotificationForBirthday(
-          birthday,
-          birthday.name,
-        );
+        try {
+          await notificationService.scheduleNotificationForBirthday(
+            birthday,
+            messageBuilder(birthday.name),
+          );
+        } catch (e) {
+          allSucceeded = false;
+          debugPrint('Failed to reschedule notification for ${birthday.name}: $e');
+        }
       }
     }
 
-    await storageService.saveDidAlreadyMigrateNotificationIds(true);
+    // Only mark migration complete if every notification was rescheduled
+    // successfully, so a partial failure retries on the next launch.
+    if (allSucceeded) {
+      await storageService.saveDidAlreadyMigrateNotificationIds(true);
+    }
   }
 
   bool _isVersionGreaterThan(String newVersion, String currentVersion){
