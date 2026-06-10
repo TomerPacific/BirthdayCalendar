@@ -32,33 +32,38 @@ class UserBirthday {
     this.hasNotification = status;
   }
 
+  static bool _sameDay(DateTime a, DateTime b) =>
+      a.month == b.month && a.day == b.day;
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
           other is UserBirthday &&
               runtimeType == other.runtimeType &&
               name == other.name &&
-              birthdayDate == other.birthdayDate;
+              _sameDay(birthdayDate, other.birthdayDate);
 
   @override
-  int get hashCode => name.hashCode ^ birthdayDate.hashCode;
+  int get hashCode => name.hashCode ^ birthdayDate.month ^ birthdayDate.day;
 
   bool equals(UserBirthday otherBirthday) {
-    return (this.name == otherBirthday.name &&
-        this.birthdayDate == otherBirthday.birthdayDate);
+    return this.name == otherBirthday.name &&
+        _sameDay(this.birthdayDate, otherBirthday.birthdayDate);
   }
 
-  UserBirthday.fromJson(Map<String, dynamic> json)
-      : name = json[userBirthdayNameKey],
-        birthdayDate =
-            DateTime.tryParse(json[userBirthdayDateKey]) ?? DateTime.now(),
-        hasNotification = json[userBirthdayHasNotificationKey],
-        phoneNumber = json[userBirthdayPhoneNumberKey],
-        notificationId = json[userBirthdayNotificationIdKey] ??
-            _deterministicId(
-              json[userBirthdayNameKey] as String,
-              DateTime.tryParse(json[userBirthdayDateKey]) ?? DateTime.now(),
-            );
+  factory UserBirthday.fromJson(Map<String, dynamic> json) {
+    final parsedDate =
+        DateTime.tryParse(json[userBirthdayDateKey] as String? ?? '') ??
+            DateTime.now();
+    return UserBirthday(
+      json[userBirthdayNameKey] as String,
+      parsedDate,
+      json[userBirthdayHasNotificationKey] as bool,
+      json[userBirthdayPhoneNumberKey] as String,
+      notificationId: json[userBirthdayNotificationIdKey] as int? ??
+          _deterministicId(json[userBirthdayNameKey] as String, parsedDate),
+    );
+  }
 
   Map<String, dynamic> toJson() => {
     userBirthdayNameKey: name,
