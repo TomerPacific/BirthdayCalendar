@@ -133,18 +133,22 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
       debugPrint("Failed to migrate notification status: $e");
     }
 
-    try {
-      await versionSpecificService.migrateNotificationIds();
-    } catch (e) {
-      debugPrint("Failed to migrate notification IDs: $e");
-    }
-
     if (!mounted) return;
 
     try {
       await widget.notificationService.init(context);
     } catch (e) {
       debugPrint("Failed to initialize notification service: $e");
+    }
+
+    if (!mounted) return;
+
+    try {
+      await versionSpecificService.migrateNotificationIds(
+            (name) => AppLocalizations.of(context)!.notificationForBirthdayMessage(name),
+      );
+    } catch (e) {
+      debugPrint("Failed to migrate notification IDs: $e");
     }
   }
 
