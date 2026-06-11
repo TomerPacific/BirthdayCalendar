@@ -196,12 +196,12 @@ class NotificationServiceImpl extends NotificationService {
     if (isToday) {
       bool didApplicationLaunchFromNotification =
           await _wasApplicationLaunchedFromNotification();
-      if (didApplicationLaunchFromNotification) {
-        nextOccurrence = _birthdayInYear(userBirthday, now.year + 1);
-      } else {
+      if (!didApplicationLaunchFromNotification) {
+        // Show the notification immediately for today's birthday, then fall
+        // through to schedule next year's occurrence below.
         await _showNotification(userBirthday, notificationMessage);
-        return;
       }
+      nextOccurrence = _birthdayInYear(userBirthday, now.year + 1);
     } else if (now.isAfter(nextOccurrence)) {
       nextOccurrence = _birthdayInYear(userBirthday, now.year + 1);
     }

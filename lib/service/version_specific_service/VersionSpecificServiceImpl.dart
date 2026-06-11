@@ -1,4 +1,3 @@
-
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'VersionSpecificService.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
@@ -11,39 +10,41 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 
 class VersionSpecificServiceImpl extends VersionSpecificService {
-
-  VersionSpecificServiceImpl({
-    required this.storageService,
-    required this.notificationService
-  });
+  VersionSpecificServiceImpl(
+      {required this.storageService, required this.notificationService});
 
   final StorageService storageService;
   final NotificationService notificationService;
 
-
   @override
   Future<void> migrateNotificationStatus() async {
-
-    bool didAlreadyMigrateNotificationStatus = await storageService.getAlreadyMigrateNotificationStatus();
+    bool didAlreadyMigrateNotificationStatus =
+        await storageService.getAlreadyMigrateNotificationStatus();
     if (didAlreadyMigrateNotificationStatus) {
       return;
     }
 
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    if (_isVersionGreaterThan(packageInfo.version, versionToMigrateNotificationStatusFrom)) {
-      List<PendingNotificationRequest> pendingNotifications = await notificationService.getAllScheduledNotifications();
-      for(PendingNotificationRequest request in pendingNotifications) {
+    if (_isVersionGreaterThan(
+        packageInfo.version, versionToMigrateNotificationStatusFrom)) {
+      List<PendingNotificationRequest> pendingNotifications =
+          await notificationService.getAllScheduledNotifications();
+      for (PendingNotificationRequest request in pendingNotifications) {
         if (request.payload != null) {
           String payload = request.payload!;
-          UserBirthday userBirthday = UserBirthday.fromJson(jsonDecode(payload));
+          UserBirthday userBirthday =
+              UserBirthday.fromJson(jsonDecode(payload));
           if (!userBirthday.hasNotification) {
-            List<UserBirthday> birthdays = await storageService.getBirthdaysForDate(userBirthday.birthdayDate, false);
-            UserBirthday? found = birthdays.firstWhereOrNull((element) => element.equals(userBirthday));
+            List<UserBirthday> birthdays = await storageService
+                .getBirthdaysForDate(userBirthday.birthdayDate, false);
+            UserBirthday? found = birthdays
+                .firstWhereOrNull((element) => element.equals(userBirthday));
             if (found != null) {
               birthdays.remove(found);
               userBirthday.updateNotificationStatus(true);
               birthdays.add(userBirthday);
-              await storageService.saveBirthdaysForDate(userBirthday.birthdayDate, birthdays);
+              await storageService.saveBirthdaysForDate(
+                  userBirthday.birthdayDate, birthdays);
             }
           }
         }
@@ -53,24 +54,27 @@ class VersionSpecificServiceImpl extends VersionSpecificService {
   }
 
   @override
-  Future<void> migrateNotificationIds(String Function(String name) messageBuilder) async {
-    bool didAlreadyMigrate = await storageService.getAlreadyMigratedNotificationIds();
+  Future<void> migrateNotificationIds(
+      String Function(String name) messageBuilder) async {
+    bool didAlreadyMigrate =
+        await storageService.getAlreadyMigratedNotificationIds();
     if (didAlreadyMigrate) {
       return;
     }
 
-    // Cancel all notifications — they were scheduled under unstable hashCode-based
-    // IDs and can no longer be reliably cancelled or matched.
+    // Load birthdays first — if this throws, we haven't cancelled anything yet
+    // and the user's existing notifications remain intact.
+    List<UserBirthday> allBirthdays = await storageService.getAllBirthdays();
+
+    // Now safe to cancel: we have the full birthday list and can reschedule.
+    // Notifications were scheduled under unstable hashCode-based IDs and can
+    // no longer be reliably cancelled or matched individually.
     await notificationService.cancelAllNotifications();
 
-    // Reschedule notifications for every birthday that had one enabled,
-    // now using the deterministic ID computed by UserBirthday._deterministicId.
+    // Reschedule each birthday with a new deterministic ID.
     // Errors are caught per-item so a single failure doesn't leave all other
     // birthdays without notifications.
-    // Rebuild each birthday without its stored notificationId so _deterministicId
-    // is used, then re-save to storage so the new stable ID is persisted.
     bool allSucceeded = true;
-    List<UserBirthday> allBirthdays = await storageService.getAllBirthdays();
     for (UserBirthday birthday in allBirthdays) {
       final migratedBirthday = UserBirthday(
         birthday.name,
@@ -103,17 +107,17 @@ class VersionSpecificServiceImpl extends VersionSpecificService {
     }
   }
 
-  bool _isVersionGreaterThan(String newVersion, String currentVersion){
+  bool _isVersionGreaterThan(String newVersion, String currentVersion) {
     List<String> currentVersionSplit = currentVersion.split(".");
     List<String> newVersionSplit = newVersion.split(".");
     bool isNewVersionGreaterThanCurrentVersion = false;
-    for (var i = 0 ; i < currentVersionSplit.length; i++){
-      isNewVersionGreaterThanCurrentVersion = int.parse(newVersionSplit[i]) > int.parse(currentVersionSplit[i]);
-      if(int.parse(newVersionSplit[i]) != int.parse(currentVersionSplit[i])) {
+    for (var i = 0; i < currentVersionSplit.length; i++) {
+      isNewVersionGreaterThanCurrentVersion =
+          int.parse(newVersionSplit[i]) > int.parse(currentVersionSplit[i]);
+      if (int.parse(newVersionSplit[i]) != int.parse(currentVersionSplit[i])) {
         break;
       }
     }
     return isNewVersionGreaterThanCurrentVersion;
   }
-
 }
