@@ -144,8 +144,12 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
     if (!mounted) return;
 
     try {
+      // Capture the localizations instance synchronously before crossing any
+      // await boundary — using context after an await is unsafe if the widget
+      // has been unmounted or the localization scope has changed.
+      final localizations = AppLocalizations.of(context)!;
       await versionSpecificService.migrateNotificationIds(
-            (name) => AppLocalizations.of(context)!.notificationForBirthdayMessage(name),
+            (name) => localizations.notificationForBirthdayMessage(name),
       );
     } catch (e) {
       debugPrint("Failed to migrate notification IDs: $e");
