@@ -32,26 +32,26 @@ class NotificationServiceImpl extends NotificationService {
   final StorageService storageService;
 
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
+      FlutterLocalNotificationsPlugin();
   final StreamController<String?> selectNotificationStream =
-  StreamController<String?>.broadcast();
+      StreamController<String?>.broadcast();
   List<NotificationCallbacks> selectNotificationStreamListeners = [];
 
   Future<void> init(BuildContext context) async {
     tz.initializeTimeZones();
 
     final AndroidInitializationSettings initializationSettingsAndroid =
-    AndroidInitializationSettings('app_icon');
+        AndroidInitializationSettings('app_icon');
 
     final InitializationSettings initializationSettings =
-    InitializationSettings(android: initializationSettingsAndroid);
+        InitializationSettings(android: initializationSettingsAndroid);
 
     await _initializeLocalNotificationsPlugin(initializationSettings, context);
 
     AndroidFlutterLocalNotificationsPlugin?
-    androidFlutterLocalNotificationsPlugin =
-    flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>();
+        androidFlutterLocalNotificationsPlugin =
+        flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
 
     final channel = AndroidNotificationChannel(
       channel_id,
@@ -124,17 +124,17 @@ class NotificationServiceImpl extends NotificationService {
     await flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onDidReceiveNotificationResponse:
             (NotificationResponse notificationResponse) {
-          switch (notificationResponse.notificationResponseType) {
-            case NotificationResponseType.selectedNotification:
-              selectNotificationStream.add(notificationResponse.payload);
-              break;
-            case NotificationResponseType.selectedNotificationAction:
-              if (notificationResponse.actionId == navigationActionId) {
-                selectNotificationStream.add(notificationResponse.payload);
-              }
-              break;
+      switch (notificationResponse.notificationResponseType) {
+        case NotificationResponseType.selectedNotification:
+          selectNotificationStream.add(notificationResponse.payload);
+          break;
+        case NotificationResponseType.selectedNotificationAction:
+          if (notificationResponse.actionId == navigationActionId) {
+            selectNotificationStream.add(notificationResponse.payload);
           }
-        });
+          break;
+      }
+    });
     await _handleApplicationWasLaunchedFromNotification(context);
   }
 
@@ -165,8 +165,7 @@ class NotificationServiceImpl extends NotificationService {
       if (e.code == 'exact_alarms_not_permitted') {
         await flutterLocalNotificationsPlugin.zonedSchedule(
             id, title, body, scheduledDate, details,
-            payload: payload,
-            androidScheduleMode: AndroidScheduleMode.inexact);
+            payload: payload, androidScheduleMode: AndroidScheduleMode.inexact);
       } else {
         rethrow;
       }
@@ -196,7 +195,7 @@ class NotificationServiceImpl extends NotificationService {
 
     if (isToday) {
       bool didApplicationLaunchFromNotification =
-      await _wasApplicationLaunchedFromNotification();
+          await _wasApplicationLaunchedFromNotification();
       if (didApplicationLaunchFromNotification) {
         nextOccurrence = _birthdayInYear(userBirthday, now.year + 1);
       } else {
@@ -212,7 +211,8 @@ class NotificationServiceImpl extends NotificationService {
         title: applicationName,
         body: notificationMessage,
         scheduledDate: nextOccurrence,
-        details: NotificationDetails(android: _createAndroidNotificationDetails()),
+        details:
+            NotificationDetails(android: _createAndroidNotificationDetails()),
         payload: jsonEncode(userBirthday));
   }
 
@@ -227,7 +227,7 @@ class NotificationServiceImpl extends NotificationService {
   Future<void> _handleApplicationWasLaunchedFromNotification(
       BuildContext context) async {
     final NotificationAppLaunchDetails? notificationAppLaunchDetails =
-    await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+        await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
     if (notificationAppLaunchDetails != null &&
         notificationAppLaunchDetails.didNotificationLaunchApp) {
       NotificationResponse? notificationResponse =
@@ -242,7 +242,7 @@ class NotificationServiceImpl extends NotificationService {
 
   Future<bool> _wasApplicationLaunchedFromNotification() async {
     NotificationAppLaunchDetails? notificationAppLaunchDetails =
-    await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+        await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
 
     if (notificationAppLaunchDetails != null) {
       return notificationAppLaunchDetails.didNotificationLaunchApp;
@@ -264,9 +264,9 @@ class NotificationServiceImpl extends NotificationService {
   }
 
   Future<List<PendingNotificationRequest>>
-  getAllScheduledNotifications() async {
+      getAllScheduledNotifications() async {
     List<PendingNotificationRequest> pendingNotifications =
-    await flutterLocalNotificationsPlugin.pendingNotificationRequests();
+        await flutterLocalNotificationsPlugin.pendingNotificationRequests();
     return pendingNotifications;
   }
 
@@ -300,7 +300,8 @@ class NotificationServiceImpl extends NotificationService {
 
   Future<void> _setupSubscription(BuildContext context) async {
     await _selectSubscription?.cancel();
-    _selectSubscription = selectNotificationStream.stream.listen((payload) async {
+    _selectSubscription =
+        selectNotificationStream.stream.listen((payload) async {
       await _rescheduleNotificationFromPayload(payload, context);
       for (var listener in selectNotificationStreamListeners) {
         listener.onNotificationSelected(payload);

@@ -10,7 +10,7 @@ import 'package:collection/collection.dart';
 
 class StorageServiceSharedPreferences extends StorageService {
   StreamController<List<UserBirthday>> streamController =
-  StreamController<List<UserBirthday>>.broadcast();
+      StreamController<List<UserBirthday>>.broadcast();
 
   @override
   Future<void> clearAllBirthdays() async {
@@ -31,10 +31,10 @@ class StorageServiceSharedPreferences extends StorageService {
     if (shouldGetBirthdaysFromSimilarDate) {
       List<UserBirthday> birthdays = [];
       List<DateTime> birthdaysWithSimilarDates =
-      await _getBirthdaysWithSimilarDate(dateTime);
+          await _getBirthdaysWithSimilarDate(dateTime);
       for (DateTime dateTime in birthdaysWithSimilarDates) {
         List<UserBirthday> decodedBirthdays =
-        await _decodeBirthdaysFromDate(dateTime);
+            await _decodeBirthdaysFromDate(dateTime);
         birthdays.addAll(decodedBirthdays);
       }
 
@@ -42,7 +42,7 @@ class StorageServiceSharedPreferences extends StorageService {
     }
 
     List<UserBirthday> decodedBirthdays =
-    await _decodeBirthdaysFromDate(dateTime);
+        await _decodeBirthdaysFromDate(dateTime);
     return decodedBirthdays;
   }
 
@@ -50,7 +50,7 @@ class StorageServiceSharedPreferences extends StorageService {
     final sharedPreferences = await SharedPreferences.getInstance();
 
     String formattedDate =
-    BirthdayCalendarDateUtils.formatDateForSharedPrefs(dateTime);
+        BirthdayCalendarDateUtils.formatDateForSharedPrefs(dateTime);
     String? birthdaysJSON = sharedPreferences.getString(formattedDate);
     if (birthdaysJSON != null) {
       List decodedBirthdaysForDate = jsonDecode(birthdaysJSON);
@@ -95,7 +95,7 @@ class StorageServiceSharedPreferences extends StorageService {
     final sharedPreferences = await SharedPreferences.getInstance();
     String encoded = jsonEncode(birthdays);
     String formattedDate =
-    BirthdayCalendarDateUtils.formatDateForSharedPrefs(dateTime);
+        BirthdayCalendarDateUtils.formatDateForSharedPrefs(dateTime);
     await sharedPreferences.setString(formattedDate, encoded);
 
     streamController.sink.add(birthdays);
@@ -111,7 +111,7 @@ class StorageServiceSharedPreferences extends StorageService {
   Future<void> updateNotificationStatusForBirthday(
       UserBirthday userBirthday, bool updatedStatus) async {
     List<UserBirthday> birthdays =
-    await getBirthdaysForDate(userBirthday.birthdayDate, false);
+        await getBirthdaysForDate(userBirthday.birthdayDate, false);
     for (int i = 0; i < birthdays.length; i++) {
       UserBirthday savedBirthday = birthdays[i];
       if (savedBirthday.equals(userBirthday)) {
@@ -131,28 +131,30 @@ class StorageServiceSharedPreferences extends StorageService {
   Future<void> saveIsContactsPermissionPermanentlyDenied(
       bool isPermanentlyDenied) async {
     final sharedPreferences = await SharedPreferences.getInstance();
-    await sharedPreferences.setBool(contactsPermissionStatusKey, isPermanentlyDenied);
+    await sharedPreferences.setBool(
+        contactsPermissionStatusKey, isPermanentlyDenied);
   }
 
   @override
   Future<bool> getIsContactPermissionPermanentlyDenied() async {
     final sharedPreferences = await SharedPreferences.getInstance();
     bool? isPermanentlyDenied =
-    sharedPreferences.getBool(contactsPermissionStatusKey);
+        sharedPreferences.getBool(contactsPermissionStatusKey);
     return isPermanentlyDenied != null ? isPermanentlyDenied : false;
   }
 
   @override
   Future<void> saveDidAlreadyMigrateNotificationStatus(bool status) async {
     final sharedPreferences = await SharedPreferences.getInstance();
-    await sharedPreferences.setBool(didAlreadyMigrateNotificationStatusFlag, status);
+    await sharedPreferences.setBool(
+        didAlreadyMigrateNotificationStatusFlag, status);
   }
 
   @override
   Future<bool> getAlreadyMigrateNotificationStatus() async {
     final sharedPreferences = await SharedPreferences.getInstance();
     bool? hasAlreadyMigratedNotificationStatus =
-    sharedPreferences.getBool(didAlreadyMigrateNotificationStatusFlag);
+        sharedPreferences.getBool(didAlreadyMigrateNotificationStatusFlag);
     return hasAlreadyMigratedNotificationStatus != null
         ? hasAlreadyMigratedNotificationStatus
         : false;
@@ -161,14 +163,15 @@ class StorageServiceSharedPreferences extends StorageService {
   @override
   Future<void> saveDidAlreadyMigrateNotificationIds(bool status) async {
     final sharedPreferences = await SharedPreferences.getInstance();
-    await sharedPreferences.setBool(didAlreadyMigrateNotificationIdsFlag, status);
+    await sharedPreferences.setBool(
+        didAlreadyMigrateNotificationIdsFlag, status);
   }
 
   @override
   Future<bool> getAlreadyMigratedNotificationIds() async {
     final sharedPreferences = await SharedPreferences.getInstance();
     bool? hasAlreadyMigrated =
-    sharedPreferences.getBool(didAlreadyMigrateNotificationIdsFlag);
+        sharedPreferences.getBool(didAlreadyMigrateNotificationIdsFlag);
     return hasAlreadyMigrated ?? false;
   }
 
@@ -199,9 +202,9 @@ class StorageServiceSharedPreferences extends StorageService {
   @override
   Future<void> updatePhoneNumberForBirthday(UserBirthday birthday) async {
     List<UserBirthday> birthdays =
-    await getBirthdaysForDate(birthday.birthdayDate, false);
+        await getBirthdaysForDate(birthday.birthdayDate, false);
     UserBirthday? storedBirthday =
-    birthdays.firstWhereOrNull((element) => element.name == birthday.name);
+        birthdays.firstWhereOrNull((element) => element.name == birthday.name);
     if (storedBirthday != null) {
       storedBirthday.phoneNumber = birthday.phoneNumber;
       await saveBirthdaysForDate(storedBirthday.birthdayDate, birthdays);
@@ -213,9 +216,9 @@ class StorageServiceSharedPreferences extends StorageService {
     // Replace the stored entry with one that carries the new notificationId.
     // Matched by name+month+day so the deterministic ID from the caller is persisted.
     List<UserBirthday> birthdays =
-    await getBirthdaysForDate(birthday.birthdayDate, false);
+        await getBirthdaysForDate(birthday.birthdayDate, false);
     final int index =
-    birthdays.indexWhere((element) => element.equals(birthday));
+        birthdays.indexWhere((element) => element.equals(birthday));
     if (index != -1) {
       birthdays[index] = birthday;
       await saveBirthdaysForDate(birthday.birthdayDate, birthdays);
