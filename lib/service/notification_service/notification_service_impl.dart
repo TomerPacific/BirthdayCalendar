@@ -216,18 +216,6 @@ class NotificationServiceImpl extends NotificationService {
         payload: jsonEncode(userBirthday));
   }
 
-  Future<void> _scheduleNotificationForNextYear(
-      UserBirthday userBirthday, String notificationMessage) async {
-    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-    await _zonedScheduleWithFallback(
-        id: userBirthday.notificationId,
-        title: applicationName,
-        body: notificationMessage,
-        scheduledDate: _birthdayInYear(userBirthday, now.year + 1),
-        details: NotificationDetails(android: _createAndroidNotificationDetails()),
-        payload: jsonEncode(userBirthday));
-  }
-
   Future<void> cancelNotificationForBirthday(UserBirthday birthday) async {
     await flutterLocalNotificationsPlugin.cancel(birthday.notificationId);
   }
