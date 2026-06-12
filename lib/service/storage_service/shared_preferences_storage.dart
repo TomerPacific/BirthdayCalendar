@@ -131,7 +131,8 @@ class StorageServiceSharedPreferences extends StorageService {
   Future<void> saveIsContactsPermissionPermanentlyDenied(
       bool isPermanentlyDenied) async {
     final sharedPreferences = await SharedPreferences.getInstance();
-    await sharedPreferences.setBool(contactsPermissionStatusKey, isPermanentlyDenied);
+    await sharedPreferences.setBool(
+        contactsPermissionStatusKey, isPermanentlyDenied);
   }
 
   @override
@@ -145,7 +146,8 @@ class StorageServiceSharedPreferences extends StorageService {
   @override
   Future<void> saveDidAlreadyMigrateNotificationStatus(bool status) async {
     final sharedPreferences = await SharedPreferences.getInstance();
-    await sharedPreferences.setBool(didAlreadyMigrateNotificationStatusFlag, status);
+    await sharedPreferences.setBool(
+        didAlreadyMigrateNotificationStatusFlag, status);
   }
 
   @override
@@ -156,6 +158,21 @@ class StorageServiceSharedPreferences extends StorageService {
     return hasAlreadyMigratedNotificationStatus != null
         ? hasAlreadyMigratedNotificationStatus
         : false;
+  }
+
+  @override
+  Future<void> saveDidAlreadyMigrateNotificationIds(bool status) async {
+    final sharedPreferences = await SharedPreferences.getInstance();
+    await sharedPreferences.setBool(
+        didAlreadyMigrateNotificationIdsFlag, status);
+  }
+
+  @override
+  Future<bool> getAlreadyMigrateNotificationIds() async {
+    final sharedPreferences = await SharedPreferences.getInstance();
+    bool? hasAlreadyMigrated =
+        sharedPreferences.getBool(didAlreadyMigrateNotificationIdsFlag);
+    return hasAlreadyMigrated ?? false;
   }
 
   @override
@@ -192,6 +209,24 @@ class StorageServiceSharedPreferences extends StorageService {
       storedBirthday.phoneNumber = birthday.phoneNumber;
       await saveBirthdaysForDate(storedBirthday.birthdayDate, birthdays);
     }
+  }
+
+  @override
+  Future<void> updateNotificationIdForBirthday(UserBirthday birthday) async {
+    // Replace the stored entry with one that carries the new notificationId.
+    // Matched by name+month+day so the deterministic ID from the caller is persisted.
+    List<UserBirthday> birthdays =
+        await getBirthdaysForDate(birthday.birthdayDate, false);
+    final int index =
+        birthdays.indexWhere((element) => element.equals(birthday));
+    if (index == -1) {
+      throw StateError(
+          'updateNotificationIdForBirthday: no stored entry found for '
+          '${birthday.name} on ${birthday.birthdayDate.toIso8601String()}. '
+          'Storage may be corrupted or out of sync.');
+    }
+    birthdays[index] = birthday;
+    await saveBirthdaysForDate(birthday.birthdayDate, birthdays);
   }
 
   @override

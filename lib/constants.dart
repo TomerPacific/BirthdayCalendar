@@ -27,6 +27,7 @@ const notificationsPermissionStatusKey = "notificationsPermissionStatusKey";
 
 const versionToMigrateNotificationStatusFrom = "1.2.1";
 const didAlreadyMigrateNotificationStatusFlag = "migrateNotificationStatus";
+const didAlreadyMigrateNotificationIdsFlag = "migrateNotificationIds";
 
 enum NotificationPermissionState {
   unknown,

@@ -5,6 +5,7 @@ import 'package:birthday_calendar/service/permission_service/permissions_service
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:birthday_calendar/utils.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'notification_service.dart';
@@ -147,52 +148,72 @@ class NotificationServiceImpl extends NotificationService {
         payload: jsonEncode(userBirthday));
   }
 
-  Future<void> scheduleNotificationForBirthday(
-      UserBirthday userBirthday, String notificationMessage) async {
-    DateTime now = DateTime.now();
-    DateTime birthdayDate = userBirthday.birthdayDate;
-    DateTime correctedBirthdayDate = birthdayDate;
-
-    if (birthdayDate.year < now.year) {
-      correctedBirthdayDate =
-          new DateTime(now.year, birthdayDate.month, birthdayDate.day);
+  Future<void> _zonedScheduleWithFallback({
+    required int id,
+    required String title,
+    required String body,
+    required tz.TZDateTime scheduledDate,
+    required NotificationDetails details,
+    required String payload,
+  }) async {
+    try {
+      await flutterLocalNotificationsPlugin.zonedSchedule(
+          id, title, body, scheduledDate, details,
+          payload: payload,
+          androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle);
+    } on PlatformException catch (e) {
+      if (e.code == 'exact_alarms_not_permitted') {
+        await flutterLocalNotificationsPlugin.zonedSchedule(
+            id, title, body, scheduledDate, details,
+            payload: payload, androidScheduleMode: AndroidScheduleMode.inexact);
+      } else {
+        rethrow;
+      }
     }
-
-    Duration difference = now.isAfter(correctedBirthdayDate)
-        ? now.difference(correctedBirthdayDate)
-        : correctedBirthdayDate.difference(now);
-
-    bool didApplicationLaunchFromNotification =
-        await _wasApplicationLaunchedFromNotification();
-    if (didApplicationLaunchFromNotification && difference.inDays == 0) {
-      await _scheduleNotificationForNextYear(userBirthday, notificationMessage);
-      return;
-    } else if (!didApplicationLaunchFromNotification &&
-        difference.inDays == 0) {
-      await _showNotification(userBirthday, notificationMessage);
-      return;
-    }
-
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-        userBirthday.notificationId,
-        applicationName,
-        notificationMessage,
-        tz.TZDateTime.now(tz.local).add(difference),
-        NotificationDetails(android: _createAndroidNotificationDetails()),
-        payload: jsonEncode(userBirthday),
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle);
   }
 
-  Future<void> _scheduleNotificationForNextYear(
+  /// Returns a TZDateTime for the birthday's month/day in [year].
+  tz.TZDateTime _birthdayInYear(UserBirthday userBirthday, int year) {
+    return tz.TZDateTime(
+      tz.local,
+      year,
+      userBirthday.birthdayDate.month,
+      userBirthday.birthdayDate.day,
+    );
+  }
+
+  Future<void> scheduleNotificationForBirthday(
       UserBirthday userBirthday, String notificationMessage) async {
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-        userBirthday.notificationId,
-        applicationName,
-        notificationMessage,
-        tz.TZDateTime.now(tz.local).add(new Duration(days: 365)),
-        NotificationDetails(android: _createAndroidNotificationDetails()),
-        payload: jsonEncode(userBirthday),
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle);
+    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+    tz.TZDateTime nextOccurrence = _birthdayInYear(userBirthday, now.year);
+
+    // If today is the birthday, handle immediately; otherwise if this year's
+    // date has already passed, advance to next year.
+    final bool isToday = nextOccurrence.year == now.year &&
+        nextOccurrence.month == now.month &&
+        nextOccurrence.day == now.day;
+
+    if (isToday) {
+      bool didApplicationLaunchFromNotification =
+          await _wasApplicationLaunchedFromNotification();
+      if (!didApplicationLaunchFromNotification) {
+        // Show the notification immediately for today's birthday, then fall
+        // through to schedule next year's occurrence below.
+        await _showNotification(userBirthday, notificationMessage);
+      }
+      nextOccurrence = _birthdayInYear(userBirthday, now.year + 1);
+    } else if (now.isAfter(nextOccurrence)) {
+      nextOccurrence = _birthdayInYear(userBirthday, now.year + 1);
+    }
+
+    await _zonedScheduleWithFallback(
+        id: userBirthday.notificationId,
+        title: applicationName,
+        body: notificationMessage,
+        scheduledDate: nextOccurrence,
+        details:
+            NotificationDetails(android: _createAndroidNotificationDetails()),
+        payload: jsonEncode(userBirthday));
   }
 
   Future<void> cancelNotificationForBirthday(UserBirthday birthday) async {
@@ -279,7 +300,8 @@ class NotificationServiceImpl extends NotificationService {
 
   Future<void> _setupSubscription(BuildContext context) async {
     await _selectSubscription?.cancel();
-    _selectSubscription = selectNotificationStream.stream.listen((payload) async {
+    _selectSubscription =
+        selectNotificationStream.stream.listen((payload) async {
       await _rescheduleNotificationFromPayload(payload, context);
       for (var listener in selectNotificationStreamListeners) {
         listener.onNotificationSelected(payload);
