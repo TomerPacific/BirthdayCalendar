@@ -26,7 +26,7 @@ class UserBirthday {
       this.name, this.birthdayDate, this.hasNotification, this.phoneNumber,
       {int? notificationId})
       : this.notificationId =
-      notificationId ?? _deterministicId(name, birthdayDate);
+            notificationId ?? _deterministicId(name, birthdayDate);
 
   void updateNotificationStatus(bool status) {
     this.hasNotification = status;
@@ -38,10 +38,10 @@ class UserBirthday {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is UserBirthday &&
-              runtimeType == other.runtimeType &&
-              name == other.name &&
-              _sameDay(birthdayDate, other.birthdayDate);
+      other is UserBirthday &&
+          runtimeType == other.runtimeType &&
+          name == other.name &&
+          _sameDay(birthdayDate, other.birthdayDate);
 
   @override
   int get hashCode => name.hashCode ^ birthdayDate.month ^ birthdayDate.day;
@@ -55,21 +55,24 @@ class UserBirthday {
     final parsedDate =
         DateTime.tryParse(json[userBirthdayDateKey] as String? ?? '') ??
             DateTime.now();
+    // Extract name once so it can be reused for the notificationId fallback
+    // without a second cast that could also throw.
+    final name = json[userBirthdayNameKey] as String? ?? '';
     return UserBirthday(
-      json[userBirthdayNameKey] as String,
+      name,
       parsedDate,
-      json[userBirthdayHasNotificationKey] as bool,
-      json[userBirthdayPhoneNumberKey] as String,
+      json[userBirthdayHasNotificationKey] as bool? ?? false,
+      json[userBirthdayPhoneNumberKey] as String? ?? '',
       notificationId: json[userBirthdayNotificationIdKey] as int? ??
-          _deterministicId(json[userBirthdayNameKey] as String, parsedDate),
+          _deterministicId(name, parsedDate),
     );
   }
 
   Map<String, dynamic> toJson() => {
-    userBirthdayNameKey: name,
-    userBirthdayDateKey: birthdayDate.toIso8601String(),
-    userBirthdayHasNotificationKey: hasNotification,
-    userBirthdayPhoneNumberKey: phoneNumber,
-    userBirthdayNotificationIdKey: notificationId
-  };
+        userBirthdayNameKey: name,
+        userBirthdayDateKey: birthdayDate.toIso8601String(),
+        userBirthdayHasNotificationKey: hasNotification,
+        userBirthdayPhoneNumberKey: phoneNumber,
+        userBirthdayNotificationIdKey: notificationId
+      };
 }

@@ -23,10 +23,10 @@ import 'package:birthday_calendar/l10n/app_localizations.dart';
 class MainPage extends StatefulWidget {
   MainPage(
       {required Key key,
-        required this.notificationService,
-        required this.contactsService,
-        required this.title,
-        required this.currentMonth})
+      required this.notificationService,
+      required this.contactsService,
+      required this.title,
+      required this.currentMonth})
       : super(key: key);
 
   final String title;
@@ -69,7 +69,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
         child: Text(AppLocalizations.of(context)!.ok));
     AlertDialog alertDialog = AlertDialog(
       title:
-      Text(AppLocalizations.of(context)!.updateSuccessfullyInstalledTitle),
+          Text(AppLocalizations.of(context)!.updateSuccessfullyInstalledTitle),
       content: Text(
           AppLocalizations.of(context)!.updateSuccessfullyInstalledDescription),
       actions: [alertDialogOkButton],
@@ -129,19 +129,26 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
   Future<void> _initializeServices() async {
     try {
       await versionSpecificService.migrateNotificationStatus();
-    } catch (e) {
-      debugPrint("Failed to migrate notification status: $e");
+    } catch (e, stackTrace) {
+      debugPrint("Failed to migrate notification status: $e\n$stackTrace");
     }
 
     if (!mounted) return;
 
+    // Track whether init succeeded — the ID migration cancels and reschedules
+    // all notifications, so it must not run if the notification service is
+    // not properly initialised.
+    bool notificationInitSucceeded = false;
     try {
       await widget.notificationService.init(context);
-    } catch (e) {
-      debugPrint("Failed to initialize notification service: $e");
+      notificationInitSucceeded = true;
+    } catch (e, stackTrace) {
+      debugPrint("Failed to initialize notification service: $e\n$stackTrace");
     }
 
     if (!mounted) return;
+
+    if (!notificationInitSucceeded) return;
 
     try {
       // Capture the localizations instance synchronously before crossing any
@@ -149,10 +156,10 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
       // has been unmounted or the localization scope has changed.
       final localizations = AppLocalizations.of(context)!;
       await versionSpecificService.migrateNotificationIds(
-            (name) => localizations.notificationForBirthdayMessage(name),
+        (name) => localizations.notificationForBirthdayMessage(name),
       );
-    } catch (e) {
-      debugPrint("Failed to migrate notification IDs: $e");
+    } catch (e, stackTrace) {
+      debugPrint("Failed to migrate notification IDs: $e\n$stackTrace");
     }
   }
 
@@ -164,81 +171,77 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ClearNotificationsBloc, bool>(
-        builder: (context, state) {
-          return Scaffold(
-              appBar: AppBar(
-                actions: [
-                  IconButton(
-                    icon: Icon(
-                      Icons.settings,
-                    ),
-                    onPressed: () {
-                      unawaited(Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                            return SettingsScreen(
-                                contactsService: widget.contactsService);
-                          })).then((result) {}));
-                    },
-                  )
-                ],
-              ),
-              body: BlocListener<ClearNotificationsBloc, bool>(
-                listener: (context, state) {
-                  if (state) {
-                    setState(() {});
-                  }
+    return BlocBuilder<ClearNotificationsBloc, bool>(builder: (context, state) {
+      return Scaffold(
+          appBar: AppBar(
+            actions: [
+              IconButton(
+                icon: Icon(
+                  Icons.settings,
+                ),
+                onPressed: () {
+                  unawaited(Navigator.push(context,
+                      MaterialPageRoute(builder: (context) {
+                    return SettingsScreen(
+                        contactsService: widget.contactsService);
+                  })).then((result) {}));
                 },
-                child: new GestureDetector(
-                    onHorizontalDragUpdate: _decideOnNextMonthToShow,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        new Padding(
-                          padding: const EdgeInsets.only(bottom: 50, top: 50),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              new Text(
-                                  BirthdayCalendarDateUtils
-                                      .convertAndTranslateMonthNumber(
+              )
+            ],
+          ),
+          body: BlocListener<ClearNotificationsBloc, bool>(
+            listener: (context, state) {
+              if (state) {
+                setState(() {});
+              }
+            },
+            child: new GestureDetector(
+                onHorizontalDragUpdate: _decideOnNextMonthToShow,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    new Padding(
+                      padding: const EdgeInsets.only(bottom: 50, top: 50),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          new Text(
+                              BirthdayCalendarDateUtils
+                                  .convertAndTranslateMonthNumber(
                                       monthToPresent,
                                       AppLocalizations.of(context)!),
-                                  style: new TextStyle(
-                                      fontSize: 25.0,
-                                      fontWeight: FontWeight.bold))
-                            ],
-                          ),
-                        ),
+                              style: new TextStyle(
+                                  fontSize: 25.0, fontWeight: FontWeight.bold))
+                        ],
+                      ),
+                    ),
+                    new Expanded(
+                        child: new Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        new IconButton(
+                            icon: new Icon(Icons.chevron_left),
+                            onPressed: () {
+                              _calculateNextMonthToShow(AxisDirection.right);
+                            }),
                         new Expanded(
-                            child: new Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                new IconButton(
-                                    icon: new Icon(Icons.chevron_left),
-                                    onPressed: () {
-                                      _calculateNextMonthToShow(
-                                          AxisDirection.right);
-                                    }),
-                                new Expanded(
-                                  child: new CalendarWidget(
-                                      key: Key(monthToPresent.toString()),
-                                      currentMonth: monthToPresent,
-                                      notificationService:
-                                      widget.notificationService),
-                                ),
-                                new IconButton(
-                                    icon: new Icon(Icons.chevron_right),
-                                    onPressed: () {
-                                      _calculateNextMonthToShow(AxisDirection.left);
-                                    }),
-                              ],
-                            ))
+                          child: new CalendarWidget(
+                              key: Key(monthToPresent.toString()),
+                              currentMonth: monthToPresent,
+                              notificationService: widget.notificationService),
+                        ),
+                        new IconButton(
+                            icon: new Icon(Icons.chevron_right),
+                            onPressed: () {
+                              _calculateNextMonthToShow(AxisDirection.left);
+                            }),
                       ],
-                    )),
-              ));
-        });
+                    ))
+                  ],
+                )),
+          ));
+    });
   }
 
   @override

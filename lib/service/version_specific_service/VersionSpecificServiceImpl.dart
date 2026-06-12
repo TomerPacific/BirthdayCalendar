@@ -94,9 +94,10 @@ class VersionSpecificServiceImpl extends VersionSpecificService {
             messageBuilder(migratedBirthday.name),
           );
         }
-      } catch (e) {
+      } catch (e, stackTrace) {
         allSucceeded = false;
-        debugPrint('Failed to migrate birthday ${birthday.name}: $e');
+        debugPrint(
+            'Failed to migrate birthday ${birthday.name}: $e\n$stackTrace');
       }
     }
 
