@@ -1,5 +1,4 @@
 import 'package:birthday_calendar/constants.dart';
-import 'dart:math';
 
 class UserBirthday {
   final String name;
