@@ -172,13 +172,14 @@ class NotificationServiceImpl extends NotificationService {
     }
   }
 
-  /// Returns a TZDateTime for the birthday's month/day in [year].
+  /// Returns a TZDateTime for the birthday's month/day in [year] at 09:00 AM.
   tz.TZDateTime _birthdayInYear(UserBirthday userBirthday, int year) {
     return tz.TZDateTime(
       tz.local,
       year,
       userBirthday.birthdayDate.month,
       userBirthday.birthdayDate.day,
+      9,
     );
   }
 
@@ -187,22 +188,17 @@ class NotificationServiceImpl extends NotificationService {
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
     tz.TZDateTime nextOccurrence = _birthdayInYear(userBirthday, now.year);
 
-    // If today is the birthday, handle immediately; otherwise if this year's
-    // date has already passed, advance to next year.
-    final bool isToday = nextOccurrence.year == now.year &&
-        nextOccurrence.month == now.month &&
-        nextOccurrence.day == now.day;
-
-    if (isToday) {
-      bool didApplicationLaunchFromNotification =
-          await _wasApplicationLaunchedFromNotification();
-      if (!didApplicationLaunchFromNotification) {
-        // Show the notification immediately for today's birthday, then fall
-        // through to schedule next year's occurrence below.
-        await _showNotification(userBirthday, notificationMessage);
+    if (nextOccurrence.isBefore(now)) {
+      // If it's today and we already passed the scheduled time, show it now.
+      if (nextOccurrence.year == now.year &&
+          nextOccurrence.month == now.month &&
+          nextOccurrence.day == now.day) {
+        bool didApplicationLaunchFromNotification =
+            await _wasApplicationLaunchedFromNotification();
+        if (!didApplicationLaunchFromNotification) {
+          await _showNotification(userBirthday, notificationMessage);
+        }
       }
-      nextOccurrence = _birthdayInYear(userBirthday, now.year + 1);
-    } else if (now.isAfter(nextOccurrence)) {
       nextOccurrence = _birthdayInYear(userBirthday, now.year + 1);
     }
 
