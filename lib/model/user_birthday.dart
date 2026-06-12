@@ -1,4 +1,5 @@
 import 'package:birthday_calendar/constants.dart';
+import 'dart:math';
 
 class UserBirthday {
   final String name;
@@ -7,26 +8,17 @@ class UserBirthday {
   String phoneNumber;
   final int notificationId;
 
-  static int _deterministicId(String name, DateTime date) {
-    final key = '$name:${date.month}:${date.day}';
-    // Jenkins one-at-a-time hash — stable, no dart:crypto dependency
-    int h = 0;
-    for (final unit in key.codeUnits) {
-      h = (h + unit) & 0x7fffffff;
-      h = (h + (h << 10)) & 0x7fffffff;
-      h ^= (h >> 6);
-    }
-    h = (h + (h << 3)) & 0x7fffffff;
-    h ^= (h >> 11);
-    h = (h + (h << 15)) & 0x7fffffff;
-    return h;
-  }
+  // Generates a random positive 31-bit ID. Used only when no persisted ID
+  // exists (new birthday, or legacy record without a stored notificationId).
+  // Random IDs are immediately persisted to storage so they remain stable
+  // across app restarts — unlike a hash, they are unique by assignment rather
+  // than probabilistically unique by construction.
+  static int _generateId() => Random().nextInt(0x7fffffff);
 
   UserBirthday(
       this.name, this.birthdayDate, this.hasNotification, this.phoneNumber,
       {int? notificationId})
-      : this.notificationId =
-            notificationId ?? _deterministicId(name, birthdayDate);
+      : this.notificationId = notificationId ?? _generateId();
 
   void updateNotificationStatus(bool status) {
     this.hasNotification = status;
@@ -63,8 +55,10 @@ class UserBirthday {
       parsedDate,
       json[userBirthdayHasNotificationKey] as bool? ?? false,
       json[userBirthdayPhoneNumberKey] as String? ?? '',
-      notificationId: json[userBirthdayNotificationIdKey] as int? ??
-          _deterministicId(name, parsedDate),
+      // If no ID is stored (legacy record), generate a fresh random one.
+      // It will be persisted to storage immediately after fromJson returns.
+      notificationId:
+          json[userBirthdayNotificationIdKey] as int? ?? _generateId(),
     );
   }
 
