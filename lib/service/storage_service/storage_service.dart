@@ -40,7 +40,7 @@ abstract class StorageService {
 
   Future<void> saveDidAlreadyMigrateNotificationIds(bool status);
 
-  Future<bool> getAlreadyMigratedNotificationIds();
+  Future<bool> getAlreadyMigrateNotificationIds();
 
   void dispose();
 }

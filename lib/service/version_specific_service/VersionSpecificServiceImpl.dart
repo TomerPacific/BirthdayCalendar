@@ -57,7 +57,7 @@ class VersionSpecificServiceImpl extends VersionSpecificService {
   Future<void> migrateNotificationIds(
       String Function(String name) messageBuilder) async {
     bool didAlreadyMigrate =
-        await storageService.getAlreadyMigratedNotificationIds();
+        await storageService.getAlreadyMigrateNotificationIds();
     if (didAlreadyMigrate) {
       return;
     }

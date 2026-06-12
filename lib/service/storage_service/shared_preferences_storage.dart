@@ -168,7 +168,7 @@ class StorageServiceSharedPreferences extends StorageService {
   }
 
   @override
-  Future<bool> getAlreadyMigratedNotificationIds() async {
+  Future<bool> getAlreadyMigrateNotificationIds() async {
     final sharedPreferences = await SharedPreferences.getInstance();
     bool? hasAlreadyMigrated =
         sharedPreferences.getBool(didAlreadyMigrateNotificationIdsFlag);
