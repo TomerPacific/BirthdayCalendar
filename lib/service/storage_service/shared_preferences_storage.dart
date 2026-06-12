@@ -222,7 +222,7 @@ class StorageServiceSharedPreferences extends StorageService {
     if (index == -1) {
       throw StateError(
           'updateNotificationIdForBirthday: no stored entry found for '
-          '${birthday.name} on ${birthday.birthdayDate.month}/${birthday.birthdayDate.day}. '
+          '${birthday.name} on ${birthday.birthdayDate.toIso8601String()}. '
           'Storage may be corrupted or out of sync.');
     }
     birthdays[index] = birthday;
