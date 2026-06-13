@@ -33,13 +33,15 @@ void main() {
     test('handles missing name and date keys', () {
       final json = <String, dynamic>{};
 
+      final before = DateTime.now();
       final userBirthday = UserBirthday.fromJson(json);
+      final after = DateTime.now();
 
       expect(userBirthday.name, equals(''));
       expect(userBirthday.hasNotification, isFalse);
       expect(userBirthday.phoneNumber, equals(''));
-      // birthdayDate should fallback to DateTime.now(), so we just check it doesn't crash
-      expect(userBirthday.birthdayDate, isA<DateTime>());
+      expect(!userBirthday.birthdayDate.isBefore(before), isTrue);
+      expect(!userBirthday.birthdayDate.isAfter(after), isTrue);
     });
   });
 }
