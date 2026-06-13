@@ -58,11 +58,15 @@ class UserBirthday {
     // Extract name once so it can be reused for the notificationId fallback
     // without a second cast that could also throw.
     final name = json[userBirthdayNameKey] as String? ?? '';
+    final hasNotification =
+        json[userBirthdayHasNotificationKey] as bool? ?? false;
+    final phoneNumber = json[userBirthdayPhoneNumberKey] as String? ?? '';
+
     return UserBirthday(
       name,
       parsedDate,
-      json[userBirthdayHasNotificationKey] as bool? ?? false,
-      json[userBirthdayPhoneNumberKey] as String? ?? '',
+      hasNotification,
+      phoneNumber,
       notificationId: json[userBirthdayNotificationIdKey] as int? ??
           _deterministicId(name, parsedDate),
     );
