@@ -180,6 +180,7 @@ class NotificationServiceImpl extends NotificationService {
       userBirthday.birthdayDate.month,
       userBirthday.birthdayDate.day,
       9,
+      0,
     );
   }
 
