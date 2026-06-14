@@ -180,7 +180,7 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                 }
                 if (_phoneNumberKey.currentState != null &&
                     !_phoneNumberKey.currentState!.isValid) {
-                  _birthdayPersonController.clear();
+                  _phoneNumberController.clear();
                 }
               }
             },
