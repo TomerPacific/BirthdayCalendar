@@ -3,7 +3,7 @@ import 'package:birthday_calendar/BirthdayBloc/BirthdaysBloc.dart';
 import 'package:birthday_calendar/UserNotificationStatusBloc/UserNotificationStatusBloc.dart';
 import 'package:birthday_calendar/l10n/app_localizations.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
-import 'package:birthday_calendar/service/storage_service/shared_preferences_storage.dart';
+import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:birthday_calendar/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
@@ -85,7 +85,7 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                 String phone = _birthdayPhoneNumber.parseNumber();
                 birthdayOfPerson.phoneNumber = phone;
                 await context
-                    .read<StorageServiceSharedPreferences>()
+                    .read<StorageService>()
                     .updatePhoneNumberForBirthday(birthdayOfPerson);
                 if (!mounted || !context.mounted) return;
                 setState(() {});
@@ -153,7 +153,7 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
           new Spacer(),
           BlocProvider(
               create: (context) => UserNotificationStatusBloc(
-                  context.read<StorageServiceSharedPreferences>(),
+                  context.read<StorageService>(),
                   notificationService),
               child: BlocBuilder<UserNotificationStatusBloc, bool>(
                   builder: (context, state) {

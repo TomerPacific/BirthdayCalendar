@@ -3,7 +3,7 @@ import 'package:birthday_calendar/BirthdayBloc/BirthdaysState.dart';
 import 'package:birthday_calendar/BirthdayCalendarDateUtils.dart';
 import 'package:birthday_calendar/l10n/app_localizations.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
-import 'package:birthday_calendar/service/storage_service/shared_preferences_storage.dart';
+import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:birthday_calendar/widget/add_birthday_form.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/page/birthday/birthday.dart';
@@ -26,7 +26,7 @@ class BirthdaysForCalendarDayWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
         create: (context) => BirthdaysBloc(notificationService,
-            context.read<StorageServiceSharedPreferences>(), birthdays),
+            context.read<StorageService>(), birthdays),
         child: BlocBuilder<BirthdaysBloc, BirthdaysState>(
             builder: (context, state) {
           return Scaffold(

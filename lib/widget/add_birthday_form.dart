@@ -1,7 +1,7 @@
 import 'package:birthday_calendar/BirthdayBloc/BirthdaysBloc.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
-import 'package:birthday_calendar/service/storage_service/shared_preferences_storage.dart';
+import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
@@ -60,7 +60,7 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
   Future<void> _getBirthdaysForDate() async {
     try {
       birthdaysForDate = await context
-          .read<StorageServiceSharedPreferences>()
+          .read<StorageService>()
           .getBirthdaysForDate(widget.dateOfDay, true);
     } catch (e) {
       debugPrint("Failed to fetch birthdays for date: $e");
