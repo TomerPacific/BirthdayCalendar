@@ -33,7 +33,7 @@ Future<void> main() async {
 
   bool isDarkMode = await storageService.getThemeModeSetting();
 
-  runApp(MyApp(
+  runApp(BirthdayCalendarApp(
     storageService: storageService,
     notificationService: notificationService,
     contactsService: contactsService,
@@ -41,8 +41,8 @@ Future<void> main() async {
   ));
 }
 
-class MyApp extends StatelessWidget {
-  MyApp(
+class BirthdayCalendarApp extends StatelessWidget {
+  BirthdayCalendarApp(
       {required this.storageService,
       required this.notificationService,
       required this.contactsService,
