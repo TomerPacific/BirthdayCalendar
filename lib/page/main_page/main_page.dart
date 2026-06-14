@@ -8,7 +8,7 @@ import 'package:birthday_calendar/page/birthdays_for_calendar_day_page/birthdays
 import 'package:birthday_calendar/service/contacts_service/contacts_service.dart';
 import 'package:birthday_calendar/service/notification_service/notificationCallbacks.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
-import 'package:birthday_calendar/service/storage_service/shared_preferences_storage.dart';
+import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:birthday_calendar/service/update_service/update_service.dart';
 import 'package:birthday_calendar/service/update_service/update_service_impl.dart';
 import 'package:birthday_calendar/service/version_specific_service/VersionSpecificService.dart';
@@ -112,7 +112,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
   void initState() {
     super.initState();
     versionSpecificService = new VersionSpecificServiceImpl(
-        storageService: context.read<StorageServiceSharedPreferences>(),
+        storageService: context.read<StorageService>(),
         notificationService: notificationService);
 
     unawaited(_initializeServices());
@@ -246,7 +246,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
 
   @override
   void dispose() {
-    context.read<StorageServiceSharedPreferences>().dispose();
+    context.read<StorageService>().dispose();
     widget.notificationService.removeListenerForSelectNotificationStream(this);
     super.dispose();
   }
@@ -257,7 +257,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
       UserBirthday? birthday = Utils.getUserBirthdayFromPayload(payload);
       if (birthday != null) {
         List<UserBirthday> birthdays = await context
-            .read<StorageServiceSharedPreferences>()
+            .read<StorageService>()
             .getBirthdaysForDate(birthday.birthdayDate, true);
 
         if (!mounted) return;

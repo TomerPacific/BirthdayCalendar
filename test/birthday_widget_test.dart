@@ -63,8 +63,8 @@ void main() {
     });
   });
 
-  Widget base = RepositoryProvider(
-      create: (context) => StorageServiceSharedPreferences(),
+  Widget base = RepositoryProvider<StorageService>.value(
+      value: storageService,
       child: MultiBlocProvider(
         providers: [
           BlocProvider(create: (context) => ThemeBloc(storageService, false)),

@@ -1,5 +1,5 @@
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
-import 'package:birthday_calendar/service/storage_service/shared_preferences_storage.dart';
+import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:birthday_calendar/page/birthdays_for_calendar_day_page/birthdays_for_calendar_day.dart';
@@ -26,7 +26,7 @@ class _CalendarDayState extends State<CalendarDayWidget> {
   void initState() {
     unawaited(_fetchBirthdaysFromStorage());
     Stream<List<UserBirthday>> stream =
-        context.read<StorageServiceSharedPreferences>().getBirthdaysStream();
+        context.read<StorageService>().getBirthdaysStream();
     _streamSubscription = stream.listen(_handleEventFromStorageService);
     super.initState();
   }
@@ -61,7 +61,7 @@ class _CalendarDayState extends State<CalendarDayWidget> {
   Future<void> _fetchBirthdaysFromStorage() async {
     try {
       List<UserBirthday> storedBirthdays = await context
-          .read<StorageServiceSharedPreferences>()
+          .read<StorageService>()
           .getBirthdaysForDate(widget.date, true);
 
       if (!mounted) return;

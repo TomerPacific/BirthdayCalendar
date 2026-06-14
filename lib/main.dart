@@ -33,39 +33,42 @@ Future<void> main() async {
 
   bool isDarkMode = await storageService.getThemeModeSetting();
 
-  runApp(MyApp(
+  runApp(BirthdayCalendarApp(
+    storageService: storageService,
     notificationService: notificationService,
     contactsService: contactsService,
     isDarkMode: isDarkMode,
   ));
 }
 
-class MyApp extends StatelessWidget {
-  MyApp(
-      {required this.notificationService,
+class BirthdayCalendarApp extends StatelessWidget {
+  BirthdayCalendarApp(
+      {required this.storageService,
+      required this.notificationService,
       required this.contactsService,
       required this.isDarkMode});
 
+  final StorageService storageService;
   final NotificationService notificationService;
   final ContactsService contactsService;
   final bool isDarkMode;
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider(
-        create: (context) => StorageServiceSharedPreferences(),
+    return RepositoryProvider.value(
+        value: storageService,
         child: MultiBlocProvider(
           providers: [
             BlocProvider(
                 create: (context) => ThemeBloc(
-                    context.read<StorageServiceSharedPreferences>(),
+                    context.read<StorageService>(),
                     isDarkMode)),
             BlocProvider(
                 create: (context) =>
                     ContactsPermissionStatusBloc(contactsService)),
             BlocProvider(
                 create: (context) => ClearNotificationsBloc(
-                    context.read<StorageServiceSharedPreferences>(),
+                    context.read<StorageService>(),
                     notificationService)),
             BlocProvider(create: (context) => VersionBloc())
           ],
