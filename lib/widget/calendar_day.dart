@@ -32,18 +32,33 @@ class _CalendarDayState extends State<CalendarDayWidget> {
   }
 
   void _handleEventFromStorageService(List<UserBirthday> event) {
-    bool hasNewBirthdays = false;
-    for (UserBirthday birthday in event) {
-      if (birthday.birthdayDate.month == widget.date.month &&
-          birthday.birthdayDate.day == widget.date.day) {
-        if (!_birthdays.contains(birthday)) {
-          _birthdays.add(birthday);
-          hasNewBirthdays = true;
+    if (!mounted) {
+      return;
+    }
+
+    bool changed = false;
+    for (UserBirthday updatedBirthday in event) {
+      if (updatedBirthday.birthdayDate.month == widget.date.month &&
+          updatedBirthday.birthdayDate.day == widget.date.day) {
+        int index =
+            _birthdays.indexWhere((element) => element == updatedBirthday);
+        if (index != -1) {
+          UserBirthday existing = _birthdays[index];
+          if (existing.hasNotification != updatedBirthday.hasNotification ||
+              existing.phoneNumber != updatedBirthday.phoneNumber ||
+              existing.notificationId != updatedBirthday.notificationId ||
+              existing.birthdayDate != updatedBirthday.birthdayDate) {
+            _birthdays[index] = updatedBirthday;
+            changed = true;
+          }
+        } else {
+          _birthdays.add(updatedBirthday);
+          changed = true;
         }
       }
     }
 
-    if (hasNewBirthdays) {
+    if (changed) {
       setState(() {});
     }
   }
