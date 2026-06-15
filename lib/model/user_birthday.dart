@@ -32,23 +32,20 @@ class UserBirthday {
     this.hasNotification = status;
   }
 
-  static bool _sameDay(DateTime a, DateTime b) =>
-      a.month == b.month && a.day == b.day;
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is UserBirthday &&
           runtimeType == other.runtimeType &&
           name == other.name &&
-          _sameDay(birthdayDate, other.birthdayDate);
+          birthdayDate.month == other.birthdayDate.month &&
+          birthdayDate.day == other.birthdayDate.day;
 
   @override
-  int get hashCode => name.hashCode ^ birthdayDate.month ^ birthdayDate.day;
+  int get hashCode => Object.hash(name, birthdayDate.month, birthdayDate.day);
 
   bool equals(UserBirthday otherBirthday) {
-    return this.name == otherBirthday.name &&
-        _sameDay(this.birthdayDate, otherBirthday.birthdayDate);
+    return this == otherBirthday;
   }
 
   factory UserBirthday.fromJson(Map<String, dynamic> json) {
