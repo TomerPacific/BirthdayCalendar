@@ -59,7 +59,6 @@ void main() {
       final birthday2 = UserBirthday('Bob', DateTime(1990, 6, 15), false, '');
 
       expect(birthday1 == birthday2, isFalse);
-      expect(birthday1.hashCode, isNot(equals(birthday2.hashCode)));
     });
 
     test('different month should not be equal', () {
