@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:birthday_calendar/page/birthdays_for_calendar_day_page/birthdays_for_calendar_day.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
+import 'package:birthday_calendar/model/birthdays_stream_event.dart';
 import 'package:provider/provider.dart';
 
 class CalendarDayWidget extends StatefulWidget {
@@ -20,46 +21,31 @@ class CalendarDayWidget extends StatefulWidget {
 
 class _CalendarDayState extends State<CalendarDayWidget> {
   List<UserBirthday> _birthdays = [];
-  late StreamSubscription<List<UserBirthday>> _streamSubscription;
+  late StreamSubscription<BirthdaysStreamEvent> _streamSubscription;
 
   @override
   void initState() {
     unawaited(_fetchBirthdaysFromStorage());
-    Stream<List<UserBirthday>> stream =
+    Stream<BirthdaysStreamEvent> stream =
         context.read<StorageService>().getBirthdaysStream();
     _streamSubscription = stream.listen(_handleEventFromStorageService);
     super.initState();
   }
 
-  void _handleEventFromStorageService(List<UserBirthday> event) {
+  void _handleEventFromStorageService(BirthdaysStreamEvent event) {
     if (!mounted) {
       return;
     }
 
-    bool changed = false;
-    for (UserBirthday updatedBirthday in event) {
-      if (updatedBirthday.birthdayDate.month == widget.date.month &&
-          updatedBirthday.birthdayDate.day == widget.date.day) {
-        int index =
-            _birthdays.indexWhere((element) => element == updatedBirthday);
-        if (index != -1) {
-          UserBirthday existing = _birthdays[index];
-          if (existing.hasNotification != updatedBirthday.hasNotification ||
-              existing.phoneNumber != updatedBirthday.phoneNumber ||
-              existing.notificationId != updatedBirthday.notificationId ||
-              existing.birthdayDate != updatedBirthday.birthdayDate) {
-            _birthdays[index] = updatedBirthday;
-            changed = true;
-          }
-        } else {
-          _birthdays.add(updatedBirthday);
-          changed = true;
-        }
-      }
-    }
-
-    if (changed) {
-      setState(() {});
+    if (event.date.month == widget.date.month &&
+        event.date.day == widget.date.day) {
+      setState(() {
+        _birthdays.removeWhere((element) =>
+            element.birthdayDate.year == event.date.year &&
+            element.birthdayDate.month == event.date.month &&
+            element.birthdayDate.day == event.date.day);
+        _birthdays.addAll(event.birthdays);
+      });
     }
   }
 

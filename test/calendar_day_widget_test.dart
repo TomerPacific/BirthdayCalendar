@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:birthday_calendar/model/user_birthday.dart';
+import 'package:birthday_calendar/model/birthdays_stream_event.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:birthday_calendar/widget/calendar_day.dart';
@@ -35,13 +36,13 @@ class MockNotificationService implements NotificationService {
 }
 
 class MockStorageService extends StorageService {
-  final _controller = StreamController<List<UserBirthday>>.broadcast();
+  final _controller = StreamController<BirthdaysStreamEvent>.broadcast();
 
   @override
-  Stream<List<UserBirthday>> getBirthdaysStream() => _controller.stream;
+  Stream<BirthdaysStreamEvent> getBirthdaysStream() => _controller.stream;
 
-  void emit(List<UserBirthday> birthdays) {
-    _controller.add(birthdays);
+  void emit(DateTime date, List<UserBirthday> birthdays) {
+    _controller.add(BirthdaysStreamEvent(date, birthdays));
   }
 
   @override
@@ -108,14 +109,14 @@ void main() {
 
     // Add a birthday
     final birthday = UserBirthday('Test', date, false, '');
-    mockStorageService.emit([birthday]);
+    mockStorageService.emit(date, [birthday]);
     await tester.pump();
 
     expect(find.byIcon(Icons.cake_outlined), findsOneWidget);
 
     // Update the birthday (e.g., enable notification)
     final updatedBirthday = UserBirthday('Test', date, true, '');
-    mockStorageService.emit([updatedBirthday]);
+    mockStorageService.emit(date, [updatedBirthday]);
     await tester.pump();
 
     // Verify it still shows the cake
@@ -146,7 +147,7 @@ void main() {
      await tester.pumpWidget(Container());
 
      // Emit an event
-     mockStorageService.emit([UserBirthday('Test', date, false, '')]);
+     mockStorageService.emit(date, [UserBirthday('Test', date, false, '')]);
      
      // Should not crash
      await tester.pump();
