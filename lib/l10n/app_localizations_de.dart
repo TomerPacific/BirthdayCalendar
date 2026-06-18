@@ -187,4 +187,8 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get openSettings => 'Einstellungen öffnen';
+
+  @override
+  String get contactsPermissionRationale =>
+      'Birthday Calendar benötigt Zugriff auf Ihre Kontakte, um Geburtstage zu importieren.';
 }
