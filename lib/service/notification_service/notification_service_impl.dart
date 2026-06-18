@@ -101,7 +101,7 @@ class NotificationServiceImpl extends NotificationService {
     }
 
     notificationPermissionStatus = await permissionsService
-        .requestPermissionAndGetStatus(notificationsPermissionKey);
+        .requestPermissionAndGetStatus(notificationsPermissionKey, context);
 
     if (notificationPermissionStatus.isGranted) {
       await storageService
