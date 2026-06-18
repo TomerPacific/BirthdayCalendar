@@ -24,20 +24,22 @@ class PermissionsServiceImpl extends PermissionsService {
   Future<PermissionStatus> requestPermissionAndGetStatus(String permissionName, {BuildContext? context}) async {
     PermissionStatus status = PermissionStatus.denied;
     switch(permissionName) {
-      case contactsPermissionKey:
+      case contactsPermissionKey: {
         bool showRationale = await Permission.contacts.shouldShowRequestRationale;
         if (showRationale && context != null && context.mounted) {
           await _showRationaleDialog(context, AppLocalizations.of(context)!.appTitle, AppLocalizations.of(context)!.contactsPermissionRationale);
         }
         status = await Permission.contacts.request();
         break;
-      case notificationsPermissionKey:
+      }
+      case notificationsPermissionKey: {
         bool showRationale = await Permission.notification.shouldShowRequestRationale;
         if (showRationale && context != null && context.mounted) {
           await _showRationaleDialog(context, AppLocalizations.of(context)!.appTitle, AppLocalizations.of(context)!.notificationPermissionRationale);
         }
         status = await Permission.notification.request();
         break;
+      }
     }
 
     return status;
