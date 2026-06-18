@@ -417,6 +417,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open Settings'**
   String get openSettings;
+
+  /// No description provided for @contactsPermissionRationale.
+  ///
+  /// In en, this message translates to:
+  /// **'Birthday Calendar needs access to your contacts to help you import birthdays.'**
+  String get contactsPermissionRationale;
+
+  /// No description provided for @notificationPermissionRationale.
+  ///
+  /// In en, this message translates to:
+  /// **'In order to get notifications for birthdays, you will need to authorize BirthdayCalendar to send you notifications.'**
+  String get notificationPermissionRationale;
 }
 
 class _AppLocalizationsDelegate
