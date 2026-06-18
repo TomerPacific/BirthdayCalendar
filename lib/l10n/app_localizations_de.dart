@@ -191,4 +191,8 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get contactsPermissionRationale =>
       'Birthday Calendar benötigt Zugriff auf Ihre Kontakte, um Geburtstage zu importieren.';
+
+  @override
+  String get notificationPermissionRationale =>
+      'Um Benachrichtigungen zu Geburtstagen zu erhalten, müssen Sie BirthdayCalendar die Berechtigung erteilen, Ihnen Benachrichtigungen zu senden.';
 }

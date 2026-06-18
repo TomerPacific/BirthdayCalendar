@@ -189,4 +189,8 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get contactsPermissionRationale =>
       'जन्मदिन आयात करने में आपकी सहायता के लिए बर्थडे कैलेंडर को आपके संपर्कों तक पहुंच की आवश्यकता है।';
+
+  @override
+  String get notificationPermissionRationale =>
+      'जन्मदिन की सूचनाएं प्राप्त करने के लिए, आपको बर्थडे कैलेंडर को आपको सूचनाएं भेजने के लिए अधिकृत करना होगा।';
 }
