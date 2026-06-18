@@ -21,20 +21,20 @@ class PermissionsServiceImpl extends PermissionsService {
   }
 
   @override
-  Future<PermissionStatus> requestPermissionAndGetStatus(String permissionName, [BuildContext? context]) async {
+  Future<PermissionStatus> requestPermissionAndGetStatus(String permissionName, {BuildContext? context}) async {
     PermissionStatus status = PermissionStatus.denied;
     switch(permissionName) {
       case contactsPermissionKey:
         bool showRationale = await Permission.contacts.shouldShowRequestRationale;
-        if (showRationale && context != null) {
+        if (showRationale && context != null && context.mounted) {
           await _showRationaleDialog(context, AppLocalizations.of(context)!.appTitle, AppLocalizations.of(context)!.contactsPermissionRationale);
         }
         status = await Permission.contacts.request();
         break;
       case notificationsPermissionKey:
         bool showRationale = await Permission.notification.shouldShowRequestRationale;
-        if (showRationale && context != null) {
-          await _showRationaleDialog(context, AppLocalizations.of(context)!.appTitle, AppLocalizations.of(context)!.notificationPermissionDenied);
+        if (showRationale && context != null && context.mounted) {
+          await _showRationaleDialog(context, AppLocalizations.of(context)!.appTitle, AppLocalizations.of(context)!.notificationPermissionRationale);
         }
         status = await Permission.notification.request();
         break;
@@ -44,7 +44,7 @@ class PermissionsServiceImpl extends PermissionsService {
   }
 
   Future<void> _showRationaleDialog(BuildContext context, String title, String content) async {
-    return showDialog(
+    await showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(title),

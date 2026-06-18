@@ -32,7 +32,7 @@ class ContactsServiceImpl extends ContactsService {
   Future<PermissionStatus> requestContactsPermission(
       BuildContext context) async {
     return await permissionsService
-        .requestPermissionAndGetStatus(contactsPermissionKey, context);
+        .requestPermissionAndGetStatus(contactsPermissionKey, context: context);
   }
 
   @override
