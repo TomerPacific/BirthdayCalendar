@@ -39,6 +39,7 @@ dependencies:
   provider: 6.0.2
   in_app_update: 4.2.5
   flutter_bloc: 8.1.5
+  pub_semver: ^2.2.0
 
 
 dev_dependencies:
