@@ -106,6 +106,10 @@ class SettingsScreen extends StatelessWidget {
   }
 
   Future<void> _handleImportingContacts(BuildContext context) async {
+    final localizations = AppLocalizations.of(context)!;
+    final contactsPermissionStatusBloc =
+        BlocProvider.of<ContactsPermissionStatusBloc>(context);
+
     PermissionStatus status =
         await contactsService.getContactsPermissionStatus(context);
 
@@ -120,13 +124,13 @@ class SettingsScreen extends StatelessWidget {
     if (status == PermissionStatus.permanentlyDenied) {
       await contactsService.setContactsPermissionPermanentlyDenied();
       if (!context.mounted) return;
-      BlocProvider.of<ContactsPermissionStatusBloc>(context)
+      contactsPermissionStatusBloc
           .add(ContactsPermissionStatusEvent.PermissionPermanentlyDenied);
       return;
     }
 
     if (status == PermissionStatus.granted) {
-      BlocProvider.of<ContactsPermissionStatusBloc>(context)
+      contactsPermissionStatusBloc
           .add(ContactsPermissionStatusEvent.PermissionGranted);
       List<Contact> contacts = await contactsService.fetchContacts(false);
 
@@ -134,7 +138,7 @@ class SettingsScreen extends StatelessWidget {
 
       if (contacts.isEmpty) {
         Utils.showSnackbarWithMessage(
-            context, AppLocalizations.of(context)!.noContactsFoundMsg);
+            context, localizations.noContactsFoundMsg);
         return;
       }
 
@@ -144,7 +148,7 @@ class SettingsScreen extends StatelessWidget {
 
       if (contacts.isEmpty) {
         Utils.showSnackbarWithMessage(
-            context, AppLocalizations.of(context)!.alreadyAddedContactsMsg);
+            context, localizations.alreadyAddedContactsMsg);
         return;
       }
 

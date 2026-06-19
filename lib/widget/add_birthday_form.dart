@@ -58,9 +58,9 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
   }
 
   Future<void> _getBirthdaysForDate() async {
+    final storageService = context.read<StorageService>();
     try {
-      birthdaysForDate = await context
-          .read<StorageService>()
+      birthdaysForDate = await storageService
           .getBirthdaysForDate(widget.dateOfDay, true);
     } catch (e) {
       debugPrint("Failed to fetch birthdays for date: $e");
@@ -151,6 +151,10 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                         _addBirthdayFormKey.currentState!.validate()) {
                 _addBirthdayFormKey.currentState!.save();
 
+                final localizations = AppLocalizations.of(context)!;
+                final birthdaysBloc = BlocProvider.of<BirthdaysBloc>(context);
+                final navigator = Navigator.of(context);
+
                 bool hasUserGrantedNotificationPermission = await widget
                     .notificationService
                     .isNotificationPermissionGranted(context);
@@ -164,15 +168,15 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                     _birthdayPhoneNumber.phoneNumber != null
                         ? _birthdayPhoneNumber.parseNumber()
                         : "");
-                BlocProvider.of<BirthdaysBloc>(context).add(new BirthdaysEvent(
+                birthdaysBloc.add(new BirthdaysEvent(
                     eventName: BirthdayEvent.AddBirthday,
                     birthdays: birthdaysForDate,
                     birthday: userBirthday,
                     shouldShowAddBirthdayDialog: false,
-                    notificationMsg: AppLocalizations.of(context)!
+                    notificationMsg: localizations
                         .notificationForBirthdayMessage(userBirthday.name)));
 
-                Navigator.pop(context);
+                navigator.pop();
               } else {
                 if (_birthdayNameKey.currentState != null &&
                     !_birthdayNameKey.currentState!.isValid) {

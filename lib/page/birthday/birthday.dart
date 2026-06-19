@@ -82,15 +82,16 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
             style: TextButton.styleFrom(foregroundColor: Colors.green),
             onPressed: () async {
               if (_birthdayPhoneNumber.phoneNumber != null) {
+                final storageService = context.read<StorageService>();
+                final navigator = Navigator.of(context);
                 String phone = _birthdayPhoneNumber.parseNumber();
                 birthdayOfPerson.phoneNumber = phone;
-                await context
-                    .read<StorageService>()
+                await storageService
                     .updatePhoneNumberForBirthday(birthdayOfPerson);
-                if (!mounted || !context.mounted) return;
+                if (!mounted) return;
                 setState(() {});
                 _phoneNumberController.clear();
-                Navigator.pop(context);
+                navigator.pop();
               } else {
                 return null;
               }
@@ -166,17 +167,21 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                             indexOfBirthday, ElementType.icon)),
                     onPressed: () async {
                       if (!birthdayOfPerson.hasNotification) {
+                        final userNotificationStatusBloc =
+                            BlocProvider.of<UserNotificationStatusBloc>(
+                                context);
+                        final localizations = AppLocalizations.of(context)!;
                         PermissionStatus status = await notificationService
                             .requestNotificationPermission(context);
 
                         if (!mounted) return;
 
                         if (status.isGranted) {
-                          BlocProvider.of<UserNotificationStatusBloc>(context)
+                          userNotificationStatusBloc
                               .add(UserNotificationStatusEvent(
                             userBirthday: birthdayOfPerson,
                             hasNotification: birthdayOfPerson.hasNotification,
-                            notificationMsg: AppLocalizations.of(context)!
+                            notificationMsg: localizations
                                 .notificationForBirthdayMessage(
                                     birthdayOfPerson.name),
                           ));
@@ -186,19 +191,16 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                         if (status.isPermanentlyDenied) {
                           Utils.showSnackbarWithMessageAndAction(
                               context,
-                              AppLocalizations.of(context)!
+                              localizations
                                   .notificationPermissionPermanentlyDenied,
                               SnackBarAction(
-                                  label: AppLocalizations.of(context)!
-                                      .openSettings,
+                                  label: localizations.openSettings,
                                   onPressed: openAppSettings));
                           return;
                         }
 
                         Utils.showSnackbarWithMessage(
-                            context,
-                            AppLocalizations.of(context)!
-                                .notificationPermissionDenied);
+                            context, localizations.notificationPermissionDenied);
                       } else {
                         BlocProvider.of<UserNotificationStatusBloc>(context)
                             .add(UserNotificationStatusEvent(
