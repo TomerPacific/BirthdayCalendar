@@ -17,5 +17,5 @@ abstract class ContactsService {
   Future<List<Contact>> fetchContacts(
       bool withThumbnails);
   Future<void> addContactToCalendar(
-      UserBirthday contact, BuildContext context);
+      UserBirthday contact, String notificationMessage);
 }

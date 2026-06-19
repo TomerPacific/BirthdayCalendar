@@ -59,6 +59,7 @@ class ContactsServiceImpl extends ContactsService {
     List<Contact> users =
         await assignBirthdaysToUsers.showConfirmationDialog(context);
     if (users.isNotEmpty) {
+      if (!context.mounted) return;
       await _gatherBirthdaysForUsers(context, users);
     }
   }
@@ -66,17 +67,19 @@ class ContactsServiceImpl extends ContactsService {
   Future<void> _gatherBirthdaysForUsers(
       BuildContext context, List<Contact> users) async {
     int amountOfBirthdaysSet = 0;
+    final localizations = AppLocalizations.of(context)!;
 
     for (Contact contact in users) {
+      if (!context.mounted) return;
       DateTime? chosenBirthDate = await showDatePicker(
           context: context,
           initialDate: DateTime(1970, 1, 1),
           firstDate: DateTime(1970, 1, 1),
           lastDate: DateTime.now(),
           initialEntryMode: DatePickerEntryMode.input,
-          helpText: AppLocalizations.of(context)!
+          helpText: localizations
               .helpTextChooseBirthdateForImportedContact(contact.displayName),
-          fieldLabelText: AppLocalizations.of(context)!
+          fieldLabelText: localizations
               .fieldLabelTextChooseBirthdateForImportedContact(
                   contact.displayName));
 
@@ -87,14 +90,15 @@ class ContactsServiceImpl extends ContactsService {
             true,
             contact.phones.isNotEmpty ? contact.phones.first.number : "");
 
-        await addContactToCalendar(userBirthday, context);
+        await addContactToCalendar(userBirthday, localizations.notificationForBirthdayMessage(userBirthday.name));
         amountOfBirthdaysSet++;
       }
     }
 
     if (amountOfBirthdaysSet > 0) {
+      if (!context.mounted) return;
       Utils.showSnackbarWithMessage(
-          context, AppLocalizations.of(context)!.contactsImportedSuccessfully);
+          context, localizations.contactsImportedSuccessfully);
     }
   }
 
@@ -104,7 +108,7 @@ class ContactsServiceImpl extends ContactsService {
   }
 
   @override
-  Future<void> addContactToCalendar(UserBirthday contact, BuildContext context) async {
+  Future<void> addContactToCalendar(UserBirthday contact, String notificationMessage) async {
     List<UserBirthday> birthdays =
         await storageService.getBirthdaysForDate(contact.birthdayDate, false);
     String contactName = contact.name;
@@ -118,8 +122,7 @@ class ContactsServiceImpl extends ContactsService {
 
     await notificationService.scheduleNotificationForBirthday(
         contact,
-        AppLocalizations.of(context)!
-            .notificationForBirthdayMessage(contact.name));
+        notificationMessage);
 
     birthdays.add(contact);
 
