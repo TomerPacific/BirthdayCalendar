@@ -8,6 +8,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:convert';
 import 'package:collection/collection.dart';
+import 'package:pub_semver/pub_semver.dart';
 
 class VersionSpecificServiceImpl extends VersionSpecificService {
   VersionSpecificServiceImpl(
@@ -109,16 +110,21 @@ class VersionSpecificServiceImpl extends VersionSpecificService {
   }
 
   bool _isVersionGreaterThan(String newVersion, String currentVersion) {
-    List<String> currentVersionSplit = currentVersion.split(".");
-    List<String> newVersionSplit = newVersion.split(".");
-    bool isNewVersionGreaterThanCurrentVersion = false;
-    for (var i = 0; i < currentVersionSplit.length; i++) {
-      isNewVersionGreaterThanCurrentVersion =
-          int.parse(newVersionSplit[i]) > int.parse(currentVersionSplit[i]);
-      if (int.parse(newVersionSplit[i]) != int.parse(currentVersionSplit[i])) {
-        break;
-      }
+    try {
+      return Version.parse(_ensureThreeSegments(newVersion)) >
+          Version.parse(_ensureThreeSegments(currentVersion));
+    } catch (e) {
+      return false;
     }
-    return isNewVersionGreaterThanCurrentVersion;
+  }
+
+  String _ensureThreeSegments(String v) {
+    final parts = v.split('+');
+    final dotParts = parts[0].split('.');
+    while (dotParts.length < 3) {
+      dotParts.add('0');
+    }
+    return dotParts.take(3).join('.') +
+        (parts.length > 1 ? '+${parts[1]}' : '');
   }
 }
