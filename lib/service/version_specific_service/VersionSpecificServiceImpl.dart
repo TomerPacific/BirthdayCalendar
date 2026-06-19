@@ -28,9 +28,9 @@ class VersionSpecificServiceImpl extends VersionSpecificService {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     if (_isVersionGreaterThan(
         packageInfo.version, versionToMigrateNotificationStatusFrom)) {
-      List<PendingNotificationRequest> pendingNotifications =
+      List<PendingNotificationRequest> scheduledNotifications =
           await notificationService.getAllScheduledNotifications();
-      for (PendingNotificationRequest request in pendingNotifications) {
+      for (PendingNotificationRequest request in scheduledNotifications) {
         if (request.payload != null) {
           String payload = request.payload!;
           UserBirthday userBirthday =
@@ -38,10 +38,10 @@ class VersionSpecificServiceImpl extends VersionSpecificService {
           if (!userBirthday.hasNotification) {
             List<UserBirthday> birthdays = await storageService
                 .getBirthdaysForDate(userBirthday.birthdayDate, false);
-            UserBirthday? found = birthdays
+            UserBirthday? matchedBirthday = birthdays
                 .firstWhereOrNull((element) => element.equals(userBirthday));
-            if (found != null) {
-              birthdays.remove(found);
+            if (matchedBirthday != null) {
+              birthdays.remove(matchedBirthday);
               userBirthday.updateNotificationStatus(true);
               birthdays.add(userBirthday);
               await storageService.saveBirthdaysForDate(
@@ -75,7 +75,7 @@ class VersionSpecificServiceImpl extends VersionSpecificService {
     // Reschedule each birthday with a new deterministic ID.
     // Errors are caught per-item so a single failure doesn't leave all other
     // birthdays without notifications.
-    bool allSucceeded = true;
+    bool isMigrationSuccessful = true;
     for (UserBirthday birthday in allBirthdays) {
       final migratedBirthday = UserBirthday(
         birthday.name,
@@ -96,7 +96,7 @@ class VersionSpecificServiceImpl extends VersionSpecificService {
           );
         }
       } catch (e, stackTrace) {
-        allSucceeded = false;
+        isMigrationSuccessful = false;
         debugPrint(
             'Failed to migrate birthday ${birthday.name}: $e\n$stackTrace');
       }
@@ -104,27 +104,59 @@ class VersionSpecificServiceImpl extends VersionSpecificService {
 
     // Only mark migration complete if every birthday was migrated successfully,
     // so a partial failure retries on the next launch.
-    if (allSucceeded) {
+    if (isMigrationSuccessful) {
       await storageService.saveDidAlreadyMigrateNotificationIds(true);
     }
   }
 
-  bool _isVersionGreaterThan(String newVersion, String currentVersion) {
+  bool _isVersionGreaterThan(String version, String threshold) {
+    Version? parsedVersion = _tryParseVersion(version);
+    Version? parsedThreshold = _tryParseVersion(threshold);
+
+    if (parsedVersion != null && parsedThreshold != null) {
+      return parsedVersion > parsedThreshold;
+    }
+
+    debugPrint(
+        "Could not compare versions: version='$version', threshold='$threshold'");
+    return false;
+  }
+
+  Version? _tryParseVersion(String versionString) {
     try {
-      return Version.parse(_ensureThreeSegments(newVersion)) >
-          Version.parse(_ensureThreeSegments(currentVersion));
-    } catch (e) {
-      return false;
+      return Version.parse(versionString);
+    } catch (_) {
+      try {
+        return Version.parse(_normalizeToSemVer(versionString));
+      } catch (e) {
+        debugPrint("Failed to parse version '$versionString': $e");
+        return null;
+      }
     }
   }
 
-  String _ensureThreeSegments(String v) {
-    final parts = v.split('+');
-    final dotParts = parts[0].split('.');
-    while (dotParts.length < 3) {
-      dotParts.add('0');
+  String _normalizeToSemVer(String versionString) {
+    int dashIndex = versionString.indexOf('-');
+    int plusIndex = versionString.indexOf('+');
+    int splitIndex = -1;
+
+    if (dashIndex != -1 && plusIndex != -1) {
+      splitIndex = dashIndex < plusIndex ? dashIndex : plusIndex;
+    } else {
+      splitIndex = dashIndex != -1 ? dashIndex : plusIndex;
     }
-    return dotParts.take(3).join('.') +
-        (parts.length > 1 ? '+${parts[1]}' : '');
+
+    String versionPart =
+        splitIndex == -1 ? versionString : versionString.substring(0, splitIndex);
+    String suffix = splitIndex == -1 ? "" : versionString.substring(splitIndex);
+
+    List<String> segments = versionPart.split('.');
+    if (segments.length < 3) {
+      while (segments.length < 3) {
+        segments.add("0");
+      }
+      return segments.join('.') + suffix;
+    }
+    return versionString;
   }
 }
