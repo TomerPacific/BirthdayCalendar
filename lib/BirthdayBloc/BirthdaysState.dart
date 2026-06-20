@@ -1,10 +1,12 @@
 import 'package:birthday_calendar/model/user_birthday.dart';
 
-class BirthdaysState {
-  final DateTime? date;
-  final List<UserBirthday>? birthdays;
-  final bool showAddBirthdayDialog;
+sealed class BirthdaysState {}
 
-  BirthdaysState(
-      {this.date, this.birthdays, required this.showAddBirthdayDialog});
+class BirthdaysLoaded extends BirthdaysState {
+  final DateTime date;
+  final List<UserBirthday> birthdays;
+
+  BirthdaysLoaded({required this.date, required this.birthdays});
 }
+
+class BirthdaysShowDialog extends BirthdaysState {}
