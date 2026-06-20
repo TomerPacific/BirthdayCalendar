@@ -85,32 +85,31 @@ void main() {
                                 notificationService, storageService, birthdays),
                             child: BlocBuilder<BirthdaysBloc, BirthdaysState>(
                                 builder: (context, state) {
+                              final currentState = state;
                               return Column(children: [
-                                (state.birthdays == null ||
-                                        state.birthdays!.length == 0)
-                                    ? Spacer()
-                                    : Expanded(
+                                if (currentState is BirthdaysLoaded && currentState.birthdays.isNotEmpty)
+                                    Expanded(
                                         child: ListView.builder(
-                                          itemCount: state.birthdays != null
-                                              ? state.birthdays!.length
-                                              : 0,
+                                          itemCount: currentState.birthdays.length,
                                           itemBuilder: (BuildContext context,
                                               int index) {
                                             return BlocProvider.value(
                                                 value: BlocProvider.of<
                                                     BirthdaysBloc>(context),
                                                 child: BirthdayWidget(
-                                                    key: Key(state
-                                                        .birthdays![index]
+                                                    key: Key(currentState
+                                                        .birthdays[index]
                                                         .name),
                                                     birthdayOfPerson:
-                                                        state.birthdays![index],
+                                                        currentState.birthdays[index],
                                                     indexOfBirthday: index,
                                                     notificationService:
                                                         notificationService));
                                           },
                                         ),
-                                      ),
+                                      )
+                                else
+                                  Spacer(),
                               ]);
                             })))));
           },
