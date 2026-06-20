@@ -155,18 +155,20 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
           BlocProvider(
               create: (context) => UserNotificationStatusBloc(
                   context.read<StorageService>(),
-                  notificationService),
-              child: BlocBuilder<UserNotificationStatusBloc, bool>(
+                  notificationService,
+                  birthdayOfPerson.hasNotification),
+              child: BlocBuilder<UserNotificationStatusBloc,
+                      UserNotificationStatusState>(
                   builder: (context, state) {
                 return new IconButton(
                     icon: Icon(
-                        !birthdayOfPerson.hasNotification
+                        !state.hasNotification
                             ? Icons.notifications_off_outlined
                             : Icons.notifications_active_outlined,
                         color: Utils.getColorBasedOnPosition(
                             indexOfBirthday, ElementType.icon)),
                     onPressed: () async {
-                      if (!birthdayOfPerson.hasNotification) {
+                      if (!state.hasNotification) {
                         final userNotificationStatusBloc =
                             BlocProvider.of<UserNotificationStatusBloc>(
                                 context);
@@ -178,9 +180,8 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
 
                         if (status.isGranted) {
                           userNotificationStatusBloc
-                              .add(UserNotificationStatusEvent(
+                              .add(UserNotificationStatusToggled(
                             userBirthday: birthdayOfPerson,
-                            hasNotification: birthdayOfPerson.hasNotification,
                             notificationMsg: localizations
                                 .notificationForBirthdayMessage(
                                     birthdayOfPerson.name),
@@ -199,13 +200,12 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                           return;
                         }
 
-                        Utils.showSnackbarWithMessage(
-                            context, localizations.notificationPermissionDenied);
+                        Utils.showSnackbarWithMessage(context,
+                            localizations.notificationPermissionDenied);
                       } else {
                         BlocProvider.of<UserNotificationStatusBloc>(context)
-                            .add(UserNotificationStatusEvent(
+                            .add(UserNotificationStatusToggled(
                           userBirthday: birthdayOfPerson,
-                          hasNotification: birthdayOfPerson.hasNotification,
                           notificationMsg: AppLocalizations.of(context)!
                               .notificationForBirthdayMessage(
                                   birthdayOfPerson.name),

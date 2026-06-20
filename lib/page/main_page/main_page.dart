@@ -171,7 +171,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ClearNotificationsBloc, bool>(builder: (context, state) {
+    return BlocBuilder<ClearNotificationsBloc, ClearNotificationsState>(builder: (context, state) {
       return Scaffold(
           appBar: AppBar(
             actions: [
@@ -189,9 +189,9 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
               )
             ],
           ),
-          body: BlocListener<ClearNotificationsBloc, bool>(
+          body: BlocListener<ClearNotificationsBloc, ClearNotificationsState>(
             listener: (context, state) {
-              if (state) {
+              if (state is ClearNotificationsCompleted) {
                 setState(() {});
               }
             },
