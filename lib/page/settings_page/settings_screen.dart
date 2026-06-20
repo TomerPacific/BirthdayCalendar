@@ -91,7 +91,7 @@ class SettingsScreen extends StatelessWidget {
         TextButton(
           onPressed: () {
             BlocProvider.of<ClearNotificationsBloc>(context)
-                .add(ClearNotificationsEvent.ClearedNotifications);
+                .add(ClearNotificationsRequested());
             Navigator.pop(context);
           },
           child: Text(AppLocalizations.of(context)!.yes),
