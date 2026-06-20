@@ -3,36 +3,50 @@ import 'package:birthday_calendar/service/notification_service/notification_serv
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class UserNotificationStatusEvent {
-  UserNotificationStatusEvent(
-      {required this.userBirthday,
-      required this.hasNotification,
-      required this.notificationMsg});
+abstract class UserNotificationStatusEvent {}
+
+class UserNotificationStatusToggled extends UserNotificationStatusEvent {
+  UserNotificationStatusToggled(
+      {required this.userBirthday, required this.notificationMsg});
 
   final UserBirthday userBirthday;
-  final bool hasNotification;
   final String notificationMsg;
 }
 
+sealed class UserNotificationStatusState {
+  final bool hasNotification;
+  UserNotificationStatusState(this.hasNotification);
+}
+
+class UserNotificationStatusInitial extends UserNotificationStatusState {
+  UserNotificationStatusInitial(super.hasNotification);
+}
+
+class UserNotificationStatusChanged extends UserNotificationStatusState {
+  UserNotificationStatusChanged(super.hasNotification);
+}
+
 class UserNotificationStatusBloc
-    extends Bloc<UserNotificationStatusEvent, bool> {
+    extends Bloc<UserNotificationStatusEvent, UserNotificationStatusState> {
+  final StorageService storageService;
+  final NotificationService notificationService;
+
   UserNotificationStatusBloc(
-      StorageService storageService, NotificationService notificationService)
-      : super(false) {
-    on<UserNotificationStatusEvent>((event, emit) async {
-      bool notificationStatus = event.hasNotification;
-      notificationStatus = !notificationStatus;
+      this.storageService, this.notificationService, bool initialStatus)
+      : super(UserNotificationStatusInitial(initialStatus)) {
+    on<UserNotificationStatusToggled>((event, emit) async {
+      bool newStatus = !state.hasNotification;
       UserBirthday birthday = event.userBirthday;
-      birthday.hasNotification = notificationStatus;
+      birthday.hasNotification = newStatus;
       await storageService.updateNotificationStatusForBirthday(
-          birthday, notificationStatus);
-      if (!notificationStatus) {
+          birthday, newStatus);
+      if (!newStatus) {
         await notificationService.cancelNotificationForBirthday(birthday);
       } else {
         await notificationService.scheduleNotificationForBirthday(
             birthday, event.notificationMsg);
       }
-      emit(notificationStatus);
+      emit(UserNotificationStatusChanged(newStatus));
     });
   }
 }
