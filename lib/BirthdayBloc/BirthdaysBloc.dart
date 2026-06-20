@@ -26,10 +26,9 @@ class BirthdaysEvent {
 class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
   BirthdaysBloc(NotificationService notificationService,
       StorageService storageService, List<UserBirthday> birthdaysForDate)
-      : super(BirthdaysState(
+      : super(BirthdaysLoaded(
             date: DateTime.now(),
-            birthdays: birthdaysForDate,
-            showAddBirthdayDialog: false)) {
+            birthdays: birthdaysForDate)) {
     on<BirthdaysEvent>((event, emit) async {
       switch (event.eventName) {
         case BirthdayEvent.AddBirthday:
@@ -40,7 +39,7 @@ class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
               event, emit, storageService, notificationService);
           break;
         case BirthdayEvent.ShowAddBirthdayDialog:
-          emit(new BirthdaysState(showAddBirthdayDialog: true));
+          emit(BirthdaysShowDialog());
           break;
       }
     });
@@ -48,7 +47,7 @@ class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
 
   Future<void> _handleAddEvent(
       BirthdaysEvent event,
-      Emitter emit,
+      Emitter<BirthdaysState> emit,
       StorageService storageService,
       NotificationService notificationService) async {
     UserBirthday? userBirthday = event.birthday;
@@ -67,15 +66,14 @@ class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
     await notificationService.scheduleNotificationForBirthday(
         userBirthday, notificationMsg);
 
-    emit(new BirthdaysState(
+    emit(BirthdaysLoaded(
         date: birthdayDate,
-        birthdays: birthdaysMatchingDate,
-        showAddBirthdayDialog: false));
+        birthdays: birthdaysMatchingDate));
   }
 
   Future<void> _handleRemoveEvent(
       BirthdaysEvent event,
-      Emitter emit,
+      Emitter<BirthdaysState> emit,
       StorageService storageService,
       NotificationService notificationService) async {
     UserBirthday? userBirthday = event.birthday;
@@ -95,9 +93,8 @@ class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
 
     await storageService.saveBirthdaysForDate(birthdayDate, filteredBirthdays);
     await notificationService.cancelNotificationForBirthday(userBirthday);
-    emit(new BirthdaysState(
+    emit(BirthdaysLoaded(
         date: birthdayDate,
-        birthdays: filteredBirthdays,
-        showAddBirthdayDialog: false));
+        birthdays: filteredBirthdays));
   }
 }

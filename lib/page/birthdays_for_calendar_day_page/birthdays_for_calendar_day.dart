@@ -43,27 +43,26 @@ class BirthdaysForCalendarDayWidget extends StatelessWidget {
             body: Center(
                 child: Column(
               children: [
-                (state.birthdays == null || state.birthdays!.length == 0)
-                    ? Spacer()
-                    : Expanded(
-                        child: ListView.builder(
-                          itemCount: state.birthdays != null
-                              ? state.birthdays!.length
-                              : 0,
-                          itemBuilder: (BuildContext context, int index) {
-                            return BlocProvider.value(
-                                value: BlocProvider.of<BirthdaysBloc>(context),
-                                child: BirthdayWidget(
-                                    key: Key(state.birthdays![index].name),
-                                    birthdayOfPerson: state.birthdays![index],
-                                    indexOfBirthday: index,
-                                    notificationService: notificationService));
-                          },
-                        ),
-                      ),
+                if (state is BirthdaysLoaded && state.birthdays.isNotEmpty)
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: state.birthdays.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return BlocProvider.value(
+                            value: BlocProvider.of<BirthdaysBloc>(context),
+                            child: BirthdayWidget(
+                                key: Key(state.birthdays[index].name),
+                                birthdayOfPerson: state.birthdays[index],
+                                indexOfBirthday: index,
+                                notificationService: notificationService));
+                      },
+                    ),
+                  )
+                else
+                  Spacer(),
                 BlocListener<BirthdaysBloc, BirthdaysState>(
                   listener: (context, state) {
-                    if (state.showAddBirthdayDialog) {
+                    if (state is BirthdaysShowDialog) {
                       showDialog(
                           context: context,
                           builder: (_) => BlocProvider.value(
