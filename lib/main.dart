@@ -17,12 +17,15 @@ import 'package:birthday_calendar/page/main_page/main_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:birthday_calendar/l10n/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  final sharedPreferences = await SharedPreferences.getInstance();
   PermissionsService permissionsService = PermissionsServiceImpl();
-  StorageService storageService = StorageServiceSharedPreferences();
+  StorageService storageService =
+      StorageServiceSharedPreferences(sharedPreferences);
 
   NotificationService notificationService =
       NotificationServiceImpl(permissionsService: permissionsService, storageService: storageService);
