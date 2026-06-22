@@ -10,18 +10,21 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:collection/collection.dart';
 
 class StorageServiceSharedPreferences extends StorageService {
+  final SharedPreferences _sharedPreferences;
+
+  StorageServiceSharedPreferences(this._sharedPreferences);
+
   StreamController<BirthdaysStreamEvent> streamController =
       StreamController<BirthdaysStreamEvent>.broadcast();
 
   @override
   Future<void> clearAllBirthdays() async {
-    final sharedPreferences = await SharedPreferences.getInstance();
-    Set<String> keys = sharedPreferences.getKeys();
+    Set<String> keys = _sharedPreferences.getKeys();
     DateFormat format = DateFormat('yyyy-MM-dd');
     for (String key in keys) {
       try {
         format.parse(key);
-        await sharedPreferences.remove(key);
+        await _sharedPreferences.remove(key);
       } catch (error) {}
     }
   }
@@ -32,10 +35,10 @@ class StorageServiceSharedPreferences extends StorageService {
     if (shouldGetBirthdaysFromSimilarDate) {
       List<UserBirthday> birthdays = [];
       List<DateTime> birthdaysWithSimilarDates =
-          await _getBirthdaysWithSimilarDate(dateTime);
+          _getBirthdaysWithSimilarDate(dateTime);
       for (DateTime dateTime in birthdaysWithSimilarDates) {
         List<UserBirthday> decodedBirthdays =
-            await _decodeBirthdaysFromDate(dateTime);
+            _decodeBirthdaysFromDate(dateTime);
         birthdays.addAll(decodedBirthdays);
       }
 
@@ -43,16 +46,14 @@ class StorageServiceSharedPreferences extends StorageService {
     }
 
     List<UserBirthday> decodedBirthdays =
-        await _decodeBirthdaysFromDate(dateTime);
+        _decodeBirthdaysFromDate(dateTime);
     return decodedBirthdays;
   }
 
-  Future<List<UserBirthday>> _decodeBirthdaysFromDate(DateTime dateTime) async {
-    final sharedPreferences = await SharedPreferences.getInstance();
-
+  List<UserBirthday> _decodeBirthdaysFromDate(DateTime dateTime) {
     String formattedDate =
         BirthdayCalendarDateUtils.formatDateForSharedPrefs(dateTime);
-    String? birthdaysJSON = sharedPreferences.getString(formattedDate);
+    String? birthdaysJSON = _sharedPreferences.getString(formattedDate);
     if (birthdaysJSON != null) {
       List decodedBirthdaysForDate = jsonDecode(birthdaysJSON);
       List<UserBirthday> decodedBirthdays = decodedBirthdaysForDate
@@ -64,10 +65,9 @@ class StorageServiceSharedPreferences extends StorageService {
     return [];
   }
 
-  Future<List<DateTime>> _getBirthdaysWithSimilarDate(DateTime dateTime) async {
+  List<DateTime> _getBirthdaysWithSimilarDate(DateTime dateTime) {
     List<DateTime> matchingBirthdays = [];
-    final sharedPreferences = await SharedPreferences.getInstance();
-    Set<String> dates = sharedPreferences.getKeys();
+    Set<String> dates = _sharedPreferences.getKeys();
 
     for (String date in dates) {
       if (!BirthdayCalendarDateUtils.isADate(date)) {
@@ -85,27 +85,24 @@ class StorageServiceSharedPreferences extends StorageService {
 
   @override
   Future<bool> getThemeModeSetting() async {
-    final sharedPreferences = await SharedPreferences.getInstance();
-    bool? isDarkModeEnabled = sharedPreferences.getBool(darkModeKey);
+    bool? isDarkModeEnabled = _sharedPreferences.getBool(darkModeKey);
     return isDarkModeEnabled != null ? isDarkModeEnabled : false;
   }
 
   @override
   Future<void> saveBirthdaysForDate(
       DateTime dateTime, List<UserBirthday> birthdays) async {
-    final sharedPreferences = await SharedPreferences.getInstance();
     String encoded = jsonEncode(birthdays);
     String formattedDate =
         BirthdayCalendarDateUtils.formatDateForSharedPrefs(dateTime);
-    await sharedPreferences.setString(formattedDate, encoded);
+    await _sharedPreferences.setString(formattedDate, encoded);
 
     streamController.sink.add(BirthdaysStreamEvent(dateTime, birthdays));
   }
 
   @override
   Future<void> saveThemeModeSetting(bool isDarkModeEnabled) async {
-    final sharedPreferences = await SharedPreferences.getInstance();
-    await sharedPreferences.setBool(darkModeKey, isDarkModeEnabled);
+    await _sharedPreferences.setBool(darkModeKey, isDarkModeEnabled);
   }
 
   @override
@@ -131,31 +128,27 @@ class StorageServiceSharedPreferences extends StorageService {
   @override
   Future<void> saveIsContactsPermissionPermanentlyDenied(
       bool isPermanentlyDenied) async {
-    final sharedPreferences = await SharedPreferences.getInstance();
-    await sharedPreferences.setBool(
+    await _sharedPreferences.setBool(
         contactsPermissionStatusKey, isPermanentlyDenied);
   }
 
   @override
   Future<bool> getIsContactPermissionPermanentlyDenied() async {
-    final sharedPreferences = await SharedPreferences.getInstance();
     bool? isPermanentlyDenied =
-        sharedPreferences.getBool(contactsPermissionStatusKey);
+        _sharedPreferences.getBool(contactsPermissionStatusKey);
     return isPermanentlyDenied != null ? isPermanentlyDenied : false;
   }
 
   @override
   Future<void> saveDidAlreadyMigrateNotificationStatus(bool status) async {
-    final sharedPreferences = await SharedPreferences.getInstance();
-    await sharedPreferences.setBool(
+    await _sharedPreferences.setBool(
         didAlreadyMigrateNotificationStatusFlag, status);
   }
 
   @override
   Future<bool> getAlreadyMigrateNotificationStatus() async {
-    final sharedPreferences = await SharedPreferences.getInstance();
     bool? hasAlreadyMigratedNotificationStatus =
-        sharedPreferences.getBool(didAlreadyMigrateNotificationStatusFlag);
+        _sharedPreferences.getBool(didAlreadyMigrateNotificationStatusFlag);
     return hasAlreadyMigratedNotificationStatus != null
         ? hasAlreadyMigratedNotificationStatus
         : false;
@@ -163,31 +156,28 @@ class StorageServiceSharedPreferences extends StorageService {
 
   @override
   Future<void> saveDidAlreadyMigrateNotificationIds(bool status) async {
-    final sharedPreferences = await SharedPreferences.getInstance();
-    await sharedPreferences.setBool(
+    await _sharedPreferences.setBool(
         didAlreadyMigrateNotificationIdsFlag, status);
   }
 
   @override
   Future<bool> getAlreadyMigrateNotificationIds() async {
-    final sharedPreferences = await SharedPreferences.getInstance();
     bool? hasAlreadyMigrated =
-        sharedPreferences.getBool(didAlreadyMigrateNotificationIdsFlag);
+        _sharedPreferences.getBool(didAlreadyMigrateNotificationIdsFlag);
     return hasAlreadyMigrated ?? false;
   }
 
   @override
   Future<List<UserBirthday>> getAllBirthdays() async {
     List<UserBirthday> birthdays = [];
-    final sharedPreferences = await SharedPreferences.getInstance();
-    Set<String> dates = sharedPreferences.getKeys();
+    Set<String> dates = _sharedPreferences.getKeys();
 
     for (String date in dates) {
       if (!BirthdayCalendarDateUtils.isADate(date)) {
         continue;
       }
 
-      String? birthdaysJSON = sharedPreferences.getString(date);
+      String? birthdaysJSON = _sharedPreferences.getString(date);
       if (birthdaysJSON != null) {
         List decodedBirthdaysForDate = jsonDecode(birthdaysJSON);
         List<UserBirthday> userBirthdays = decodedBirthdaysForDate
@@ -233,18 +223,17 @@ class StorageServiceSharedPreferences extends StorageService {
   @override
   Future<void> setNotificationPermissionState(
       NotificationPermissionState state) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(notificationsPermissionStatusKey, state.index);
+    await _sharedPreferences.setInt(notificationsPermissionStatusKey, state.index);
   }
 
   @override
   Future<NotificationPermissionState> getNotificationPermissionState() async {
-    final prefs = await SharedPreferences.getInstance();
-    final index = prefs.getInt(notificationsPermissionStatusKey);
+    final index = _sharedPreferences.getInt(notificationsPermissionStatusKey);
     if (index == null) return NotificationPermissionState.unknown;
     return NotificationPermissionState.values[index];
   }
 
+  @override
   void dispose() {
     streamController.close();
   }
