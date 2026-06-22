@@ -7,14 +7,14 @@ import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 
 void main() {
 
-  StorageService _storageService = StorageServiceSharedPreferences();
+  late StorageService _storageService;
 
-  setUp(() {
-    return Future(() async {
-      WidgetsFlutterBinding.ensureInitialized();
-      SharedPreferences.setMockInitialValues({});
-      await _storageService.clearAllBirthdays();
-    });
+  setUp(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    SharedPreferences.setMockInitialValues({});
+    final sharedPreferences = await SharedPreferences.getInstance();
+    _storageService = StorageServiceSharedPreferences(sharedPreferences);
+    await _storageService.clearAllBirthdays();
   });
 
   test("SharedPreferences get empty birthday array for date", () async {

@@ -52,18 +52,18 @@ var printLog = [];
 void print(String s) => printLog.add(s);
 
 void main() {
-  StorageService storageService = StorageServiceSharedPreferences();
+  late StorageService storageService;
   NotificationService notificationService = MockNotificationService();
   List<UserBirthday> birthdays = [];
 
-  setUp(() {
-    return Future(() async {
-      WidgetsFlutterBinding.ensureInitialized();
-      SharedPreferences.setMockInitialValues({});
-    });
+  setUp(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    SharedPreferences.setMockInitialValues({});
+    final sharedPreferences = await SharedPreferences.getInstance();
+    storageService = StorageServiceSharedPreferences(sharedPreferences);
   });
 
-  Widget base = RepositoryProvider<StorageService>.value(
+  Widget base() => RepositoryProvider<StorageService>.value(
       value: storageService,
       child: MultiBlocProvider(
         providers: [
@@ -122,7 +122,7 @@ void main() {
     UserBirthday userBirthday =
         new UserBirthday("Someone", DateTime.now(), false, phoneNumber);
     birthdays = [userBirthday];
-    await tester.pumpWidget(base);
+    await tester.pumpWidget(base());
 
     final nameFinder = find.text('Someone');
     expect(nameFinder, findsOneWidget);
@@ -134,7 +134,7 @@ void main() {
     UserBirthday userBirthday =
         new UserBirthday("Someone", DateTime.now(), false, phoneNumber);
     birthdays = [userBirthday];
-    await tester.pumpWidget(base);
+    await tester.pumpWidget(base());
 
     await tester.tap(find.descendant(
         of: find.byType(IconButton), matching: find.byIcon(Icons.clear)));
@@ -153,7 +153,7 @@ void main() {
 
     birthdays = [userBirthday];
 
-    await tester.pumpWidget(base);
+    await tester.pumpWidget(base());
 
     await tester.tap(find.descendant(
         of: find.byType(IconButton), matching: find.byIcon(Icons.call)));
