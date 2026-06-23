@@ -6,5 +6,5 @@ abstract class UpdateService {
   bool isImmediateUpdatePossible();
   bool isFlexibleUpdatePossible();
   Future<void> applyImmediateUpdate(Function onSuccess, Function onFailure, BuildContext context);
-  Future<void> startFlexibleUpdate();
+  Future<void> startFlexibleUpdate(Function onSuccess, Function onFailure, BuildContext context);
 }
