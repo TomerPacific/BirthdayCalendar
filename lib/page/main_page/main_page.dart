@@ -55,10 +55,13 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
     });
   }
 
-  void _decideOnNextMonthToShow(DragUpdateDetails details) {
-    details.delta.dx > 0
-        ? _calculateNextMonthToShow(AxisDirection.right)
-        : _calculateNextMonthToShow(AxisDirection.left);
+  void _onHorizontalDragEnd(DragEndDetails details) {
+    if (details.primaryVelocity == null) return;
+    if (details.primaryVelocity! > 0) {
+      _calculateNextMonthToShow(AxisDirection.right);
+    } else if (details.primaryVelocity! < 0) {
+      _calculateNextMonthToShow(AxisDirection.left);
+    }
   }
 
   void _onUpdateSuccess() {
@@ -196,7 +199,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
               }
             },
             child: new GestureDetector(
-                onHorizontalDragUpdate: _decideOnNextMonthToShow,
+                onHorizontalDragEnd: _onHorizontalDragEnd,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
