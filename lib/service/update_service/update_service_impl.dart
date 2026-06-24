@@ -12,7 +12,7 @@ class UpdateServiceImpl extends UpdateService {
       _appUpdateInfo = value;
       _checkForUpdateAvailability(onSuccess, onFailure, context);
     }).catchError((error) {
-      onFailure(error.toString());
+      debugPrint("Failed to check for update: $error");
     });
   }
 
@@ -61,10 +61,20 @@ class UpdateServiceImpl extends UpdateService {
   }
 
   @override
-  Future<void> startFlexibleUpdate() async {
-    AppUpdateResult appUpdateResult = await InAppUpdate.startFlexibleUpdate();
-    if (appUpdateResult == AppUpdateResult.success) {
-      InAppUpdate.completeFlexibleUpdate();
+  Future<void> startFlexibleUpdate(
+      Function onSuccess, Function onFailure, BuildContext context) async {
+    try {
+      AppUpdateResult appUpdateResult = await InAppUpdate.startFlexibleUpdate();
+      if (appUpdateResult == AppUpdateResult.success) {
+        await InAppUpdate.completeFlexibleUpdate();
+        onSuccess();
+      } else if (appUpdateResult == AppUpdateResult.userDeniedUpdate) {
+        onFailure(AppLocalizations.of(context)!.userDeniedUpdate);
+      } else if (appUpdateResult == AppUpdateResult.inAppUpdateFailed) {
+        onFailure(AppLocalizations.of(context)!.appUpdateFailed);
+      }
+    } catch (e) {
+      onFailure(e.toString());
     }
   }
 
@@ -78,7 +88,7 @@ class UpdateServiceImpl extends UpdateService {
       } else {
         bool isFlexibleUpdateAvailable = isFlexibleUpdatePossible();
         if (isFlexibleUpdateAvailable) {
-          startFlexibleUpdate();
+          startFlexibleUpdate(onSuccess, onFailure, context);
         }
       }
     }
