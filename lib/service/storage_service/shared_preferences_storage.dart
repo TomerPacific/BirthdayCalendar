@@ -195,7 +195,7 @@ class StorageServiceSharedPreferences extends StorageService {
     List<UserBirthday> birthdays =
         await getBirthdaysForDate(birthday.birthdayDate, false);
     UserBirthday? storedBirthday =
-        birthdays.firstWhereOrNull((element) => element.name == birthday.name);
+        birthdays.firstWhereOrNull((element) => element == birthday);
     if (storedBirthday != null) {
       storedBirthday.phoneNumber = birthday.phoneNumber;
       await saveBirthdaysForDate(storedBirthday.birthdayDate, birthdays);
