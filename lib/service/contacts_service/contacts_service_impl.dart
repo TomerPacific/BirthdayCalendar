@@ -88,7 +88,8 @@ class ContactsServiceImpl extends ContactsService {
             contact.displayName,
             chosenBirthDate,
             true,
-            contact.phones.isNotEmpty ? contact.phones.first.number : "");
+            contact.phones.isNotEmpty ? contact.phones.first.number : "",
+            contactId: contact.id);
 
         await addContactToCalendar(userBirthday, localizations.notificationForBirthdayMessage(userBirthday.name));
         amountOfBirthdaysSet++;
@@ -111,12 +112,11 @@ class ContactsServiceImpl extends ContactsService {
   Future<void> addContactToCalendar(UserBirthday contact, String notificationMessage) async {
     List<UserBirthday> birthdays =
         await storageService.getBirthdaysForDate(contact.birthdayDate, false);
-    String contactName = contact.name;
 
-    UserBirthday? birthdayWithSameName =
-        birthdays.firstWhereOrNull((element) => element.name == contactName);
+    UserBirthday? alreadyExists =
+        birthdays.firstWhereOrNull((element) => element == contact);
 
-    if (birthdayWithSameName != null) {
+    if (alreadyExists != null) {
       return;
     }
 
