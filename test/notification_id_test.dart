@@ -51,4 +51,33 @@ void main() {
       expect(b.notificationId, equals(42));
     });
   });
+
+  group('UserBirthday equality and contactId', () {
+    test('equality uses contactId when both have it', () {
+      final date = DateTime(1990, 6, 15);
+      final a = UserBirthday('Alice', date, false, '', contactId: '1');
+      final b = UserBirthday('Alice renamed', date, false, '', contactId: '1');
+      expect(a, equals(b));
+    });
+
+    test('equality distinguishes same names with different contactIds', () {
+      final date = DateTime(1990, 6, 15);
+      final a = UserBirthday('Alice', date, false, '', contactId: '1');
+      final b = UserBirthday('Alice', date, false, '', contactId: '2');
+      expect(a, isNot(equals(b)));
+    });
+
+    test('equality falls back to name and date when contactId is missing', () {
+      final date = DateTime(1990, 6, 15);
+      final a = UserBirthday('Alice', date, false, '', contactId: '');
+      final b = UserBirthday('Alice', date, false, '', contactId: '1');
+      expect(a, equals(b));
+    });
+
+    test('fromJson preserves contactId', () {
+      final original = UserBirthday('Alice', DateTime(1990, 6, 15), false, '', contactId: 'abc');
+      final decoded = UserBirthday.fromJson(original.toJson());
+      expect(decoded.contactId, equals('abc'));
+    });
+  });
 }
