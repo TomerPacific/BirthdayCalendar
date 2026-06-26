@@ -12,10 +12,21 @@ class Utils {
       StorageService _storageService, List<Contact> contacts) async {
     List<UserBirthday> allStoredBirthdays =
         await _storageService.getAllBirthdays();
-    List<String> names = allStoredBirthdays.map((e) => e.name).toList();
-    List<Contact> filtered = contacts
-        .where((contact) => !names.contains(contact.displayName))
-        .toList();
+    Set<String> existingContactIds = allStoredBirthdays
+        .map((e) => e.contactId)
+        .where((id) => id.isNotEmpty)
+        .toSet();
+    Set<String> legacyNames = allStoredBirthdays
+        .where((e) => e.contactId.isEmpty)
+        .map((e) => e.name)
+        .toSet();
+
+    List<Contact> filtered = contacts.where((contact) {
+      if (existingContactIds.contains(contact.id)) {
+        return false;
+      }
+      return !legacyNames.contains(contact.displayName);
+    }).toList();
     return filtered;
   }
 
