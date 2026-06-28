@@ -45,8 +45,7 @@ class StorageServiceSharedPreferences extends StorageService {
       return birthdays;
     }
 
-    List<UserBirthday> decodedBirthdays =
-        _decodeBirthdaysFromDate(dateTime);
+    List<UserBirthday> decodedBirthdays = _decodeBirthdaysFromDate(dateTime);
     return decodedBirthdays;
   }
 
@@ -168,6 +167,36 @@ class StorageServiceSharedPreferences extends StorageService {
   }
 
   @override
+  Future<void> updateContactIdForBirthday(
+      UserBirthday birthday, String contactId) async {
+    List<UserBirthday> birthdays =
+        await getBirthdaysForDate(birthday.birthdayDate, false);
+    final int index =
+        birthdays.indexWhere((element) => element.equals(birthday));
+    if (index == -1) return;
+    final existing = birthdays[index];
+    birthdays[index] = UserBirthday(
+      existing.name,
+      existing.birthdayDate,
+      existing.hasNotification,
+      existing.phoneNumber,
+      notificationId: existing.notificationId,
+      contactId: contactId,
+    );
+    await saveBirthdaysForDate(birthday.birthdayDate, birthdays);
+  }
+
+  @override
+  Future<void> saveDidAlreadyMigrateContactIds(bool status) async {
+    await _sharedPreferences.setBool(didAlreadyMigrateContactIdsFlag, status);
+  }
+
+  @override
+  Future<bool> getAlreadyMigratedContactIds() async {
+    return _sharedPreferences.getBool(didAlreadyMigrateContactIdsFlag) ?? false;
+  }
+
+  @override
   Future<List<UserBirthday>> getAllBirthdays() async {
     List<UserBirthday> birthdays = [];
     Set<String> dates = _sharedPreferences.getKeys();
@@ -223,7 +252,8 @@ class StorageServiceSharedPreferences extends StorageService {
   @override
   Future<void> setNotificationPermissionState(
       NotificationPermissionState state) async {
-    await _sharedPreferences.setInt(notificationsPermissionStatusKey, state.index);
+    await _sharedPreferences.setInt(
+        notificationsPermissionStatusKey, state.index);
   }
 
   @override

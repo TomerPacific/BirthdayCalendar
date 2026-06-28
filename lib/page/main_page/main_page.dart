@@ -164,6 +164,20 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
     } catch (e, stackTrace) {
       debugPrint("Failed to migrate notification IDs: $e\n$stackTrace");
     }
+
+    if (!mounted) return;
+
+    try {
+      // Fetch live contacts once and pass them into the migration so
+      // the service layer does not need a BuildContext or a contacts-permission
+      // check of its own. If contacts permission has not been granted yet the
+      // fetch will return an empty list and the migration will be a no-op,
+      // retrying on the next launch.
+      final contacts = await widget.contactsService.fetchContacts(false);
+      await versionSpecificService.migrateContactIds(contacts);
+    } catch (e, stackTrace) {
+      debugPrint("Failed to migrate contact IDs: $e\n$stackTrace");
+    }
   }
 
   @override
@@ -174,7 +188,8 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ClearNotificationsBloc, ClearNotificationsState>(builder: (context, state) {
+    return BlocBuilder<ClearNotificationsBloc, ClearNotificationsState>(
+        builder: (context, state) {
       return Scaffold(
           appBar: AppBar(
             actions: [

@@ -9,6 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:pub_semver/pub_semver.dart';
+import 'package:flutter_contacts/contact.dart';
 
 class VersionSpecificServiceImpl extends VersionSpecificService {
   VersionSpecificServiceImpl(
@@ -109,6 +110,51 @@ class VersionSpecificServiceImpl extends VersionSpecificService {
     }
   }
 
+  @override
+  Future<void> migrateContactIds(List<Contact> liveContacts) async {
+    bool didAlreadyMigrate =
+        await storageService.getAlreadyMigratedContactIds();
+    if (didAlreadyMigrate) return;
+
+    List<UserBirthday> allBirthdays = await storageService.getAllBirthdays();
+    List<UserBirthday> legacyBirthdays =
+        allBirthdays.where((b) => b.contactId.isEmpty).toList();
+
+    if (legacyBirthdays.isEmpty) {
+      await storageService.saveDidAlreadyMigrateContactIds(true);
+      return;
+    }
+
+    // Build a name -> contacts map from live contacts for fast lookup.
+    // We only migrate when exactly one live contact matches the stored name —
+    // ambiguous matches are left alone rather than guessed at.
+    final Map<String, List<Contact>> contactsByName = {};
+    for (final contact in liveContacts) {
+      contactsByName.putIfAbsent(contact.displayName, () => []).add(contact);
+    }
+
+    bool allSucceeded = true;
+    for (final birthday in legacyBirthdays) {
+      final matches = contactsByName[birthday.name];
+      if (matches == null || matches.length != 1) {
+        // No match or ambiguous — leave this entry as-is.
+        continue;
+      }
+      try {
+        await storageService.updateContactIdForBirthday(
+            birthday, matches.first.id);
+      } catch (e, stackTrace) {
+        allSucceeded = false;
+        debugPrint(
+            'migrateContactIds: failed to update ${birthday.name}: $e\n$stackTrace');
+      }
+    }
+
+    if (allSucceeded) {
+      await storageService.saveDidAlreadyMigrateContactIds(true);
+    }
+  }
+
   bool _isVersionGreaterThan(String version, String threshold) {
     Version? parsedVersion = _tryParseVersion(version);
     Version? parsedThreshold = _tryParseVersion(threshold);
@@ -146,8 +192,9 @@ class VersionSpecificServiceImpl extends VersionSpecificService {
       splitIndex = dashIndex != -1 ? dashIndex : plusIndex;
     }
 
-    String versionPart =
-        splitIndex == -1 ? versionString : versionString.substring(0, splitIndex);
+    String versionPart = splitIndex == -1
+        ? versionString
+        : versionString.substring(0, splitIndex);
     String suffix = splitIndex == -1 ? "" : versionString.substring(splitIndex);
 
     List<String> segments = versionPart.split('.');
