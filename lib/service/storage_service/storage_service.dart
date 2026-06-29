@@ -20,7 +20,8 @@ abstract class StorageService {
 
   Stream<BirthdaysStreamEvent> getBirthdaysStream();
 
-  Future<void> saveIsContactsPermissionPermanentlyDenied(bool isPermanentlyDenied);
+  Future<void> saveIsContactsPermissionPermanentlyDenied(
+      bool isPermanentlyDenied);
 
   Future<bool> getIsContactPermissionPermanentlyDenied();
 
@@ -42,6 +43,13 @@ abstract class StorageService {
   Future<void> saveDidAlreadyMigrateNotificationIds(bool status);
 
   Future<bool> getAlreadyMigrateNotificationIds();
+
+  Future<void> updateContactIdForBirthday(
+      UserBirthday birthday, String contactId);
+
+  Future<void> saveDidAlreadyMigrateContactIds(bool status);
+
+  Future<bool> getAlreadyMigratedContactIds();
 
   void dispose();
 }

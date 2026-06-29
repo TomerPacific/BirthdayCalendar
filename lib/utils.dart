@@ -12,11 +12,25 @@ class Utils {
       StorageService _storageService, List<Contact> contacts) async {
     List<UserBirthday> allStoredBirthdays =
         await _storageService.getAllBirthdays();
-    List<String> names = allStoredBirthdays.map((e) => e.name).toList();
-    List<Contact> filtered = contacts
-        .where((contact) => !names.contains(contact.displayName))
-        .toList();
-    return filtered;
+    Set<String> existingContactIds = allStoredBirthdays
+        .map((e) => e.contactId)
+        .where((id) => id.isNotEmpty)
+        .toSet();
+
+    // Legacy entries (contactId still empty) are matched by name until the
+    // one-time migrateContactIds migration assigns them a proper id.
+    Set<String> legacyNames = allStoredBirthdays
+        .where((e) => e.contactId.isEmpty)
+        .map((e) => e.name)
+        .toSet();
+
+    return contacts.where((contact) {
+      if (existingContactIds.contains(contact.id)) return false;
+      // Once migration has run, legacyNames will be empty and this check
+      // becomes a no-op. Until then it prevents re-importing the same person.
+      if (legacyNames.contains(contact.displayName)) return false;
+      return true;
+    }).toList();
   }
 
   static UserBirthday? getUserBirthdayFromPayload(String? payload) {
