@@ -157,7 +157,7 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
 
                 bool hasUserGrantedNotificationPermission = await widget
                     .notificationService
-                    .isNotificationPermissionGranted(context);
+                    .isNotificationPermissionGranted();
 
                 if (!mounted) return;
 

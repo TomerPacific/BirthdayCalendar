@@ -2,16 +2,15 @@ import 'dart:async';
 
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/service/notification_service/notificationCallbacks.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 abstract class NotificationService {
-  Future<void> init(BuildContext context);
+  Future<void> init(String Function(String name) notificationMessageProvider);
 
-  Future<bool> isNotificationPermissionGranted(BuildContext context);
+  Future<bool> isNotificationPermissionGranted();
 
-  Future<PermissionStatus> requestNotificationPermission(BuildContext context);
+  Future<PermissionStatus> requestNotificationPermission();
 
   Future<void> scheduleNotificationForBirthday(
       UserBirthday userBirthday, String notificationMessage);
