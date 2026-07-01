@@ -1,16 +1,16 @@
 import 'package:birthday_calendar/service/update_service/update_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:in_app_update/in_app_update.dart';
-import 'package:birthday_calendar/l10n/app_localizations.dart';
 
 class UpdateServiceImpl extends UpdateService {
   AppUpdateInfo? _appUpdateInfo;
 
+  @override
   void checkForInAppUpdate(
-      Function onSuccess, Function onFailure, BuildContext context) {
+      Function onSuccess, Function(String) onFailure, String userDeniedUpdateMsg, String appUpdateFailedMsg) {
     InAppUpdate.checkForUpdate().then((value) {
       _appUpdateInfo = value;
-      _checkForUpdateAvailability(onSuccess, onFailure, context);
+      _checkForUpdateAvailability(onSuccess, onFailure, userDeniedUpdateMsg, appUpdateFailedMsg);
     }).catchError((error) {
       debugPrint("Failed to check for update: $error");
     });
@@ -45,33 +45,33 @@ class UpdateServiceImpl extends UpdateService {
 
   @override
   Future<void> applyImmediateUpdate(
-      Function onSuccess, Function onFailure, BuildContext context) async {
+      Function onSuccess, Function(String) onFailure, String userDeniedUpdateMsg, String appUpdateFailedMsg) async {
     InAppUpdate.performImmediateUpdate()
         .then((appUpdateResult) => {
               if (appUpdateResult == AppUpdateResult.userDeniedUpdate)
-                {onFailure(AppLocalizations.of(context)!.userDeniedUpdate)}
+                {onFailure(userDeniedUpdateMsg)}
               else if (appUpdateResult == AppUpdateResult.inAppUpdateFailed)
-                {onFailure(AppLocalizations.of(context)!.appUpdateFailed)}
+                {onFailure(appUpdateFailedMsg)}
               else
                 {onSuccess()}
             })
         .catchError((onError) {
-      return onFailure(onError);
+      return onFailure(onError.toString());
     });
   }
 
   @override
   Future<void> startFlexibleUpdate(
-      Function onSuccess, Function onFailure, BuildContext context) async {
+      Function onSuccess, Function(String) onFailure, String userDeniedUpdateMsg, String appUpdateFailedMsg) async {
     try {
       AppUpdateResult appUpdateResult = await InAppUpdate.startFlexibleUpdate();
       if (appUpdateResult == AppUpdateResult.success) {
         await InAppUpdate.completeFlexibleUpdate();
         onSuccess();
       } else if (appUpdateResult == AppUpdateResult.userDeniedUpdate) {
-        onFailure(AppLocalizations.of(context)!.userDeniedUpdate);
+        onFailure(userDeniedUpdateMsg);
       } else if (appUpdateResult == AppUpdateResult.inAppUpdateFailed) {
-        onFailure(AppLocalizations.of(context)!.appUpdateFailed);
+        onFailure(appUpdateFailedMsg);
       }
     } catch (e) {
       onFailure(e.toString());
@@ -79,16 +79,16 @@ class UpdateServiceImpl extends UpdateService {
   }
 
   void _checkForUpdateAvailability(
-      Function onSuccess, Function onFailure, BuildContext context) {
+      Function onSuccess, Function(String) onFailure, String userDeniedUpdateMsg, String appUpdateFailedMsg) {
     bool needToUpdate = isUpdateAvailable();
     if (needToUpdate) {
       bool isImmediateUpdateAvailable = isImmediateUpdatePossible();
       if (isImmediateUpdateAvailable) {
-        applyImmediateUpdate(onSuccess, onFailure, context);
+        applyImmediateUpdate(onSuccess, onFailure, userDeniedUpdateMsg, appUpdateFailedMsg);
       } else {
         bool isFlexibleUpdateAvailable = isFlexibleUpdatePossible();
         if (isFlexibleUpdateAvailable) {
-          startFlexibleUpdate(onSuccess, onFailure, context);
+          startFlexibleUpdate(onSuccess, onFailure, userDeniedUpdateMsg, appUpdateFailedMsg);
         }
       }
     }

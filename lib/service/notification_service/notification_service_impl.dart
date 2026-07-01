@@ -4,7 +4,6 @@ import 'package:birthday_calendar/service/notification_service/notificationCallb
 import 'package:birthday_calendar/service/permission_service/permissions_service.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:birthday_calendar/utils.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -14,7 +13,6 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:birthday_calendar/constants.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
-import 'package:birthday_calendar/l10n/app_localizations.dart';
 
 const String channel_id = "123";
 const String channel_name = "birthday_notification";
@@ -27,6 +25,7 @@ class NotificationServiceImpl extends NotificationService {
   });
 
   StreamSubscription<String?>? _selectSubscription;
+  String Function(String name)? _notificationMessageProvider;
 
   final PermissionsService permissionsService;
   final StorageService storageService;
@@ -37,7 +36,9 @@ class NotificationServiceImpl extends NotificationService {
       StreamController<String?>.broadcast();
   List<NotificationCallbacks> selectNotificationStreamListeners = [];
 
-  Future<void> init(BuildContext context) async {
+  @override
+  Future<void> init(String Function(String name) notificationMessageProvider) async {
+    _notificationMessageProvider = notificationMessageProvider;
     tz.initializeTimeZones();
 
     final AndroidInitializationSettings initializationSettingsAndroid =
@@ -46,7 +47,7 @@ class NotificationServiceImpl extends NotificationService {
     final InitializationSettings initializationSettings =
         InitializationSettings(android: initializationSettingsAndroid);
 
-    await _initializeLocalNotificationsPlugin(initializationSettings, context);
+    await _initializeLocalNotificationsPlugin(initializationSettings);
 
     AndroidFlutterLocalNotificationsPlugin?
         androidFlutterLocalNotificationsPlugin =
@@ -62,13 +63,14 @@ class NotificationServiceImpl extends NotificationService {
     await androidFlutterLocalNotificationsPlugin
         ?.createNotificationChannel(channel);
 
-    bool permissionGranted = await isNotificationPermissionGranted(context);
+    bool permissionGranted = await isNotificationPermissionGranted();
     if (permissionGranted) {
-      await _setupSubscription(context);
+      await _setupSubscription();
     }
   }
 
-  Future<bool> isNotificationPermissionGranted(BuildContext context) async {
+  @override
+  Future<bool> isNotificationPermissionGranted() async {
     PermissionStatus permissionStatus = await permissionsService
         .getPermissionStatus(notificationsPermissionKey);
 
@@ -89,8 +91,8 @@ class NotificationServiceImpl extends NotificationService {
     return false;
   }
 
-  Future<PermissionStatus> requestNotificationPermission(
-      BuildContext context) async {
+  @override
+  Future<PermissionStatus> requestNotificationPermission() async {
     PermissionStatus notificationPermissionStatus = await permissionsService
         .getPermissionStatus(notificationsPermissionKey);
 
@@ -101,12 +103,12 @@ class NotificationServiceImpl extends NotificationService {
     }
 
     notificationPermissionStatus = await permissionsService
-        .requestPermissionAndGetStatus(notificationsPermissionKey, context: context);
+        .requestPermissionAndGetStatus(notificationsPermissionKey);
 
     if (notificationPermissionStatus.isGranted) {
       await storageService
           .setNotificationPermissionState(NotificationPermissionState.granted);
-      await _setupSubscription(context);
+      await _setupSubscription();
     } else if (notificationPermissionStatus.isPermanentlyDenied) {
       await storageService.setNotificationPermissionState(
           NotificationPermissionState.deniedPermanently);
@@ -119,8 +121,7 @@ class NotificationServiceImpl extends NotificationService {
   }
 
   Future<void> _initializeLocalNotificationsPlugin(
-      InitializationSettings initializationSettings,
-      BuildContext context) async {
+      InitializationSettings initializationSettings) async {
     await flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onDidReceiveNotificationResponse:
             (NotificationResponse notificationResponse) {
@@ -135,7 +136,7 @@ class NotificationServiceImpl extends NotificationService {
           break;
       }
     });
-    await _handleApplicationWasLaunchedFromNotification(context);
+    await _handleApplicationWasLaunchedFromNotification();
   }
 
   Future<void> _showNotification(
@@ -183,6 +184,7 @@ class NotificationServiceImpl extends NotificationService {
     );
   }
 
+  @override
   Future<void> scheduleNotificationForBirthday(
       UserBirthday userBirthday, String notificationMessage) async {
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
@@ -212,16 +214,17 @@ class NotificationServiceImpl extends NotificationService {
         payload: jsonEncode(userBirthday));
   }
 
+  @override
   Future<void> cancelNotificationForBirthday(UserBirthday birthday) async {
     await flutterLocalNotificationsPlugin.cancel(birthday.notificationId);
   }
 
+  @override
   Future<void> cancelAllNotifications() async {
     await flutterLocalNotificationsPlugin.cancelAll();
   }
 
-  Future<void> _handleApplicationWasLaunchedFromNotification(
-      BuildContext context) async {
+  Future<void> _handleApplicationWasLaunchedFromNotification() async {
     final NotificationAppLaunchDetails? notificationAppLaunchDetails =
         await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
     if (notificationAppLaunchDetails != null &&
@@ -231,7 +234,7 @@ class NotificationServiceImpl extends NotificationService {
       if (notificationResponse != null) {
         String? payload = notificationResponse.payload;
         selectNotificationStream.add(payload);
-        await _rescheduleNotificationFromPayload(payload, context);
+        await _rescheduleNotificationFromPayload(payload);
       }
     }
   }
@@ -248,17 +251,17 @@ class NotificationServiceImpl extends NotificationService {
   }
 
   Future<void> _rescheduleNotificationFromPayload(
-      String? payload, BuildContext context) async {
+      String? payload) async {
     UserBirthday? userBirthday = Utils.getUserBirthdayFromPayload(payload);
-    if (userBirthday != null) {
+    if (userBirthday != null && _notificationMessageProvider != null) {
       await cancelNotificationForBirthday(userBirthday);
       await scheduleNotificationForBirthday(
           userBirthday,
-          AppLocalizations.of(context)!
-              .notificationForBirthdayMessage(userBirthday.name));
+          _notificationMessageProvider!(userBirthday.name));
     }
   }
 
+  @override
   Future<List<PendingNotificationRequest>>
       getAllScheduledNotifications() async {
     List<PendingNotificationRequest> pendingNotifications =
@@ -294,11 +297,11 @@ class NotificationServiceImpl extends NotificationService {
         ticker: "ticker");
   }
 
-  Future<void> _setupSubscription(BuildContext context) async {
+  Future<void> _setupSubscription() async {
     await _selectSubscription?.cancel();
     _selectSubscription =
         selectNotificationStream.stream.listen((payload) async {
-      await _rescheduleNotificationFromPayload(payload, context);
+      await _rescheduleNotificationFromPayload(payload);
       for (var listener in selectNotificationStreamListeners) {
         listener.onNotificationSelected(payload);
       }
