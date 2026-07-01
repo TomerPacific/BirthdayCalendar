@@ -88,7 +88,10 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
     Widget alertDialogTryAgainButton = TextButton(
         onPressed: () {
           _updateService.checkForInAppUpdate(
-              _onUpdateSuccess, _onUpdateFailure, context);
+              _onUpdateSuccess,
+              _onUpdateFailure,
+              AppLocalizations.of(context)!.userDeniedUpdate,
+              AppLocalizations.of(context)!.appUpdateFailed);
           Navigator.pop(context);
         },
         child: Text(AppLocalizations.of(context)!.tryAgain));
@@ -123,7 +126,10 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
     monthToPresent = widget.currentMonth;
     widget.notificationService.addListenerForSelectNotificationStream(this);
     _updateService.checkForInAppUpdate(
-        _onUpdateSuccess, _onUpdateFailure, context);
+        _onUpdateSuccess,
+        _onUpdateFailure,
+        AppLocalizations.of(context)!.userDeniedUpdate,
+        AppLocalizations.of(context)!.appUpdateFailed);
     BlocProvider.of<ContactsPermissionStatusBloc>(context)
         .add(ContactsPermissionStatusEvent.PermissionUnknown);
     BlocProvider.of<VersionBloc>(context).add(VersionEvent.versionUnknown);
@@ -143,7 +149,10 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
     // not properly initialised.
     bool notificationInitSucceeded = false;
     try {
-      await widget.notificationService.init(context);
+      final localizations = AppLocalizations.of(context)!;
+      await widget.notificationService.init(
+        (name) => localizations.notificationForBirthdayMessage(name),
+      );
       notificationInitSucceeded = true;
     } catch (e, stackTrace) {
       debugPrint("Failed to initialize notification service: $e\n$stackTrace");

@@ -174,7 +174,7 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                                 context);
                         final localizations = AppLocalizations.of(context)!;
                         PermissionStatus status = await notificationService
-                            .requestNotificationPermission(context);
+                            .requestNotificationPermission();
 
                         if (!mounted) return;
 
