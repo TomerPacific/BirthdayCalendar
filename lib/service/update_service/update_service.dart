@@ -1,5 +1,5 @@
 abstract class UpdateService {
-  void checkForInAppUpdate(Function onSuccess, Function(String) onFailure,
+  Future<void> checkForInAppUpdate(Function onSuccess, Function(String) onFailure,
       String userDeniedUpdateMsg, String appUpdateFailedMsg);
   bool isUpdateAvailable();
   bool isImmediateUpdatePossible();

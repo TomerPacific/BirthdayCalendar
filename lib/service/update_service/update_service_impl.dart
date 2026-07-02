@@ -1,19 +1,22 @@
 import 'package:birthday_calendar/service/update_service/update_service.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:in_app_update/in_app_update.dart';
 
 class UpdateServiceImpl extends UpdateService {
   AppUpdateInfo? _appUpdateInfo;
 
   @override
-  void checkForInAppUpdate(
-      Function onSuccess, Function(String) onFailure, String userDeniedUpdateMsg, String appUpdateFailedMsg) {
-    InAppUpdate.checkForUpdate().then((value) {
-      _appUpdateInfo = value;
-      _checkForUpdateAvailability(onSuccess, onFailure, userDeniedUpdateMsg, appUpdateFailedMsg);
-    }).catchError((error) {
-      debugPrint("Failed to check for update: $error");
-    });
+  Future<void> checkForInAppUpdate(
+      Function onSuccess,
+      Function(String) onFailure,
+      String userDeniedUpdateMsg,
+      String appUpdateFailedMsg) async {
+    try {
+      _appUpdateInfo = await InAppUpdate.checkForUpdate();
+      await _checkForUpdateAvailability(
+          onSuccess, onFailure, userDeniedUpdateMsg, appUpdateFailedMsg);
+    } catch (error) {
+      onFailure(error.toString());
+    }
   }
 
   @override
@@ -45,24 +48,31 @@ class UpdateServiceImpl extends UpdateService {
 
   @override
   Future<void> applyImmediateUpdate(
-      Function onSuccess, Function(String) onFailure, String userDeniedUpdateMsg, String appUpdateFailedMsg) async {
-    InAppUpdate.performImmediateUpdate()
-        .then((appUpdateResult) => {
-              if (appUpdateResult == AppUpdateResult.userDeniedUpdate)
-                {onFailure(userDeniedUpdateMsg)}
-              else if (appUpdateResult == AppUpdateResult.inAppUpdateFailed)
-                {onFailure(appUpdateFailedMsg)}
-              else
-                {onSuccess()}
-            })
-        .catchError((onError) {
-      return onFailure(onError.toString());
-    });
+      Function onSuccess,
+      Function(String) onFailure,
+      String userDeniedUpdateMsg,
+      String appUpdateFailedMsg) async {
+    try {
+      AppUpdateResult appUpdateResult =
+          await InAppUpdate.performImmediateUpdate();
+      if (appUpdateResult == AppUpdateResult.userDeniedUpdate) {
+        onFailure(userDeniedUpdateMsg);
+      } else if (appUpdateResult == AppUpdateResult.inAppUpdateFailed) {
+        onFailure(appUpdateFailedMsg);
+      } else {
+        onSuccess();
+      }
+    } catch (onError) {
+      onFailure(onError.toString());
+    }
   }
 
   @override
   Future<void> startFlexibleUpdate(
-      Function onSuccess, Function(String) onFailure, String userDeniedUpdateMsg, String appUpdateFailedMsg) async {
+      Function onSuccess,
+      Function(String) onFailure,
+      String userDeniedUpdateMsg,
+      String appUpdateFailedMsg) async {
     try {
       AppUpdateResult appUpdateResult = await InAppUpdate.startFlexibleUpdate();
       if (appUpdateResult == AppUpdateResult.success) {
@@ -78,17 +88,22 @@ class UpdateServiceImpl extends UpdateService {
     }
   }
 
-  void _checkForUpdateAvailability(
-      Function onSuccess, Function(String) onFailure, String userDeniedUpdateMsg, String appUpdateFailedMsg) {
+  Future<void> _checkForUpdateAvailability(
+      Function onSuccess,
+      Function(String) onFailure,
+      String userDeniedUpdateMsg,
+      String appUpdateFailedMsg) async {
     bool needToUpdate = isUpdateAvailable();
     if (needToUpdate) {
       bool isImmediateUpdateAvailable = isImmediateUpdatePossible();
       if (isImmediateUpdateAvailable) {
-        applyImmediateUpdate(onSuccess, onFailure, userDeniedUpdateMsg, appUpdateFailedMsg);
+        await applyImmediateUpdate(
+            onSuccess, onFailure, userDeniedUpdateMsg, appUpdateFailedMsg);
       } else {
         bool isFlexibleUpdateAvailable = isFlexibleUpdatePossible();
         if (isFlexibleUpdateAvailable) {
-          startFlexibleUpdate(onSuccess, onFailure, userDeniedUpdateMsg, appUpdateFailedMsg);
+          await startFlexibleUpdate(
+              onSuccess, onFailure, userDeniedUpdateMsg, appUpdateFailedMsg);
         }
       }
     }
