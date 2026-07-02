@@ -22,7 +22,9 @@ class NotificationServiceImpl extends NotificationService {
   NotificationServiceImpl({
     required this.permissionsService,
     required this.storageService,
-  });
+  }) {
+    _setupSubscription();
+  }
 
   StreamSubscription<String?>? _selectSubscription;
   String Function(String name)? _notificationMessageProvider;
@@ -63,10 +65,7 @@ class NotificationServiceImpl extends NotificationService {
     await androidFlutterLocalNotificationsPlugin
         ?.createNotificationChannel(channel);
 
-    bool permissionGranted = await isNotificationPermissionGranted();
-    if (permissionGranted) {
-      await _setupSubscription();
-    }
+    await isNotificationPermissionGranted();
   }
 
   @override
@@ -108,7 +107,6 @@ class NotificationServiceImpl extends NotificationService {
     if (notificationPermissionStatus.isGranted) {
       await storageService
           .setNotificationPermissionState(NotificationPermissionState.granted);
-      await _setupSubscription();
     } else if (notificationPermissionStatus.isPermanentlyDenied) {
       await storageService.setNotificationPermissionState(
           NotificationPermissionState.deniedPermanently);
@@ -234,7 +232,6 @@ class NotificationServiceImpl extends NotificationService {
       if (notificationResponse != null) {
         String? payload = notificationResponse.payload;
         selectNotificationStream.add(payload);
-        await _rescheduleNotificationFromPayload(payload);
       }
     }
   }
@@ -297,13 +294,15 @@ class NotificationServiceImpl extends NotificationService {
         ticker: "ticker");
   }
 
-  Future<void> _setupSubscription() async {
-    await _selectSubscription?.cancel();
+  void _setupSubscription() {
+    _selectSubscription?.cancel();
     _selectSubscription =
         selectNotificationStream.stream.listen((payload) async {
-      await _rescheduleNotificationFromPayload(payload);
       for (var listener in selectNotificationStreamListeners) {
         listener.onNotificationSelected(payload);
+      }
+      if (await isNotificationPermissionGranted()) {
+        await _rescheduleNotificationFromPayload(payload);
       }
     });
   }
