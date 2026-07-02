@@ -1,4 +1,5 @@
 import 'package:birthday_calendar/service/update_service/update_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:in_app_update/in_app_update.dart';
 
 class UpdateServiceImpl extends UpdateService {
@@ -14,8 +15,9 @@ class UpdateServiceImpl extends UpdateService {
       _appUpdateInfo = await InAppUpdate.checkForUpdate();
       await _checkForUpdateAvailability(
           onSuccess, onFailure, userDeniedUpdateMsg, appUpdateFailedMsg);
-    } catch (error) {
-      onFailure(error.toString());
+    } catch (error, stackTrace) {
+      debugPrint("Failed to check for update: $error\n$stackTrace");
+      onFailure(appUpdateFailedMsg);
     }
   }
 
@@ -62,8 +64,9 @@ class UpdateServiceImpl extends UpdateService {
       } else {
         onSuccess();
       }
-    } catch (onError) {
-      onFailure(onError.toString());
+    } catch (error, stackTrace) {
+      debugPrint("Failed to perform immediate update: $error\n$stackTrace");
+      onFailure(appUpdateFailedMsg);
     }
   }
 
@@ -83,8 +86,9 @@ class UpdateServiceImpl extends UpdateService {
       } else if (appUpdateResult == AppUpdateResult.inAppUpdateFailed) {
         onFailure(appUpdateFailedMsg);
       }
-    } catch (e) {
-      onFailure(e.toString());
+    } catch (error, stackTrace) {
+      debugPrint("Failed to start flexible update: $error\n$stackTrace");
+      onFailure(appUpdateFailedMsg);
     }
   }
 
