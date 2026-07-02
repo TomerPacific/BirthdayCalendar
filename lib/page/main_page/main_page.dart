@@ -87,11 +87,11 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
   void _onUpdateFailure(String error) {
     Widget alertDialogTryAgainButton = TextButton(
         onPressed: () {
-          _updateService.checkForInAppUpdate(
+          unawaited(_updateService.checkForInAppUpdate(
               _onUpdateSuccess,
               _onUpdateFailure,
               AppLocalizations.of(context)!.userDeniedUpdate,
-              AppLocalizations.of(context)!.appUpdateFailed);
+              AppLocalizations.of(context)!.appUpdateFailed));
           Navigator.pop(context);
         },
         child: Text(AppLocalizations.of(context)!.tryAgain));
@@ -125,11 +125,11 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
 
     monthToPresent = widget.currentMonth;
     widget.notificationService.addListenerForSelectNotificationStream(this);
-    _updateService.checkForInAppUpdate(
+    unawaited(_updateService.checkForInAppUpdate(
         _onUpdateSuccess,
         _onUpdateFailure,
         AppLocalizations.of(context)!.userDeniedUpdate,
-        AppLocalizations.of(context)!.appUpdateFailed);
+        AppLocalizations.of(context)!.appUpdateFailed));
     BlocProvider.of<ContactsPermissionStatusBloc>(context)
         .add(ContactsPermissionStatusEvent.PermissionUnknown);
     BlocProvider.of<VersionBloc>(context).add(VersionEvent.versionUnknown);
