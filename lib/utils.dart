@@ -4,6 +4,7 @@ import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/contact.dart';
 import 'model/user_birthday.dart';
+import 'package:birthday_calendar/l10n/app_localizations.dart';
 
 enum ElementType { background, icon, text }
 
@@ -78,5 +79,22 @@ class Utils {
     }
 
     return index.isEven ? Colors.white : Colors.black;
+  }
+
+  static Future<void> showRationaleDialog(
+      BuildContext context, String title, String content) async {
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Text(content),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(AppLocalizations.of(context)!.ok),
+          ),
+        ],
+      ),
+    );
   }
 }

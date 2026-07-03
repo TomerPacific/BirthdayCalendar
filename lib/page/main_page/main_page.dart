@@ -65,23 +65,10 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
   }
 
   void _onUpdateSuccess() {
-    Widget alertDialogOkButton = TextButton(
-        onPressed: () {
-          Navigator.pop(context);
-        },
-        child: Text(AppLocalizations.of(context)!.ok));
-    AlertDialog alertDialog = AlertDialog(
-      title:
-          Text(AppLocalizations.of(context)!.updateSuccessfullyInstalledTitle),
-      content: Text(
-          AppLocalizations.of(context)!.updateSuccessfullyInstalledDescription),
-      actions: [alertDialogOkButton],
-    );
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alertDialog;
-        });
+    Utils.showRationaleDialog(
+        context,
+        AppLocalizations.of(context)!.updateSuccessfullyInstalledTitle,
+        AppLocalizations.of(context)!.updateSuccessfullyInstalledDescription);
   }
 
   void _onUpdateFailure(String error) {
