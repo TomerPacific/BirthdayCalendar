@@ -65,10 +65,10 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
   }
 
   void _onUpdateSuccess() {
-    Utils.showRationaleDialog(
+    unawaited(Utils.showRationaleDialog(
         context,
         AppLocalizations.of(context)!.updateSuccessfullyInstalledTitle,
-        AppLocalizations.of(context)!.updateSuccessfullyInstalledDescription);
+        AppLocalizations.of(context)!.updateSuccessfullyInstalledDescription));
   }
 
   void _onUpdateFailure(String error) {
