@@ -1,11 +1,13 @@
+import 'package:flutter/foundation.dart';
+
 abstract class UpdateService {
-  Future<void> checkForInAppUpdate(Function onSuccess, Function(String) onFailure,
+  Future<void> checkForInAppUpdate(VoidCallback onSuccess, ValueChanged<String> onFailure,
       String userDeniedUpdateMsg, String appUpdateFailedMsg);
   bool isUpdateAvailable();
   bool isImmediateUpdatePossible();
   bool isFlexibleUpdatePossible();
-  Future<void> applyImmediateUpdate(Function onSuccess,
-      Function(String) onFailure, String userDeniedUpdateMsg, String appUpdateFailedMsg);
-  Future<void> startFlexibleUpdate(Function onSuccess,
-      Function(String) onFailure, String userDeniedUpdateMsg, String appUpdateFailedMsg);
+  Future<void> applyImmediateUpdate(VoidCallback onSuccess,
+      ValueChanged<String> onFailure, String userDeniedUpdateMsg, String appUpdateFailedMsg);
+  Future<void> startFlexibleUpdate(VoidCallback onSuccess,
+      ValueChanged<String> onFailure, String userDeniedUpdateMsg, String appUpdateFailedMsg);
 }

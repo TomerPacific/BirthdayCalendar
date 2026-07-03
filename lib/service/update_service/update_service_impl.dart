@@ -7,8 +7,8 @@ class UpdateServiceImpl extends UpdateService {
 
   @override
   Future<void> checkForInAppUpdate(
-      Function onSuccess,
-      Function(String) onFailure,
+      VoidCallback onSuccess,
+      ValueChanged<String> onFailure,
       String userDeniedUpdateMsg,
       String appUpdateFailedMsg) async {
     try {
@@ -50,8 +50,8 @@ class UpdateServiceImpl extends UpdateService {
 
   @override
   Future<void> applyImmediateUpdate(
-      Function onSuccess,
-      Function(String) onFailure,
+      VoidCallback onSuccess,
+      ValueChanged<String> onFailure,
       String userDeniedUpdateMsg,
       String appUpdateFailedMsg) async {
     try {
@@ -72,8 +72,8 @@ class UpdateServiceImpl extends UpdateService {
 
   @override
   Future<void> startFlexibleUpdate(
-      Function onSuccess,
-      Function(String) onFailure,
+      VoidCallback onSuccess,
+      ValueChanged<String> onFailure,
       String userDeniedUpdateMsg,
       String appUpdateFailedMsg) async {
     try {
@@ -93,8 +93,8 @@ class UpdateServiceImpl extends UpdateService {
   }
 
   Future<void> _checkForUpdateAvailability(
-      Function onSuccess,
-      Function(String) onFailure,
+      VoidCallback onSuccess,
+      ValueChanged<String> onFailure,
       String userDeniedUpdateMsg,
       String appUpdateFailedMsg) async {
     bool needToUpdate = isUpdateAvailable();
