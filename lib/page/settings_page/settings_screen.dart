@@ -118,7 +118,12 @@ class SettingsScreen extends StatelessWidget {
     if (!context.mounted) return;
 
     if (status == PermissionStatus.denied) {
-      status = await contactsService.requestContactsPermission();
+        bool showRationale = await contactsService.shouldShowContactsRationale();
+        if (showRationale && context.mounted) {
+          await _showRationaleDialog(context, localizations.appTitle, localizations.contactsPermissionRationale);
+        }
+        if (!context.mounted) return;
+        status = await contactsService.requestContactsPermission();
     }
 
     if (!context.mounted) return;
@@ -207,5 +212,21 @@ class SettingsScreen extends StatelessWidget {
       Utils.showSnackbarWithMessage(
           context, localizations.contactsImportedSuccessfully);
     }
+  }
+
+  Future<void> _showRationaleDialog(BuildContext context, String title, String content) async {
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Text(content),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(AppLocalizations.of(context)!.ok),
+          ),
+        ],
+      ),
+    );
   }
 }

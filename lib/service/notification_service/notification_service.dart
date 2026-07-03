@@ -10,7 +10,11 @@ abstract class NotificationService {
 
   Future<bool> isNotificationPermissionGranted();
 
+  Future<PermissionStatus> getNotificationPermissionStatus();
+
   Future<PermissionStatus> requestNotificationPermission();
+
+  Future<bool> shouldShowNotificationRationale();
 
   Future<void> scheduleNotificationForBirthday(
       UserBirthday userBirthday, String notificationMessage);

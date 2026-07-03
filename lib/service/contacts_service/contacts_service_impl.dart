@@ -31,6 +31,11 @@ class ContactsServiceImpl extends ContactsService {
   }
 
   @override
+  Future<bool> shouldShowContactsRationale() async {
+    return await permissionsService.shouldShowRationale(contactsPermissionKey);
+  }
+
+  @override
   Future<void> setContactsPermissionPermanentlyDenied() async {
     await storageService.saveIsContactsPermissionPermanentlyDenied(true);
   }

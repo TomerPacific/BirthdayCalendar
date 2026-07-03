@@ -5,6 +5,7 @@ import 'package:permission_handler/permission_handler.dart';
 abstract class ContactsService {
   Future<PermissionStatus> getContactsPermissionStatus();
   Future<PermissionStatus> requestContactsPermission();
+  Future<bool> shouldShowContactsRationale();
   Future<void> setContactsPermissionPermanentlyDenied();
   Future<bool> isContactsPermissionsPermanentlyDenied();
   Future<List<Contact>> filterAlreadyImportedContacts(

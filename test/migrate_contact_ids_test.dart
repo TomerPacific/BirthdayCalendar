@@ -20,8 +20,15 @@ class MockNotificationService implements NotificationService {
       true;
 
   @override
+  Future<PermissionStatus> getNotificationPermissionStatus() async =>
+      PermissionStatus.granted;
+
+  @override
   Future<PermissionStatus> requestNotificationPermission() async =>
       PermissionStatus.granted;
+
+  @override
+  Future<bool> shouldShowNotificationRationale() async => false;
 
   @override
   Future<void> scheduleNotificationForBirthday(

@@ -34,4 +34,18 @@ class PermissionsServiceImpl extends PermissionsService {
 
     return status;
   }
+
+  @override
+  Future<bool> shouldShowRationale(String permissionName) async {
+    bool showRationale = false;
+    switch(permissionName) {
+      case contactsPermissionKey:
+        showRationale = await Permission.contacts.shouldShowRequestRationale;
+        break;
+      case notificationsPermissionKey:
+        showRationale = await Permission.notification.shouldShowRequestRationale;
+        break;
+    }
+    return showRationale;
+  }
 }

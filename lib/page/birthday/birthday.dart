@@ -173,6 +173,14 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                             BlocProvider.of<UserNotificationStatusBloc>(
                                 context);
                         final localizations = AppLocalizations.of(context)!;
+
+                        bool showRationale = await notificationService.shouldShowNotificationRationale();
+                        if (showRationale && context.mounted) {
+                          await _showRationaleDialog(context, localizations.appTitle, localizations.notificationPermissionRationale);
+                        }
+
+                        if (!context.mounted) return;
+
                         PermissionStatus status = await notificationService
                             .requestNotificationPermission();
 
@@ -223,6 +231,22 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                     eventName: BirthdayEvent.RemoveBirthday,
                     birthday: birthdayOfPerson));
               }),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _showRationaleDialog(BuildContext context, String title, String content) async {
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Text(content),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(AppLocalizations.of(context)!.ok),
+          ),
         ],
       ),
     );

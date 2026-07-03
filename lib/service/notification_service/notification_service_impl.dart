@@ -91,6 +91,11 @@ class NotificationServiceImpl extends NotificationService {
   }
 
   @override
+  Future<PermissionStatus> getNotificationPermissionStatus() async {
+    return await permissionsService.getPermissionStatus(notificationsPermissionKey);
+  }
+
+  @override
   Future<PermissionStatus> requestNotificationPermission() async {
     PermissionStatus notificationPermissionStatus = await permissionsService
         .getPermissionStatus(notificationsPermissionKey);
@@ -116,6 +121,11 @@ class NotificationServiceImpl extends NotificationService {
     }
 
     return notificationPermissionStatus;
+  }
+
+  @override
+  Future<bool> shouldShowNotificationRationale() async {
+    return await permissionsService.shouldShowRationale(notificationsPermissionKey);
   }
 
   Future<void> _initializeLocalNotificationsPlugin(
@@ -268,8 +278,8 @@ class NotificationServiceImpl extends NotificationService {
 
   @override
   void dispose() {
-    _selectSubscription?.cancel();
-    selectNotificationStream.close();
+    unawaited(_selectSubscription?.cancel());
+    unawaited(selectNotificationStream.close());
     selectNotificationStreamListeners.clear();
   }
 
@@ -295,7 +305,7 @@ class NotificationServiceImpl extends NotificationService {
   }
 
   void _setupSubscription() {
-    _selectSubscription?.cancel();
+    unawaited(_selectSubscription?.cancel());
     _selectSubscription =
         selectNotificationStream.stream.listen((payload) async {
       for (var listener in selectNotificationStreamListeners) {

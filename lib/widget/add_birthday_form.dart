@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:collection/collection.dart';
 import 'package:birthday_calendar/l10n/app_localizations.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class AddBirthdayForm extends StatefulWidget {
   final DateTime dateOfDay;
@@ -155,11 +156,22 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                 final birthdaysBloc = BlocProvider.of<BirthdaysBloc>(context);
                 final navigator = Navigator.of(context);
 
-                bool hasUserGrantedNotificationPermission = await widget
-                    .notificationService
-                    .isNotificationPermissionGranted();
+                PermissionStatus status = await widget.notificationService.getNotificationPermissionStatus();
 
                 if (!mounted) return;
+
+                if (status == PermissionStatus.denied) {
+                   bool showRationale = await widget.notificationService.shouldShowNotificationRationale();
+                   if (showRationale && context.mounted) {
+                     await _showRationaleDialog(context, localizations.appTitle, localizations.notificationPermissionRationale);
+                   }
+                   if (!mounted) return;
+                   status = await widget.notificationService.requestNotificationPermission();
+                }
+
+                if (!mounted) return;
+
+                bool hasUserGrantedNotificationPermission = status.isGranted;
 
                 UserBirthday userBirthday = new UserBirthday(
                     _birthdayPersonController.text,
@@ -198,6 +210,22 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
             },
             child: Text(AppLocalizations.of(context)!.back))
       ],
+    );
+  }
+
+  Future<void> _showRationaleDialog(BuildContext context, String title, String content) async {
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Text(content),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(AppLocalizations.of(context)!.ok),
+          ),
+        ],
+      ),
     );
   }
 
