@@ -308,7 +308,7 @@ class NotificationServiceImpl extends NotificationService {
     unawaited(_selectSubscription?.cancel());
     _selectSubscription =
         selectNotificationStream.stream.listen((payload) async {
-      for (var listener in selectNotificationStreamListeners) {
+      for (var listener in selectNotificationStreamListeners.toList()) {
         listener.onNotificationSelected(payload);
       }
       if (await isNotificationPermissionGranted()) {
