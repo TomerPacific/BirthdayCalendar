@@ -120,7 +120,7 @@ class SettingsScreen extends StatelessWidget {
     if (status == PermissionStatus.denied) {
         bool showRationale = await contactsService.shouldShowContactsRationale();
         if (showRationale && context.mounted) {
-          await Utils.showRationaleDialog(context, localizations.appTitle, localizations.contactsPermissionRationale);
+          await Utils.showAlertDialog(context, localizations.appTitle, localizations.contactsPermissionRationale);
         }
         if (!context.mounted) return;
         status = await contactsService.requestContactsPermission();

@@ -164,7 +164,7 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                 if (status == PermissionStatus.denied) {
                    bool showRationale = await widget.notificationService.shouldShowNotificationRationale();
                    if (showRationale && context.mounted) {
-                     await Utils.showRationaleDialog(context, localizations.appTitle, localizations.notificationPermissionRationale);
+                     await Utils.showAlertDialog(context, localizations.appTitle, localizations.notificationPermissionRationale);
                    }
                    if (!mounted) return;
                    status = await widget.notificationService.requestNotificationPermission();

@@ -65,7 +65,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
   }
 
   void _onUpdateSuccess() {
-    unawaited(Utils.showRationaleDialog(
+    unawaited(Utils.showAlertDialog(
         context,
         AppLocalizations.of(context)!.updateSuccessfullyInstalledTitle,
         AppLocalizations.of(context)!.updateSuccessfullyInstalledDescription));

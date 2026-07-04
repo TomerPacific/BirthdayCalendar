@@ -81,7 +81,7 @@ class Utils {
     return index.isEven ? Colors.white : Colors.black;
   }
 
-  static Future<void> showRationaleDialog(
+  static Future<void> showAlertDialog(
       BuildContext context, String title, String content) async {
     await showDialog(
       context: context,

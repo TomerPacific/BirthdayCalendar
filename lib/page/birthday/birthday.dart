@@ -181,7 +181,7 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                         if (status == PermissionStatus.denied) {
                           bool showRationale = await notificationService.shouldShowNotificationRationale();
                           if (showRationale && context.mounted) {
-                            await Utils.showRationaleDialog(context, localizations.appTitle, localizations.notificationPermissionRationale);
+                            await Utils.showAlertDialog(context, localizations.appTitle, localizations.notificationPermissionRationale);
                           }
 
                           if (!context.mounted) return;
