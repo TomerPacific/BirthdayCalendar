@@ -110,15 +110,19 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
         storageService: context.read<StorageService>(),
         notificationService: notificationService);
 
-    unawaited(_initializeServices());
-
     monthToPresent = widget.currentMonth;
     widget.notificationService.addListenerForSelectNotificationStream(this);
-    unawaited(_updateService.checkForInAppUpdate(
-        _onUpdateSuccess,
-        _onUpdateFailure,
-        AppLocalizations.of(context)!.userDeniedUpdate,
-        AppLocalizations.of(context)!.appUpdateFailed));
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      unawaited(_initializeServices());
+      unawaited(_updateService.checkForInAppUpdate(
+          _onUpdateSuccess,
+          _onUpdateFailure,
+          AppLocalizations.of(context)!.userDeniedUpdate,
+          AppLocalizations.of(context)!.appUpdateFailed));
+    });
+
     BlocProvider.of<ContactsPermissionStatusBloc>(context)
         .add(ContactsPermissionStatusEvent.PermissionUnknown);
     BlocProvider.of<VersionBloc>(context).add(VersionEvent.versionUnknown);
