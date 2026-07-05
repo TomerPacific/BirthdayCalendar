@@ -4,7 +4,6 @@ import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/contact.dart';
 import 'model/user_birthday.dart';
-import 'package:birthday_calendar/l10n/app_localizations.dart';
 
 enum ElementType { background, icon, text }
 
@@ -82,7 +81,7 @@ class Utils {
   }
 
   static Future<void> showAlertDialog(
-      BuildContext context, String title, String content) async {
+      BuildContext context, String title, String content, String okButtonLabel) async {
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -91,7 +90,7 @@ class Utils {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text(AppLocalizations.of(context)!.ok),
+            child: Text(okButtonLabel),
           ),
         ],
       ),

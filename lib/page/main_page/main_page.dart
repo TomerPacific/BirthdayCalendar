@@ -69,7 +69,8 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
     unawaited(Utils.showAlertDialog(
         context,
         AppLocalizations.of(context)!.updateSuccessfullyInstalledTitle,
-        AppLocalizations.of(context)!.updateSuccessfullyInstalledDescription));
+        AppLocalizations.of(context)!.updateSuccessfullyInstalledDescription,
+        AppLocalizations.of(context)!.ok));
   }
 
   void _onUpdateFailure(String error) {
