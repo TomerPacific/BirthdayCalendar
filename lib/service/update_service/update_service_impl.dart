@@ -1,19 +1,24 @@
 import 'package:birthday_calendar/service/update_service/update_service.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:in_app_update/in_app_update.dart';
-import 'package:birthday_calendar/l10n/app_localizations.dart';
 
 class UpdateServiceImpl extends UpdateService {
   AppUpdateInfo? _appUpdateInfo;
 
-  void checkForInAppUpdate(
-      Function onSuccess, Function onFailure, BuildContext context) {
-    InAppUpdate.checkForUpdate().then((value) {
-      _appUpdateInfo = value;
-      _checkForUpdateAvailability(onSuccess, onFailure, context);
-    }).catchError((error) {
-      debugPrint("Failed to check for update: $error");
-    });
+  @override
+  Future<void> checkForInAppUpdate(
+      VoidCallback onSuccess,
+      ValueChanged<String> onFailure,
+      String userDeniedUpdateMsg,
+      String appUpdateFailedMsg) async {
+    try {
+      _appUpdateInfo = await InAppUpdate.checkForUpdate();
+      await _checkForUpdateAvailability(
+          onSuccess, onFailure, userDeniedUpdateMsg, appUpdateFailedMsg);
+    } catch (error, stackTrace) {
+      debugPrint("Failed to check for update: $error\n$stackTrace");
+      onFailure(appUpdateFailedMsg);
+    }
   }
 
   @override
@@ -45,50 +50,64 @@ class UpdateServiceImpl extends UpdateService {
 
   @override
   Future<void> applyImmediateUpdate(
-      Function onSuccess, Function onFailure, BuildContext context) async {
-    InAppUpdate.performImmediateUpdate()
-        .then((appUpdateResult) => {
-              if (appUpdateResult == AppUpdateResult.userDeniedUpdate)
-                {onFailure(AppLocalizations.of(context)!.userDeniedUpdate)}
-              else if (appUpdateResult == AppUpdateResult.inAppUpdateFailed)
-                {onFailure(AppLocalizations.of(context)!.appUpdateFailed)}
-              else
-                {onSuccess()}
-            })
-        .catchError((onError) {
-      return onFailure(onError);
-    });
+      VoidCallback onSuccess,
+      ValueChanged<String> onFailure,
+      String userDeniedUpdateMsg,
+      String appUpdateFailedMsg) async {
+    try {
+      AppUpdateResult appUpdateResult =
+          await InAppUpdate.performImmediateUpdate();
+      if (appUpdateResult == AppUpdateResult.userDeniedUpdate) {
+        onFailure(userDeniedUpdateMsg);
+      } else if (appUpdateResult == AppUpdateResult.inAppUpdateFailed) {
+        onFailure(appUpdateFailedMsg);
+      } else {
+        onSuccess();
+      }
+    } catch (error, stackTrace) {
+      debugPrint("Failed to perform immediate update: $error\n$stackTrace");
+      onFailure(appUpdateFailedMsg);
+    }
   }
 
   @override
   Future<void> startFlexibleUpdate(
-      Function onSuccess, Function onFailure, BuildContext context) async {
+      VoidCallback onSuccess,
+      ValueChanged<String> onFailure,
+      String userDeniedUpdateMsg,
+      String appUpdateFailedMsg) async {
     try {
       AppUpdateResult appUpdateResult = await InAppUpdate.startFlexibleUpdate();
       if (appUpdateResult == AppUpdateResult.success) {
         await InAppUpdate.completeFlexibleUpdate();
         onSuccess();
       } else if (appUpdateResult == AppUpdateResult.userDeniedUpdate) {
-        onFailure(AppLocalizations.of(context)!.userDeniedUpdate);
+        onFailure(userDeniedUpdateMsg);
       } else if (appUpdateResult == AppUpdateResult.inAppUpdateFailed) {
-        onFailure(AppLocalizations.of(context)!.appUpdateFailed);
+        onFailure(appUpdateFailedMsg);
       }
-    } catch (e) {
-      onFailure(e.toString());
+    } catch (error, stackTrace) {
+      debugPrint("Failed to start flexible update: $error\n$stackTrace");
+      onFailure(appUpdateFailedMsg);
     }
   }
 
-  void _checkForUpdateAvailability(
-      Function onSuccess, Function onFailure, BuildContext context) {
+  Future<void> _checkForUpdateAvailability(
+      VoidCallback onSuccess,
+      ValueChanged<String> onFailure,
+      String userDeniedUpdateMsg,
+      String appUpdateFailedMsg) async {
     bool needToUpdate = isUpdateAvailable();
     if (needToUpdate) {
       bool isImmediateUpdateAvailable = isImmediateUpdatePossible();
       if (isImmediateUpdateAvailable) {
-        applyImmediateUpdate(onSuccess, onFailure, context);
+        await applyImmediateUpdate(
+            onSuccess, onFailure, userDeniedUpdateMsg, appUpdateFailedMsg);
       } else {
         bool isFlexibleUpdateAvailable = isFlexibleUpdatePossible();
         if (isFlexibleUpdateAvailable) {
-          startFlexibleUpdate(onSuccess, onFailure, context);
+          await startFlexibleUpdate(
+              onSuccess, onFailure, userDeniedUpdateMsg, appUpdateFailedMsg);
         }
       }
     }

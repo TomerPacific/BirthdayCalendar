@@ -17,13 +17,19 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class MockNotificationService implements NotificationService {
   @override
-  Future<void> init(BuildContext context) async {}
+  Future<void> init(String Function(String name) notificationMessageProvider) async {}
 
   @override
-  Future<bool> isNotificationPermissionGranted(BuildContext context) async => true;
+  Future<bool> isNotificationPermissionGranted() async => true;
 
   @override
-  Future<PermissionStatus> requestNotificationPermission(BuildContext context) async => PermissionStatus.granted;
+  Future<PermissionStatus> getNotificationPermissionStatus() async => PermissionStatus.granted;
+
+  @override
+  Future<PermissionStatus> requestNotificationPermission() async => PermissionStatus.granted;
+
+  @override
+  Future<bool> shouldShowNotificationRationale() async => false;
 
   @override
   Future<void> scheduleNotificationForBirthday(UserBirthday userBirthday, String notificationMessage) async {}

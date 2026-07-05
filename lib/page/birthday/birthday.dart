@@ -173,8 +173,22 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                             BlocProvider.of<UserNotificationStatusBloc>(
                                 context);
                         final localizations = AppLocalizations.of(context)!;
-                        PermissionStatus status = await notificationService
-                            .requestNotificationPermission(context);
+
+                        PermissionStatus status = await notificationService.getNotificationPermissionStatus();
+
+                        if (!context.mounted) return;
+
+                        if (status == PermissionStatus.denied) {
+                          bool showRationale = await notificationService.shouldShowNotificationRationale();
+                          if (showRationale && context.mounted) {
+                            await Utils.showAlertDialog(context, localizations.appTitle, localizations.notificationPermissionRationale, localizations.ok);
+                          }
+
+                          if (!context.mounted) return;
+
+                          status = await notificationService
+                              .requestNotificationPermission();
+                        }
 
                         if (!mounted) return;
 

@@ -79,4 +79,21 @@ class Utils {
 
     return index.isEven ? Colors.white : Colors.black;
   }
+
+  static Future<void> showAlertDialog(
+      BuildContext context, String title, String content, String okButtonLabel) async {
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Text(content),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(okButtonLabel),
+          ),
+        ],
+      ),
+    );
+  }
 }

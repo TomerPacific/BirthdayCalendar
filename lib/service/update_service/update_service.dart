@@ -1,10 +1,13 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 abstract class UpdateService {
-  void checkForInAppUpdate(Function onSuccess, Function onFailure, BuildContext context);
+  Future<void> checkForInAppUpdate(VoidCallback onSuccess, ValueChanged<String> onFailure,
+      String userDeniedUpdateMsg, String appUpdateFailedMsg);
   bool isUpdateAvailable();
   bool isImmediateUpdatePossible();
   bool isFlexibleUpdatePossible();
-  Future<void> applyImmediateUpdate(Function onSuccess, Function onFailure, BuildContext context);
-  Future<void> startFlexibleUpdate(Function onSuccess, Function onFailure, BuildContext context);
+  Future<void> applyImmediateUpdate(VoidCallback onSuccess,
+      ValueChanged<String> onFailure, String userDeniedUpdateMsg, String appUpdateFailedMsg);
+  Future<void> startFlexibleUpdate(VoidCallback onSuccess,
+      ValueChanged<String> onFailure, String userDeniedUpdateMsg, String appUpdateFailedMsg);
 }
