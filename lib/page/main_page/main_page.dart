@@ -65,6 +65,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
   }
 
   void _onUpdateSuccess() {
+    if (!mounted) return;
     unawaited(Utils.showAlertDialog(
         context,
         AppLocalizations.of(context)!.updateSuccessfullyInstalledTitle,
@@ -72,6 +73,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
   }
 
   void _onUpdateFailure(String error) {
+    if (!mounted) return;
     Widget alertDialogTryAgainButton = TextButton(
         onPressed: () {
           unawaited(_updateService.checkForInAppUpdate(
