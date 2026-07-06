@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'package:birthday_calendar/BirthdayBloc/BirthdaysBloc.dart';
-import 'package:birthday_calendar/UserNotificationStatusBloc/UserNotificationStatusBloc.dart';
+import 'package:birthday_calendar/birthday_bloc/birthdays_bloc.dart';
+import 'package:birthday_calendar/user_notification_status_bloc/user_notification_status_bloc.dart';
 import 'package:birthday_calendar/l10n/app_localizations.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';

@@ -1,4 +1,4 @@
-import 'package:birthday_calendar/BirthdayBloc/BirthdaysState.dart';
+import 'package:birthday_calendar/birthday_bloc/birthdays_state.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
