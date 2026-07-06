@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:birthday_calendar/model/user_birthday.dart';
-import 'package:birthday_calendar/service/notification_service/notificationCallbacks.dart';
+import 'package:birthday_calendar/service/notification_service/notification_callbacks.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 

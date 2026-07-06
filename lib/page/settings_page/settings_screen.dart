@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'package:birthday_calendar/ClearNotificationsBloc/ClearNotificationsBloc.dart';
-import 'package:birthday_calendar/ContactsPermissionStatusBloc/ContactsPermissionStatusBloc.dart';
-import 'package:birthday_calendar/ThemeBloc/ThemeBloc.dart';
-import 'package:birthday_calendar/VersionBloc/VersionBloc.dart';
+import 'package:birthday_calendar/clear_notifications_bloc/clear_notifications_bloc.dart';
+import 'package:birthday_calendar/contacts_permission_status_bloc/contacts_permission_status_bloc.dart';
+import 'package:birthday_calendar/theme_bloc/theme_bloc.dart';
+import 'package:birthday_calendar/version_bloc/version_bloc.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/service/contacts_service/contacts_service.dart';
 import 'package:birthday_calendar/utils.dart';

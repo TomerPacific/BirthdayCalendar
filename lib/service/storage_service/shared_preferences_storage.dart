@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:async';
-import 'package:birthday_calendar/BirthdayCalendarDateUtils.dart';
+import 'package:birthday_calendar/birthday_calendar_date_utils.dart';
 import 'package:birthday_calendar/constants.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/model/birthdays_stream_event.dart';

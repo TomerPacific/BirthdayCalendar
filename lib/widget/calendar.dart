@@ -1,4 +1,4 @@
-import 'package:birthday_calendar/BirthdayCalendarDateUtils.dart';
+import 'package:birthday_calendar/birthday_calendar_date_utils.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/widget/calendar_day.dart';

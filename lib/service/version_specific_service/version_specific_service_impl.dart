@@ -1,5 +1,5 @@
 import 'package:birthday_calendar/model/user_birthday.dart';
-import 'VersionSpecificService.dart';
+import 'version_specific_service.dart';
 import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:package_info_plus/package_info_plus.dart';
