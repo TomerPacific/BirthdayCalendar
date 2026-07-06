@@ -1,4 +1,3 @@
-import 'package:birthday_calendar/constants.dart';
 import 'package:intl/intl.dart';
 import 'package:birthday_calendar/l10n/app_localizations.dart';
 
@@ -11,26 +10,26 @@ class BirthdayCalendarDateUtils {
   static int amountOfDaysInMonth(int month) {
     int days = 0;
     switch (month) {
-      case JANUARY_MONTH_NUMBER:
-      case MARCH_MONTH_NUMBER:
-      case MAY_MONTH_NUMBER:
-      case JULY_MONTH_NUMBER:
-      case AUGUST_MONTH_NUMBER:
-      case OCTOBER_MONTH_NUMBER:
-      case DECEMBER_MONTH_NUMBER:
+      case DateTime.january:
+      case DateTime.march:
+      case DateTime.may:
+      case DateTime.july:
+      case DateTime.august:
+      case DateTime.october:
+      case DateTime.december:
         {
           days = 31;
           break;
         }
-      case APRIL_MONTH_NUMBER:
-      case JUNE_MONTH_NUMBER:
-      case SEPTEMBER_MONTH_NUMBER:
-      case NOVEMBER_MONTH_NUMBER:
+      case DateTime.april:
+      case DateTime.june:
+      case DateTime.september:
+      case DateTime.november:
         {
           days = 30;
           break;
         }
-      case FEBRUARY_MONTH_NUMBER:
+      case DateTime.february:
         {
           days = isLeapYear() ? 29 : 28;
           break;
@@ -82,29 +81,29 @@ class BirthdayCalendarDateUtils {
   static String convertAndTranslateMonthNumber(
       int month, AppLocalizations appLocalizations) {
     switch (month) {
-      case JANUARY_MONTH_NUMBER:
+      case DateTime.january:
         return appLocalizations.january;
-      case FEBRUARY_MONTH_NUMBER:
+      case DateTime.february:
         return appLocalizations.february;
-      case MARCH_MONTH_NUMBER:
+      case DateTime.march:
         return appLocalizations.march;
-      case APRIL_MONTH_NUMBER:
+      case DateTime.april:
         return appLocalizations.april;
-      case MAY_MONTH_NUMBER:
+      case DateTime.may:
         return appLocalizations.may;
-      case JUNE_MONTH_NUMBER:
+      case DateTime.june:
         return appLocalizations.june;
-      case JULY_MONTH_NUMBER:
+      case DateTime.july:
         return appLocalizations.july;
-      case AUGUST_MONTH_NUMBER:
+      case DateTime.august:
         return appLocalizations.august;
-      case SEPTEMBER_MONTH_NUMBER:
+      case DateTime.september:
         return appLocalizations.september;
-      case OCTOBER_MONTH_NUMBER:
+      case DateTime.october:
         return appLocalizations.october;
-      case NOVEMBER_MONTH_NUMBER:
+      case DateTime.november:
         return appLocalizations.november;
-      case DECEMBER_MONTH_NUMBER:
+      case DateTime.december:
         return appLocalizations.december;
       default:
         return "";
