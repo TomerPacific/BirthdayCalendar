@@ -284,6 +284,11 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
 
         if (!mounted) return;
 
+        // Clear the stack back to the main page before pushing the birthday details.
+        // This prevents stacking multiple detail pages and ensures 'back' always
+        // returns to the calendar.
+        Navigator.popUntil(context, (route) => route.isFirst);
+
         Navigator.push(
             context,
             MaterialPageRoute(
