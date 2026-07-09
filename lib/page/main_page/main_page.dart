@@ -19,6 +19,8 @@ import 'package:birthday_calendar/page/settings_page/settings_screen.dart';
 import 'package:birthday_calendar/widget/calendar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:birthday_calendar/l10n/app_localizations.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class MainPage extends StatefulWidget {
   MainPage(
@@ -171,12 +173,11 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
     if (!mounted) return;
 
     try {
-      // Fetch live contacts once and pass them into the migration so
-      // the service layer does not need a BuildContext or a contacts-permission
-      // check of its own. If contacts permission has not been granted yet the
-      // fetch will return an empty list and the migration will be a no-op,
-      // retrying on the next launch.
-      final contacts = await widget.contactsService.fetchContacts(false);
+      final status = await widget.contactsService.getContactsPermissionStatus();
+      List<Contact> contacts = [];
+      if (status == PermissionStatus.granted) {
+        contacts = await widget.contactsService.fetchContacts(false);
+      }
       await versionSpecificService.migrateContactIds(contacts);
     } catch (e, stackTrace) {
       debugPrint("Failed to migrate contact IDs: $e\n$stackTrace");

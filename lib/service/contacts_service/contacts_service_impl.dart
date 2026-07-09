@@ -53,7 +53,11 @@ class ContactsServiceImpl extends ContactsService {
 
   @override
   Future<List<Contact>> fetchContacts(bool withThumbnails) async {
-    return await FlutterContacts.getContacts(withProperties: true);
+    PermissionStatus status = await getContactsPermissionStatus();
+    if (status == PermissionStatus.granted) {
+      return await FlutterContacts.getContacts(withProperties: true);
+    }
+    return [];
   }
 
   @override
@@ -68,9 +72,11 @@ class ContactsServiceImpl extends ContactsService {
       return;
     }
 
-    await notificationService.scheduleNotificationForBirthday(
-        contact,
-        notificationMessage);
+    if (contact.hasNotification) {
+      await notificationService.scheduleNotificationForBirthday(
+          contact,
+          notificationMessage);
+    }
 
     birthdays.add(contact);
 

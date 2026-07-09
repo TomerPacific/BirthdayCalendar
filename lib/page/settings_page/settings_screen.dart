@@ -198,7 +198,7 @@ class SettingsScreen extends StatelessWidget {
         UserBirthday userBirthday = new UserBirthday(
             contact.displayName,
             chosenBirthDate,
-            true,
+            false,
             contact.phones.isNotEmpty ? contact.phones.first.number : "",
             contactId: contact.id);
 

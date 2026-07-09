@@ -157,27 +157,10 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                 final birthdaysBloc = BlocProvider.of<BirthdaysBloc>(context);
                 final navigator = Navigator.of(context);
 
-                PermissionStatus status = await widget.notificationService.getNotificationPermissionStatus();
-
-                if (!mounted) return;
-
-                if (status == PermissionStatus.denied) {
-                   bool showRationale = await widget.notificationService.shouldShowNotificationRationale();
-                   if (showRationale && context.mounted) {
-                     await Utils.showAlertDialog(context, localizations.appTitle, localizations.notificationPermissionRationale, localizations.ok);
-                   }
-                   if (!mounted) return;
-                   status = await widget.notificationService.requestNotificationPermission();
-                }
-
-                if (!mounted) return;
-
-                bool hasUserGrantedNotificationPermission = status.isGranted;
-
                 UserBirthday userBirthday = new UserBirthday(
                     _birthdayPersonController.text,
                     widget.dateOfDay,
-                    hasUserGrantedNotificationPermission,
+                    false,
                     _birthdayPhoneNumber.phoneNumber != null
                         ? _birthdayPhoneNumber.parseNumber()
                         : "");

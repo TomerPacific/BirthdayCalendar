@@ -125,6 +125,13 @@ class VersionSpecificServiceImpl extends VersionSpecificService {
       return;
     }
 
+    if (liveContacts.isEmpty) {
+      // If we have legacy birthdays but no live contacts were provided,
+      // we assume we haven't had a proper chance to migrate yet (e.g. no permission).
+      // We return without marking as done so we can retry on the next launch.
+      return;
+    }
+
     // Build a name -> contacts map from live contacts for fast lookup.
     // We only migrate when exactly one live contact matches the stored name —
     // ambiguous matches are left alone rather than guessed at.
