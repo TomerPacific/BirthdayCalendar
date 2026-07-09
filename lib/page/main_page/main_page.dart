@@ -174,7 +174,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
 
     try {
       final status = await widget.contactsService.getContactsPermissionStatus();
-      List<Contact> contacts = [];
+      List<Contact>? contacts;
       if (status == PermissionStatus.granted) {
         contacts = await widget.contactsService.fetchContacts(false);
       }

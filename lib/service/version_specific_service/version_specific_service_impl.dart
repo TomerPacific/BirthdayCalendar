@@ -111,7 +111,7 @@ class VersionSpecificServiceImpl extends VersionSpecificService {
   }
 
   @override
-  Future<void> migrateContactIds(List<Contact> liveContacts) async {
+  Future<void> migrateContactIds(List<Contact>? liveContacts) async {
     bool didAlreadyMigrate =
         await storageService.getAlreadyMigratedContactIds();
     if (didAlreadyMigrate) return;
@@ -125,10 +125,9 @@ class VersionSpecificServiceImpl extends VersionSpecificService {
       return;
     }
 
-    if (liveContacts.isEmpty) {
-      // If we have legacy birthdays but no live contacts were provided,
-      // we assume we haven't had a proper chance to migrate yet (e.g. no permission).
-      // We return without marking as done so we can retry on the next launch.
+    if (liveContacts == null) {
+      // If we have legacy birthdays but contacts weren't fetched (e.g. no permission),
+      // we return without marking as done so we can retry on the next launch.
       return;
     }
 

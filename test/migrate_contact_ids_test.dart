@@ -122,6 +122,28 @@ void main() {
       await versionService.migrateContactIds([]);
       expect(await storageService.getAlreadyMigratedContactIds(), isTrue);
     });
+
+    test(
+        'does not set flag when live contacts is null (e.g. no permission)',
+        () async {
+      final legacy = UserBirthday('Alice', date, false, '');
+      await storageService.saveBirthdaysForDate(date, [legacy]);
+
+      await versionService.migrateContactIds(null);
+
+      expect(await storageService.getAlreadyMigratedContactIds(), isFalse);
+    });
+
+    test(
+        'sets flag even when live contacts list is empty (granted but no contacts)',
+        () async {
+      final legacy = UserBirthday('Alice', date, false, '');
+      await storageService.saveBirthdaysForDate(date, [legacy]);
+
+      await versionService.migrateContactIds([]);
+
+      expect(await storageService.getAlreadyMigratedContactIds(), isTrue);
+    });
   });
 
   group('migrateContactIds — matching logic', () {
