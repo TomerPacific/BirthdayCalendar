@@ -55,13 +55,15 @@ class ContactsServiceImpl extends ContactsService {
   Future<List<Contact>> fetchContacts(bool withThumbnails) async {
     PermissionStatus status = await getContactsPermissionStatus();
     if (status.isGranted) {
-      return await FlutterContacts.getContacts(withProperties: true, withThumbnail: withThumbnails);
+      return await FlutterContacts.getContacts(
+          withProperties: true, withThumbnail: withThumbnails);
     }
     return [];
   }
 
   @override
-  Future<void> addContactToCalendar(UserBirthday contact, String notificationMessage) async {
+  Future<void> addContactToCalendar(
+      UserBirthday contact, String notificationMessage) async {
     List<UserBirthday> birthdays =
         await storageService.getBirthdaysForDate(contact.birthdayDate, false);
 
@@ -74,8 +76,7 @@ class ContactsServiceImpl extends ContactsService {
 
     if (contact.hasNotification) {
       await notificationService.scheduleNotificationForBirthday(
-          contact,
-          notificationMessage);
+          contact, notificationMessage);
     }
 
     birthdays.add(contact);
