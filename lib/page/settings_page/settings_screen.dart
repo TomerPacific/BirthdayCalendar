@@ -182,6 +182,10 @@ class SettingsScreen extends StatelessWidget {
       BuildContext context, List<Contact> users) async {
     int amountOfBirthdaysSet = 0;
     final localizations = AppLocalizations.of(context)!;
+    final bool hasPermission =
+        await notificationService.isNotificationPermissionGranted();
+
+    if (!context.mounted) return;
 
     for (Contact contact in users) {
       if (!context.mounted) return;
@@ -198,7 +202,6 @@ class SettingsScreen extends StatelessWidget {
                   contact.displayName));
 
       if (chosenBirthDate != null) {
-        final bool hasPermission = await notificationService.isNotificationPermissionGranted();
         if (!context.mounted) return;
 
         UserBirthday userBirthday = new UserBirthday(
