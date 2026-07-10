@@ -155,10 +155,14 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                 final birthdaysBloc = BlocProvider.of<BirthdaysBloc>(context);
                 final navigator = Navigator.of(context);
 
+                final bool hasNotificationPermission = await widget.notificationService.isNotificationPermissionGranted();
+
+                if (!mounted) return;
+
                 UserBirthday userBirthday = new UserBirthday(
                     _birthdayPersonController.text,
                     widget.dateOfDay,
-                    await widget.notificationService.isNotificationPermissionGranted(),
+                    hasNotificationPermission,
                     _birthdayPhoneNumber.phoneNumber != null
                         ? _birthdayPhoneNumber.parseNumber()
                         : "");

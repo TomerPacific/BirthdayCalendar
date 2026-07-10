@@ -198,10 +198,13 @@ class SettingsScreen extends StatelessWidget {
                   contact.displayName));
 
       if (chosenBirthDate != null) {
+        final bool hasPermission = await notificationService.isNotificationPermissionGranted();
+        if (!context.mounted) return;
+
         UserBirthday userBirthday = new UserBirthday(
             contact.displayName,
             chosenBirthDate,
-            await notificationService.isNotificationPermissionGranted(),
+            hasPermission,
             contact.phones.isNotEmpty ? contact.phones.first.number : "",
             contactId: contact.id);
 
