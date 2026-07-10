@@ -54,7 +54,7 @@ class ContactsServiceImpl extends ContactsService {
   @override
   Future<List<Contact>> fetchContacts(bool withThumbnails) async {
     PermissionStatus status = await getContactsPermissionStatus();
-    if (status == PermissionStatus.granted) {
+    if (status.isGranted) {
       return await FlutterContacts.getContacts(withProperties: true);
     }
     return [];

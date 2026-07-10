@@ -175,7 +175,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
     try {
       final status = await widget.contactsService.getContactsPermissionStatus();
       List<Contact>? contacts;
-      if (status == PermissionStatus.granted) {
+      if (status.isGranted) {
         contacts = await widget.contactsService.fetchContacts(false);
       }
       await versionSpecificService.migrateContactIds(contacts);
@@ -205,7 +205,8 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
                   unawaited(Navigator.push(context,
                       MaterialPageRoute(builder: (context) {
                     return SettingsScreen(
-                        contactsService: widget.contactsService);
+                        contactsService: widget.contactsService,
+                        notificationService: widget.notificationService);
                   })).then((result) {}));
                 },
               )

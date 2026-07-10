@@ -5,6 +5,7 @@ import 'package:birthday_calendar/theme_bloc/theme_bloc.dart';
 import 'package:birthday_calendar/version_bloc/version_bloc.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/service/contacts_service/contacts_service.dart';
+import 'package:birthday_calendar/service/notification_service/notification_service.dart';
 import 'package:birthday_calendar/utils.dart';
 import 'package:birthday_calendar/widget/users_without_birthdays_dialogs.dart';
 import 'package:flutter/material.dart';
@@ -16,9 +17,11 @@ import 'package:birthday_calendar/l10n/app_localizations.dart';
 class SettingsScreen extends StatelessWidget {
   SettingsScreen({
     required this.contactsService,
+    required this.notificationService,
   });
 
   final ContactsService contactsService;
+  final NotificationService notificationService;
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +139,7 @@ class SettingsScreen extends StatelessWidget {
       return;
     }
 
-    if (status == PermissionStatus.granted) {
+    if (status.isGranted) {
       contactsPermissionStatusBloc
           .add(ContactsPermissionStatusEvent.PermissionGranted);
       List<Contact> contacts = await contactsService.fetchContacts(false);
@@ -198,7 +201,7 @@ class SettingsScreen extends StatelessWidget {
         UserBirthday userBirthday = new UserBirthday(
             contact.displayName,
             chosenBirthDate,
-            false,
+            await notificationService.isNotificationPermissionGranted(),
             contact.phones.isNotEmpty ? contact.phones.first.number : "",
             contactId: contact.id);
 
