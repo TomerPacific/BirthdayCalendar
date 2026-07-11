@@ -1,5 +1,4 @@
 name: Android Publish
-
 on:
   workflow_dispatch:
   workflow_run:
@@ -37,7 +36,7 @@ jobs:
 
       - name: Create key.properties
         run: |
-          echo "storePassword=${{ secrets.STORE_KEY_PASSWORD }}" >> android/key.properties
+          echo "storePassword=${{ secrets.STORE_KEY_PASSWORD }}" > android/key.properties
           echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
           echo "keyAlias=${{ secrets.ALIAS }}" >> android/key.properties
           echo "storeFile=keystore.jks" >> android/key.properties
@@ -45,19 +44,10 @@ jobs:
       - name: Build Release AAB
         run: flutter build appbundle --release
 
-      - name: Sign AAB
-        uses: r0adkll/sign-android-release@v1
-        with:
-            releaseDirectory: build/app/outputs/bundle/release/*.aab
-            signingKeyBase64: ${{ secrets.SIGN_KEY }}
-            alias: ${{ secrets.ALIAS }}
-            keyStorePassword: ${{ secrets.STORE_KEY_PASSWORD }}
-            keyPassword: ${{ secrets.KEY_PASSWORD }}
-
       - name: Deploy to Play Store
         uses: r0adkll/upload-google-play@v1
         with:
-          serviceAccountJsonPlainText: ${{secrets.SERVICE_ACCOUNT}}
+          serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT }}
           packageName: com.tomerpacific.birthday_calendar
           releaseFiles: build/app/outputs/bundle/release/*.aab
           track: production
