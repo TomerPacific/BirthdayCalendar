@@ -42,7 +42,7 @@ jobs:
           echo "storeFile=keystore.jks" >> android/key.properties
 
       - name: Build Release AAB
-        run: flutter build appbundle --release
+        run: flutter build appbundle --release -- --stacktrace --info
 
       - name: Deploy to Play Store
         uses: r0adkll/upload-google-play@v1
