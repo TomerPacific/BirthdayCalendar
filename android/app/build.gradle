@@ -39,18 +39,27 @@ android {
 
     signingConfigs {
         release {
-            if (keystoreProperties['keyAlias'] != null) {
-                keyAlias keystoreProperties['keyAlias']
-                keyPassword keystoreProperties['keyPassword']
-                storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-                storePassword keystoreProperties['storePassword']
+            def alias = keystoreProperties.getProperty('keyAlias')
+            def keyPass = keystoreProperties.getProperty('keyPassword')
+            def sFile = keystoreProperties.getProperty('storeFile')
+            def sPass = keystoreProperties.getProperty('storePassword')
+
+            if (alias && keyPass && sFile && sPass) {
+                keyAlias alias
+                keyPassword keyPass
+                storeFile file(sFile)
+                storePassword sPass
             }
         }
     }
 
     buildTypes {
         release {
-            signingConfig signingConfigs.release
+            if (signingConfigs.release.keyAlias) {
+                signingConfig signingConfigs.release
+            } else {
+                println "WARNING: Release signing configuration is incomplete. Check key.properties."
+            }
         }
         debug {
             minifyEnabled true

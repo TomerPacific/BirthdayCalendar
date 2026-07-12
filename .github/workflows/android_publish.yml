@@ -41,6 +41,13 @@ jobs:
           echo "keyAlias=${{ secrets.ALIAS }}" >> android/key.properties
           echo "storeFile=keystore.jks" >> android/key.properties
 
+      - name: Verify signing setup
+        run: |
+          echo "--- key.properties ---"
+          cat android/key.properties
+          echo "--- keystore exists ---"
+          ls -la android/app/keystore.jks
+
       - name: Build Release AAB
         run: flutter build appbundle --release -- --stacktrace --info
 
