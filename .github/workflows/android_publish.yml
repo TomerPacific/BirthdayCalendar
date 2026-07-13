@@ -39,17 +39,10 @@ jobs:
           echo "storePassword=${{ secrets.STORE_KEY_PASSWORD }}" > android/key.properties
           echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
           echo "keyAlias=${{ secrets.ALIAS }}" >> android/key.properties
-          echo "storeFile=keystore.jks" >> android/key.properties
-
-      - name: Verify signing setup
-        run: |
-          echo "--- key.properties ---"
-          cat android/key.properties
-          echo "--- keystore exists ---"
-          ls -la android/app/keystore.jks
+          echo "storeFile=${{ github.workspace }}/android/app/keystore.jks" >> android/key.properties
 
       - name: Build Release AAB
-        run: flutter build appbundle --release -- --stacktrace --info
+        run: flutter build appbundle --release
 
       - name: Deploy to Play Store
         uses: r0adkll/upload-google-play@v1
