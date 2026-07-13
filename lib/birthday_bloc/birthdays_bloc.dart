@@ -27,12 +27,12 @@ class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
   BirthdaysBloc(NotificationService notificationService,
       StorageService storageService, List<UserBirthday> birthdaysForDate)
       : super(BirthdaysLoaded(
-            date: DateTime.now(),
-            birthdays: birthdaysForDate)) {
+            date: DateTime.now(), birthdays: birthdaysForDate)) {
     on<BirthdaysEvent>((event, emit) async {
       switch (event.eventName) {
         case BirthdayEvent.AddBirthday:
-          await _handleAddEvent(event, emit, storageService, notificationService);
+          await _handleAddEvent(
+              event, emit, storageService, notificationService);
           break;
         case BirthdayEvent.RemoveBirthday:
           await _handleRemoveEvent(
@@ -60,7 +60,8 @@ class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
     List<UserBirthday> birthdaysMatchingDate = await storageService
         .getBirthdaysForDate(userBirthday.birthdayDate, false);
     birthdaysMatchingDate.add(userBirthday);
-    await storageService.saveBirthdaysForDate(birthdayDate, birthdaysMatchingDate);
+    await storageService.saveBirthdaysForDate(
+        birthdayDate, birthdaysMatchingDate);
 
     String notificationMsg = event.notificationMsg ?? "";
     if (userBirthday.hasNotification) {
@@ -68,9 +69,7 @@ class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
           userBirthday, notificationMsg);
     }
 
-    emit(BirthdaysLoaded(
-        date: birthdayDate,
-        birthdays: birthdaysMatchingDate));
+    emit(BirthdaysLoaded(date: birthdayDate, birthdays: birthdaysMatchingDate));
   }
 
   Future<void> _handleRemoveEvent(
@@ -95,8 +94,6 @@ class BirthdaysBloc extends Bloc<BirthdaysEvent, BirthdaysState> {
 
     await storageService.saveBirthdaysForDate(birthdayDate, filteredBirthdays);
     await notificationService.cancelNotificationForBirthday(userBirthday);
-    emit(BirthdaysLoaded(
-        date: birthdayDate,
-        birthdays: filteredBirthdays));
+    emit(BirthdaysLoaded(date: birthdayDate, birthdays: filteredBirthdays));
   }
 }
