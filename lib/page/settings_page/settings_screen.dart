@@ -121,12 +121,13 @@ class SettingsScreen extends StatelessWidget {
     if (!context.mounted) return;
 
     if (status == PermissionStatus.denied) {
-        bool showRationale = await contactsService.shouldShowContactsRationale();
-        if (showRationale && context.mounted) {
-          await Utils.showAlertDialog(context, localizations.appTitle, localizations.contactsPermissionRationale, localizations.ok);
-        }
-        if (!context.mounted) return;
-        status = await contactsService.requestContactsPermission();
+      bool showRationale = await contactsService.shouldShowContactsRationale();
+      if (showRationale && context.mounted) {
+        await Utils.showAlertDialog(context, localizations.appTitle,
+            localizations.contactsPermissionRationale, localizations.ok);
+      }
+      if (!context.mounted) return;
+      status = await contactsService.requestContactsPermission();
     }
 
     if (!context.mounted) return;
@@ -197,8 +198,8 @@ class SettingsScreen extends StatelessWidget {
           initialEntryMode: DatePickerEntryMode.input,
           helpText: localizations
               .helpTextChooseBirthdateForImportedContact(contact.displayName),
-          fieldLabelText: localizations
-              .fieldLabelTextChooseBirthdateForImportedContact(
+          fieldLabelText:
+              localizations.fieldLabelTextChooseBirthdateForImportedContact(
                   contact.displayName));
 
       if (chosenBirthDate != null) {
@@ -211,7 +212,8 @@ class SettingsScreen extends StatelessWidget {
             contact.phones.isNotEmpty ? contact.phones.first.number : "",
             contactId: contact.id);
 
-        await contactsService.addContactToCalendar(userBirthday, localizations.notificationForBirthdayMessage(userBirthday.name));
+        await contactsService.addContactToCalendar(userBirthday,
+            localizations.notificationForBirthdayMessage(userBirthday.name));
         amountOfBirthdaysSet++;
       }
     }
