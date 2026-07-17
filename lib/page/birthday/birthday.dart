@@ -121,7 +121,8 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                 color: Utils.getColorBasedOnPosition(
                     indexOfBirthday, ElementType.icon)),
             onPressed: () {
-              unawaited(_handleCallButtonPressed(context, birthdayOfPerson.phoneNumber));
+              unawaited(_handleCallButtonPressed(
+                  context, birthdayOfPerson.phoneNumber));
             })
         : new IconButton(
             icon: Icon(Icons.add_ic_call_outlined,
@@ -158,8 +159,7 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                   notificationService,
                   birthdayOfPerson.hasNotification),
               child: BlocBuilder<UserNotificationStatusBloc,
-                      UserNotificationStatusState>(
-                  builder: (context, state) {
+                  UserNotificationStatusState>(builder: (context, state) {
                 return new IconButton(
                     icon: Icon(
                         !state.hasNotification
@@ -174,14 +174,20 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                                 context);
                         final localizations = AppLocalizations.of(context)!;
 
-                        PermissionStatus status = await notificationService.getNotificationPermissionStatus();
+                        PermissionStatus status = await notificationService
+                            .getNotificationPermissionStatus();
 
                         if (!context.mounted) return;
 
                         if (status == PermissionStatus.denied) {
-                          bool showRationale = await notificationService.shouldShowNotificationRationale();
+                          bool showRationale = await notificationService
+                              .shouldShowNotificationRationale();
                           if (showRationale && context.mounted) {
-                            await Utils.showAlertDialog(context, localizations.appTitle, localizations.notificationPermissionRationale, localizations.ok);
+                            await Utils.showAlertDialog(
+                                context,
+                                localizations.appTitle,
+                                localizations.notificationPermissionRationale,
+                                localizations.ok);
                           }
 
                           if (!context.mounted) return;
@@ -196,8 +202,8 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
                           userNotificationStatusBloc
                               .add(UserNotificationStatusToggled(
                             userBirthday: birthdayOfPerson,
-                            notificationMsg: localizations
-                                .notificationForBirthdayMessage(
+                            notificationMsg:
+                                localizations.notificationForBirthdayMessage(
                                     birthdayOfPerson.name),
                           ));
                           return;
