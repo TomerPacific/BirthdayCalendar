@@ -27,8 +27,8 @@ Future<void> main() async {
   StorageService storageService =
       StorageServiceSharedPreferences(sharedPreferences);
 
-  NotificationService notificationService =
-      NotificationServiceImpl(permissionsService: permissionsService, storageService: storageService);
+  NotificationService notificationService = NotificationServiceImpl(
+      permissionsService: permissionsService, storageService: storageService);
   ContactsService contactsService = ContactsServiceImpl(
       storageService: storageService,
       notificationService: notificationService,
@@ -63,16 +63,14 @@ class BirthdayCalendarApp extends StatelessWidget {
         child: MultiBlocProvider(
           providers: [
             BlocProvider(
-                create: (context) => ThemeBloc(
-                    context.read<StorageService>(),
-                    isDarkMode)),
+                create: (context) =>
+                    ThemeBloc(context.read<StorageService>(), isDarkMode)),
             BlocProvider(
                 create: (context) =>
                     ContactsPermissionStatusBloc(contactsService)),
             BlocProvider(
                 create: (context) => ClearNotificationsBloc(
-                    context.read<StorageService>(),
-                    notificationService)),
+                    context.read<StorageService>(), notificationService)),
             BlocProvider(create: (context) => VersionBloc())
           ],
           child: BlocBuilder<ThemeBloc, ThemeMode>(
