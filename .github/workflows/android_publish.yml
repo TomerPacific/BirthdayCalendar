@@ -33,14 +33,15 @@ jobs:
       - name: Build Release AAB
         run: flutter build appbundle --release
 
-      - name: Sign AAB
-        uses: r0adkll/sign-android-release@v1
-        with:
-          releaseDirectory: build/app/outputs/bundle/release
-          signingKeyBase64: ${{ secrets.SIGN_KEY }}
-          alias: ${{ secrets.ALIAS }}
-          keyStorePassword: ${{ secrets.STORE_KEY_PASSWORD }}
-          keyPassword: ${{ secrets.KEY_PASSWORD }}
+      - name: Decode Keystore
+        run: echo -n "${{ secrets.SIGN_KEY }}" | base64 --decode > android/app/keystore.p12
+
+      - name: Create key.properties
+        run: |
+          echo "storePassword=${{ secrets.STORE_KEY_PASSWORD }}" > android/key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.ALIAS }}" >> android/key.properties
+          echo "storeFile=${{ github.workspace }}/android/app/keystore.p12" >> android/key.properties
 
       - name: Deploy to Play Store
         uses: r0adkll/upload-google-play@v1
