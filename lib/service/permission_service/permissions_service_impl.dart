@@ -6,7 +6,7 @@ class PermissionsServiceImpl extends PermissionsService {
   @override
   Future<PermissionStatus> getPermissionStatus(String permissionName) async {
     PermissionStatus status = PermissionStatus.denied;
-    switch(permissionName) {
+    switch (permissionName) {
       case contactsPermissionKey:
         status = await Permission.contacts.status;
         break;
@@ -19,17 +19,20 @@ class PermissionsServiceImpl extends PermissionsService {
   }
 
   @override
-  Future<PermissionStatus> requestPermissionAndGetStatus(String permissionName) async {
+  Future<PermissionStatus> requestPermissionAndGetStatus(
+      String permissionName) async {
     PermissionStatus status = PermissionStatus.denied;
-    switch(permissionName) {
-      case contactsPermissionKey: {
-        status = await Permission.contacts.request();
-        break;
-      }
-      case notificationsPermissionKey: {
-        status = await Permission.notification.request();
-        break;
-      }
+    switch (permissionName) {
+      case contactsPermissionKey:
+        {
+          status = await Permission.contacts.request();
+          break;
+        }
+      case notificationsPermissionKey:
+        {
+          status = await Permission.notification.request();
+          break;
+        }
     }
 
     return status;
@@ -38,12 +41,13 @@ class PermissionsServiceImpl extends PermissionsService {
   @override
   Future<bool> shouldShowRationale(String permissionName) async {
     bool showRationale = false;
-    switch(permissionName) {
+    switch (permissionName) {
       case contactsPermissionKey:
         showRationale = await Permission.contacts.shouldShowRequestRationale;
         break;
       case notificationsPermissionKey:
-        showRationale = await Permission.notification.shouldShowRequestRationale;
+        showRationale =
+            await Permission.notification.shouldShowRequestRationale;
         break;
     }
     return showRationale;
