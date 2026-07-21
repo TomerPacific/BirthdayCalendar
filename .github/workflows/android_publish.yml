@@ -1,26 +1,33 @@
 name: Android Publish
+
 on:
   workflow_dispatch:
+
   workflow_run:
     workflows: [Flutter build]
     types: [completed]
-    branches: ['release/**']
+    branches:
+      - 'release/**'
 
 jobs:
   on-success:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
 
-      - name: Set up JDK
-        uses: actions/setup-java@v1
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
         with:
-          java-version: 17
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
 
-      - name: Set Up Flutter
+      - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.27.0'
@@ -30,18 +37,34 @@ jobs:
       - name: Get Flutter dependencies
         run: flutter pub get
 
-      - name: Build Release AAB
-        run: flutter build appbundle --release
-
       - name: Decode Keystore
-        run: echo -n "${{ secrets.SIGN_KEY }}" | base64 --decode > android/app/keystore.p12
+        run: |
+          echo -n "${{ secrets.SIGN_KEY }}" | base64 --decode > android/app/keystore.p12
 
       - name: Create key.properties
         run: |
-          echo "storePassword=${{ secrets.STORE_KEY_PASSWORD }}" > android/key.properties
-          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
-          echo "keyAlias=${{ secrets.ALIAS }}" >> android/key.properties
-          echo "storeFile=${{ github.workspace }}/android/app/keystore.p12" >> android/key.properties
+          cat > android/key.properties <<EOF
+          storePassword=${{ secrets.STORE_KEY_PASSWORD }}
+          keyPassword=${{ secrets.KEY_PASSWORD }}
+          keyAlias=${{ secrets.ALIAS }}
+          storeFile=${{ github.workspace }}/android/app/keystore.p12
+          EOF
+
+      - name: Verify signing configuration
+        run: |
+          echo "=== key.properties ==="
+          cat android/key.properties
+          echo ""
+          echo "=== Keystore ==="
+          ls -lh android/app/keystore.p12
+          echo ""
+          keytool -list \
+            -keystore android/app/keystore.p12 \
+            -storetype PKCS12 \
+            -storepass "${{ secrets.STORE_KEY_PASSWORD }}"
+
+      - name: Build Release AAB
+        run: flutter build appbundle --release
 
       - name: Deploy to Play Store
         uses: r0adkll/upload-google-play@v1
@@ -55,5 +78,6 @@ jobs:
   on-failure:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+
     steps:
-      - run: echo 'Publish workflow failed due to Build workflow failing'
+      - run: echo "Publish workflow skipped because the Flutter build workflow failed."
