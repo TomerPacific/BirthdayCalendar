@@ -39,7 +39,8 @@ class NotificationServiceImpl extends NotificationService {
   List<NotificationCallbacks> selectNotificationStreamListeners = [];
 
   @override
-  Future<void> init(String Function(String name) notificationMessageProvider) async {
+  Future<void> init(
+      String Function(String name) notificationMessageProvider) async {
     _notificationMessageProvider = notificationMessageProvider;
     tz.initializeTimeZones();
 
@@ -92,7 +93,8 @@ class NotificationServiceImpl extends NotificationService {
 
   @override
   Future<PermissionStatus> getNotificationPermissionStatus() async {
-    return await permissionsService.getPermissionStatus(notificationsPermissionKey);
+    return await permissionsService
+        .getPermissionStatus(notificationsPermissionKey);
   }
 
   @override
@@ -125,7 +127,8 @@ class NotificationServiceImpl extends NotificationService {
 
   @override
   Future<bool> shouldShowNotificationRationale() async {
-    return await permissionsService.shouldShowRationale(notificationsPermissionKey);
+    return await permissionsService
+        .shouldShowRationale(notificationsPermissionKey);
   }
 
   Future<void> _initializeLocalNotificationsPlugin(
@@ -257,14 +260,12 @@ class NotificationServiceImpl extends NotificationService {
     return false;
   }
 
-  Future<void> _rescheduleNotificationFromPayload(
-      String? payload) async {
+  Future<void> _rescheduleNotificationFromPayload(String? payload) async {
     UserBirthday? userBirthday = Utils.getUserBirthdayFromPayload(payload);
     if (userBirthday != null && _notificationMessageProvider != null) {
       await cancelNotificationForBirthday(userBirthday);
       await scheduleNotificationForBirthday(
-          userBirthday,
-          _notificationMessageProvider!(userBirthday.name));
+          userBirthday, _notificationMessageProvider!(userBirthday.name));
     }
   }
 
