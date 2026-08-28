@@ -23,7 +23,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace "com.tomerpacific.birthday_calendar"
-    compileSdkVersion 37
+    compileSdk 37
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
