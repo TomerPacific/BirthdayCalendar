@@ -16,7 +16,7 @@ subprojects {
 subprojects {
     if (project.name != "app") {
         afterEvaluate { project ->
-            if (project.hasProperty('android')) {
+            if (project.extensions.findByName("android") != null) {
                 project.android {
                     compileSdk 37
                     defaultConfig {
