@@ -1,6 +1,6 @@
 plugins {
     id "com.android.application"
-    id "kotlin-android"
+    id "org.jetbrains.kotlin.android"
     id "dev.flutter.flutter-gradle-plugin"
 }
 
@@ -23,15 +23,15 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace "com.tomerpacific.birthday_calendar"
-    compileSdkVersion 36
+    compileSdk 37
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
 
     defaultConfig {
-        minSdkVersion flutter.minSdkVersion
-        targetSdkVersion 36
+        minSdk flutter.minSdkVersion
+        targetSdk 37
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
@@ -51,9 +51,12 @@ android {
             signingConfig signingConfigs.release
         }
         debug {
-            minifyEnabled true
             signingConfig signingConfigs.debug
         }
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     compileOptions {
@@ -63,7 +66,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = 17
+        jvmTarget = '17'
     }
 }
 
