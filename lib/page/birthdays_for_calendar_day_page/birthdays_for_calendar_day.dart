@@ -40,8 +40,9 @@ class BirthdaysForCalendarDayWidget extends StatelessWidget {
                                     this.dateOfDay.month,
                                     AppLocalizations.of(context)!),
                             this.dateOfDay.day)))),
-            body: Center(
-                child: Column(
+            body: SafeArea(
+                child: Center(
+                    child: Column(
               children: [
                 if (state is BirthdaysLoaded && state.birthdays.isNotEmpty)
                   Expanded(
@@ -75,7 +76,7 @@ class BirthdaysForCalendarDayWidget extends StatelessWidget {
                   child: Spacer(),
                 )
               ],
-            )),
+            ))),
             floatingActionButton: FloatingActionButton(
                 onPressed: () {
                   BlocProvider.of<BirthdaysBloc>(context).add(BirthdaysEvent(

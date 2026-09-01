@@ -29,54 +29,56 @@ class SettingsScreen extends StatelessWidget {
       appBar: AppBar(
         title: new Text(AppLocalizations.of(context)!.settings),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          SwitchListTile(
-              title: Text(AppLocalizations.of(context)!.darkMode),
-              value: context.read<ThemeBloc>().state == ThemeMode.dark
-                  ? true
-                  : false,
-              secondary: new Icon(Icons.dark_mode,
-                  color: context.read<ThemeBloc>().state == ThemeMode.dark
-                      ? Color.fromARGB(200, 243, 231, 106)
-                      : Color(0xFF642ef3)),
-              onChanged: (bool newValue) {
-                ThemeEvent event =
-                    context.read<ThemeBloc>().state == ThemeMode.dark
-                        ? ThemeEvent.toggleLight
-                        : ThemeEvent.toggleDark;
-                BlocProvider.of<ThemeBloc>(context).add(event);
-              }),
-          BlocBuilder<ContactsPermissionStatusBloc, PermissionStatus>(
-              builder: (context, state) {
-            return ListTile(
-                title: Text(AppLocalizations.of(context)!.importContacts),
-                leading: Icon(Icons.contacts, color: Colors.blue),
+      body: SafeArea(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            SwitchListTile(
+                title: Text(AppLocalizations.of(context)!.darkMode),
+                value: context.read<ThemeBloc>().state == ThemeMode.dark
+                    ? true
+                    : false,
+                secondary: new Icon(Icons.dark_mode,
+                    color: context.read<ThemeBloc>().state == ThemeMode.dark
+                        ? Color.fromARGB(200, 243, 231, 106)
+                        : Color(0xFF642ef3)),
+                onChanged: (bool newValue) {
+                  ThemeEvent event =
+                      context.read<ThemeBloc>().state == ThemeMode.dark
+                          ? ThemeEvent.toggleLight
+                          : ThemeEvent.toggleDark;
+                  BlocProvider.of<ThemeBloc>(context).add(event);
+                }),
+            BlocBuilder<ContactsPermissionStatusBloc, PermissionStatus>(
+                builder: (context, state) {
+              return ListTile(
+                  title: Text(AppLocalizations.of(context)!.importContacts),
+                  leading: Icon(Icons.contacts, color: Colors.blue),
+                  onTap: () {
+                    unawaited(_handleImportingContacts(context));
+                  },
+                  enabled: state.isPermanentlyDenied ? false : true);
+            }),
+            ListTile(
+                title: Text(AppLocalizations.of(context)!.clearNotifications),
+                leading: const Icon(Icons.clear, color: Colors.redAccent),
                 onTap: () {
-                  unawaited(_handleImportingContacts(context));
-                },
-                enabled: state.isPermanentlyDenied ? false : true);
-          }),
-          ListTile(
-              title: Text(AppLocalizations.of(context)!.clearNotifications),
-              leading: const Icon(Icons.clear, color: Colors.redAccent),
-              onTap: () {
-                _showClearBirthdaysConfirmationDialog(context);
-              }),
-          Spacer(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Align(
-                  alignment: Alignment.bottomRight,
-                  child: BlocBuilder<VersionBloc, String>(
-                      builder: (context, state) {
-                    return Text("v $state");
-                  }))
-            ],
-          )
-        ],
+                  _showClearBirthdaysConfirmationDialog(context);
+                }),
+            Spacer(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Align(
+                    alignment: Alignment.bottomRight,
+                    child: BlocBuilder<VersionBloc, String>(
+                        builder: (context, state) {
+                      return Text("v $state");
+                    }))
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
