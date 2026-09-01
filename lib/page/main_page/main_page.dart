@@ -212,57 +212,59 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
               )
             ],
           ),
-          body: BlocListener<ClearNotificationsBloc, ClearNotificationsState>(
-            listener: (context, state) {
-              if (state is ClearNotificationsCompleted) {
-                setState(() {});
-              }
-            },
-            child: new GestureDetector(
-                onHorizontalDragEnd: _onHorizontalDragEnd,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    new Padding(
-                      padding: const EdgeInsets.only(bottom: 50, top: 50),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          new Text(
-                              BirthdayCalendarDateUtils
-                                  .convertAndTranslateMonthNumber(
-                                      monthToPresent,
-                                      AppLocalizations.of(context)!),
-                              style: new TextStyle(
-                                  fontSize: 25.0, fontWeight: FontWeight.bold))
-                        ],
-                      ),
-                    ),
-                    new Expanded(
-                        child: new Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        new IconButton(
-                            icon: new Icon(Icons.chevron_left),
-                            onPressed: () {
-                              _calculateNextMonthToShow(AxisDirection.right);
-                            }),
-                        new Expanded(
-                          child: new CalendarWidget(
-                              key: Key(monthToPresent.toString()),
-                              currentMonth: monthToPresent,
-                              notificationService: widget.notificationService),
+          body: SafeArea(
+            child: BlocListener<ClearNotificationsBloc, ClearNotificationsState>(
+              listener: (context, state) {
+                if (state is ClearNotificationsCompleted) {
+                  setState(() {});
+                }
+              },
+              child: new GestureDetector(
+                  onHorizontalDragEnd: _onHorizontalDragEnd,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      new Padding(
+                        padding: const EdgeInsets.only(bottom: 50, top: 50),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            new Text(
+                                BirthdayCalendarDateUtils
+                                    .convertAndTranslateMonthNumber(
+                                        monthToPresent,
+                                        AppLocalizations.of(context)!),
+                                style: new TextStyle(
+                                    fontSize: 25.0, fontWeight: FontWeight.bold))
+                          ],
                         ),
-                        new IconButton(
-                            icon: new Icon(Icons.chevron_right),
-                            onPressed: () {
-                              _calculateNextMonthToShow(AxisDirection.left);
-                            }),
-                      ],
-                    ))
-                  ],
-                )),
+                      ),
+                      new Expanded(
+                          child: new Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          new IconButton(
+                              icon: new Icon(Icons.chevron_left),
+                              onPressed: () {
+                                _calculateNextMonthToShow(AxisDirection.right);
+                              }),
+                          new Expanded(
+                            child: new CalendarWidget(
+                                key: Key(monthToPresent.toString()),
+                                currentMonth: monthToPresent,
+                                notificationService: widget.notificationService),
+                          ),
+                          new IconButton(
+                              icon: new Icon(Icons.chevron_right),
+                              onPressed: () {
+                                _calculateNextMonthToShow(AxisDirection.left);
+                              }),
+                        ],
+                      ))
+                    ],
+                  )),
+            ),
           ));
     });
   }

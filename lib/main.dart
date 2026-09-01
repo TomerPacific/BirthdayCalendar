@@ -12,6 +12,7 @@ import 'package:birthday_calendar/service/permission_service/permissions_service
 import 'package:birthday_calendar/service/storage_service/shared_preferences_storage.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'constants.dart';
 import 'package:birthday_calendar/page/main_page/main_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,6 +22,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    systemNavigationBarColor: Colors.transparent,
+  ));
 
   final sharedPreferences = await SharedPreferences.getInstance();
   PermissionsService permissionsService = PermissionsServiceImpl();
