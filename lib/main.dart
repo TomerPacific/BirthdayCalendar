@@ -23,9 +23,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    systemNavigationBarColor: Colors.transparent,
-  ));
 
   final sharedPreferences = await SharedPreferences.getInstance();
   PermissionsService permissionsService = PermissionsServiceImpl();
@@ -80,7 +77,24 @@ class BirthdayCalendarApp extends StatelessWidget {
           ],
           child: BlocBuilder<ThemeBloc, ThemeMode>(
             builder: (context, state) {
-              return MaterialApp(
+              final bool isDark = state == ThemeMode.dark ||
+                  (state == ThemeMode.system &&
+                      MediaQuery.platformBrightnessOf(context) ==
+                          Brightness.dark);
+              final SystemUiOverlayStyle overlayStyle = SystemUiOverlayStyle(
+                statusBarColor: Colors.transparent,
+                statusBarIconBrightness:
+                    isDark ? Brightness.light : Brightness.dark,
+                statusBarBrightness:
+                    isDark ? Brightness.dark : Brightness.light,
+                systemNavigationBarColor: Colors.transparent,
+                systemNavigationBarIconBrightness:
+                    isDark ? Brightness.light : Brightness.dark,
+              );
+
+              return AnnotatedRegion<SystemUiOverlayStyle>(
+                value: overlayStyle,
+                child: MaterialApp(
                   title: applicationName,
                   localizationsDelegates: [
                     AppLocalizations.delegate,
@@ -93,16 +107,26 @@ class BirthdayCalendarApp extends StatelessWidget {
                     Locale('hi'),
                     Locale('de'),
                   ],
-                  theme: ThemeData.light(),
+                  theme: ThemeData.light().copyWith(
+                    appBarTheme: const AppBarTheme(
+                      systemOverlayStyle: SystemUiOverlayStyle.dark,
+                    ),
+                  ),
                   themeMode: state,
-                  darkTheme: ThemeData.dark(),
+                  darkTheme: ThemeData.dark().copyWith(
+                    appBarTheme: const AppBarTheme(
+                      systemOverlayStyle: SystemUiOverlayStyle.light,
+                    ),
+                  ),
                   home: MainPage(
                       key: Key("BirthdayCalendar"),
                       notificationService: notificationService,
                       contactsService: contactsService,
                       title: applicationName,
                       currentMonth:
-                          BirthdayCalendarDateUtils.getCurrentMonthNumber()));
+                          BirthdayCalendarDateUtils.getCurrentMonthNumber()),
+                ),
+              );
             },
           ),
         ));
