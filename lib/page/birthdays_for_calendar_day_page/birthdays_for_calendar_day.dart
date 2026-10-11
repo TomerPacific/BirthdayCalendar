@@ -40,7 +40,7 @@ class BirthdaysForCalendarDayWidget extends StatelessWidget {
                                     this.dateOfDay.month,
                                     AppLocalizations.of(context)!),
                             this.dateOfDay.day)))),
-            body: SafeArea(
+            body: SafeArea(top: false,
                 child: Center(
                     child: Column(
               children: [
