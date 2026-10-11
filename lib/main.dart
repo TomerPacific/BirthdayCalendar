@@ -12,6 +12,7 @@ import 'package:birthday_calendar/service/permission_service/permissions_service
 import 'package:birthday_calendar/service/storage_service/shared_preferences_storage.dart';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'constants.dart';
 import 'package:birthday_calendar/page/main_page/main_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,6 +22,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
   final sharedPreferences = await SharedPreferences.getInstance();
   PermissionsService permissionsService = PermissionsServiceImpl();
@@ -75,7 +77,24 @@ class BirthdayCalendarApp extends StatelessWidget {
           ],
           child: BlocBuilder<ThemeBloc, ThemeMode>(
             builder: (context, state) {
-              return MaterialApp(
+              final bool isDark = state == ThemeMode.dark ||
+                  (state == ThemeMode.system &&
+                      MediaQuery.platformBrightnessOf(context) ==
+                          Brightness.dark);
+              final SystemUiOverlayStyle overlayStyle = SystemUiOverlayStyle(
+                statusBarColor: Colors.transparent,
+                statusBarIconBrightness:
+                    isDark ? Brightness.light : Brightness.dark,
+                statusBarBrightness:
+                    isDark ? Brightness.dark : Brightness.light,
+                systemNavigationBarColor: Colors.transparent,
+                systemNavigationBarIconBrightness:
+                    isDark ? Brightness.light : Brightness.dark,
+              );
+
+              return AnnotatedRegion<SystemUiOverlayStyle>(
+                value: overlayStyle,
+                child: MaterialApp(
                   title: applicationName,
                   localizationsDelegates: [
                     AppLocalizations.delegate,
@@ -88,16 +107,26 @@ class BirthdayCalendarApp extends StatelessWidget {
                     Locale('hi'),
                     Locale('de'),
                   ],
-                  theme: ThemeData.light(),
+                  theme: ThemeData.light().copyWith(
+                    appBarTheme: const AppBarTheme(
+                      systemOverlayStyle: SystemUiOverlayStyle.dark,
+                    ),
+                  ),
                   themeMode: state,
-                  darkTheme: ThemeData.dark(),
+                  darkTheme: ThemeData.dark().copyWith(
+                    appBarTheme: const AppBarTheme(
+                      systemOverlayStyle: SystemUiOverlayStyle.light,
+                    ),
+                  ),
                   home: MainPage(
                       key: Key("BirthdayCalendar"),
                       notificationService: notificationService,
                       contactsService: contactsService,
                       title: applicationName,
                       currentMonth:
-                          BirthdayCalendarDateUtils.getCurrentMonthNumber()));
+                          BirthdayCalendarDateUtils.getCurrentMonthNumber()),
+                ),
+              );
             },
           ),
         ));

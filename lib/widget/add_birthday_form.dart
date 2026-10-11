@@ -60,8 +60,8 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
   Future<void> _getBirthdaysForDate() async {
     final storageService = context.read<StorageService>();
     try {
-      birthdaysForDate = await storageService
-          .getBirthdaysForDate(widget.dateOfDay, true);
+      birthdaysForDate =
+          await storageService.getBirthdaysForDate(widget.dateOfDay, true);
     } catch (e) {
       debugPrint("Failed to fetch birthdays for date: $e");
     }
@@ -149,43 +149,47 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                 : () async {
                     if (_addBirthdayFormKey.currentState != null &&
                         _addBirthdayFormKey.currentState!.validate()) {
-                _addBirthdayFormKey.currentState!.save();
+                      _addBirthdayFormKey.currentState!.save();
 
-                final localizations = AppLocalizations.of(context)!;
-                final birthdaysBloc = BlocProvider.of<BirthdaysBloc>(context);
-                final navigator = Navigator.of(context);
+                      final localizations = AppLocalizations.of(context)!;
+                      final birthdaysBloc =
+                          BlocProvider.of<BirthdaysBloc>(context);
+                      final navigator = Navigator.of(context);
 
-                final bool hasNotificationPermission = await widget.notificationService.isNotificationPermissionGranted();
+                      final bool hasNotificationPermission = await widget
+                          .notificationService
+                          .isNotificationPermissionGranted();
 
-                if (!mounted) return;
+                      if (!mounted) return;
 
-                UserBirthday userBirthday = new UserBirthday(
-                    _birthdayPersonController.text,
-                    widget.dateOfDay,
-                    hasNotificationPermission,
-                    _birthdayPhoneNumber.phoneNumber != null
-                        ? _birthdayPhoneNumber.parseNumber()
-                        : "");
-                birthdaysBloc.add(new BirthdaysEvent(
-                    eventName: BirthdayEvent.AddBirthday,
-                    birthdays: birthdaysForDate,
-                    birthday: userBirthday,
-                    shouldShowAddBirthdayDialog: false,
-                    notificationMsg: localizations
-                        .notificationForBirthdayMessage(userBirthday.name)));
+                      UserBirthday userBirthday = new UserBirthday(
+                          _birthdayPersonController.text,
+                          widget.dateOfDay,
+                          hasNotificationPermission,
+                          _birthdayPhoneNumber.phoneNumber != null
+                              ? _birthdayPhoneNumber.parseNumber()
+                              : "");
+                      birthdaysBloc.add(new BirthdaysEvent(
+                          eventName: BirthdayEvent.AddBirthday,
+                          birthdays: birthdaysForDate,
+                          birthday: userBirthday,
+                          shouldShowAddBirthdayDialog: false,
+                          notificationMsg:
+                              localizations.notificationForBirthdayMessage(
+                                  userBirthday.name)));
 
-                navigator.pop();
-              } else {
-                if (_birthdayNameKey.currentState != null &&
-                    !_birthdayNameKey.currentState!.isValid) {
-                  _birthdayPersonController.clear();
-                }
-                if (_phoneNumberKey.currentState != null &&
-                    !_phoneNumberKey.currentState!.isValid) {
-                  _phoneNumberController.clear();
-                }
-              }
-            },
+                      navigator.pop();
+                    } else {
+                      if (_birthdayNameKey.currentState != null &&
+                          !_birthdayNameKey.currentState!.isValid) {
+                        _birthdayPersonController.clear();
+                      }
+                      if (_phoneNumberKey.currentState != null &&
+                          !_phoneNumberKey.currentState!.isValid) {
+                        _phoneNumberController.clear();
+                      }
+                    }
+                  },
             child: Text(AppLocalizations.of(context)!.ok)),
         TextButton(
             style: TextButton.styleFrom(foregroundColor: Colors.red),

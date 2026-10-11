@@ -40,42 +40,46 @@ class BirthdaysForCalendarDayWidget extends StatelessWidget {
                                     this.dateOfDay.month,
                                     AppLocalizations.of(context)!),
                             this.dateOfDay.day)))),
-            body: Center(
-                child: Column(
-              children: [
-                if (state is BirthdaysLoaded && state.birthdays.isNotEmpty)
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: state.birthdays.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return BlocProvider.value(
-                            value: BlocProvider.of<BirthdaysBloc>(context),
-                            child: BirthdayWidget(
-                                key: Key(state.birthdays[index].name),
-                                birthdayOfPerson: state.birthdays[index],
-                                indexOfBirthday: index,
-                                notificationService: notificationService));
+            body: SafeArea(
+                top: false,
+                child: Center(
+                    child: Column(
+                  children: [
+                    if (state is BirthdaysLoaded && state.birthdays.isNotEmpty)
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: state.birthdays.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return BlocProvider.value(
+                                value: BlocProvider.of<BirthdaysBloc>(context),
+                                child: BirthdayWidget(
+                                    key: Key(state.birthdays[index].name),
+                                    birthdayOfPerson: state.birthdays[index],
+                                    indexOfBirthday: index,
+                                    notificationService: notificationService));
+                          },
+                        ),
+                      )
+                    else
+                      Spacer(),
+                    BlocListener<BirthdaysBloc, BirthdaysState>(
+                      listener: (context, state) {
+                        if (state is BirthdaysShowDialog) {
+                          showDialog(
+                              context: context,
+                              builder: (_) => BlocProvider.value(
+                                  value:
+                                      BlocProvider.of<BirthdaysBloc>(context),
+                                  child: AddBirthdayForm(
+                                      dateOfDay: dateOfDay,
+                                      notificationService:
+                                          notificationService)));
+                        }
                       },
-                    ),
-                  )
-                else
-                  Spacer(),
-                BlocListener<BirthdaysBloc, BirthdaysState>(
-                  listener: (context, state) {
-                    if (state is BirthdaysShowDialog) {
-                      showDialog(
-                          context: context,
-                          builder: (_) => BlocProvider.value(
-                              value: BlocProvider.of<BirthdaysBloc>(context),
-                              child: AddBirthdayForm(
-                                  dateOfDay: dateOfDay,
-                                  notificationService: notificationService)));
-                    }
-                  },
-                  child: Spacer(),
-                )
-              ],
-            )),
+                      child: Spacer(),
+                    )
+                  ],
+                ))),
             floatingActionButton: FloatingActionButton(
                 onPressed: () {
                   BlocProvider.of<BirthdaysBloc>(context).add(BirthdaysEvent(

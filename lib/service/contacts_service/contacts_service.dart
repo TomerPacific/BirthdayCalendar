@@ -8,10 +8,8 @@ abstract class ContactsService {
   Future<bool> shouldShowContactsRationale();
   Future<void> setContactsPermissionPermanentlyDenied();
   Future<bool> isContactsPermissionsPermanentlyDenied();
-  Future<List<Contact>> filterAlreadyImportedContacts(
-      List<Contact> contacts);
-  Future<List<Contact>> fetchContacts(
-      bool withThumbnails);
+  Future<List<Contact>> filterAlreadyImportedContacts(List<Contact> contacts);
+  Future<List<Contact>> fetchContacts(bool withThumbnails);
   Future<void> addContactToCalendar(
       UserBirthday contact, String notificationMessage);
 }

@@ -5,11 +5,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 enum ThemeEvent { toggleDark, toggleLight }
 
 class ThemeBloc extends Bloc<ThemeEvent, ThemeMode> {
-  ThemeBloc(StorageService storageService, bool isDarkMode) : super(isDarkMode ? ThemeMode.dark : ThemeMode.light) {
+  ThemeBloc(StorageService storageService, bool isDarkMode)
+      : super(isDarkMode ? ThemeMode.dark : ThemeMode.light) {
     on<ThemeEvent>((event, emit) {
-      ThemeMode themeMode = event == ThemeEvent.toggleDark ? ThemeMode.dark : ThemeMode.light;
+      ThemeMode themeMode =
+          event == ThemeEvent.toggleDark ? ThemeMode.dark : ThemeMode.light;
       emit(themeMode);
-      storageService.saveThemeModeSetting(themeMode == ThemeMode.dark ? true : false);
+      storageService
+          .saveThemeModeSetting(themeMode == ThemeMode.dark ? true : false);
     });
   }
 }

@@ -58,8 +58,8 @@ class _CalendarDayState extends State<CalendarDayWidget> {
   Future<void> _fetchBirthdaysFromStorage() async {
     final storageService = context.read<StorageService>();
     try {
-      List<UserBirthday> storedBirthdays = await storageService
-          .getBirthdaysForDate(widget.date, true);
+      List<UserBirthday> storedBirthdays =
+          await storageService.getBirthdaysForDate(widget.date, true);
 
       if (!mounted) return;
 

@@ -13,9 +13,9 @@ subprojects {
     project.evaluationDependsOn(':app')
 }
 
-subprojects { subproject ->
-    if (subproject.name != "app") {
-        subproject.plugins.withId("com.android.library") {
+subprojects {
+    def configureAndroid = { subproject ->
+        if (subproject.extensions.findByName('android') != null) {
             subproject.android {
                 compileSdk 37
                 defaultConfig {
@@ -23,13 +23,13 @@ subprojects { subproject ->
                 }
             }
         }
-        subproject.plugins.withId("com.android.application") {
-            subproject.android {
-                compileSdk 37
-                defaultConfig {
-                    targetSdk 37
-                }
-            }
+    }
+
+    if (project.state.executed) {
+        configureAndroid(project)
+    } else {
+        project.afterEvaluate {
+            configureAndroid(project)
         }
     }
 }
