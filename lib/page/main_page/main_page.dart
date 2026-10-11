@@ -212,7 +212,7 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
               )
             ],
           ),
-          body: SafeArea(
+          body: SafeArea(top: false,
             child: BlocListener<ClearNotificationsBloc, ClearNotificationsState>(
               listener: (context, state) {
                 if (state is ClearNotificationsCompleted) {
