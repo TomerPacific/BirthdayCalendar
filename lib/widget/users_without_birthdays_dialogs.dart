@@ -9,9 +9,10 @@ class UsersWithoutBirthdaysDialogs {
 
   Future<List<Contact>> showConfirmationDialog(BuildContext context) async {
     AlertDialog alert = AlertDialog(
-        title: Text(AppLocalizations.of(context)!.addBirthdaysToContactsAlertDialogTitle),
-        content: Text(
-            AppLocalizations.of(context)!.addBirthdaysToContactsAlertDialogDescription),
+        title: Text(AppLocalizations.of(context)!
+            .addBirthdaysToContactsAlertDialogTitle),
+        content: Text(AppLocalizations.of(context)!
+            .addBirthdaysToContactsAlertDialogDescription),
         actions: [
           TextButton(
             onPressed: () {
@@ -46,7 +47,8 @@ class UsersWithoutBirthdaysDialogs {
     bool _haveAnyContactsBeenSelected = false;
 
     AlertDialog alert = AlertDialog(
-        title: Text(AppLocalizations.of(context)!.peopleWithoutBirthdaysAlertDialogTitle),
+        title: Text(AppLocalizations.of(context)!
+            .peopleWithoutBirthdaysAlertDialogTitle),
         content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
           return Container(

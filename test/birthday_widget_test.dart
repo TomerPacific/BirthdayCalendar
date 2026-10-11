@@ -17,22 +17,26 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class MockNotificationService implements NotificationService {
   @override
-  Future<void> init(String Function(String name) notificationMessageProvider) async {}
+  Future<void> init(
+      String Function(String name) notificationMessageProvider) async {}
 
   @override
   Future<bool> isNotificationPermissionGranted() async => true;
 
   @override
-  Future<PermissionStatus> getNotificationPermissionStatus() async => PermissionStatus.granted;
+  Future<PermissionStatus> getNotificationPermissionStatus() async =>
+      PermissionStatus.granted;
 
   @override
-  Future<PermissionStatus> requestNotificationPermission() async => PermissionStatus.granted;
+  Future<PermissionStatus> requestNotificationPermission() async =>
+      PermissionStatus.granted;
 
   @override
   Future<bool> shouldShowNotificationRationale() async => false;
 
   @override
-  Future<void> scheduleNotificationForBirthday(UserBirthday userBirthday, String notificationMessage) async {}
+  Future<void> scheduleNotificationForBirthday(
+      UserBirthday userBirthday, String notificationMessage) async {}
 
   @override
   Future<void> cancelNotificationForBirthday(UserBirthday birthday) async {}
@@ -41,7 +45,8 @@ class MockNotificationService implements NotificationService {
   Future<void> cancelAllNotifications() async {}
 
   @override
-  Future<List<PendingNotificationRequest>> getAllScheduledNotifications() async => [];
+  Future<List<PendingNotificationRequest>>
+      getAllScheduledNotifications() async => [];
 
   @override
   void dispose() {}
@@ -50,7 +55,8 @@ class MockNotificationService implements NotificationService {
   void addListenerForSelectNotificationStream(NotificationCallbacks listener) {}
 
   @override
-  void removeListenerForSelectNotificationStream(NotificationCallbacks listener) {}
+  void removeListenerForSelectNotificationStream(
+      NotificationCallbacks listener) {}
 }
 
 var printLog = [];
@@ -93,27 +99,28 @@ void main() {
                                 builder: (context, state) {
                               final currentState = state;
                               return Column(children: [
-                                if (currentState is BirthdaysLoaded && currentState.birthdays.isNotEmpty)
-                                    Expanded(
-                                        child: ListView.builder(
-                                          itemCount: currentState.birthdays.length,
-                                          itemBuilder: (BuildContext context,
-                                              int index) {
-                                            return BlocProvider.value(
-                                                value: BlocProvider.of<
-                                                    BirthdaysBloc>(context),
-                                                child: BirthdayWidget(
-                                                    key: Key(currentState
-                                                        .birthdays[index]
-                                                        .name),
-                                                    birthdayOfPerson:
-                                                        currentState.birthdays[index],
-                                                    indexOfBirthday: index,
-                                                    notificationService:
-                                                        notificationService));
-                                          },
-                                        ),
-                                      )
+                                if (currentState is BirthdaysLoaded &&
+                                    currentState.birthdays.isNotEmpty)
+                                  Expanded(
+                                    child: ListView.builder(
+                                      itemCount: currentState.birthdays.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return BlocProvider.value(
+                                            value:
+                                                BlocProvider.of<BirthdaysBloc>(
+                                                    context),
+                                            child: BirthdayWidget(
+                                                key: Key(currentState
+                                                    .birthdays[index].name),
+                                                birthdayOfPerson: currentState
+                                                    .birthdays[index],
+                                                indexOfBirthday: index,
+                                                notificationService:
+                                                    notificationService));
+                                      },
+                                    ),
+                                  )
                                 else
                                   Spacer(),
                               ]);

@@ -13,11 +13,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class MockNotificationService implements NotificationService {
   @override
-  Future<void> init(String Function(String name) notificationMessageProvider) async {}
+  Future<void> init(
+      String Function(String name) notificationMessageProvider) async {}
 
   @override
-  Future<bool> isNotificationPermissionGranted() async =>
-      true;
+  Future<bool> isNotificationPermissionGranted() async => true;
 
   @override
   Future<PermissionStatus> getNotificationPermissionStatus() async =>
@@ -123,8 +123,7 @@ void main() {
       expect(await storageService.getAlreadyMigratedContactIds(), isTrue);
     });
 
-    test(
-        'does not set flag when live contacts is null (e.g. no permission)',
+    test('does not set flag when live contacts is null (e.g. no permission)',
         () async {
       final legacy = UserBirthday('Alice', date, false, '');
       await storageService.saveBirthdaysForDate(date, [legacy]);

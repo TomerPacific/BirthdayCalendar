@@ -3,7 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('UserBirthday notificationId', () {
-    test('is stable across multiple instantiations with the same name and date', () {
+    test('is stable across multiple instantiations with the same name and date',
+        () {
       final date = DateTime(1990, 6, 15);
       final a = UserBirthday('Alice', date, false, '');
       final b = UserBirthday('Alice', date, false, '');
@@ -13,7 +14,7 @@ void main() {
     test('differs for different names on the same date', () {
       final date = DateTime(1990, 6, 15);
       final alice = UserBirthday('Alice', date, false, '');
-      final bob   = UserBirthday('Bob',   date, false, '');
+      final bob = UserBirthday('Bob', date, false, '');
       expect(alice.notificationId, isNot(equals(bob.notificationId)));
     });
 
@@ -31,11 +32,13 @@ void main() {
 
     test('fromJson uses stored notificationId when present', () {
       final original = UserBirthday('Alice', DateTime(1990, 6, 15), false, '');
-      final decoded  = UserBirthday.fromJson(original.toJson());
+      final decoded = UserBirthday.fromJson(original.toJson());
       expect(decoded.notificationId, equals(original.notificationId));
     });
 
-    test('fromJson computes deterministic fallback when notificationId is absent', () {
+    test(
+        'fromJson computes deterministic fallback when notificationId is absent',
+        () {
       final original = UserBirthday('Alice', DateTime(1990, 6, 15), false, '');
       final json = original.toJson()..remove('notificationId');
 
@@ -75,7 +78,8 @@ void main() {
     });
 
     test('fromJson preserves contactId', () {
-      final original = UserBirthday('Alice', DateTime(1990, 6, 15), false, '', contactId: 'abc');
+      final original = UserBirthday('Alice', DateTime(1990, 6, 15), false, '',
+          contactId: 'abc');
       final decoded = UserBirthday.fromJson(original.toJson());
       expect(decoded.contactId, equals('abc'));
     });

@@ -14,11 +14,11 @@ import 'package:permission_handler/permission_handler.dart';
 
 class MockNotificationService implements NotificationService {
   @override
-  Future<void> init(String Function(String name) notificationMessageProvider) async {}
+  Future<void> init(
+      String Function(String name) notificationMessageProvider) async {}
 
   @override
-  Future<bool> isNotificationPermissionGranted() async =>
-      true;
+  Future<bool> isNotificationPermissionGranted() async => true;
 
   @override
   Future<PermissionStatus> getNotificationPermissionStatus() async =>

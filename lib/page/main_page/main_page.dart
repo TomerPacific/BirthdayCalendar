@@ -212,8 +212,10 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
               )
             ],
           ),
-          body: SafeArea(top: false,
-            child: BlocListener<ClearNotificationsBloc, ClearNotificationsState>(
+          body: SafeArea(
+            top: false,
+            child:
+                BlocListener<ClearNotificationsBloc, ClearNotificationsState>(
               listener: (context, state) {
                 if (state is ClearNotificationsCompleted) {
                   setState(() {});
@@ -236,7 +238,8 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
                                         monthToPresent,
                                         AppLocalizations.of(context)!),
                                 style: new TextStyle(
-                                    fontSize: 25.0, fontWeight: FontWeight.bold))
+                                    fontSize: 25.0,
+                                    fontWeight: FontWeight.bold))
                           ],
                         ),
                       ),
@@ -253,7 +256,8 @@ class _MainPageState extends State<MainPage> implements NotificationCallbacks {
                             child: new CalendarWidget(
                                 key: Key(monthToPresent.toString()),
                                 currentMonth: monthToPresent,
-                                notificationService: widget.notificationService),
+                                notificationService:
+                                    widget.notificationService),
                           ),
                           new IconButton(
                               icon: new Icon(Icons.chevron_right),

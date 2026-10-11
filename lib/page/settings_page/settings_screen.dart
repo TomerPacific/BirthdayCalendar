@@ -29,7 +29,8 @@ class SettingsScreen extends StatelessWidget {
       appBar: AppBar(
         title: new Text(AppLocalizations.of(context)!.settings),
       ),
-      body: SafeArea(top: false,
+      body: SafeArea(
+        top: false,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
