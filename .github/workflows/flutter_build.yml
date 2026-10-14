@@ -7,20 +7,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-java@v2
+      - uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
-          java-version: '12.x'
+          distribution: 'temurin'
+          java-version: '17'
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.27.0'
           channel: 'stable'
-      - uses: dart-lang/setup-dart@v1
-        with:
-          sdk: '3.6.0'
+          cache: true
 
-      - run: dart pub get
-      
       - run: flutter pub get
 
       - run: flutter analyze
