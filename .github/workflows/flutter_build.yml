@@ -15,12 +15,7 @@ jobs:
         with:
           channel: 'stable'
           cache: true
-      - uses: dart-lang/setup-dart@v1
-        with:
-          sdk: '3.6.0'
 
-      - run: dart pub get
-      
       - run: flutter pub get
 
       - run: flutter analyze
