@@ -23,7 +23,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace "com.tomerpacific.birthday_calendar"
-    compileSdk 37
+    compileSdk 36
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -31,7 +31,7 @@ android {
 
     defaultConfig {
         minSdk flutter.minSdkVersion
-        targetSdk 37
+        targetSdk 36
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
