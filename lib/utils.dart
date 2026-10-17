@@ -2,14 +2,14 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_contacts/contact.dart';
+import 'package:flutter_contacts/flutter_contacts.dart' as fc;
 import 'model/user_birthday.dart';
 
 enum ElementType { background, icon, text }
 
 class Utils {
-  static Future<List<Contact>> filterAlreadyImportedContacts(
-      StorageService _storageService, List<Contact> contacts) async {
+  static Future<List<fc.Contact>> filterAlreadyImportedContacts(
+      StorageService _storageService, List<fc.Contact> contacts) async {
     List<UserBirthday> allStoredBirthdays =
         await _storageService.getAllBirthdays();
     Set<String> existingContactIds = allStoredBirthdays
