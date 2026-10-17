@@ -35,7 +35,7 @@ dependencies:
   url_launcher: 6.3.2
   package_info_plus: 9.0.0
   permission_handler: 12.0.0
-  flutter_contacts: 1.1.9+2
+  flutter_contacts: 2.6.0
   provider: 6.0.2
   in_app_update: 4.2.5
   flutter_bloc: 8.1.5

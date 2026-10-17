@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_contacts/contact.dart';
+import 'package:flutter_contacts/flutter_contacts.dart' as fc;
 import 'package:birthday_calendar/l10n/app_localizations.dart';
 
 class UsersWithoutBirthdaysDialogs {
   UsersWithoutBirthdaysDialogs(this.usersWithoutBirthdays);
 
-  final List<Contact> usersWithoutBirthdays;
+  final List<fc.Contact> usersWithoutBirthdays;
 
-  Future<List<Contact>> showConfirmationDialog(BuildContext context) async {
+  Future<List<fc.Contact>> showConfirmationDialog(BuildContext context) async {
     AlertDialog alert = AlertDialog(
         title: Text(AppLocalizations.of(context)!
             .addBirthdaysToContactsAlertDialogTitle),
@@ -62,7 +62,7 @@ class UsersWithoutBirthdaysDialogs {
                     itemCount: usersWithoutBirthdays.length,
                     itemBuilder: (BuildContext context, int index) {
                       return CheckboxListTile(
-                          title: Text(usersWithoutBirthdays[index].displayName),
+                          title: Text(usersWithoutBirthdays[index].displayName ?? ''),
                           value: _usersSelectedToAddBirthdaysFor[index],
                           onChanged: (bool? value) {
                             if (value != null) {
@@ -107,7 +107,7 @@ class UsersWithoutBirthdaysDialogs {
 
   void _collectUsersToAddBirthdaysTo(
       BuildContext context, List<bool> usersSelectedToAddBirthdaysFor) {
-    List<Contact> usersToSetBirthDatesTo = [];
+    List<fc.Contact> usersToSetBirthDatesTo = [];
     usersWithoutBirthdays.asMap().forEach((index, value) {
       if (usersSelectedToAddBirthdaysFor[index]) {
         usersToSetBirthDatesTo.add(value);

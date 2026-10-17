@@ -9,7 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:pub_semver/pub_semver.dart';
-import 'package:flutter_contacts/contact.dart';
+import 'package:flutter_contacts/flutter_contacts.dart' as fc;
 
 class VersionSpecificServiceImpl extends VersionSpecificService {
   VersionSpecificServiceImpl(
@@ -111,7 +111,7 @@ class VersionSpecificServiceImpl extends VersionSpecificService {
   }
 
   @override
-  Future<void> migrateContactIds(List<Contact>? liveContacts) async {
+  Future<void> migrateContactIds(List<fc.Contact>? liveContacts) async {
     bool didAlreadyMigrate =
         await storageService.getAlreadyMigratedContactIds();
     if (didAlreadyMigrate) return;
@@ -134,9 +134,11 @@ class VersionSpecificServiceImpl extends VersionSpecificService {
     // Build a name -> contacts map from live contacts for fast lookup.
     // We only migrate when exactly one live contact matches the stored name —
     // ambiguous matches are left alone rather than guessed at.
-    final Map<String, List<Contact>> contactsByName = {};
+    final Map<String, List<fc.Contact>> contactsByName = {};
     for (final contact in liveContacts) {
-      contactsByName.putIfAbsent(contact.displayName, () => []).add(contact);
+      final contactName = contact.displayName;
+      if (contactName == null) continue;
+      contactsByName.putIfAbsent(contactName, () => []).add(contact);
     }
 
     bool allSucceeded = true;
@@ -146,9 +148,16 @@ class VersionSpecificServiceImpl extends VersionSpecificService {
         // No match or ambiguous — leave this entry as-is.
         continue;
       }
+
+      final contactId = matches.first.id;
+      if (contactId == null) {
+        allSucceeded = false;
+        continue;
+      }
+
       try {
         await storageService.updateContactIdForBirthday(
-            birthday, matches.first.id);
+            birthday, contactId);
       } catch (e, stackTrace) {
         allSucceeded = false;
         debugPrint(
