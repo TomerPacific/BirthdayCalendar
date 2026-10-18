@@ -68,22 +68,27 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
 
   Widget _phoneNumberInputField() {
     return doesWantToAddPhoneNumber == true
-        ? mui.Material(
-      type: mui.MaterialType.transparency,
-      child: PhoneFormField(
-        focusNode: addTelephoneButtonFocusNode,
-        initialValue: _birthdayPhoneNumber,
-        onChanged: (number) {
-          _birthdayPhoneNumber = number;
-        },
-        validator: PhoneValidator.compose([
-          PhoneValidator.required(context),
-          PhoneValidator.valid(context),
-        ]),
-        countrySelectorNavigator:
-        const CountrySelectorNavigator.draggableBottomSheet(),
-      ),
-    )
+        ? mui.Theme(
+            data: mui.ThemeData(
+              brightness: Theme.of(context).brightness,
+            ),
+            child: mui.Material(
+              type: mui.MaterialType.transparency,
+              child: PhoneFormField(
+                focusNode: addTelephoneButtonFocusNode,
+                initialValue: _birthdayPhoneNumber,
+                onChanged: (number) {
+                  _birthdayPhoneNumber = number;
+                },
+                validator: PhoneValidator.compose([
+                  PhoneValidator.required(context),
+                  PhoneValidator.valid(context),
+                ]),
+                countrySelectorNavigator:
+                    const CountrySelectorNavigator.draggableBottomSheet(),
+              ),
+            ),
+          )
         : Spacer();
   }
 

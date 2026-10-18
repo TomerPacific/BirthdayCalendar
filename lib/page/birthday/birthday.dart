@@ -55,16 +55,19 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
 
     AlertDialog addPhoneNumberAlert = AlertDialog(
         title: Text(AppLocalizations.of(context)!.addPhoneNumber),
-        content: mui.Material(
-          type: mui.MaterialType.transparency,
-          child:
-          PhoneFormField(
-              initialValue: PhoneNumber.parse('+1'),
-              onChanged: (number) {
-                chosenNumber = number;
-              },
-              countrySelectorNavigator:
-              const CountrySelectorNavigator.draggableBottomSheet()
+        content: mui.Theme(
+          data: mui.ThemeData(
+            brightness: Theme.of(context).brightness,
+          ),
+          child: mui.Material(
+            type: mui.MaterialType.transparency,
+            child: PhoneFormField(
+                initialValue: PhoneNumber.parse('+1'),
+                onChanged: (number) {
+                  chosenNumber = number;
+                },
+                countrySelectorNavigator:
+                    const CountrySelectorNavigator.draggableBottomSheet()),
           ),
         ),
         actions: [

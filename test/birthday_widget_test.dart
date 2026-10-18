@@ -13,11 +13,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:phone_form_field/phone_form_field.dart'
     show PhoneFieldLocalization, PhoneFormField;
 import 'package:birthday_calendar/page/birthday/birthday.dart';
+import 'package:birthday_calendar/widget/add_birthday_form.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/service/notification_service/notification_callbacks.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:material_ui/material_ui.dart' as mui;
 
 class MockNotificationService implements NotificationService {
   @override
@@ -79,11 +81,11 @@ void main() {
     storageService = StorageServiceSharedPreferences(sharedPreferences);
   });
 
-  Widget base() => RepositoryProvider<StorageService>.value(
+  Widget base({bool isDarkMode = false}) => RepositoryProvider<StorageService>.value(
       value: storageService,
       child: MultiBlocProvider(
         providers: [
-          BlocProvider(create: (context) => ThemeBloc(storageService, false)),
+          BlocProvider(create: (context) => ThemeBloc(storageService, isDarkMode)),
           BlocProvider(create: (context) => VersionBloc())
         ],
         child: BlocBuilder<ThemeBloc, ThemeMode>(
@@ -141,6 +143,51 @@ void main() {
           },
         ),
       ));
+
+  Widget baseAddBirthdayForm({bool isDarkMode = false}) =>
+      RepositoryProvider<StorageService>.value(
+        value: storageService,
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider(
+                create: (context) => ThemeBloc(storageService, isDarkMode)),
+            BlocProvider(create: (context) => VersionBloc())
+          ],
+          child: BlocBuilder<ThemeBloc, ThemeMode>(
+            builder: (context, state) {
+              return MaterialApp(
+                title: '',
+                locale: const Locale('en'),
+                localizationsDelegates: [
+                  AppLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                  ...PhoneFieldLocalization.delegates,
+                ],
+                supportedLocales: const [
+                  Locale('en'),
+                  Locale('hi'),
+                  Locale('de')
+                ],
+                theme: ThemeData.light(),
+                themeMode: state,
+                darkTheme: ThemeData.dark(),
+                home: Material(
+                  child: BlocProvider(
+                    create: (context) => BirthdaysBloc(
+                        notificationService, storageService, birthdays),
+                    child: AddBirthdayForm(
+                      dateOfDay: DateTime(2000, 5, 17),
+                      notificationService: notificationService,
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      );
 
   testWidgets("BirthdayWidget show birthday for Someone",
           (WidgetTester tester) async {
@@ -284,6 +331,60 @@ void main() {
 
           expect(find.byType(AlertDialog), findsOneWidget);
           expect(await storedPhoneNumber(), '');
+        });
+
+    testWidgets("mui.Theme follows dark mode brightness",
+            (WidgetTester tester) async {
+          await seedBirthdayWithoutPhone();
+          await tester.pumpWidget(base(isDarkMode: true));
+          await tester.pumpAndSettle();
+          await tester.tap(find.byIcon(Icons.add_ic_call_outlined));
+          await tester.pumpAndSettle();
+
+          final muiTheme = tester.widget<mui.Theme>(find.ancestor(
+              of: find.byType(PhoneFormField), matching: find.byType(mui.Theme)));
+          expect(muiTheme.data.brightness, Brightness.dark);
+        });
+
+    testWidgets("mui.Theme follows light mode brightness",
+            (WidgetTester tester) async {
+          await seedBirthdayWithoutPhone();
+          await tester.pumpWidget(base(isDarkMode: false));
+          await tester.pumpAndSettle();
+          await tester.tap(find.byIcon(Icons.add_ic_call_outlined));
+          await tester.pumpAndSettle();
+
+          final muiTheme = tester.widget<mui.Theme>(find.ancestor(
+              of: find.byType(PhoneFormField), matching: find.byType(mui.Theme)));
+          expect(muiTheme.data.brightness, Brightness.light);
+        });
+  });
+
+  group('AddBirthdayForm phone input dialog', () {
+    testWidgets("mui.Theme follows dark mode brightness when phone input enabled",
+            (WidgetTester tester) async {
+          await tester.pumpWidget(baseAddBirthdayForm(isDarkMode: true));
+          await tester.pumpAndSettle();
+
+          await tester.tap(find.byIcon(Icons.phone));
+          await tester.pumpAndSettle();
+
+          final muiTheme = tester.widget<mui.Theme>(find.ancestor(
+              of: find.byType(PhoneFormField), matching: find.byType(mui.Theme)));
+          expect(muiTheme.data.brightness, Brightness.dark);
+        });
+
+    testWidgets("mui.Theme follows light mode brightness when phone input enabled",
+            (WidgetTester tester) async {
+          await tester.pumpWidget(baseAddBirthdayForm(isDarkMode: false));
+          await tester.pumpAndSettle();
+
+          await tester.tap(find.byIcon(Icons.phone));
+          await tester.pumpAndSettle();
+
+          final muiTheme = tester.widget<mui.Theme>(find.ancestor(
+              of: find.byType(PhoneFormField), matching: find.byType(mui.Theme)));
+          expect(muiTheme.data.brightness, Brightness.light);
         });
   });
 }
