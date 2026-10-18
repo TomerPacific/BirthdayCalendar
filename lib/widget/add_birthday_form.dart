@@ -26,7 +26,6 @@ class AddBirthdayForm extends StatefulWidget {
 class AddBirthdayFormState extends State<AddBirthdayForm> {
   final _addBirthdayFormKey = GlobalKey<FormState>();
   final _birthdayNameKey = GlobalKey<FormFieldState>();
-  final _phoneNumberKey = GlobalKey<FormFieldState>();
 
   TextEditingController _birthdayPersonController = new TextEditingController();
   PhoneNumber _birthdayPhoneNumber = PhoneNumber.parse('+1');
@@ -70,16 +69,21 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
   Widget _phoneNumberInputField() {
     return doesWantToAddPhoneNumber == true
         ? mui.Material(
-        type: mui.MaterialType.transparency,
-        child: PhoneFormField(
-      focusNode: addTelephoneButtonFocusNode,
-      initialValue: _birthdayPhoneNumber,
-      onChanged: (number) {
-        _birthdayPhoneNumber = number;
-      },
-      countrySelectorNavigator:
-      const CountrySelectorNavigator.draggableBottomSheet()
-    ))
+      type: mui.MaterialType.transparency,
+      child: PhoneFormField(
+        focusNode: addTelephoneButtonFocusNode,
+        initialValue: _birthdayPhoneNumber,
+        onChanged: (number) {
+          _birthdayPhoneNumber = number;
+        },
+        validator: PhoneValidator.compose([
+          PhoneValidator.required(context),
+          PhoneValidator.valid(context),
+        ]),
+        countrySelectorNavigator:
+        const CountrySelectorNavigator.draggableBottomSheet(),
+      ),
+    )
         : Spacer();
   }
 
@@ -155,7 +159,7 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                           _birthdayPersonController.text,
                           widget.dateOfDay,
                           hasNotificationPermission,
-                          _birthdayPhoneNumber.nsn.isNotEmpty
+                          doesWantToAddPhoneNumber && _birthdayPhoneNumber.nsn.isNotEmpty
                               ? _birthdayPhoneNumber.international
                               : "");
                       birthdaysBloc.add(new BirthdaysEvent(
@@ -172,9 +176,6 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                       if (_birthdayNameKey.currentState != null &&
                           !_birthdayNameKey.currentState!.isValid) {
                         _birthdayPersonController.clear();
-                      }
-                      if (_phoneNumberKey.currentState != null &&
-                          !_phoneNumberKey.currentState!.isValid) {
                       }
                     }
                   },
