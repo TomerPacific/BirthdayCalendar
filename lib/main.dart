@@ -19,6 +19,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:birthday_calendar/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:phone_form_field/phone_form_field.dart' show PhoneFieldLocalization;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -101,6 +102,7 @@ class BirthdayCalendarApp extends StatelessWidget {
                     GlobalMaterialLocalizations.delegate,
                     GlobalWidgetsLocalizations.delegate,
                     GlobalCupertinoLocalizations.delegate,
+                    ...PhoneFieldLocalization.delegates,
                   ],
                   supportedLocales: [
                     Locale('en'),

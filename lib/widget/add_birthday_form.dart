@@ -4,9 +4,10 @@ import 'package:birthday_calendar/service/notification_service/notification_serv
 import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:phone_form_field/phone_form_field.dart';
 import 'package:collection/collection.dart';
 import 'package:birthday_calendar/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart' as mui;
 
 class AddBirthdayForm extends StatefulWidget {
   final DateTime dateOfDay;
@@ -25,11 +26,9 @@ class AddBirthdayForm extends StatefulWidget {
 class AddBirthdayFormState extends State<AddBirthdayForm> {
   final _addBirthdayFormKey = GlobalKey<FormState>();
   final _birthdayNameKey = GlobalKey<FormFieldState>();
-  final _phoneNumberKey = GlobalKey<FormFieldState>();
 
   TextEditingController _birthdayPersonController = new TextEditingController();
-  TextEditingController _phoneNumberController = new TextEditingController();
-  PhoneNumber _birthdayPhoneNumber = PhoneNumber(isoCode: 'US');
+  PhoneNumber _birthdayPhoneNumber = PhoneNumber.parse('+1');
   List<UserBirthday> birthdaysForDate = [];
   bool doesWantToAddPhoneNumber = false;
   bool _isLoading = true;
@@ -69,27 +68,26 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
 
   Widget _phoneNumberInputField() {
     return doesWantToAddPhoneNumber == true
-        ? new InternationalPhoneNumberInput(
-            focusNode: addTelephoneButtonFocusNode,
-            key: _phoneNumberKey,
-            onInputChanged: (PhoneNumber number) {
-              _birthdayPhoneNumber = number;
-            },
-            onInputValidated: (bool value) {},
-            selectorConfig: SelectorConfig(
-              selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+        ? mui.Theme(
+            data: mui.ThemeData(
+              brightness: Theme.of(context).brightness,
             ),
-            ignoreBlank: false,
-            autoValidateMode: AutovalidateMode.disabled,
-            initialValue: _birthdayPhoneNumber,
-            textFieldController: _phoneNumberController,
-            formatInput: false,
-            keyboardType:
-                TextInputType.numberWithOptions(signed: true, decimal: true),
-            inputBorder: OutlineInputBorder(),
-            onSaved: (PhoneNumber number) {
-              _birthdayPhoneNumber = number;
-            },
+            child: mui.Material(
+              type: mui.MaterialType.transparency,
+              child: PhoneFormField(
+                focusNode: addTelephoneButtonFocusNode,
+                initialValue: _birthdayPhoneNumber,
+                onChanged: (number) {
+                  _birthdayPhoneNumber = number;
+                },
+                validator: PhoneValidator.compose([
+                  PhoneValidator.required(context),
+                  PhoneValidator.valid(context),
+                ]),
+                countrySelectorNavigator:
+                    const CountrySelectorNavigator.draggableBottomSheet(),
+              ),
+            ),
           )
         : Spacer();
   }
@@ -166,8 +164,8 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                           _birthdayPersonController.text,
                           widget.dateOfDay,
                           hasNotificationPermission,
-                          _birthdayPhoneNumber.phoneNumber != null
-                              ? _birthdayPhoneNumber.parseNumber()
+                          doesWantToAddPhoneNumber && _birthdayPhoneNumber.nsn.isNotEmpty
+                              ? _birthdayPhoneNumber.international
                               : "");
                       birthdaysBloc.add(new BirthdaysEvent(
                           eventName: BirthdayEvent.AddBirthday,
@@ -184,10 +182,6 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
                           !_birthdayNameKey.currentState!.isValid) {
                         _birthdayPersonController.clear();
                       }
-                      if (_phoneNumberKey.currentState != null &&
-                          !_phoneNumberKey.currentState!.isValid) {
-                        _phoneNumberController.clear();
-                      }
                     }
                   },
             child: Text(AppLocalizations.of(context)!.ok)),
@@ -195,7 +189,6 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
             style: TextButton.styleFrom(foregroundColor: Colors.red),
             onPressed: () {
               _birthdayPersonController.clear();
-              _phoneNumberController.clear();
               Navigator.pop(context);
             },
             child: Text(AppLocalizations.of(context)!.back))
@@ -206,7 +199,6 @@ class AddBirthdayFormState extends State<AddBirthdayForm> {
   @override
   dispose() {
     _birthdayPersonController.dispose();
-    _phoneNumberController.dispose();
     super.dispose();
   }
 }

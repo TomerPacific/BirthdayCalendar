@@ -6,7 +6,7 @@ import 'package:birthday_calendar/service/notification_service/notification_serv
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:birthday_calendar/utils.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:flutter_contacts/flutter_contacts.dart' as fc;
 import 'package:permission_handler/permission_handler.dart';
 
 class ContactsServiceImpl extends ContactsService {
@@ -46,17 +46,24 @@ class ContactsServiceImpl extends ContactsService {
   }
 
   @override
-  Future<List<Contact>> filterAlreadyImportedContacts(
-      List<Contact> contacts) async {
+  Future<List<fc.Contact>> filterAlreadyImportedContacts(
+      List<fc.Contact> contacts) async {
     return Utils.filterAlreadyImportedContacts(storageService, contacts);
   }
 
   @override
-  Future<List<Contact>> fetchContacts(bool withThumbnails) async {
+  Future<List<fc.Contact>> fetchContacts(bool withThumbnails) async {
     PermissionStatus status = await getContactsPermissionStatus();
     if (status.isGranted) {
-      return await FlutterContacts.getContacts(
-          withProperties: true, withThumbnail: withThumbnails);
+      final contacts =  await fc.FlutterContacts.getAll(
+          properties: {
+            fc.ContactProperty.phone,
+            if (withThumbnails) fc.ContactProperty.photoThumbnail,
+          });
+
+      return contacts
+          .where((c) => c.displayName != null && c.id != null)
+          .toList();
     }
     return [];
   }

@@ -8,9 +8,10 @@ import 'package:birthday_calendar/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:birthday_calendar/model/user_birthday.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:phone_form_field/phone_form_field.dart';
+import 'package:material_ui/material_ui.dart' as mui;
 
 class BirthdayWidget extends StatefulWidget {
   final UserBirthday birthdayOfPerson;
@@ -50,60 +51,46 @@ class _BirthdayWidgetState extends State<BirthdayWidget> {
   }
 
   Future<void> _handleAddingPhoneNumber(BuildContext context) async {
-    PhoneNumber _birthdayPhoneNumber = PhoneNumber(isoCode: 'US');
-    final _phoneNumberKey = GlobalKey<FormFieldState>();
-    TextEditingController _phoneNumberController = new TextEditingController();
+    PhoneNumber? chosenNumber;
 
     AlertDialog addPhoneNumberAlert = AlertDialog(
         title: Text(AppLocalizations.of(context)!.addPhoneNumber),
-        content: InternationalPhoneNumberInput(
-          key: _phoneNumberKey,
-          onInputChanged: (PhoneNumber number) {
-            _birthdayPhoneNumber = number;
-          },
-          onInputValidated: (bool value) {},
-          selectorConfig: SelectorConfig(
-            selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+        content: mui.Theme(
+          data: mui.ThemeData(
+            brightness: Theme.of(context).brightness,
           ),
-          ignoreBlank: false,
-          autoValidateMode: AutovalidateMode.disabled,
-          initialValue: _birthdayPhoneNumber,
-          textFieldController: _phoneNumberController,
-          formatInput: false,
-          keyboardType:
-              TextInputType.numberWithOptions(signed: true, decimal: true),
-          inputBorder: OutlineInputBorder(),
-          onSaved: (PhoneNumber number) {
-            _birthdayPhoneNumber = number;
-          },
+          child: mui.Material(
+            type: mui.MaterialType.transparency,
+            child: PhoneFormField(
+                initialValue: PhoneNumber.parse('+1'),
+                onChanged: (number) {
+                  chosenNumber = number;
+                },
+                countrySelectorNavigator:
+                    const CountrySelectorNavigator.draggableBottomSheet()),
+          ),
         ),
         actions: [
           TextButton(
             style: TextButton.styleFrom(foregroundColor: Colors.green),
             onPressed: () async {
-              if (_birthdayPhoneNumber.phoneNumber != null) {
+              final number = chosenNumber;
+              if (number != null && number.nsn.isNotEmpty) {
                 final storageService = context.read<StorageService>();
                 final navigator = Navigator.of(context);
-                String phone = _birthdayPhoneNumber.parseNumber();
-                birthdayOfPerson.phoneNumber = phone;
+                birthdayOfPerson.phoneNumber = number.international;
                 await storageService
                     .updatePhoneNumberForBirthday(birthdayOfPerson);
                 if (!mounted) return;
                 setState(() {});
-                _phoneNumberController.clear();
                 navigator.pop();
-              } else {
-                return null;
               }
             },
             child: Text(AppLocalizations.of(context)!.add),
           ),
           TextButton(
               style: TextButton.styleFrom(foregroundColor: Colors.red),
-              onPressed: () {
-                _phoneNumberController.clear();
-                Navigator.pop(context);
-              },
+              onPressed: () => Navigator.pop(context),
               child: Text(AppLocalizations.of(context)!.cancel)),
         ]);
 

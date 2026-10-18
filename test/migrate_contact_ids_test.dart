@@ -5,7 +5,7 @@ import 'package:birthday_calendar/service/storage_service/storage_service.dart';
 import 'package:birthday_calendar/service/version_specific_service/version_specific_service_impl.dart';
 import 'package:birthday_calendar/service/notification_service/notification_callbacks.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_contacts/contact.dart';
+import 'package:flutter_contacts/flutter_contacts.dart' as fc;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -59,8 +59,8 @@ class MockNotificationService implements NotificationService {
 // ---------------------------------------------------------------------------
 
 /// Build a [Contact] stub with the two fields [migrateContactIds] uses.
-Contact makeContact(String id, String displayName) =>
-    Contact(id: id, displayName: displayName);
+fc.Contact makeContact(String id, String displayName) =>
+    fc.Contact(id: id, displayName: displayName);
 
 /// Convenience: read back a stored birthday by name from storage.
 Future<UserBirthday?> fetchByName(

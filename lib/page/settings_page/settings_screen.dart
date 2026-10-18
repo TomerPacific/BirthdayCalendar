@@ -11,7 +11,7 @@ import 'package:birthday_calendar/widget/users_without_birthdays_dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:flutter_contacts/flutter_contacts.dart' as fc;
 import 'package:birthday_calendar/l10n/app_localizations.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -146,7 +146,7 @@ class SettingsScreen extends StatelessWidget {
     if (status.isGranted) {
       contactsPermissionStatusBloc
           .add(ContactsPermissionStatusEvent.PermissionGranted);
-      List<Contact> contacts = await contactsService.fetchContacts(false);
+      List<fc.Contact> contacts = await contactsService.fetchContacts(false);
 
       if (!context.mounted) return;
 
@@ -171,10 +171,10 @@ class SettingsScreen extends StatelessWidget {
   }
 
   Future<void> _handleAddingBirthdaysToContacts(
-      BuildContext context, List<Contact> contactsWithoutBirthDates) async {
+      BuildContext context, List<fc.Contact> contactsWithoutBirthDates) async {
     UsersWithoutBirthdaysDialogs assignBirthdaysToUsers =
         UsersWithoutBirthdaysDialogs(contactsWithoutBirthDates);
-    List<Contact> users =
+    List<fc.Contact> users =
         await assignBirthdaysToUsers.showConfirmationDialog(context);
     if (users.isNotEmpty) {
       if (!context.mounted) return;
@@ -183,7 +183,7 @@ class SettingsScreen extends StatelessWidget {
   }
 
   Future<void> _gatherBirthdaysForUsers(
-      BuildContext context, List<Contact> users) async {
+      BuildContext context, List<fc.Contact> users) async {
     int amountOfBirthdaysSet = 0;
     final localizations = AppLocalizations.of(context)!;
     final bool hasPermission =
@@ -191,29 +191,34 @@ class SettingsScreen extends StatelessWidget {
 
     if (!context.mounted) return;
 
-    for (Contact contact in users) {
+    for (fc.Contact contact in users) {
       if (!context.mounted) return;
+
+      final name = contact.displayName;
+      final contactId = contact.id;
+      if (name == null || contactId == null) {
+        continue;
+      }
+
       DateTime? chosenBirthDate = await showDatePicker(
           context: context,
           initialDate: DateTime(1970, 1, 1),
           firstDate: DateTime(1970, 1, 1),
           lastDate: DateTime.now(),
           initialEntryMode: DatePickerEntryMode.input,
-          helpText: localizations
-              .helpTextChooseBirthdateForImportedContact(contact.displayName),
+          helpText: localizations.helpTextChooseBirthdateForImportedContact(name),
           fieldLabelText:
-              localizations.fieldLabelTextChooseBirthdateForImportedContact(
-                  contact.displayName));
+          localizations.fieldLabelTextChooseBirthdateForImportedContact(name));
 
       if (chosenBirthDate != null) {
         if (!context.mounted) return;
 
         UserBirthday userBirthday = new UserBirthday(
-            contact.displayName,
+            name,
             chosenBirthDate,
             hasPermission,
-            contact.phones.isNotEmpty ? contact.phones.first.number : "",
-            contactId: contact.id);
+            contact.phones.firstOrNull?.number ?? "",
+            contactId: contactId);
 
         await contactsService.addContactToCalendar(userBirthday,
             localizations.notificationForBirthdayMessage(userBirthday.name));
